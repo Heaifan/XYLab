@@ -32,22 +32,24 @@ XYLab/
 ├─ src/                             ← 全部源码 ≤100 行/文件，实现目录 ≤5 文件
 │  ├─ ui/                           ← R4/UI-F1 React 投影层（模拟核心零依赖）
 │  │  ├─ main.tsx                   ←   入口
-│  │  ├─ App.tsx                    ←   单一 Controller 权威持有 + 装配
+│  │  ├─ App.tsx                    ←   单一 Controller 权威持有 + 草稿/重建装配
 │  │  ├─ styles.css                 ←   基础暗色 + 三断点布局
 │  │  ├─ shell/                     ←   响应式壳
 │  │  │  ├─ breakpoints.ts          ←     getBreakpoint 纯函数（Wide≥1024/Medium≥640/Compact）
 │  │  │  ├─ useBreakpoint.ts        ←     matchMedia/resize 监听
-│  │  │  ├─ TopBar.tsx              ←     状态徽章 + 控制按钮 + 速度档（守卫投影）
-│  │  │  └─ Layout.tsx              ←     三模式布局容器（Compact 页签）
-│  │  ├─ experiment/                ←   实验装载
+│  │  │  ├─ TopBar.tsx              ←     标题 + 实验名/描述（控制已下沉运行区）
+│  │  │  └─ Layout.tsx              ←     三模式布局（Wide 三栏 / Medium 折叠 / Compact 页签+条）
+│  │  ├─ experiment/                ←   实验装载与参数
 │  │  │  ├─ parse.ts                ←     parseExperimentText（Loader 包装）
-│  │  │  ├─ ExperimentPanel.tsx     ←     粘贴 JSON / 内置示例 / 错误
-│  │  │  ├─ VariablesPanel.tsx      ←     自动参数面板（ready 态可编辑）
+│  │  │  ├─ draft.ts                ←     参数草稿 + withInitialValues（正式重建边界）
+│  │  │  ├─ ExperimentPanel.tsx     ←     粘贴 / Open JSON / 内置示例 / 名称描述 / 错误
+│  │  │  ├─ VariablesPanel.tsx      ←     自动参数面板 + 应用并重新初始化
 │  │  │  └─ VariableControl.tsx     ←     单变量控件（number/integer/boolean/enum/string）
 │  │  └─ monitor/                   ←   监控投影
-│  │     ├─ useMonitor.ts           ←     100ms 轮询 + UI 层 diff 日志
-│  │     ├─ MonitorPanel.tsx        ←     时间/Tick/状态/变量值
-│  │     └─ EventLog.tsx            ←     日志行
+│  │     ├─ useMonitor.ts           ←     100ms 轮询 + diff 日志 + 控制器切换重置
+│  │     ├─ RunPanel.tsx            ←     运行区（状态/时间/Tick/全控制，Compact 主次分层）
+│  │     ├─ ValuesPanel.tsx         ←     当前值实时表
+│  │     └─ EventLog.tsx            ←     预留日志
 │  └─ protocol/                      ← 协议层（R1/R2-01，UI-F1 起 Schema 打包器内联）
 │  │  ├─ types.ts                   ←   ExperimentDefinition 可信契约类型
 │  │  ├─ raw-types.ts               ←   未校验输入形状（Raw*，管线内部专用）
@@ -160,8 +162,9 @@ XYLab/
    │     └─ r2-03d-evaluator-errors.test.ts    ← D12~D13、D31~D35 运行期安全
    ├─ governance/                   ← GOV-01 专项
    │  └─ governance-guard.test.ts   ←   底线位回归（5/100/Guard 自身）
-   └─ ui/                           ← UI-F1 断点纯函数（3 用例）
-      └─ breakpoints.test.ts        ←   Wide/Medium/Compact 边界
+   └─ ui/                           ← UI 断点（3 用例）+ R4-F1 草稿（5 用例）
+      ├─ breakpoints.test.ts        ←   Wide/Medium/Compact 边界
+      └─ r4-f1-draft.test.ts        ←   草稿守卫/不可变/重建边界集成
 ```
 
 ## 职责边界速查

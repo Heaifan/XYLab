@@ -25,6 +25,17 @@
 - **遗留问题**：R2-03B Parser+AST 冻结解除后启动；UI Constitution 未批准，任何轮次禁止自行设计
 - **决策**：5 规则适用范围 = src/tests/scripts 下全部职责目录（tests 按领域分目录后同样合规，不设豁免）；100 规则覆盖含测试与脚本的全部手写源码；SRP 为人工硬门禁写入每轮报告；Knowledge 入库判断每轮必做
 
+## R4-F1 · Experiment Workflow & Runtime Bridge —— CLOSED
+
+- **阶段**：R4 功能轮（按用户裁定跳过 R3；路线冻结 R2 ✅ → UI-F1 ✅ → R4-F1 ← → R3 Monitoring → R4-F2 → Mobile/Deploy）
+- **任务**：一次打通 JSON→粘贴/Open→Loader→自动参数 UI→Runtime→Run/Pause/Resume/Step/Stop/Reset→x1/x10/x100/MAX→实时变量值；React 只消费 Controller/API
+- **变更**：新增 draft.ts（草稿守卫 + withInitialValues）、RunPanel.tsx（运行区+Compact 主次控制条）、ValuesPanel.tsx（当前值）；TopBar 改实验名/描述（控制下沉）；ExperimentPanel 加 Open JSON + 名称描述头部；VariablesPanel 改草稿+应用重建；useMonitor 加控制器切换重置；Layout 升级 Wide 三栏/Medium 折叠/Compact 条+页签；移除 MonitorPanel.tsx；tests/ui/r4-f1-draft 5 用例；Knowledge 修订 ui-responsive-shell.md
+- **参数边界（本轮核心）**：禁止 React 直写模拟内部状态——参数修改 = 草稿 → withInitialValues（integer 拒小数/number 拒 NaN/非法覆盖静默忽略）→ createController 正式重建；原始 Definition 不可变；旧 Controller 零影响；应用仅 ready 态可用
+- **验证**：`npm run verify` 全绿（GOVERNANCE PASS 104 文件 + tsc 0 error + 233/233）；`npm run build` PASS；真机浏览器全流程：内置示例名/描述显示 → 改 fatigue_rate 0.08 → 应用 → Step fatigue=0.4 → Reset 恢复 → MAX completed（fatigue=240/time=600）→ 粘贴自定义实验四档全跑完且完全一致（a=10/b=20/time=10/completed）→ 非法 JSON 报 Loader 错误且不破坏已加载实验 → 390px compact（主次控制条+页签，按钮可操作）/800px medium（折叠）/1280px wide（三栏）布局自动切换
+- **Commit**：`<实现>` + 本条目补记提交
+- **遗留问题**：Watch/History/Event Log/Chart/Statistics/Export/Recent 全部移交 R3/R4 Monitoring（本轮明确禁止）；Open JSON 为按钮式文件选择（拖拽不做）；x1 全速跑完 600 tick 需 10 分钟（验收用小实验四档验证，速度确定性另有 R2-05BC D01 测试锁定）
+- **Knowledge**：UPDATED —— ui-responsive-shell.md 修订为 R4-F1 权威版（草稿重建边界 + 运行区布局合同 + 真机验收记录）
+
 ## UI-F1 · Responsive Web Shell —— CLOSED
 
 - **阶段**：R4 第一轮（按用户裁定：R2 CLOSED 后直接进入 UI，TypeScript+React+Vite）

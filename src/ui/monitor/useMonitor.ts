@@ -1,6 +1,6 @@
-// UI-F1 · 监控轮询 Hook：纯投影（不修改模拟核心）。
-// 每 100ms 读 controller.state，与上次快照做 UI 层 diff（tickIndex 变化 / 变量值变化 / 状态变化），
-// 生成最近 change 与日志行。Run Loop 不对外发事件，UI 以轮询投影为 v0.1 合同。
+// R4-F1 · 监控轮询 Hook：纯投影（不修改模拟核心）。
+// 100ms 轮询 controller.state，与上次快照做 UI 层 diff（tickIndex/变量值/状态变化）生成日志行。
+// 控制器切换（加载/重建）时重置快照基线并记一条初始化日志。
 import { useEffect, useRef, useState } from 'react';
 import type { Controller } from '../../runtime/controller/controller';
 import type { RuntimeValue } from '../../runtime/types';
@@ -16,7 +16,6 @@ export interface MonitorSnapshot {
   tickIndex: number;
   status: string;
   values: Record<string, RuntimeValue>;
-  changes: Array<{ target: string; previousValue: RuntimeValue; currentValue: RuntimeValue }>;
   log: LogLine[];
   lastError: string | null;
 }
@@ -24,10 +23,21 @@ export interface MonitorSnapshot {
 const MAX_LOG = 200;
 
 export function useMonitor(controller: Controller | null): MonitorSnapshot {
-  const [snap, setSnap] = useState<MonitorSnapshot>({ time: 0, tickIndex: 0, status: '—', values: {}, changes: [], log: [], lastError: null });
+  const [snap, setSnap] = useState<MonitorSnapshot>({ time: 0, tickIndex: 0, status: '—', values: {}, log: [], lastError: null });
   const prevRef = useRef<{ values: Record<string, RuntimeValue>; tickIndex: number; status: string } | null>(null);
   const logRef = useRef<LogLine[]>([]);
   const idRef = useRef(0);
+
+  useEffect(() => {
+    prevRef.current = null;
+    logRef.current = [];
+    if (controller) {
+      logRef.current.push({ id: ++idRef.current, text: `已初始化「${controller.definition.experiment.name}」· ready`, level: 'notice' });
+      setSnap({ time: 0, tickIndex: 0, status: 'ready', values: { ...controller.state.variables }, log: [...logRef.current], lastError: null });
+    } else {
+      setSnap({ time: 0, tickIndex: 0, status: '—', values: {}, log: [], lastError: null });
+    }
+  }, [controller]);
 
   useEffect(() => {
     if (!controller) return;
@@ -36,13 +46,11 @@ export function useMonitor(controller: Controller | null): MonitorSnapshot {
       const prev = prevRef.current;
       const values = { ...s.variables };
       if (prev) {
-        const changes: MonitorSnapshot['changes'] = [];
-        for (const [k, v] of Object.entries(values)) {
-          if (prev.values[k] !== v) changes.push({ target: k, previousValue: prev.values[k], currentValue: v });
-        }
-        if (s.tickIndex !== prev.tickIndex || changes.length > 0) {
-          for (const c of changes) {
-            logRef.current.push({ id: ++idRef.current, text: `[t=${s.time}] ${c.target} ${String(c.previousValue)} → ${String(c.currentValue)}`, level: 'info' });
+        if (s.tickIndex !== prev.tickIndex || Object.keys(values).some((k) => prev.values[k] !== values[k])) {
+          for (const [k, v] of Object.entries(values)) {
+            if (prev.values[k] !== v) {
+              logRef.current.push({ id: ++idRef.current, text: `[t=${s.time}] ${k} ${String(prev.values[k])} → ${String(v)}`, level: 'info' });
+            }
           }
         }
         if (s.status !== prev.status) {
@@ -56,7 +64,6 @@ export function useMonitor(controller: Controller | null): MonitorSnapshot {
         tickIndex: s.tickIndex,
         status: s.status,
         values,
-        changes: prev ? [] : [],
         log: [...logRef.current],
         lastError: s.lastError ? `${s.lastError.code}${s.lastError.causeCode ? ` (${s.lastError.causeCode})` : ''}` : null,
       });
