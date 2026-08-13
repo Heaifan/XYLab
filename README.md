@@ -1,0 +1,42 @@
+# XYLab — 玄域机制公式实验台
+
+XYLab 是玄域引擎**机制公式的通用 Web 实验环境**。不是「某个公式测试网页」，而是以后所有机制公式的统一实验平台。
+
+```
+JSON → 实验 UI → 模拟 → 监控 → 结果
+```
+
+一份 Experiment JSON 自动生成参数面板、加载公式、Tick 模拟，实时显示数值 / 曲线 / 事件日志 / 状态变化 / 最终结果。
+
+## 当前状态
+
+| 阶段 | 名称 | 状态 |
+| --- | --- | --- |
+| R1 | Experiment Protocol（实验协议） | ✅ 冻结（v0.1 契约） |
+| R2 | Simulation Runtime（模拟运行核心） | ⬜ 待开工 |
+| R3 | Data & Monitoring（数据监控） | ⬜ 待开工 |
+| R4 | XYUI Web Shell（实验台 UI） | ⬜ 待开工 |
+| R5 | Experiment Workflow（完整工作流） | ⬜ 待开工 |
+| R6 | Validation & Mobile（验证与手机适配） | ⬜ 待开工 |
+
+技术栈：TypeScript + Vite（Web）；Runtime 不依赖 UI 框架，未来可复用于 Web / Desktop / Mobile / XuanYu Editor。
+
+## 目录
+
+```
+XYLab/
+├─ schema/
+│  ├─ experiment.schema.json   # 协议机器校验（draft-07）
+│  └─ README.md
+├─ examples/
+│  └─ fatigue-basic.json       # XYLab Hello World
+├─ docs/
+│  └─ experiment-protocol-0.1.md  # 人类可读协议契约（R1 冻结）
+└─ (src/ tests/ 随 R2+ 加入)
+```
+
+## 协议入口
+
+- 协议文档：[docs/experiment-protocol-0.1.md](docs/experiment-protocol-0.1.md)
+- 机器校验：[schema/experiment.schema.json](schema/experiment.schema.json)
+- 示例实验：[examples/fatigue-basic.json](examples/fatigue-basic.json)

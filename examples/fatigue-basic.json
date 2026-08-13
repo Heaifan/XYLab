@@ -1,0 +1,74 @@
+{
+  "schema": "xylab-experiment@0.1",
+  "experiment": {
+    "id": "fatigue-basic-001",
+    "name": "步兵基础疲劳测试",
+    "description": "测试持续行军时疲劳累积",
+    "category": "movement",
+    "version": "0.1.0",
+    "tags": ["fatigue", "movement", "infantry"],
+    "author": "Heaifan"
+  },
+  "variables": {
+    "move_speed": {
+      "type": "number",
+      "value": 5,
+      "min": 0,
+      "max": 20,
+      "step": 0.1,
+      "unit": "m/s",
+      "label": "移动速度"
+    },
+    "fatigue_rate": {
+      "type": "number",
+      "value": 0.05,
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "label": "疲劳增长系数"
+    },
+    "fatigue": {
+      "type": "number",
+      "value": 0,
+      "min": 0,
+      "max": 100,
+      "unit": "%",
+      "label": "疲劳度"
+    }
+  },
+  "formulas": [
+    {
+      "id": "fatigue-growth",
+      "target": "fatigue",
+      "expression": "fatigue + move_speed * fatigue_rate * dt"
+    }
+  ],
+  "timeline": {
+    "mode": "fixed_tick",
+    "tick": 1,
+    "duration": 600
+  },
+  "watch": [
+    {
+      "target": "fatigue",
+      "mode": "value"
+    }
+  ],
+  "events": [
+    {
+      "id": "fatigue-warning",
+      "when": "fatigue >= 70",
+      "message": "单位进入高疲劳状态",
+      "level": "warning"
+    }
+  ],
+  "output": {
+    "summary": ["fatigue"],
+    "charts": [
+      {
+        "x": "time",
+        "y": "fatigue"
+      }
+    ]
+  }
+}
