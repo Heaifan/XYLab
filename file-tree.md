@@ -30,7 +30,25 @@ XYLab/
 │  └─ governance-guard.mjs          ← 底线位自动门禁（5 + 100；SRP 人工）
 │
 ├─ src/                             ← 全部源码 ≤100 行/文件，实现目录 ≤5 文件
-│  ├─ protocol/                     ← 加载边界（R2-01）
+│  ├─ ui/                           ← R4/UI-F1 React 投影层（模拟核心零依赖）
+│  │  ├─ main.tsx                   ←   入口
+│  │  ├─ App.tsx                    ←   单一 Controller 权威持有 + 装配
+│  │  ├─ styles.css                 ←   基础暗色 + 三断点布局
+│  │  ├─ shell/                     ←   响应式壳
+│  │  │  ├─ breakpoints.ts          ←     getBreakpoint 纯函数（Wide≥1024/Medium≥640/Compact）
+│  │  │  ├─ useBreakpoint.ts        ←     matchMedia/resize 监听
+│  │  │  ├─ TopBar.tsx              ←     状态徽章 + 控制按钮 + 速度档（守卫投影）
+│  │  │  └─ Layout.tsx              ←     三模式布局容器（Compact 页签）
+│  │  ├─ experiment/                ←   实验装载
+│  │  │  ├─ parse.ts                ←     parseExperimentText（Loader 包装）
+│  │  │  ├─ ExperimentPanel.tsx     ←     粘贴 JSON / 内置示例 / 错误
+│  │  │  ├─ VariablesPanel.tsx      ←     自动参数面板（ready 态可编辑）
+│  │  │  └─ VariableControl.tsx     ←     单变量控件（number/integer/boolean/enum/string）
+│  │  └─ monitor/                   ←   监控投影
+│  │     ├─ useMonitor.ts           ←     100ms 轮询 + UI 层 diff 日志
+│  │     ├─ MonitorPanel.tsx        ←     时间/Tick/状态/变量值
+│  │     └─ EventLog.tsx            ←     日志行
+│  └─ protocol/                      ← 协议层（R1/R2-01，UI-F1 起 Schema 打包器内联）
 │  │  ├─ types.ts                   ←   ExperimentDefinition 可信契约类型
 │  │  ├─ raw-types.ts               ←   未校验输入形状（Raw*，管线内部专用）
 │  │  ├─ loader-types.ts            ←   LoadError 错误码 / LoadResult 结果
@@ -140,8 +158,10 @@ XYLab/
    │     ├─ r2-03d-evaluator-logic.test.ts     ← D14~D19 逻辑与短路
    │     ├─ r2-03d-evaluator-functions.test.ts ← D20~D30 内置函数
    │     └─ r2-03d-evaluator-errors.test.ts    ← D12~D13、D31~D35 运行期安全
-   └─ governance/                   ← GOV-01 专项
-      └─ governance-guard.test.ts   ←   底线位回归（5/100/Guard 自身）
+   ├─ governance/                   ← GOV-01 专项
+   │  └─ governance-guard.test.ts   ←   底线位回归（5/100/Guard 自身）
+   └─ ui/                           ← UI-F1 断点纯函数（3 用例）
+      └─ breakpoints.test.ts        ←   Wide/Medium/Compact 边界
 ```
 
 ## 职责边界速查

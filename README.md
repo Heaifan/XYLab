@@ -15,7 +15,7 @@ JSON → 实验 UI → 模拟 → 监控 → 结果
 | R1 | Experiment Protocol（实验协议） | ✅ CLOSED（基线 `8474543`） |
 | R2 | Simulation Runtime（模拟运行核心） | ✅ CLOSED（基线 `2ee4f3e`，R2-01~R2-06 全关闭） |
 | R3 | Data & Monitoring（数据监控） | ⬜ 待开工 |
-| R4 | XYUI Web Shell（实验台 UI） | ⬜ 待开工 |
+| R4 | XYUI Web Shell（实验台 UI） | 🔶 进行中（UI-F1 响应式 Shell 完成，浏览器冒烟通过） |
 | R5 | Experiment Workflow（完整工作流） | ⬜ 待开工 |
 | R6 | Validation & Mobile（验证与手机适配） | ⬜ 待开工 |
 

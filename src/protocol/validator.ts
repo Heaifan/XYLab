@@ -3,17 +3,11 @@
 
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
-import { readFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import SCHEMA_JSON from '../../schema/experiment.schema.json';
 
 // R1 冻结的协议 Schema（repo 根 schema/experiment.schema.json）。
-// 注意：R4 浏览器化时需改为打包注入或 fetch；Node 侧暂用 fs 读取，Schema 本体不动。
-const schemaPath = resolve(
-  dirname(fileURLToPath(import.meta.url)),
-  '../../schema/experiment.schema.json',
-);
-const SCHEMA = JSON.parse(readFileSync(schemaPath, 'utf-8')) as object;
+// UI-F1 起改为打包器 JSON 内联（Node/vitest 与浏览器同字节可用），Schema 本体不动。
+const SCHEMA = SCHEMA_JSON as object;
 
 const ajv = new Ajv({ allErrors: true, strict: true, strictRequired: false });
 // strictRequired: false —— ajv 该规则不允许「if/then 分支的 required 引用同级未定义属性」，
