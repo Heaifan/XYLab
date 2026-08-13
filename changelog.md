@@ -25,6 +25,24 @@
 - **遗留问题**：R2-03B Parser+AST 冻结解除后启动；UI Constitution 未批准，任何轮次禁止自行设计
 - **决策**：5 规则适用范围 = src/tests/scripts 下全部职责目录（tests 按领域分目录后同样合规，不设豁免）；100 规则覆盖含测试与脚本的全部手写源码；SRP 为人工硬门禁写入每轮报告；Knowledge 入库判断每轮必做
 
+## FE-A-R2 · Mobile-first XYUI Experiment Workbench —— IMPLEMENTED（自动门全绿 · 待用户真机验收，未 CLOSED）
+
+- **阶段**：FE-A 第二轮（用户裁定：R1 保持 IMPLEMENTED 待验收但不再阻塞 R2；原「R2 换皮 → R3 可视化工作区」合并为本轮一次交付，下一轮必须一次出现肉眼可见的成果；R2-A → R2-B → R2-C 三块连续执行）
+- **任务**：把暗色原型改造为 Light XYUI + 手机竖屏优先（390×844 冻结主目标）+ PC/平板自适应 + XYUI-8 实时曲线 + Metric + Bottom Sheet Inspector + 复制 JSON + Save Run + Note + History
+- **变更**：
+  - 新增 `src/ui/theme/light-consumer.css`（B 类 Light 消费层：`--xylab-*` 前缀冻结值 app #F3F6F8 / panel #F8FAFB / surface #FFFFFF / border #D5DEE4 / text #243744 / secondary #6F828C / accent #326F8A / accent-soft #E7F0F3；warning/critical 只在 theme 定义；曲线色板 = XYUI8-GAP-001 权宜、主按钮文字 #fff = XYUI3-GAP-001 权宜，均注释登记）
+  - 新增 `src/ui/visualization/` 5 文件：VisualizationPanel（图表目标解析：output.charts 优先，回退前 2~4 numeric watch）/ MetricStrip（statistics 投影 + 仅结构化 threshold 判 warning，双通道文字+色）/ LineChart（纯 SVG：弱网格/X=时间/Y 自动量程/实时追加/Fit/跟随实时/Tap 锁定十字线/结构化 threshold 线/事件 marker）/ InspectorSheet（锁定时刻检查器，sheet/panel 双形态）/ visualization.css
+  - 新增 `src/ui/history/` 5 文件：types（SavedRun V1 = runId/savedAt/experimentId+Name/definitionSnapshot 必含/runtimeStatus/time/tickIndex/monitorSnapshot/note）/ runStore（localStorage `xylab.runs.v1`，可注入存储，失败明确报错不假装成功）/ SaveRunSheet（XYUI-7 Bottom Sheet：备注 + [保存实验结果] + [保存并复制 JSON]）/ RunHistory（最新在前，展开详情 + 复制该 Run 的 JSON）/ history.css
+  - 新增 `src/ui/actions/`（ExperimentActions [复制 JSON][保存结果] 一等可见 + clipboard 兜底实现）与 `src/ui/format.ts`（浮点噪音消除：integer 0 位 / float ≤4 位，仅显示层）；新增 `src/ui/shell/BottomNav.tsx`（shell 第 5 文件：实验/监控/日志/历史，手绘 SVG 图标）
+  - 重写：Layout（三断点新组合：Compact 底导航+单列+Bottom Sheet，Medium 可折叠辅助栏，Wide 左实验参数/中运行可视化/右检查器当前值/底日志）/ TopBar（LIVE 状态芯片 + 时间）/ styles.css（全 Light 化，旧暗色整体替代）/ App.tsx（tab/lockTime/saveOpen/runs 状态；Load/Apply/Reset 清锁定）；main.tsx 加两处 css 引入；index.html viewport-fit=cover（iOS 安全区）
+  - 核心四层（protocol/expression/runtime/monitor）零改动；vendor/xyui/ 零改动；createMonitoredRuntime 数据链零重建
+- **冻结语义**：MonitorSnapshot 唯一数据合同（Second Truth 禁令继承）；复制 JSON = 当前生效 Definition（含已应用参数、不含草稿）；Save Run 仅手动触发（无自动保存/云同步）；Metric/Threshold 只认协议结构化字段——绝不反解析事件表达式（事件只作时间轴 marker + Inspector 告警行）；移动端 Tap Lock 优先（禁依赖 Hover）；Load/Apply/Reset 清锁定
+- **验证**：`npm run verify` 全绿（GOVERNANCE PASS 131 文件 + tsc 0 error + 289/289 = 268 零回退 + 21 新增）；`npm run build` PASS；dev server 390×844 冒烟 HTTP 200；Guard 本轮真实拦截 SaveRunSheet（114 行）与 LineChart（127 行）并完成 SRP 压缩（buildRun 归位 runStore / 图表组件瘦身）；真机验收 M01~M12 待用户执行
+- **测试**：21 项新增（tests/ui/r2/）= r2-format 5（T15 浮点噪音消除 0.1+0.2→0.3、99.75999999999999→99.76、integer 0 位、formatMetric、NaN/Infinity 安全直通）+ r2-chart-model 5（T02 图表目标回退与 output.charts 优先/非法声明跳过/超 4 截断、T16 valueAtTime·nearestTime 锁定读取、metricStatus 仅结构化 threshold）+ r2-run-store 5（T09/T10 buildRun 含 definitionSnapshot+monitorSnapshot、T11/T12 备注往返与刷新持久、T13 最新在前、T14 Quota 失败明确报错 + 损坏数据兜底）+ r2-workflow 6（T01 Metric+Chart 非空、T03/T04 Pause 冻结·旧循环零写入·Resume 连续 201 点、T05 Reset 回 time=0 单点、T06 Apply 全新句柄零残留、T07/T08 复制 JSON = 新参数 Definition 且不含草稿值）
+- **Commit**：`106607f`（实现）+ 本条目补记提交（单一正式轮，≤2）
+- **遗留问题**：真机验收 M01~M12（三断点 × Light/曲线/锁定联动/保存/历史）通过后才可 CLOSED；Run Compare、图表 Pan/Zoom、Threshold Band、云同步、图像导出均明确推迟（禁做半成品）
+- **Knowledge**：UPDATED —— 新 decisions/r2-light-consumer-workbench.md（B 类消费层归属 + GAP 权宜登记 + 结构化状态禁解析表达式 + 可视化消费规则 + Save Run V1 边界）；ui-responsive-shell.md 修订为 FE-A-R2 权威版（三断点新组合 + Tap Lock 联动 + 实验循环合同 + 数值格式规范）
+
 ## XYLAB-XYUI-CONSUMER-INTAKE · XYUI 消费引入与宪法修订 —— CLOSED
 
 - **阶段**：治理轮（执行用户 2026-08-13 Consumer Intake 裁定；FE-A-R1 保持 IMPLEMENTED 待真机验收不受本轮影响；FE-A-R2 待正式实现令）
