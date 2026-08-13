@@ -25,6 +25,18 @@
 - **遗留问题**：R2-03B Parser+AST 冻结解除后启动；UI Constitution 未批准，任何轮次禁止自行设计
 - **决策**：5 规则适用范围 = src/tests/scripts 下全部职责目录（tests 按领域分目录后同样合规，不设豁免）；100 规则覆盖含测试与脚本的全部手写源码；SRP 为人工硬门禁写入每轮报告；Knowledge 入库判断每轮必做
 
+## FE-A-R1 · Monitoring Bridge —— IMPLEMENTED（自动门全绿 · 待用户真机验收，未 CLOSED）
+
+- **阶段**：FE-A 第一轮（XYUI Integration & Monitoring Workspace；路线：R1 Monitoring Bridge ← → R2 XYUI Foundation Integration → R3 Visualization Workspace）
+- **任务**：把 CLOSED 的 R3 Monitoring Core 正式接入现有 Web Shell：数据链从「Controller→controller.state→UI 100ms 轮询→UI 自造 diff 日志」改为「createMonitoredRuntime()→{Controller+MonitorSession}→MonitorSnapshot→UI」
+- **变更**：App.tsx 状态收敛为 MonitoredRuntime 句柄（Load/Apply 均经 createMonitoredRuntime）；useMonitor 降级为纯投影器（readBridge + 100ms 轮询，UI diff 日志生成代码删除）；RunPanel Reset 改 handle.reset() 联合重置；ValuesPanel 改吃 snap.watches/series/statistics（协议序渲染，数值 Δ/min/max/avg/样本数/初值，布尔变化次数，其余仅 series）；EventLog 改吃 snap.logs（change 用结构化 previousValue/currentValue，不再解析 message）；核心四层（protocol/expression/runtime/monitor）零改动
+- **Second Truth 废除**：UI 不再自造任何模拟事实——监控值/统计/事件全部来自 MonitorSnapshot；tick 级采集属核心 Session，UI 100ms 轮询仅是显示投影
+- **验证**：`npm run verify` 全绿（GOVERNANCE PASS 116 文件 + tsc 0 error + 268/268 = 254 零回退 + 14 新增）；`npm run build` PASS；git diff --check PASS；真机验收 M01~M09（三断点 IPO）待用户执行
+- **测试**：14 项新增 = tests/ui/r1-monitor-bridge 8 项（T01 Load 同生命周期 / T04 Series 随 Tick 增长 / T02+T13 Apply 全新句柄不继承旧 Series·Log·Statistics / T09+T10 Pause 冻结·旧循环苏醒零写入·Resume 连续 101 点 / T11 Stop 保留证据 / T12 联合 Reset / T14 Failed 保留失败前证据 / T15 transitions 守卫零回退）+ r1-monitor-projection 6 项（T03 watches 协议序 / T05 数值统计投影 / T06 布尔统计投影 / T07+T08 日志域收敛·结构化前后值·边缘触发单次·无 UI 自造来源 / 非数值仅 series / readBridge EMPTY 与镜像）
+- **Commit**：`1998983`（实现）+ 本条目补记提交
+- **遗留问题**：真机验收 M01~M09 通过后才可 CLOSED；Chart/Series 曲线、Statistics 工作区、Export、Recent、XYUI 组件属 FE-A-R2/R3（本轮明确禁止）
+- **Knowledge**：UPDATED —— ui-responsive-shell.md 修订为 FE-A-R1 权威版（MonitorSnapshot 唯一数据合同 + 句柄与联合 Reset + Second Truth 废除 + 监控投影显示规范）
+
 ## R3 · Monitoring —— CLOSED（一次整轮完成，不拆子阶段）
 
 - **阶段**：R3 数据监控核心（路线：R2 ✅ → UI-F1 ✅ → R4-F1 ✅ → R3 ← → R4-F2 Monitoring UI → Mobile/Deploy）

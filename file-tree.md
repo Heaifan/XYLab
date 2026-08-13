@@ -32,7 +32,7 @@ XYLab/
 ├─ src/                             ← 全部源码 ≤100 行/文件，实现目录 ≤5 文件
 │  ├─ ui/                           ← R4/UI-F1 React 投影层（模拟核心零依赖）
 │  │  ├─ main.tsx                   ←   入口
-│  │  ├─ App.tsx                    ←   单一 Controller 权威持有 + 草稿/重建装配
+│  │  ├─ App.tsx                    ←   MonitoredRuntime 句柄权威持有 + 草稿/重建装配
 │  │  ├─ styles.css                 ←   基础暗色 + 三断点布局
 │  │  ├─ shell/                     ←   响应式壳
 │  │  │  ├─ breakpoints.ts          ←     getBreakpoint 纯函数（Wide≥1024/Medium≥640/Compact）
@@ -46,10 +46,10 @@ XYLab/
 │  │  │  ├─ VariablesPanel.tsx      ←     自动参数面板 + 应用并重新初始化
 │  │  │  └─ VariableControl.tsx     ←     单变量控件（number/integer/boolean/enum/string）
 │  │  └─ monitor/                   ←   监控投影
-│  │     ├─ useMonitor.ts           ←     100ms 轮询 + diff 日志 + 控制器切换重置
-│  │     ├─ RunPanel.tsx            ←     运行区（状态/时间/Tick/全控制，Compact 主次分层）
-│  │     ├─ ValuesPanel.tsx         ←     当前值实时表
-│  │     └─ EventLog.tsx            ←     预留日志
+│  │     ├─ useMonitor.ts           ←     纯投影器 readBridge + 100ms 轮询（diff 日志已废除）
+│  │     ├─ RunPanel.tsx            ←     运行区（状态/时间/Tick/全控制 + 联合 Reset，Compact 主次分层）
+│  │     ├─ ValuesPanel.tsx         ←     监控值 + 统计（消费 snap.watches/series/statistics）
+│  │     └─ EventLog.tsx            ←     协议事件日志（消费 snap.logs 结构化字段）
 │  ├─ monitor/                      ← R3 监控核心（Observer Only，绝不回写 Runtime）
 │  │  ├─ types.ts                   ←   SeriesPoint/MonitorLogEntry/WatchRecord/Statistics/Snapshot
 │  │  ├─ registry.ts                ←   Watch Registry（未知 target 第二道防御）
@@ -168,9 +168,11 @@ XYLab/
    │     └─ r2-03d-evaluator-errors.test.ts    ← D12~D13、D31~D35 运行期安全
    ├─ governance/                   ← GOV-01 专项
    │  └─ governance-guard.test.ts   ←   底线位回归（5/100/Guard 自身）
-   ├─ ui/                           ← UI 断点（3 用例）+ R4-F1 草稿（5 用例）
+   ├─ ui/                           ← UI 断点（3）+ R4-F1 草稿（5）+ FE-A-R1 监控桥（14）
    │  ├─ breakpoints.test.ts        ←   Wide/Medium/Compact 边界
-   │  └─ r4-f1-draft.test.ts        ←   草稿守卫/不可变/重建边界集成
+   │  ├─ r4-f1-draft.test.ts        ←   草稿守卫/不可变/重建边界集成
+   │  ├─ r1-monitor-bridge.test.ts  ←   Handle 生命周期（T01/T02/T04/T09~T15 语义）
+   │  └─ r1-monitor-projection.test.ts ← MonitorSnapshot 投影（T03/T05~T08 语义）
    └─ monitor/                      ← R3 监控专项（21 用例）
       ├─ r3-watch-series.test.ts    ←   G1~G4 黄金案例/模式/防御/threshold 触发
       ├─ r3-events.test.ts          ←   E1~E5 边缘触发/重武装/防御/失败日志
