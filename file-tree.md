@@ -18,6 +18,7 @@ XYLab/
 │
 ├─ docs/
 │  ├─ experiment-protocol-0.1.md    ← 人类可读协议契约（R1 冻结，§10 错误码目录）
+│  ├─ experiment-json-guide.md      ← 实验 JSON 编写指南（模板/字段速查/错误码对照/使用流程；总结性文档，以协议为准）
 │  └─ governance/
 │     └─ XYLab-Development-Constitution.md  ← 一体 · 开发宪法（GOV-01）
 │
