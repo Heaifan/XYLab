@@ -13,7 +13,7 @@ JSON → 实验 UI → 模拟 → 监控 → 结果
 | 阶段 | 名称 | 状态 |
 | --- | --- | --- |
 | R1 | Experiment Protocol（实验协议） | ✅ CLOSED（基线 `8474543`） |
-| R2 | Simulation Runtime（模拟运行核心） | 🔶 进行中（R2-02 Runtime State 完成） |
+| R2 | Simulation Runtime（模拟运行核心） | 🔶 进行中（R2-03A Tokenizer 完成） |
 | R3 | Data & Monitoring（数据监控） | ⬜ 待开工 |
 | R4 | XYUI Web Shell（实验台 UI） | ⬜ 待开工 |
 | R5 | Experiment Workflow（完整工作流） | ⬜ 待开工 |
@@ -42,9 +42,14 @@ XYLab/
 │  ├─ types.ts                 # RuntimeState 可变世界类型
 │  ├─ create-runtime-state.ts  # Definition → Runtime 初始化（深隔离）
 │  └─ state.ts                 # resetRuntimeState（Reset 基础能力）
+├─ src/expression/
+│  ├─ token.ts                 # Token 类型（词法层）
+│  ├─ tokenizer.ts             # tokenizeExpression（受限表达式词法）
+│  └─ errors.ts                # ExpressionTokenizeError
 └─ tests/
    ├─ r2-01-loader.test.ts     # R2-01 测试 T01~T12 + 聚合用例
-   └─ r2-02-runtime-state.test.ts  # R2-02 测试 T01~T10
+   ├─ r2-02-runtime-state.test.ts  # R2-02 测试 T01~T10
+   └─ r2-03a-tokenizer.test.ts # R2-03A 测试 A01~A21
 ```
 
 验证：`npm run verify`（tsc --noEmit + vitest run）。
