@@ -1,25 +1,24 @@
-// R4-F1 · 运行区：状态/时间/Tick + 全部 Controller 操作（Wide/Medium 面板，Compact 顶部紧凑控制条）。
+// FE-A-R1 · 运行区：状态/时间/Tick + 全部 Controller 操作（Wide/Medium 面板，Compact 顶部紧凑控制条）。
+// 行为权威 = Controller（Start/Pause/Resume/Stop/Speed/守卫）；Reset = handle.reset()（Runtime + MonitorSession 联合重置）。
 // Compact 主次层级（XYUI 主次规则）：Run/Pause/Resume + 速度直显；Step/Stop/Reset 收入「更多」。
-// 按钮可用性由 transitions 守卫投影（UI 不做第二套状态判断）。
 import { useState } from 'react';
-import type { Controller } from '../../runtime/controller/controller';
-import type { RunSpeed } from '../../runtime/controller/types';
 import { canPause, canResume, canRun, canStep, canStop } from '../../runtime/controller/transitions';
+import type { RunSpeed } from '../../runtime/controller/types';
 import type { Breakpoint } from '../shell/breakpoints';
-import type { MonitorSnapshot } from '../monitor/useMonitor';
+import type { MonitorBridge, MonitoredRuntime } from './useMonitor';
 
 const SPEEDS: RunSpeed[] = ['x1', 'x10', 'x100', 'max'];
 
 interface Props {
-  controller: Controller | null;
-  snap: MonitorSnapshot;
+  runtime: MonitoredRuntime | null;
+  bridge: MonitorBridge;
   breakpoint: Breakpoint;
   refresh: () => void;
 }
 
-export function RunPanel({ controller, snap, breakpoint, refresh }: Props) {
+export function RunPanel({ runtime, bridge, breakpoint, refresh }: Props) {
   const [more, setMore] = useState(false);
-  const st = controller ? controller.status : null;
+  const st = runtime ? runtime.controller.status : null;
   const compact = breakpoint === 'compact';
 
   function act(fn: () => unknown) {
@@ -29,19 +28,19 @@ export function RunPanel({ controller, snap, breakpoint, refresh }: Props) {
 
   const primary = (
     <>
-      <button disabled={st === null || !canRun(st)} onClick={() => act(() => controller!.run())}>
+      <button disabled={st === null || !canRun(st)} onClick={() => act(() => runtime!.controller.run())}>
         ▶ Run
       </button>
-      <button disabled={st === null || !canPause(st)} onClick={() => act(() => controller!.pause())}>
+      <button disabled={st === null || !canPause(st)} onClick={() => act(() => runtime!.controller.pause())}>
         ⏸ Pause
       </button>
-      <button disabled={st === null || !canResume(st)} onClick={() => act(() => controller!.resume())}>
+      <button disabled={st === null || !canResume(st)} onClick={() => act(() => runtime!.controller.resume())}>
         ▶ Resume
       </button>
       <select
-        value={controller?.speed ?? 'x1'}
+        value={runtime?.controller.speed ?? 'x1'}
         disabled={st === null}
-        onChange={(e) => act(() => controller!.setSpeed(e.target.value as RunSpeed))}
+        onChange={(e) => act(() => runtime!.controller.setSpeed(e.target.value as RunSpeed))}
         aria-label="速度档"
       >
         {SPEEDS.map((s) => (
@@ -55,13 +54,13 @@ export function RunPanel({ controller, snap, breakpoint, refresh }: Props) {
 
   const secondary = (
     <>
-      <button disabled={st === null || !canStep(st)} onClick={() => act(() => controller!.step())}>
+      <button disabled={st === null || !canStep(st)} onClick={() => act(() => runtime!.controller.step())}>
         → Step
       </button>
-      <button disabled={st === null || !canStop(st)} onClick={() => act(() => controller!.stop())}>
+      <button disabled={st === null || !canStop(st)} onClick={() => act(() => runtime!.controller.stop())}>
         ■ Stop
       </button>
-      <button disabled={st === null} onClick={() => act(() => controller!.reset())}>
+      <button disabled={runtime === null} onClick={() => act(() => runtime!.reset())} title="Runtime 与 MonitorSession 联合重置">
         ↺ Reset
       </button>
     </>
@@ -71,13 +70,13 @@ export function RunPanel({ controller, snap, breakpoint, refresh }: Props) {
     <section className="panel run-panel">
       <div className="stats">
         <span>
-          时间 <b>{snap.time}</b>
+          时间 <b>{bridge.time}</b>
         </span>
         <span>
-          Tick <b>{snap.tickIndex}</b>
+          Tick <b>{bridge.tickIndex}</b>
         </span>
         <span className={`status status-${st ?? '—'}`}>{st ?? '—'}</span>
-        {snap.lastError && <span className="error-banner">{snap.lastError}</span>}
+        {bridge.lastError && <span className="error-banner">{bridge.lastError}</span>}
       </div>
       <div className="row controls">
         {primary}
