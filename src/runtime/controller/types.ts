@@ -25,3 +25,16 @@ export interface RunOk {
 export type RunResult =
   | RunOk
   | { ok: false; code: 'INVALID_RUNTIME_TRANSITION'; message: string; status: RuntimeStatus };
+
+// R3 · Tick 观察（纯输出投影）：Controller 每执行一个 Tick（step/runLoop）后同步回调。
+// Monitoring 只消费本结构，绝不回写 Runtime——观察者存在与否不得改变模拟结果。
+export interface TickObservation {
+  status: 'advanced' | 'completed' | 'failed';
+  result: TickResult | null; // failed 时为 null（成功 Tick 含 changes）
+  error: TickError | null; // 仅 failed 非空
+  time: number; // Tick 执行后的模拟时间
+  tickIndex: number;
+  values: Record<string, number | boolean | string>; // Tick 后的变量快照（浅拷贝）
+}
+
+export type TickObserver = (observation: TickObservation) => void;

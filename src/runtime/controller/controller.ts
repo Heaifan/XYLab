@@ -1,17 +1,16 @@
-// R2-05BC · Runtime Controller（05A Step/Reset + 05BC Run/Pause/Resume/Stop/速度）。
+// R2-05BC · Runtime Controller（05A Step/Reset + 05BC 控制）。R3 起支持 TickObserver（纯输出投影）。
 // 只组织 R2-04 Tick Engine（advance.tickOnce 单一推进点）；status 唯一写入者 = 本模块（state == 唯一真相）。
-// Reset = resetRuntimeState 完整重建 + 代际递增（旧循环即使苏醒也不得修改新 Runtime）。
 
 import { resetRuntimeState } from '../state';
-import { tickOnce } from './advance';
+import { tickOnce, toObservation } from './advance';
 import { defaultScheduler, runLoop } from './loop';
 import type { Scheduler } from './loop';
 import type { ExperimentDefinition } from '../../protocol/types';
 import type { RuntimeState } from '../types';
-import type { ControlOutcome, RunResult, RunSpeed, StepOutcome } from './types';
+import type { ControlOutcome, RunResult, RunSpeed, StepOutcome, TickObserver } from './types';
 import { canPause, canResume, canRun, canStep, canStop, deniedOutcome } from './transitions';
 
-export interface ControllerOptions { scheduler?: Scheduler; }
+export interface ControllerOptions { scheduler?: Scheduler; observer?: TickObserver; }
 
 export interface Controller {
   readonly definition: ExperimentDefinition;
@@ -28,29 +27,29 @@ export interface Controller {
 }
 
 export function createController(definition: ExperimentDefinition, options: ControllerOptions = {}): Controller {
-  const scheduler = options.scheduler ?? defaultScheduler;
+  const { scheduler = defaultScheduler, observer } = options;
   let state: RuntimeState = resetRuntimeState(definition);
   let generation = 0; // 运行代际：Pause/Stop/Reset/新 Run/Resume 递增 → 旧循环永久失效
   let speed: RunSpeed = 'x1';
 
   const isCurrent = (gen: number): boolean => gen === generation && state.status === 'running';
+  // 单一推进点：step 与 runLoop 共用；观察者只收投影（R3 合同：不得回写 Runtime）
+  const advance = () => {
+    const p = tickOnce(definition, state);
+    if (observer) observer(toObservation(p, state));
+    return p;
+  };
 
   return {
     definition,
-    get state() {
-      return state;
-    },
-    get status() {
-      return state.status;
-    },
-    get speed() {
-      return speed;
-    },
+    get state() { return state; },
+    get status() { return state.status; },
+    get speed() { return speed; },
     step(): StepOutcome {
       if (!canStep(state.status)) {
         return deniedOutcome(state.status, 'Step（仅 ready/paused）');
       }
-      const progress = tickOnce(definition, state);
+      const progress = advance();
       if (progress.status === 'advanced') {
         state.status = 'paused';
         return { ok: true, status: 'paused', result: progress.result };
@@ -66,7 +65,7 @@ export function createController(definition: ExperimentDefinition, options: Cont
       generation += 1;
       const gen = generation;
       state.status = 'running';
-      const done = runLoop({ isCurrent, tickOnce: () => tickOnce(definition, state) }, gen, speed, definition.timeline.tick, scheduler);
+      const done = runLoop({ isCurrent, tickOnce: advance }, gen, speed, definition.timeline.tick, scheduler);
       return { ok: true, status: 'running', done };
     },
     pause(): ControlOutcome {
@@ -80,7 +79,7 @@ export function createController(definition: ExperimentDefinition, options: Cont
       generation += 1;
       const gen = generation;
       state.status = 'running';
-      void runLoop({ isCurrent, tickOnce: () => tickOnce(definition, state) }, gen, speed, definition.timeline.tick, scheduler);
+      void runLoop({ isCurrent, tickOnce: advance }, gen, speed, definition.timeline.tick, scheduler);
       return { ok: true, status: 'running' };
     },
     stop(): ControlOutcome {

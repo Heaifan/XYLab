@@ -50,6 +50,12 @@ XYLab/
 │  │     ├─ RunPanel.tsx            ←     运行区（状态/时间/Tick/全控制，Compact 主次分层）
 │  │     ├─ ValuesPanel.tsx         ←     当前值实时表
 │  │     └─ EventLog.tsx            ←     预留日志
+│  ├─ monitor/                      ← R3 监控核心（Observer Only，绝不回写 Runtime）
+│  │  ├─ types.ts                   ←   SeriesPoint/MonitorLogEntry/WatchRecord/Statistics/Snapshot
+│  │  ├─ registry.ts                ←   Watch Registry（未知 target 第二道防御）
+│  │  ├─ accumulators.ts            ←   BoundedSeries(10000) + 数值/布尔统计累积器
+│  │  ├─ events.ts                  ←   协议事件编译 + 边缘触发 + threshold watch 触发
+│  │  └─ session.ts                 ←   Session 生命周期 + createMonitoredRuntime（Reset 联动）
 │  └─ protocol/                      ← 协议层（R1/R2-01，UI-F1 起 Schema 打包器内联）
 │  │  ├─ types.ts                   ←   ExperimentDefinition 可信契约类型
 │  │  ├─ raw-types.ts               ←   未校验输入形状（Raw*，管线内部专用）
@@ -81,7 +87,7 @@ XYLab/
 │  │     ├─ transitions.ts          ←     六守卫（Step/Run/Pause/Resume/Stop）+ deniedOutcome
 │  │     ├─ advance.ts              ←     tickOnce 单一推进点（step/loop 共用）
 │  │     ├─ loop.ts                 ←     runLoop（代际取消+批量 yield）+ speedProfile（Speed≠dt）
-│  │     └─ controller.ts           ←     createController（status 唯一写入者 + 控制 API）
+│  │     └─ controller.ts           ←     createController（status 唯一写入者 + 控制 API + R3 TickObserver 投影）
 │  │
 │  └─ expression/                   ← 受限表达式语言（R2-03A 词法 / R2-03B 语法）
 │     ├─ token.ts                   ←   TokenType / Token（span 保留位置）
@@ -162,9 +168,15 @@ XYLab/
    │     └─ r2-03d-evaluator-errors.test.ts    ← D12~D13、D31~D35 运行期安全
    ├─ governance/                   ← GOV-01 专项
    │  └─ governance-guard.test.ts   ←   底线位回归（5/100/Guard 自身）
-   └─ ui/                           ← UI 断点（3 用例）+ R4-F1 草稿（5 用例）
-      ├─ breakpoints.test.ts        ←   Wide/Medium/Compact 边界
-      └─ r4-f1-draft.test.ts        ←   草稿守卫/不可变/重建边界集成
+   ├─ ui/                           ← UI 断点（3 用例）+ R4-F1 草稿（5 用例）
+   │  ├─ breakpoints.test.ts        ←   Wide/Medium/Compact 边界
+   │  └─ r4-f1-draft.test.ts        ←   草稿守卫/不可变/重建边界集成
+   └─ monitor/                      ← R3 监控专项（21 用例）
+      ├─ r3-watch-series.test.ts    ←   G1~G4 黄金案例/模式/防御/threshold 触发
+      ├─ r3-events.test.ts          ←   E1~E5 边缘触发/重武装/防御/失败日志
+      ├─ r3-statistics.test.ts      ←   S1~S3 统计 + H1~H2 有界历史与 Reset
+      ├─ r3-lifecycle.test.ts       ←   L1~L5 生命周期对齐
+      └─ r3-determinism.test.ts     ←   D1~D2 on/off 与四档确定性
 ```
 
 ## 职责边界速查

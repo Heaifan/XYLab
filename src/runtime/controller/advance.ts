@@ -5,11 +5,25 @@ import { canAdvance, executeTick } from '../tick/tick';
 import type { ExperimentDefinition } from '../../protocol/types';
 import type { RuntimeState } from '../types';
 import type { TickError, TickResult } from '../tick/types';
+import type { TickObservation } from './types';
 
 export type TickProgress =
   | { status: 'advanced'; result: TickResult }
   | { status: 'completed'; result: TickResult | null }
   | { status: 'failed'; error: TickError };
+
+// R3 · 观察投影：TickProgress + 执行后状态 → 不可变 TickObservation（values 浅拷贝，观察者不得回写）。
+export function toObservation(progress: TickProgress, state: RuntimeState): TickObservation {
+  const failed = progress.status === 'failed';
+  return {
+    status: progress.status,
+    result: failed ? null : progress.result,
+    error: failed ? progress.error : null,
+    time: state.time,
+    tickIndex: state.tickIndex,
+    values: { ...state.variables },
+  };
+}
 
 export function tickOnce(definition: ExperimentDefinition, state: RuntimeState): TickProgress {
   const outcome = executeTick(definition, state);

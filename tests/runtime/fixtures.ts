@@ -12,18 +12,22 @@ export function defOf(raw: RawExperiment | string): ExperimentDefinition {
   return r.definition;
 }
 
-// R2-04 共享夹具：可定制变量初值 / 实体 / 公式 / 时间线 / 随机种子（经真实 Loader）
+// R2-04 共享夹具：可定制变量初值 / 实体 / 公式 / 时间线 / 随机种子 / watch / events（经真实 Loader）
 export function makeTickDef(opts: {
-  variables?: Record<string, { type: VariableType; value?: number | boolean }>;
+  variables?: Record<string, { type: VariableType; value?: number | boolean | string }>;
   entities?: RawEntity[];
   formulas?: Array<{ id: string; target: string; expression: string }>;
   tick?: number;
   duration?: number;
   random?: { seed: number };
+  watch?: Array<{ target: string; mode: 'value' | 'change' | 'threshold'; threshold?: number; operator?: string }>;
+  events?: Array<{ id: string; when: string; message?: string; level?: string; repeat?: boolean }>;
 }): ExperimentDefinition {
   const variables: Record<string, RawVariable> = {};
   for (const [name, d] of Object.entries(opts.variables ?? {})) {
-    variables[name] = { type: d.type, value: d.value ?? (d.type === 'boolean' ? false : 0) };
+    const isBool = d.type === 'boolean';
+    const isText = d.type === 'string' || d.type === 'enum';
+    variables[name] = { type: d.type, value: d.value ?? (isBool ? false : isText ? '' : 0) };
   }
   return defOf({
     schema: 'xylab-experiment@0.1',
@@ -32,6 +36,8 @@ export function makeTickDef(opts: {
     entities: opts.entities ?? [],
     ...(opts.formulas ? { formulas: opts.formulas } : {}),
     ...(opts.random ? { random: opts.random } : {}),
+    ...(opts.watch ? { watch: opts.watch } : {}),
+    ...(opts.events ? { events: opts.events } : {}),
     timeline: { mode: 'fixed_tick', tick: opts.tick ?? 1, duration: opts.duration ?? 10 },
   });
 }
