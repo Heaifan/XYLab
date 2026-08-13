@@ -282,21 +282,22 @@ Fatigue:  Initial 0  Final 87  Max 91  Average 44  Delta +87
 
 ---
 
-## 10. 语义校验错误码（R2-01 Loader 实现目录）
+## 10. 语义校验错误码（R2-01 冻结并实现）
 
-加载器必须报**明确错误码**，禁止「运行失败」这类模糊错误：
+加载器必须报**明确错误码**，禁止「运行失败」这类模糊错误。**非法实验 → 明确 FAIL，绝不静默纠错**；Normalize 只补充协议明定的默认值。
 
-| 错误码 | 场景 |
-| --- | --- |
-| `FORMULA_TARGET_NOT_FOUND` | 公式 target 不是已知变量/实体路径 |
-| `VARIABLE_TYPE_INVALID` | value 与 type 不匹配；enum value 不在 options 内 |
-| `UNKNOWN_WATCH_TARGET` | watch.target 不存在 |
-| `UNKNOWN_EVENT_TARGET` | event.when 引用了未知标识符 |
-| `INVALID_DURATION` / `INVALID_TICK` | 时间线参数非法 |
-| `DUPLICATE_ENTITY_ID` | 实体 id 重复 |
-| `UNKNOWN_IDENTIFIER` | 表达式引用未知标识符 |
-| `RESERVED_NAME` | 变量名占用保留字 `time` / `dt` |
-| `EXPRESSION_PARSE_ERROR` | 表达式语法错误 |
+| 错误码 | 场景 | 层次 |
+| --- | --- | --- |
+| `INVALID_JSON` | 输入不是合法 JSON / 不是实验对象 | Parse（R2-01） |
+| `SCHEMA_VALIDATION_FAILED` | 结构非法（保留 path / keyword / message 明细） | Schema（R2-01） |
+| `FORMULA_TARGET_NOT_FOUND` | 公式 target 不是已知变量/实体路径 | 语义（R2-01） |
+| `WATCH_TARGET_NOT_FOUND` | watch.target 不存在 | 语义（R2-01） |
+| `DUPLICATE_ENTITY_ID` | 实体 id 重复 | 语义（R2-01） |
+| `UNKNOWN_VARIABLE_REFERENCE` | output.summary / charts 引用不存在；chart x ≠ time | 语义（R2-01） |
+| `INVALID_TIMELINE_RANGE` | duration / tick 不是 ≥1 的整数 tick 数 | 语义（R2-01） |
+| `VARIABLE_TYPE_INVALID` | value 与 type 不匹配；enum value 不在 options；min/max/step 用于非数值类型 | 语义（R2-01） |
+| `RESERVED_NAME` | 变量名占用保留字 `time` / `dt` | 语义（R2-01） |
+| 表达式内部引用（未知标识符 / 语法错误 / 事件 `when` 引用） | 依赖表达式解析器 | 语义（R2-03 实现） |
 
 ---
 

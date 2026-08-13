@@ -12,8 +12,8 @@ JSON → 实验 UI → 模拟 → 监控 → 结果
 
 | 阶段 | 名称 | 状态 |
 | --- | --- | --- |
-| R1 | Experiment Protocol（实验协议） | ✅ 冻结（v0.1 契约） |
-| R2 | Simulation Runtime（模拟运行核心） | ⬜ 待开工 |
+| R1 | Experiment Protocol（实验协议） | ✅ CLOSED（基线 `8474543`） |
+| R2 | Simulation Runtime（模拟运行核心） | 🔶 进行中（R2-01 Loader 完成） |
 | R3 | Data & Monitoring（数据监控） | ⬜ 待开工 |
 | R4 | XYUI Web Shell（实验台 UI） | ⬜ 待开工 |
 | R5 | Experiment Workflow（完整工作流） | ⬜ 待开工 |
@@ -26,14 +26,23 @@ JSON → 实验 UI → 模拟 → 监控 → 结果
 ```
 XYLab/
 ├─ schema/
-│  ├─ experiment.schema.json   # 协议机器校验（draft-07）
+│  ├─ experiment.schema.json   # 协议机器校验（draft-07，R1 冻结）
 │  └─ README.md
 ├─ examples/
 │  └─ fatigue-basic.json       # XYLab Hello World
 ├─ docs/
 │  └─ experiment-protocol-0.1.md  # 人类可读协议契约（R1 冻结）
-└─ (src/ tests/ 随 R2+ 加入)
+├─ src/protocol/
+│  ├─ types.ts                 # ExperimentDefinition 内部可信格式
+│  ├─ validator.ts             # Schema 校验（ajv draft-07）
+│  ├─ semantic-validator.ts    # 语义校验（错误码见协议 §10）
+│  ├─ normalize.ts             # 协议明定的默认值归一化
+│  └─ loader.ts                # loadExperiment 入口
+└─ tests/
+   └─ r2-01-loader.test.ts     # R2-01 测试 T01~T12 + 聚合用例
 ```
+
+验证：`npm run verify`（tsc --noEmit + vitest run）。
 
 ## 协议入口
 
