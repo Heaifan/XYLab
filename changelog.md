@@ -7,6 +7,24 @@
 
 ---
 
+## GOV-01 · 三位一体治理初始化 —— CLOSED
+
+- **阶段**：GOV（治理轮，插在 R2-03A 与 R2-03B 之间；R2-03B 冻结直至本轮通过）
+- **任务**：建立 XY 系列默认工程治理基线「三位一体」并清零存量违规
+- **目标**：治理是正式开发的前置条件，不是出事故后再补的安全带
+- **变更**：
+  - 一体：`docs/governance/XYLab-Development-Constitution.md`（Article 1~13；UI Constitution 标记 RESERVED / NOT YET RATIFIED）
+  - 审计位：`changelog.md`（本文件，回填 R1~R2-03A）+ `file-tree.md`（终态空间地图）
+  - 经验位：`knowledge/README.md` + 2 条真实入库（decisions/loader-trust-boundary、pitfalls/ajv-strictRequired-if-then）
+  - 底线位：`scripts/governance-guard.mjs`（5+100 自动检查，无 allowlist/grandfather/exception）；`verify` 升级为 governance → typecheck → test
+  - 存量清零：7 个超线文件最小 SRP 拆分（protocol 分 types/raw-types/loader-types + normalize/ + semantic/ 子层；expression 分 lexical-rules；3 个测试文件按领域分目录）
+- **原因**：100 红线不是口号；第一天就开后门最危险。第 6 个文件出现前必须先审职责边界（5 规则），拆分合理性由 SRP 判定
+- **验证**：`npm run verify` 一次全绿（GOVERNANCE PASS + tsc 0 error + vitest 47/47）；git diff --check PASS；行为零变化（原 44 用例编号全部保留并全绿）
+- **测试**：47 项 = 原 44 项（R2-01 13 + R2-02 10 + R2-03A 21，编号不变）+ 治理专项 3 项（G-100/G-5/G-own）
+- **Commit**：`bf1628a`（治理落地）+ 本条目补记提交
+- **遗留问题**：R2-03B Parser+AST 冻结解除后启动；UI Constitution 未批准，任何轮次禁止自行设计
+- **决策**：5 规则适用范围 = src/tests/scripts 下全部职责目录（tests 按领域分目录后同样合规，不设豁免）；100 规则覆盖含测试与脚本的全部手写源码；SRP 为人工硬门禁写入每轮报告；Knowledge 入库判断每轮必做
+
 ## R1 · Experiment Protocol —— CLOSED
 
 - **阶段**：R1
