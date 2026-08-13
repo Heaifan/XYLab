@@ -25,6 +25,19 @@
 - **遗留问题**：R2-03B Parser+AST 冻结解除后启动；UI Constitution 未批准，任何轮次禁止自行设计
 - **决策**：5 规则适用范围 = src/tests/scripts 下全部职责目录（tests 按领域分目录后同样合规，不设豁免）；100 规则覆盖含测试与脚本的全部手写源码；SRP 为人工硬门禁写入每轮报告；Knowledge 入库判断每轮必做
 
+## R2-05A · Runtime State Machine + Step/Reset —— CLOSED
+
+- **阶段**：R2-05 第一子轮（05B Run Loop / 05C 速度档未开工）
+- **任务**：把运行状态机做成权威合同（A1 RuntimeStatus / A2 Transition Guard / A3 Controller 边界 / A4 Step / A5 判定 / A6 Reset）
+- **目标**：Controller 只组织 R2-04 Tick Engine，不复制 Tick 逻辑；Web/手机/桌面 UI 未来消费同一状态机
+- **变更**：新增 `src/runtime/controller/`（types/transitions/controller）；runtime/types 六态 + RuntimeFailure + lastError；tick.ts 提取 canAdvance（duration 边界单一权威，executeTick 与 Controller 共用）；tests/runtime/controller 4 文件 18 用例；Knowledge 入库 decisions/runtime-state-machine.md
+- **验证**：`npm run verify` 全绿（GOVERNANCE PASS 75 文件 + tsc 0 error + 195/195）；git diff --check PASS
+- **测试**：18 项新增 = Step 基础 5（初始 ready/ready→paused/paused→paused/单 Tick/time+tickIndex）+ completed 边界 3（最后合法 Tick、非整除 10/6 止于 6、Definition 全程不变）+ 失败与 Reset 6（failed/原 State 保留/lastError 三字段/重建新对象/清 lastError/回到 ready）+ 守卫 4（completed 禁 Step/六态守卫表/failed 禁 Step 不覆盖 lastError/非法转换明确失败）
+- **Commit**：`8e39dfa`（实现）+ 本条目补记提交
+- **决策**：六态 ready/running/paused/completed/stopped/failed；Step 仅 ready/paused（成功→paused 或 completed，失败→failed+lastError）；Reset 唯一完整重建（resetRuntimeState）；Stop ≠ Pause（stopped 终态，调度属 05B）；ILLEGAL_TRANSITION 以 discriminated union 返回不抛异常（详见 knowledge/decisions/runtime-state-machine.md）
+- **突发事件**：外部并行会话写入 controller/guard/types 等文件并提交推送 `0248eaa`（越界实现 run/pause/resume/stop = 05B 内容，错误码 INVALID_RUNTIME_TRANSITION）。用户裁定：以本轮执行 Agent 实现为唯一权威，禁止合并外部实现。执行 `git reset --hard 77c0df4` 硬回滚，重写全部 05A 实现，后续将 force-push 覆盖远端 `0248eaa`。
+- **Knowledge**：UPDATED —— 新 decisions/runtime-state-machine.md（Web/手机/桌面共用的状态权威合同）
+
 ## R2-04 · Tick Engine —— CLOSED
 
 - **阶段**：R2（单次确定性 Tick；运行循环属 R2-05）
