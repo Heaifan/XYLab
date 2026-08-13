@@ -25,6 +25,20 @@
 - **遗留问题**：R2-03B Parser+AST 冻结解除后启动；UI Constitution 未批准，任何轮次禁止自行设计
 - **决策**：5 规则适用范围 = src/tests/scripts 下全部职责目录（tests 按领域分目录后同样合规，不设豁免）；100 规则覆盖含测试与脚本的全部手写源码；SRP 为人工硬门禁写入每轮报告；Knowledge 入库判断每轮必做
 
+## R2-03D · Expression Evaluator —— CLOSED（R2-03 Expression Engine 整体 CLOSED）
+
+- **阶段**：R2（Expression Engine 最后一段：03A Tokenizer → 03B Parser → 03C Semantic → 03D Evaluator 全部关闭）
+- **任务**：实现 ValidatedExpression + EvaluationContext → RuntimeValue 的无副作用求值层（D1 上下文 / D2 字面量与标识符 / D3 一元二元与短路 / D4 内置函数 / D5 运行期错误边界）
+- **目标**：第一次让 `fatigue + move_speed * fatigue_rate * dt` 真正算出一个值（10.4）
+- **变更**：新增 `src/expression/evaluation/`（types / errors / builtins / evaluator）；tests/expression 新增 evaluation 子域，38 项专项（D01~D38）；Knowledge 入库 float-assertions 陷阱
+- **原因**：Evaluator 必须保持纯函数——target 写回是 R2-04 Tick Engine 的权威职责，否则多公式顺序会悄悄影响结果
+- **验证**：`npm run verify` 全绿（GOVERNANCE PASS + tsc 0 error + 153/153）；Guard 拦截 evaluator.ts 103 行并消除 finite 重复实现；git diff --check PASS
+- **测试**：38 项新增 = 基础与黄金 14（疲劳=10.4 且 context 不变、clamp=0 且 hp 不变、布尔条件=true）+ 逻辑与短路 6（hp=0 时 `hp > 0 && 100/hp > 2` → false 不除零）+ 函数 11（clamp 逆区间拒绝、sqrt(-1) → DOMAIN_ERROR）+ 运行期安全 7（除零/模零/缺值/类型不匹配/NON_FINITE/context 与 AST 不可变）
+- **Commit**：`1d984b7`（实现）+ 本条目补记提交
+- **遗留问题**：target 写回与多公式结算顺序属 R2-04 Tick Engine
+- **决策**：除零/模零/非 finite 一律硬失败（Infinity/NaN 会污染整个实验）；== 严格相等（=== 语义，无 coercion）；&&/|| 短路求值；clamp 下限>上限不自动交换（掩盖定义错误）；sqrt 负定义域 DOMAIN_ERROR；MISSING_RUNTIME_VALUE 为运行期防御边界（03C 已保证但 context 可能不完整）；span 全程保留至运行期错误（R4 公式编辑器标红的基础）
+- **Knowledge**：UPDATED —— 新 pitfalls/float-assertions.md（IEEE754 下 0.08×5≠0.4，数值断言必须 toBeCloseTo，未来每轮数值测试都会踩）
+
 ## R2-03C · Expression Semantic Validation —— CLOSED
 
 - **阶段**：R2
