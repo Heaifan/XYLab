@@ -7,7 +7,8 @@
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "verify": "npm run typecheck && npm run test"
+    "governance": "node scripts/governance-guard.mjs",
+    "verify": "npm run governance && npm run typecheck && npm run test"
   },
   "dependencies": {
     "ajv": "^8.17.1",

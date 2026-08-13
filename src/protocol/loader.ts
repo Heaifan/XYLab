@@ -6,9 +6,10 @@
 // 本层不执行公式、不产生 Tick、不修改任何变量值。
 
 import { validateSchema } from './validator';
-import { validateSemantics } from './semantic-validator';
+import { validateSemantics } from './semantic/semantic-validator';
 import { normalize } from './normalize';
-import type { LoadError, LoadResult, RawExperiment } from './types';
+import type { LoadError, LoadResult } from './loader-types';
+import type { RawExperiment } from './raw-types';
 
 export function loadExperiment(source: string | unknown): LoadResult {
   // 1) Parse
