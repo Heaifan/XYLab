@@ -25,6 +25,19 @@
 - **遗留问题**：R2-03B Parser+AST 冻结解除后启动；UI Constitution 未批准，任何轮次禁止自行设计
 - **决策**：5 规则适用范围 = src/tests/scripts 下全部职责目录（tests 按领域分目录后同样合规，不设豁免）；100 规则覆盖含测试与脚本的全部手写源码；SRP 为人工硬门禁写入每轮报告；Knowledge 入库判断每轮必做
 
+## R2-03B · Expression Parser + AST —— CLOSED
+
+- **阶段**：R2
+- **任务**：把 R2-03A 的 Token[] 解析成结构明确、优先级正确、带 span 的 AST（纯语法，无任何语义）
+- **目标**：为 R2-03C 语义校验与 R2-03D 求值提供唯一输入；错误能指到具体字符位置
+- **变更**：新增 `src/expression/syntax/`（ast / parse-error / parse-operators / parse-primary / parser）；tests/expression 按 tokenizer/parser 子域分层（5 规则触顶触发），新增 32 项 Parser 专项（B01~B12 / C01~C09 / E01~E11）
+- **原因**：Parser 只回答「语法合法吗」——banana(a) 也必须 PASS，白名单属 R2-03C；变量存在性同理
+- **验证**：`npm run verify` 全绿（GOVERNANCE PASS + tsc 0 error + 79/79）；Guard 首轮真实拦截 124 行测试文件并完成 SRP 拆分；git diff --check PASS
+- **测试**：32 项新增 = 结构 12（含左结合专项、两个黄金样例树形断言、span 传播）+ 调用 9（含 banana 白名单边界）+ 错误 11（五类 ParseError 全命中 + `1 + * 2` span 指向 `*`）
+- **Commit**：`56482da`（实现）+ 本条目补记提交
+- **遗留问题**：R2-03C 语义校验（变量存在性/函数白名单/参数数量）；R2-03D Evaluator
+- **决策**：优先级冻结 `|| → && → ==/!= → 比较 → 加减 → 乘除模 → 一元 → primary/call`；全部二元左结合（递归传 prec+1）；AST 六类节点统一 NodeBase.span；分组不产生节点（span 由外层并集覆盖）；parse-operators 与 parse-primary 刻意互递归（ESM 函数声明提升保证安全）
+
 ## R1 · Experiment Protocol —— CLOSED
 
 - **阶段**：R1
