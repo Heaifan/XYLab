@@ -53,7 +53,11 @@ XYLab/
 │  │     ├─ types.ts                ←     TickResult/Change/TickError/TickOutcome
 │  │     ├─ evaluate-batch.ts       ←     快照 + 公式批量求值（全读快照）
 │  │     ├─ commit.ts               ←     原子提交 + 运行时值守卫（integer 严格）
-│  │     └─ tick.ts                 ←     executeTick 编排（duration 边界/重复 target）
+│  │     └─ tick.ts                 ←     executeTick 编排 + canAdvance 边界（R2-05A 共用）
+│  │  └─ controller/                ←   R2-05A 状态机 + Step/Reset 子层
+│  │     ├─ types.ts                ←     StepOutcome（ILLEGAL_TRANSITION/TICK_FAILED）
+│  │     ├─ transitions.ts          ←     canStep 守卫（Step 仅 ready/paused）
+│  │     └─ controller.ts           ←     createController（status 唯一写入者）
 │  │
 │  └─ expression/                   ← 受限表达式语言（R2-03A 词法 / R2-03B 语法）
 │     ├─ token.ts                   ←   TokenType / Token（span 保留位置）
@@ -94,6 +98,11 @@ XYLab/
    │     ├─ r2-04-tick-safety.test.ts    ← T08~T10、T21~T22 原子失败与不可变
    │     ├─ r2-04-tick-values.test.ts    ← T13~T17 值守卫与重复 target
    │     └─ r2-04-tick-duration.test.ts  ← T18~T20 duration 边界
+   │  └─ controller/                ←   R2-05A 控制器子域（18 用例）
+   │     ├─ r2-05a-step-basic.test.ts    ← A01~A05 Step 基础
+   │     ├─ r2-05a-step-boundary.test.ts ← A06/A07/A18 completed 边界与 Definition 不可变
+   │     ├─ r2-05a-reset-safety.test.ts  ← A08~A13 失败与 Reset
+   │     └─ r2-05a-guard.test.ts         ← A14~A17 转换守卫
    ├─ expression/                   ← R2-03A（21 用例）+ R2-03B（32 用例）
    │  ├─ tokenizer/                 ←   词法子域
    │  │  ├─ helpers.ts              ←     共享工具 types/pairs
@@ -127,6 +136,6 @@ XYLab/
 | --- | --- |
 | JSON 进哪里？ | `src/protocol/loader.ts`（唯一入口） |
 | 哪些字段可信？ | Loader 输出的 `ExperimentDefinition`（`types.ts`） |
-| 运行时可变状态在哪？ | `src/runtime/`（与 Definition 深隔离；Tick 见 `src/runtime/tick/`） |
+| 运行时可变状态在哪？ | `src/runtime/`（与 Definition 深隔离；Tick 见 `src/runtime/tick/`；状态机见 `src/runtime/controller/`） |
 | 表达式怎么解析？ | `src/expression/`（Tokenizer → Parser → 语义 → Evaluator，R2-03 闭环） |
 | 底线怎么守？ | `npm run verify` 第一步 `scripts/governance-guard.mjs` |

@@ -12,11 +12,16 @@ import { commitBatch } from './commit';
 
 const EPS = 1e-9;
 
+// R2-05A 复用：下一完整 Tick 是否合法（duration 边界的单一权威来源，Controller 与 executeTick 共用，禁止各自复制）
+export function canAdvance(definition: ExperimentDefinition, state: RuntimeState): boolean {
+  return !(state.tickIndex >= definition.timeline.totalTicks || state.time + definition.timeline.tick > definition.timeline.duration + EPS);
+}
+
 export function executeTick(definition: ExperimentDefinition, state: RuntimeState): TickOutcome {
   const tick = definition.timeline.tick;
 
   // Duration boundary（整数 tick 数已由 Loader 保证；直接构造的定义由时间比较兜底）
-  if (state.tickIndex >= definition.timeline.totalTicks || state.time + tick > definition.timeline.duration + EPS) {
+  if (!canAdvance(definition, state)) {
     return { status: 'duration-reached', time: state.time, tickIndex: state.tickIndex };
   }
 

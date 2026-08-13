@@ -1,6 +1,7 @@
 // R2-02/R2-04 测试共享夹具（非 test 文件，避免 vitest 重复注册用例）。
 import { loadExperiment } from '../../src/protocol/loader';
 import { createRuntimeState } from '../../src/runtime/create-runtime-state';
+import { createController } from '../../src/runtime/controller/controller';
 import { executeTick } from '../../src/runtime/tick/tick';
 import type { ExperimentDefinition, VariableType } from '../../src/protocol/types';
 import type { RawEntity, RawExperiment, RawVariable } from '../../src/protocol/raw-types';
@@ -40,6 +41,12 @@ export function runOnce(opts: Parameters<typeof makeTickDef>[0], ticks = 1) {
   let last: ReturnType<typeof executeTick> | null = null;
   for (let i = 0; i < ticks; i++) last = executeTick(def, state);
   return { def, state, last };
+}
+
+// R2-05A 共享：构造 Controller（经真实 Loader）
+export function makeController(opts: Parameters<typeof makeTickDef>[0]) {
+  const def = makeTickDef(opts);
+  return { def, controller: createController(def) };
 }
 
 export function defWithEntities(): ExperimentDefinition {
