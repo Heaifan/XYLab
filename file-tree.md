@@ -61,6 +61,12 @@ XYLab/
 │        ├─ parse-operators.ts      ←     优先级爬升 + 一元前缀（左结合）
 │        ├─ parse-primary.ts        ←     字面量/标识符/分组/函数调用
 │        └─ parser.ts               ←     parseExpression 入口（纯语法）
+│     └─ semantic/                  ←   R2-03C 语义验证子层（只读 AST）
+│        ├─ types.ts                ←     number/boolean 语义类型 + SemanticContext
+│        ├─ errors.ts               ←     ExpressionSemanticError（八类错误码）
+│        ├─ context.ts              ←     符号表 + 函数白名单/签名（dt 唯一 builtin）
+│        ├─ infer.ts                ←     类型推导（禁隐式转换）
+│        └─ validator.ts            ←     validateExpression/validateFormula 入口
 │
 └─ tests/                           ← 验证层（按领域分目录，每文件 ≤100 行）
    ├─ loader/                       ← R2-01（13 用例：T01~T12 + 聚合）
@@ -83,6 +89,12 @@ XYLab/
    │     ├─ r2-03b-parser-precedence.test.ts ← B08~B12 优先级与 span
    │     ├─ r2-03b-parser-calls.test.ts      ← C01~C09 调用与黄金样例
    │     └─ r2-03b-parser-errors.test.ts     ← E01~E11 错误边界
+   │  └─ semantic/                  ←   语义子域（R2-03C，36 用例）
+   │     ├─ helpers.ts              ←     共享工具 makeDefinition/check/expectSemanticError
+   │     ├─ r2-03c-semantic-symbols.test.ts    ← C01~C04 符号表/dt/unsupported
+   │     ├─ r2-03c-semantic-operators.test.ts  ← C05~C19 运算符类型规则
+   │     ├─ r2-03c-semantic-functions.test.ts  ← C20~C26 函数白名单与签名
+   │     └─ r2-03c-semantic-formula.test.ts    ← C27~C31 target 兼容 + 黄金样例
    └─ governance/                   ← GOV-01 专项
       └─ governance-guard.test.ts   ←   底线位回归（5/100/Guard 自身）
 ```
@@ -94,5 +106,5 @@ XYLab/
 | JSON 进哪里？ | `src/protocol/loader.ts`（唯一入口） |
 | 哪些字段可信？ | Loader 输出的 `ExperimentDefinition`（`types.ts`） |
 | 运行时可变状态在哪？ | `src/runtime/`（与 Definition 深隔离） |
-| 表达式怎么解析？ | `src/expression/`（Tokenizer → Parser → 语义(R2-03C) → Evaluator(R2-03D)） |
+| 表达式怎么解析？ | `src/expression/`（Tokenizer → Parser → 语义 → Evaluator(R2-03D)） |
 | 底线怎么守？ | `npm run verify` 第一步 `scripts/governance-guard.mjs` |
