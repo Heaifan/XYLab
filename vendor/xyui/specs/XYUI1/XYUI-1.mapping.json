@@ -1,0 +1,1770 @@
+{
+ "mapping_version": "0.1.0",
+ "phase": "XYUI-PILOT-R1",
+ "source": {
+  "path": "xyui/source/XYUI1/XYUI-1.md",
+  "sha256": "9709a4fde7ec0e2211484f2fdd51a493ef7d472155f332c74bcd350ca0b0a462"
+ },
+ "canonical_basis": {
+  "foundation_registry": "xyui/registry/foundation/foundation-registry.json",
+  "token_architecture": "xyui/tokens/architecture/token-canonical-map.json"
+ },
+ "renamed_mappings": [
+  {
+   "old": "XY.Border.Subtle",
+   "new": "XY.Border.Color.Subtle",
+   "basis": "A3-R2 NTC_SPLIT_RENAME（Border 颜色迁入 Color.* 命名空间）",
+   "affected": [
+    "XYUI-1-18 ShortcutHint.Default.BorderColor"
+   ]
+  }
+ ],
+ "component_specific_glyphs": [
+  "XY.Icon.Copy",
+  "InfoCircle",
+  "ErrorCircle",
+  "WarningTriangle"
+ ],
+ "components": [
+  {
+   "component_id": "XYUI-1-01",
+   "name": "Text",
+   "title": "普通文本",
+   "ref_count": 6,
+   "refs": [
+    {
+     "property": "XY.Text.Default.FontFamily",
+     "value": "XY.Font.UI",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Font.UI"
+    },
+    {
+     "property": "XY.Text.Default.FontSize",
+     "value": "XY.FontSize.Body",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontSize.Body"
+    },
+    {
+     "property": "XY.Text.Default.FontWeight",
+     "value": "XY.FontWeight.Regular",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Regular"
+    },
+    {
+     "property": "XY.Text.Default.LineHeight",
+     "value": "XY.LineHeight.Body",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LineHeight.Body"
+    },
+    {
+     "property": "XY.Text.Default.LetterSpacing",
+     "value": "XY.LetterSpacing.Body",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LetterSpacing.Body"
+    },
+    {
+     "property": "XY.Text.Default.Foreground",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-02",
+   "name": "Label",
+   "title": "字段名称",
+   "ref_count": 7,
+   "refs": [
+    {
+     "property": "XY.Label.Default.FontFamily",
+     "value": "XY.Font.UI",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Font.UI"
+    },
+    {
+     "property": "XY.Label.Default.FontSize",
+     "value": "XY.FontSize.Label",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontSize.Label"
+    },
+    {
+     "property": "XY.Label.Default.FontWeight",
+     "value": "XY.FontWeight.Medium",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Medium"
+    },
+    {
+     "property": "XY.Label.Default.LineHeight",
+     "value": "XY.LineHeight.Label",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LineHeight.Label"
+    },
+    {
+     "property": "XY.Label.Default.LetterSpacing",
+     "value": "XY.LetterSpacing.Label",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LetterSpacing.Label"
+    },
+    {
+     "property": "XY.Label.Default.Foreground",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.Label.Default.Alignment",
+     "value": "XY.Alignment.Label",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Alignment.Label"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-03",
+   "name": "Caption",
+   "title": "辅助信息",
+   "ref_count": 5,
+   "refs": [
+    {
+     "property": "XY.Caption.Default.FontFamily",
+     "value": "XY.Font.UI",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Font.UI"
+    },
+    {
+     "property": "XY.Caption.Default.FontSize",
+     "value": "XY.FontSize.Caption",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontSize.Caption"
+    },
+    {
+     "property": "XY.Caption.Default.FontWeight",
+     "value": "XY.FontWeight.Regular",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Regular"
+    },
+    {
+     "property": "XY.Caption.Default.LineHeight",
+     "value": "XY.LineHeight.Caption",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LineHeight.Caption"
+    },
+    {
+     "property": "XY.Caption.Default.Foreground",
+     "value": "XY.Text.Secondary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Secondary"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-04",
+   "name": "Heading",
+   "title": "标题",
+   "ref_count": 11,
+   "refs": [
+    {
+     "property": "XY.Heading.PanelTitle.FontFamily",
+     "value": "XY.Font.UI",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Font.UI"
+    },
+    {
+     "property": "XY.Heading.PanelTitle.FontSize",
+     "value": "XY.FontSize.PanelTitle",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontSize.PanelTitle"
+    },
+    {
+     "property": "XY.Heading.PanelTitle.FontWeight",
+     "value": "XY.FontWeight.Semibold",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Semibold"
+    },
+    {
+     "property": "XY.Heading.PanelTitle.LineHeight",
+     "value": "XY.LineHeight.PanelTitle",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LineHeight.PanelTitle"
+    },
+    {
+     "property": "XY.Heading.PanelTitle.Foreground",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.Heading.PageTitle.FontFamily",
+     "value": "XY.Font.UI",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Font.UI"
+    },
+    {
+     "property": "XY.Heading.PageTitle.FontSize",
+     "value": "XY.FontSize.PageTitle",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontSize.PageTitle"
+    },
+    {
+     "property": "XY.Heading.PageTitle.FontWeight",
+     "value": "XY.FontWeight.Bold",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Bold"
+    },
+    {
+     "property": "XY.Heading.PageTitle.LineHeight",
+     "value": "XY.LineHeight.PageTitle",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LineHeight.PageTitle"
+    },
+    {
+     "property": "XY.Heading.PageTitle.Foreground",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.Heading.LetterSpacing",
+     "value": "XY.LetterSpacing.Title",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LetterSpacing.Title"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-05",
+   "name": "SectionTitle",
+   "title": "区块标题",
+   "ref_count": 10,
+   "refs": [
+    {
+     "property": "XY.SectionTitle.Default.FontFamily",
+     "value": "XY.Font.UI",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Font.UI"
+    },
+    {
+     "property": "XY.SectionTitle.Default.FontSize",
+     "value": "XY.FontSize.Section",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontSize.Section"
+    },
+    {
+     "property": "XY.SectionTitle.Default.FontWeight",
+     "value": "XY.FontWeight.Semibold",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Semibold"
+    },
+    {
+     "property": "XY.SectionTitle.Default.LineHeight",
+     "value": "XY.LineHeight.Section",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LineHeight.Section"
+    },
+    {
+     "property": "XY.SectionTitle.Default.Foreground",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.SectionTitle.Default.Background",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.SectionTitle.Default.Border",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.SectionTitle.Default.Divider",
+     "value": "XY.Divider.Section",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Divider.Section"
+    },
+    {
+     "property": "XY.SectionTitle.Default.CardNesting",
+     "value": "Forbidden",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.SectionTitle.Default.SectionGap",
+     "value": "XY.Panel.SectionGap",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Panel.SectionGap"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-06",
+   "name": "Link",
+   "title": "超链接",
+   "ref_count": 8,
+   "refs": [
+    {
+     "property": "XY.Link.Default.FontFamily",
+     "value": "XY.Font.UI",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Font.UI"
+    },
+    {
+     "property": "XY.Link.Default.FontSize",
+     "value": "XY.FontSize.Body",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontSize.Body"
+    },
+    {
+     "property": "XY.Link.Default.FontWeight",
+     "value": "XY.FontWeight.Medium",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Medium"
+    },
+    {
+     "property": "XY.Link.Default.LineHeight",
+     "value": "XY.LineHeight.Body",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LineHeight.Body"
+    },
+    {
+     "property": "XY.Link.Default.Foreground",
+     "value": "XY.Text.Link",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Link"
+    },
+    {
+     "property": "XY.Link.Hover.Foreground",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.Link.Hover.Decoration",
+     "value": "Underline",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Link.Disabled.Foreground",
+     "value": "XY.Text.Disabled",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Disabled"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-07",
+   "name": "CodeText",
+   "title": "代码 / ID",
+   "ref_count": 14,
+   "refs": [
+    {
+     "property": "XY.CodeText.Default.FontFamily",
+     "value": "XY.Font.Mono",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Font.Mono"
+    },
+    {
+     "property": "XY.CodeText.Default.FontSize",
+     "value": "XY.FontSize.Mono",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontSize.Mono"
+    },
+    {
+     "property": "XY.CodeText.Default.FontWeight",
+     "value": "XY.FontWeight.Regular",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Regular"
+    },
+    {
+     "property": "XY.CodeText.Default.LineHeight",
+     "value": "XY.LineHeight.Mono",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LineHeight.Mono"
+    },
+    {
+     "property": "XY.CodeText.Default.LetterSpacing",
+     "value": "XY.LetterSpacing.Mono",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LetterSpacing.Mono"
+    },
+    {
+     "property": "XY.CodeText.Default.Foreground",
+     "value": "XY.Text.Tertiary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Tertiary"
+    },
+    {
+     "property": "XY.CodeText.Default.Background",
+     "value": "XY.Surface.PanelAlt",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.PanelAlt"
+    },
+    {
+     "property": "XY.CodeText.Default.MinHeight",
+     "value": "XY.Size.Control.M",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Size.Control.M"
+    },
+    {
+     "property": "XY.CodeText.Default.Radius",
+     "value": "XY.Radius.Control",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Control"
+    },
+    {
+     "property": "XY.CodeText.Default.Border",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.CodeText.CodeMark",
+     "value": "</ >",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.CodeText.CodeMark.Size",
+     "value": "8 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.CodeText.CodeMark.Foreground",
+     "value": "XY.Text.Tertiary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Tertiary"
+    },
+    {
+     "property": "XY.CodeText.CodeMark.Alignment",
+     "value": "RightBottom",
+     "kind": "LITERAL",
+     "canonical_target": null
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-08",
+   "name": "MonoText",
+   "title": "等宽数据",
+   "ref_count": 9,
+   "refs": [
+    {
+     "property": "XY.MonoText.Default.FontFamily",
+     "value": "XY.Font.Mono",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Font.Mono"
+    },
+    {
+     "property": "XY.MonoText.Default.FontSize",
+     "value": "XY.FontSize.Mono",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontSize.Mono"
+    },
+    {
+     "property": "XY.MonoText.Default.FontWeight",
+     "value": "XY.FontWeight.Regular",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Regular"
+    },
+    {
+     "property": "XY.MonoText.Default.LineHeight",
+     "value": "XY.LineHeight.Mono",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LineHeight.Mono"
+    },
+    {
+     "property": "XY.MonoText.Default.LetterSpacing",
+     "value": "XY.LetterSpacing.Mono",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LetterSpacing.Mono"
+    },
+    {
+     "property": "XY.MonoText.Default.Foreground",
+     "value": "XY.Text.Secondary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Secondary"
+    },
+    {
+     "property": "XY.MonoText.Default.Background",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.MonoText.Default.Border",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.MonoText.Default.Decoration",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-09",
+   "name": "Badge",
+   "title": "标签",
+   "ref_count": 11,
+   "refs": [
+    {
+     "property": "XY.Badge.Default.FontFamily",
+     "value": "XY.Font.UI",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Font.UI"
+    },
+    {
+     "property": "XY.Badge.Default.FontSize",
+     "value": "XY.FontSize.Caption",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontSize.Caption"
+    },
+    {
+     "property": "XY.Badge.Default.FontWeight",
+     "value": "XY.FontWeight.Medium",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Medium"
+    },
+    {
+     "property": "XY.Badge.Default.Foreground",
+     "value": "XY.Text.Secondary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Secondary"
+    },
+    {
+     "property": "XY.Badge.Default.Background",
+     "value": "XY.Surface.PanelAlt",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.PanelAlt"
+    },
+    {
+     "property": "XY.Badge.Default.Height",
+     "value": "XY.Size.Control.XS",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Size.Control.XS"
+    },
+    {
+     "property": "XY.Badge.Default.Radius",
+     "value": "XY.Radius.Badge",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Badge"
+    },
+    {
+     "property": "XY.Badge.Default.Border",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Badge.Default.TextAlignment",
+     "value": "Center",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Badge.Accent.Foreground",
+     "value": "XY.Accent.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Default"
+    },
+    {
+     "property": "XY.Badge.Accent.Background",
+     "value": "XY.Tag.Accent",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Tag.Accent"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-10",
+   "name": "StatusBadge",
+   "title": "状态标签",
+   "ref_count": 17,
+   "refs": [
+    {
+     "property": "XY.StatusBadge.Default.FontFamily",
+     "value": "XY.Font.UI",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Font.UI"
+    },
+    {
+     "property": "XY.StatusBadge.Default.FontSize",
+     "value": "XY.FontSize.Caption",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontSize.Caption"
+    },
+    {
+     "property": "XY.StatusBadge.Default.FontWeight",
+     "value": "XY.FontWeight.Medium",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Medium"
+    },
+    {
+     "property": "XY.StatusBadge.Default.DotSize",
+     "value": "8 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.StatusBadge.Default.DotShape",
+     "value": "Circle",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.StatusBadge.Default.Background",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.StatusBadge.Default.Border",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.StatusBadge.Success.Foreground",
+     "value": "XY.Semantic.Success.Text",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Semantic.Success.Text"
+    },
+    {
+     "property": "XY.StatusBadge.Success.Dot",
+     "value": "XY.Semantic.Success.Text",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Semantic.Success.Text"
+    },
+    {
+     "property": "XY.StatusBadge.Warning.Foreground",
+     "value": "XY.Semantic.Warning.Text",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Semantic.Warning.Text"
+    },
+    {
+     "property": "XY.StatusBadge.Warning.Dot",
+     "value": "XY.Semantic.Warning.Text",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Semantic.Warning.Text"
+    },
+    {
+     "property": "XY.StatusBadge.Error.Foreground",
+     "value": "XY.Semantic.Error.Text",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Semantic.Error.Text"
+    },
+    {
+     "property": "XY.StatusBadge.Error.Dot",
+     "value": "XY.Semantic.Error.Text",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Semantic.Error.Text"
+    },
+    {
+     "property": "XY.StatusBadge.Info.Foreground",
+     "value": "XY.Semantic.Info.Text",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Semantic.Info.Text"
+    },
+    {
+     "property": "XY.StatusBadge.Info.Dot",
+     "value": "XY.Semantic.Info.Text",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Semantic.Info.Text"
+    },
+    {
+     "property": "XY.StatusBadge.Neutral.Foreground",
+     "value": "XY.Text.Secondary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Secondary"
+    },
+    {
+     "property": "XY.StatusBadge.AccessibleState",
+     "value": "Required",
+     "kind": "LITERAL",
+     "canonical_target": null
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-11",
+   "name": "StatusDot",
+   "title": "状态圆点",
+   "ref_count": 11,
+   "refs": [
+    {
+     "property": "XY.StatusDot.Default.Diameter",
+     "value": "8 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.StatusDot.Default.Shape",
+     "value": "Circle",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.StatusDot.Success.Color",
+     "value": "XY.Semantic.Success.Text",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Semantic.Success.Text"
+    },
+    {
+     "property": "XY.StatusDot.Info.Color",
+     "value": "XY.Semantic.Info.Text",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Semantic.Info.Text"
+    },
+    {
+     "property": "XY.StatusDot.Warning.Color",
+     "value": "XY.Semantic.Warning.Text",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Semantic.Warning.Text"
+    },
+    {
+     "property": "XY.StatusDot.Error.Color",
+     "value": "XY.Semantic.Error.Text",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Semantic.Error.Text"
+    },
+    {
+     "property": "XY.StatusDot.Neutral.Color",
+     "value": "XY.Text.Tertiary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Tertiary"
+    },
+    {
+     "property": "XY.StatusDot.Default.Border",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.StatusDot.Default.Shadow",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.StatusDot.AccessibleName",
+     "value": "Required",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.StatusDot.AccessibleState",
+     "value": "Required",
+     "kind": "LITERAL",
+     "canonical_target": null
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-12",
+   "name": "Icon",
+   "title": "图标",
+   "ref_count": 12,
+   "refs": [
+    {
+     "property": "XY.Icon.Default.Style",
+     "value": "XY.Icon.Style.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Icon.Style.Default"
+    },
+    {
+     "property": "XY.Icon.Default.Size",
+     "value": "XY.Icon.Size.M",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Icon.Size.M"
+    },
+    {
+     "property": "XY.Icon.Default.StrokeWidth",
+     "value": "XY.Icon.Stroke",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Icon.Stroke"
+    },
+    {
+     "property": "XY.Icon.Default.LineCap",
+     "value": "XY.Icon.LineCap",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Icon.LineCap"
+    },
+    {
+     "property": "XY.Icon.Default.LineJoin",
+     "value": "XY.Icon.LineJoin",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Icon.LineJoin"
+    },
+    {
+     "property": "XY.Icon.Default.Foreground",
+     "value": "XY.Text.Secondary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Secondary"
+    },
+    {
+     "property": "XY.Icon.Small.Size",
+     "value": "XY.Icon.Size.S",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Icon.Size.S"
+    },
+    {
+     "property": "XY.Icon.Medium.Size",
+     "value": "XY.Icon.Size.M",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Icon.Size.M"
+    },
+    {
+     "property": "XY.Icon.Large.Size",
+     "value": "XY.Icon.Size.L",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Icon.Size.L"
+    },
+    {
+     "property": "XY.Icon.Active.Style",
+     "value": "XY.Icon.Style.Active",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Icon.Style.Active"
+    },
+    {
+     "property": "XY.Icon.Active.Foreground",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.Icon.Disabled.Foreground",
+     "value": "XY.Text.Disabled",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Disabled"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-13",
+   "name": "IconLabel",
+   "title": "图标 + 文字",
+   "ref_count": 11,
+   "refs": [
+    {
+     "property": "XY.IconLabel.Default.IconSize",
+     "value": "XY.Icon.Size.S",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Icon.Size.S"
+    },
+    {
+     "property": "XY.IconLabel.Default.IconStrokeWidth",
+     "value": "XY.Icon.Stroke",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Icon.Stroke"
+    },
+    {
+     "property": "XY.IconLabel.Default.IconForeground",
+     "value": "XY.Text.Secondary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Secondary"
+    },
+    {
+     "property": "XY.IconLabel.Default.FontFamily",
+     "value": "XY.Font.UI",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Font.UI"
+    },
+    {
+     "property": "XY.IconLabel.Default.FontSize",
+     "value": "XY.FontSize.Body",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontSize.Body"
+    },
+    {
+     "property": "XY.IconLabel.Default.FontWeight",
+     "value": "XY.FontWeight.Regular",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Regular"
+    },
+    {
+     "property": "XY.IconLabel.Default.Foreground",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.IconLabel.Default.Gap",
+     "value": "XY.Space.1",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Space.1"
+    },
+    {
+     "property": "XY.IconLabel.Default.VerticalAlignment",
+     "value": "Center",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.IconLabel.Default.Background",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.IconLabel.Default.Border",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-14",
+   "name": "Separator",
+   "title": "分割线",
+   "ref_count": 8,
+   "refs": [
+    {
+     "property": "XY.Separator.Default.Color",
+     "value": "XY.Divider.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Divider.Default"
+    },
+    {
+     "property": "XY.Separator.Default.Thickness",
+     "value": "XY.Border.Width.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Width.Default"
+    },
+    {
+     "property": "XY.Separator.Header.Layout",
+     "value": "XY.Divider.Header",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Divider.Header"
+    },
+    {
+     "property": "XY.Separator.Panel.Layout",
+     "value": "XY.Divider.Panel",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Divider.Panel"
+    },
+    {
+     "property": "XY.Separator.Section.Layout",
+     "value": "XY.Divider.Section",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Divider.Section"
+    },
+    {
+     "property": "XY.Separator.ListRow.Layout",
+     "value": "XY.Divider.ListRow",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Divider.ListRow"
+    },
+    {
+     "property": "XY.Separator.VerticalSplit.Layout",
+     "value": "XY.Divider.VerticalSplit",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Divider.VerticalSplit"
+    },
+    {
+     "property": "XY.Separator.Default.Shadow",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-15",
+   "name": "HelpText",
+   "title": "帮助说明",
+   "ref_count": 11,
+   "refs": [
+    {
+     "property": "XY.HelpText.Default.FontFamily",
+     "value": "XY.Font.UI",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Font.UI"
+    },
+    {
+     "property": "XY.HelpText.Default.FontSize",
+     "value": "XY.FontSize.Caption",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontSize.Caption"
+    },
+    {
+     "property": "XY.HelpText.Default.FontWeight",
+     "value": "XY.FontWeight.Regular",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Regular"
+    },
+    {
+     "property": "XY.HelpText.Default.LineHeight",
+     "value": "XY.LineHeight.Caption",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LineHeight.Caption"
+    },
+    {
+     "property": "XY.HelpText.Default.Foreground",
+     "value": "XY.Text.Secondary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Secondary"
+    },
+    {
+     "property": "XY.HelpText.Mark.Icon",
+     "value": "InfoCircle",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.HelpText.Mark.Size",
+     "value": "XY.Icon.Size.S",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Icon.Size.S"
+    },
+    {
+     "property": "XY.HelpText.Mark.StrokeWidth",
+     "value": "XY.Icon.Stroke",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Icon.Stroke"
+    },
+    {
+     "property": "XY.HelpText.Mark.Foreground",
+     "value": "XY.Semantic.Info.Text",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Semantic.Info.Text"
+    },
+    {
+     "property": "XY.HelpText.Default.Background",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.HelpText.Default.Border",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-16",
+   "name": "ErrorText",
+   "title": "错误说明",
+   "ref_count": 13,
+   "refs": [
+    {
+     "property": "XY.ErrorText.Default.FontFamily",
+     "value": "XY.Font.UI",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Font.UI"
+    },
+    {
+     "property": "XY.ErrorText.Default.FontSize",
+     "value": "XY.FontSize.Caption",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontSize.Caption"
+    },
+    {
+     "property": "XY.ErrorText.Default.FontWeight",
+     "value": "XY.FontWeight.Medium",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Medium"
+    },
+    {
+     "property": "XY.ErrorText.Default.LineHeight",
+     "value": "XY.LineHeight.Caption",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LineHeight.Caption"
+    },
+    {
+     "property": "XY.ErrorText.Default.Foreground",
+     "value": "XY.Semantic.Error.Text",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Semantic.Error.Text"
+    },
+    {
+     "property": "XY.ErrorText.Mark.Icon",
+     "value": "ErrorCircle",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.ErrorText.Mark.Size",
+     "value": "XY.Icon.Size.S",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Icon.Size.S"
+    },
+    {
+     "property": "XY.ErrorText.Mark.StrokeWidth",
+     "value": "XY.Icon.Stroke",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Icon.Stroke"
+    },
+    {
+     "property": "XY.ErrorText.Mark.Foreground",
+     "value": "XY.Semantic.Error.Text",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Semantic.Error.Text"
+    },
+    {
+     "property": "XY.ErrorText.Default.Background",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.ErrorText.Default.Border",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.ErrorText.TextStyle",
+     "value": "XY.Text.Error",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Error"
+    },
+    {
+     "property": "XY.ErrorText.AccessibleText",
+     "value": "Required",
+     "kind": "LITERAL",
+     "canonical_target": null
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-17",
+   "name": "WarningText",
+   "title": "警告说明",
+   "ref_count": 12,
+   "refs": [
+    {
+     "property": "XY.WarningText.Default.FontFamily",
+     "value": "XY.Font.UI",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Font.UI"
+    },
+    {
+     "property": "XY.WarningText.Default.FontSize",
+     "value": "XY.FontSize.Caption",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontSize.Caption"
+    },
+    {
+     "property": "XY.WarningText.Default.FontWeight",
+     "value": "XY.FontWeight.Medium",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Medium"
+    },
+    {
+     "property": "XY.WarningText.Default.LineHeight",
+     "value": "XY.LineHeight.Caption",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LineHeight.Caption"
+    },
+    {
+     "property": "XY.WarningText.Default.Foreground",
+     "value": "XY.Semantic.Warning.Text",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Semantic.Warning.Text"
+    },
+    {
+     "property": "XY.WarningText.Mark.Icon",
+     "value": "WarningTriangle",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.WarningText.Mark.Size",
+     "value": "XY.Icon.Size.S",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Icon.Size.S"
+    },
+    {
+     "property": "XY.WarningText.Mark.StrokeWidth",
+     "value": "XY.Icon.Stroke",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Icon.Stroke"
+    },
+    {
+     "property": "XY.WarningText.Mark.Foreground",
+     "value": "XY.Semantic.Warning.Text",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Semantic.Warning.Text"
+    },
+    {
+     "property": "XY.WarningText.Default.Background",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.WarningText.Default.Border",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.WarningText.AccessibleText",
+     "value": "Required",
+     "kind": "LITERAL",
+     "canonical_target": null
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-18",
+   "name": "ShortcutHint",
+   "title": "快捷键提示",
+   "ref_count": 12,
+   "refs": [
+    {
+     "property": "XY.ShortcutHint.Default.FontFamily",
+     "value": "XY.Font.Mono",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Font.Mono"
+    },
+    {
+     "property": "XY.ShortcutHint.Default.FontSize",
+     "value": "XY.FontSize.Caption",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontSize.Caption"
+    },
+    {
+     "property": "XY.ShortcutHint.Default.FontWeight",
+     "value": "XY.FontWeight.Medium",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Medium"
+    },
+    {
+     "property": "XY.ShortcutHint.Default.Foreground",
+     "value": "XY.Text.Secondary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Secondary"
+    },
+    {
+     "property": "XY.ShortcutHint.Default.Height",
+     "value": "XY.Size.Control.XS",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Size.Control.XS"
+    },
+    {
+     "property": "XY.ShortcutHint.Default.Background",
+     "value": "XY.Surface.PanelAlt",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.PanelAlt"
+    },
+    {
+     "property": "XY.ShortcutHint.Default.BorderColor",
+     "value": "XY.Border.Color.Subtle",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Subtle"
+    },
+    {
+     "property": "XY.ShortcutHint.Default.BorderThickness",
+     "value": "XY.Border.Width.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Width.Default"
+    },
+    {
+     "property": "XY.ShortcutHint.Default.Radius",
+     "value": "XY.Radius.Control",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Control"
+    },
+    {
+     "property": "XY.ShortcutHint.CombinationMode",
+     "value": "SeparateKeycaps",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.ShortcutHint.Separator",
+     "value": "+",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.ShortcutHint.Default.Shadow",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-19",
+   "name": "Tooltip",
+   "title": "悬浮提示",
+   "ref_count": 22,
+   "refs": [
+    {
+     "property": "XY.Tooltip.Default.ContentMode",
+     "value": "Adaptive",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Tooltip.Default.ShortContent",
+     "value": "SingleLine",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Tooltip.Default.LongContent",
+     "value": "WrapOrTwoLevel",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Tooltip.Default.MaxWidth",
+     "value": "280 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Tooltip.Default.ShowDelay",
+     "value": "400 ms",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Tooltip.Default.Background",
+     "value": "XY.Surface.Overlay",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Overlay"
+    },
+    {
+     "property": "XY.Tooltip.Default.Radius",
+     "value": "XY.Radius.Popup",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Popup"
+    },
+    {
+     "property": "XY.Tooltip.Default.Shadow",
+     "value": "XY.Shadow.Tooltip",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Shadow.Tooltip"
+    },
+    {
+     "property": "XY.Tooltip.Default.FontFamily",
+     "value": "XY.Font.UI",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Font.UI"
+    },
+    {
+     "property": "XY.Tooltip.Default.FontSize",
+     "value": "XY.FontSize.Caption",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontSize.Caption"
+    },
+    {
+     "property": "XY.Tooltip.Default.FontWeight",
+     "value": "XY.FontWeight.Regular",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Regular"
+    },
+    {
+     "property": "XY.Tooltip.Default.LineHeight",
+     "value": "XY.LineHeight.Caption",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LineHeight.Caption"
+    },
+    {
+     "property": "XY.Tooltip.Default.Foreground",
+     "value": "XY.Text.Secondary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Secondary"
+    },
+    {
+     "property": "XY.Tooltip.Title.FontSize",
+     "value": "XY.FontSize.Auxiliary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontSize.Auxiliary"
+    },
+    {
+     "property": "XY.Tooltip.Title.FontWeight",
+     "value": "XY.FontWeight.Medium",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Medium"
+    },
+    {
+     "property": "XY.Tooltip.Title.LineHeight",
+     "value": "XY.LineHeight.Auxiliary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LineHeight.Auxiliary"
+    },
+    {
+     "property": "XY.Tooltip.Title.Foreground",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.Tooltip.Default.ViewportAvoidance",
+     "value": "Enabled",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Tooltip.Default.AutoFlip",
+     "value": "Enabled",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Tooltip.Default.PointerCapture",
+     "value": "Forbidden",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Tooltip.Default.InteractiveContent",
+     "value": "Forbidden",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Tooltip.Default.LongHelp",
+     "value": "HelpOrInspector",
+     "kind": "LITERAL",
+     "canonical_target": null
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-20",
+   "name": "RichText",
+   "title": "富文本",
+   "ref_count": 15,
+   "refs": [
+    {
+     "property": "XY.RichText.Default.FontFamily",
+     "value": "XY.Font.UI",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Font.UI"
+    },
+    {
+     "property": "XY.RichText.Default.FontSize",
+     "value": "XY.FontSize.Body",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontSize.Body"
+    },
+    {
+     "property": "XY.RichText.Default.FontWeight",
+     "value": "XY.FontWeight.Regular",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Regular"
+    },
+    {
+     "property": "XY.RichText.Default.LineHeight",
+     "value": "XY.LineHeight.Body",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LineHeight.Body"
+    },
+    {
+     "property": "XY.RichText.Default.Foreground",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.RichText.Strong.FontWeight",
+     "value": "XY.FontWeight.Semibold",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Semibold"
+    },
+    {
+     "property": "XY.RichText.Strong.Foreground",
+     "value": "Inherit",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.RichText.Mono.FontFamily",
+     "value": "XY.Font.Mono",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Font.Mono"
+    },
+    {
+     "property": "XY.RichText.Mono.FontSize",
+     "value": "XY.FontSize.Mono",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontSize.Mono"
+    },
+    {
+     "property": "XY.RichText.Mono.LineHeight",
+     "value": "XY.LineHeight.Mono",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.LineHeight.Mono"
+    },
+    {
+     "property": "XY.RichText.Mono.Foreground",
+     "value": "XY.Text.Secondary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Secondary"
+    },
+    {
+     "property": "XY.RichText.Link.Foreground",
+     "value": "XY.Text.Link",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Link"
+    },
+    {
+     "property": "XY.RichText.Link.FontWeight",
+     "value": "XY.FontWeight.Medium",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Medium"
+    },
+    {
+     "property": "XY.RichText.MaxSemanticColors",
+     "value": "2",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.RichText.StatusColors",
+     "value": "Forbidden",
+     "kind": "LITERAL",
+     "canonical_target": null
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-21",
+   "name": "SelectableText",
+   "title": "可选择文本",
+   "ref_count": 12,
+   "refs": [
+    {
+     "property": "XY.SelectableText.Default.TextStyle",
+     "value": "XY.Text.Default",
+     "kind": "COMPONENT_REF",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.SelectableText.Technical.TextStyle",
+     "value": "XY.MonoText.Default",
+     "kind": "COMPONENT_REF",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.SelectableText.Default.IsReadOnly",
+     "value": "True",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.SelectableText.Default.IsSelectable",
+     "value": "True",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.SelectableText.Default.CopyShortcut",
+     "value": "Ctrl+C",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.SelectableText.Hover.CopyIcon",
+     "value": "XY.Icon.Copy",
+     "kind": "COMPONENT_SPECIFIC_GLYPH",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.SelectableText.Hover.CopyIconSize",
+     "value": "XY.Icon.Size.S",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Icon.Size.S"
+    },
+    {
+     "property": "XY.SelectableText.Hover.CopyIconForeground",
+     "value": "XY.Text.Secondary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Secondary"
+    },
+    {
+     "property": "XY.SelectableText.Default.Background",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.SelectableText.Default.Border",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.SelectableText.Selection.Background",
+     "value": "XY.Surface.Selected",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Selected"
+    },
+    {
+     "property": "XY.SelectableText.Selection.Foreground",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-22",
+   "name": "EmptyText",
+   "title": "空状态文本",
+   "ref_count": 6,
+   "refs": [
+    {
+     "property": "XY.EmptyText.Default.TextStyle",
+     "value": "XY.Caption.Default",
+     "kind": "COMPONENT_REF",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.EmptyText.Default.Foreground",
+     "value": "XY.Text.Tertiary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Tertiary"
+    },
+    {
+     "property": "XY.EmptyText.Default.Background",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.EmptyText.Default.Border",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.EmptyText.Default.Decoration",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.EmptyText.Default.TextAlignment",
+     "value": "Center",
+     "kind": "LITERAL",
+     "canonical_target": null
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-23",
+   "name": "SearchHighlight",
+   "title": "搜索高亮",
+   "ref_count": 6,
+   "refs": [
+    {
+     "property": "XY.SearchHighlight.Default.TextStyle",
+     "value": "Inherit",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.SearchHighlight.Match.FontWeight",
+     "value": "XY.FontWeight.Medium",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.FontWeight.Medium"
+    },
+    {
+     "property": "XY.SearchHighlight.Match.Foreground",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.SearchHighlight.Match.Background",
+     "value": "XY.Accent.Soft",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Soft"
+    },
+    {
+     "property": "XY.SearchHighlight.Match.Border",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.SearchHighlight.StatusColors",
+     "value": "Forbidden",
+     "kind": "LITERAL",
+     "canonical_target": null
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-1-24",
+   "name": "TruncatedText",
+   "title": "截断文本",
+   "ref_count": 9,
+   "refs": [
+    {
+     "property": "XY.TruncatedText.Default.TextStyle",
+     "value": "Inherit",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.TruncatedText.Default.OverflowMode",
+     "value": "EndEllipsis",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.TruncatedText.Default.Ellipsis",
+     "value": "...",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.TruncatedText.Default.Background",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.TruncatedText.Default.Border",
+     "value": "None",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.TruncatedText.Identifier.TextStyle",
+     "value": "XY.MonoText.Default",
+     "kind": "COMPONENT_REF",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.TruncatedText.Identifier.OverflowMode",
+     "value": "MiddleEllipsis",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.TruncatedText.Identifier.Ellipsis",
+     "value": "...",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.TruncatedText.FullValue",
+     "value": "TooltipOrInspector",
+     "kind": "LITERAL",
+     "canonical_target": null
+    }
+   ]
+  }
+ ]
+}

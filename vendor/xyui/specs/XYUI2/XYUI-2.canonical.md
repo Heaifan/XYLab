@@ -1,0 +1,1512 @@
+# XYUI-2 · Buttons & Inputs｜按钮与输入控件（Canonical）
+
+> XYUI-PILOT R2 产物。基于 `xyui/source/XYUI2/XYUI-2.md`（SHA-256: fa1b393f52d429d2…）reconciliation。
+> 上位规则：A2 Foundation Registry（VALIDATED）+ A3-R2 Canonical Token Architecture。
+> 组件用途/结构/状态/交互/变体/响应式 = 已定稿，保留原样；Foundation 视觉值 = Canonical 引用，无第二套真值。
+> 旧命名按 A3-R2 裁定映射（见 XYUI-2.mapping.json）；未裁定引用见 XYUI-2.gaps.json。
+
+
+- 整理依据
+    - 原始组件设计
+        - XYUI-2.md
+    - 上位规范
+        - XYUI-0.md
+        - XYUI Foundation Registry
+        - A3-R2 Canonical Token Architecture
+    - 整理原则
+        - 保留 XYUI-2 已定稿的组件用途、结构、状态、交互、变体与响应式规则
+        - XYUI-0 制定晚于 XYUI-2，因此重复定义 Foundation 的颜色、字体、圆角、边框、Surface、Focus、Hit Target、DPI 等基础规则一律以上位 Foundation 为准
+        - 所有几何单位统一使用 DIP
+        - Foundation 已有语义时禁止继续保留早期十六进制硬编码
+        - Component-Specific 参数可以保留，但必须进入组件命名空间，禁止业务界面直接写 Magic Number
+        - Canonical Border 颜色使用 XY.Border.Color.*
+        - Canonical State 颜色使用 XY.State.Color.*
+        - Focus 统一采用 XYUI-0 的 Focus Visible + 2 DIP Focus Outline，不再把旧 3 DIP Focus Edge 作为 Input 的正式焦点规则
+        - Input / Button / Checkbox / Radio / Switch 等状态遵循 XY.State.ComposeMode = Single；Focus 独立于背景状态
+        - Light / Dark 由 Foundation Semantic Token 映射，不在组件规范中重复硬编码两套色值
+        - 可访问性、DPI、本地化、视觉尺寸与 Hit Target 分离默认继承 XYUI-0
+
+- 01 · Button / 按钮
+    - 用途
+        - 触发即时操作
+        - 确认、创建、保存、应用、取消等命令
+    - 使用场景
+        - 对话框
+        - Inspector
+        - 工具面板
+        - 表单
+        - 编辑器命令区
+    - 定稿方案
+        - 方案 4 · Action Edge
+    - 设计特征
+        - 保留浅色平面主体 + 底部 Action Edge 的组件语言
+        - Action Edge 是 Button 家族的组件特征，不承担 Focus 语义
+        - Focus 独立使用 Foundation Focus Outline
+        - 避免大面积高饱和实色
+        - 强调工具软件感而非 Web 按钮感
+    - UI代码 / Design Token
+        - XY.Button.Height
+            - Value = 34 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.Button.Radius
+            - Value = XY.Radius.Button
+        - XY.Button.Background.Default
+            - Value = XY.Surface.Raised
+        - XY.Button.Background.Hover
+            - Value = XY.State.Color.Hover
+        - XY.Button.Background.Pressed
+            - Value = XY.State.Color.Pressed
+        - XY.Button.Border.Color
+            - Value = XY.Border.Color.Default
+        - XY.Button.Border.Width
+            - Value = XY.Border.Width.Default
+        - XY.Button.Text
+            - Value = XY.Text.Primary
+        - XY.Button.ActionEdge.Color
+            - Value = XY.Accent.Strong
+        - XY.Button.ActionEdge.Height
+            - Value = 3 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.Button.ActionEdge.HoverHeight
+            - Value = 4 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.Button.Focus
+            - OutlineWidth = XY.Focus.Control.OutlineWidth
+            - OutlineColor = XY.Focus.Control.OutlineColor
+        - XY.Button.HitTarget
+            - Policy = XY.HitTarget.VisualSizeIndependent
+    - 状态
+        - Default
+        - Hover
+        - Pressed
+        - Focus
+        - Disabled
+    - 变体
+        - Primary
+            - 显示 Action Edge
+            - ActionEdge = XY.Accent.Strong
+        - Secondary
+            - 弱化或取消 Action Edge
+        - Danger
+            - 沿用结构
+            - ActionEdge = XY.Semantic.Error.Text
+            - Border = XY.Semantic.Error.Border
+            - 禁止改成大面积高饱和红色按钮
+
+- 02 · Icon Button / 图标按钮
+    - 用途
+        - 以图标触发高频、紧凑型操作
+        - 适用于不需要持续展示文字标签的命令
+    - 使用场景
+        - 工具栏
+        - Inspector
+        - 列表行操作
+        - 标题栏
+        - 编辑器快捷操作区
+    - 定稿方案
+        - 方案 2 · Ghost Reveal
+    - 设计特征
+        - Default 默认不显示容器
+        - 仅显示图标
+        - Hover 后显示浅色 Surface
+        - Pressed 使用更深一级 State Surface
+        - Selected 才显示 Action Edge
+        - 继承 Button 的 Action Edge 语言，但仅用于持续选中状态
+        - Accessible Name 强制存在
+    - UI代码 / Design Token
+        - XY.IconButton.Size
+            - Width = 34 DIP
+            - Height = 34 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.IconButton.IconSize
+            - Value = XY.Icon.Size.M
+        - XY.IconButton.Radius
+            - Value = XY.Radius.Button
+        - XY.IconButton.Icon.Default
+            - Value = XY.Text.Secondary
+        - XY.IconButton.Icon.Hover
+            - Value = XY.Text.Primary
+        - XY.IconButton.Icon.Selected
+            - Value = XY.Accent.Strong
+        - XY.IconButton.Background.Default
+            - Value = Transparent
+        - XY.IconButton.Background.Hover
+            - Value = XY.State.Color.Hover
+        - XY.IconButton.Background.Pressed
+            - Value = XY.State.Color.Pressed
+        - XY.IconButton.Background.Selected
+            - Value = XY.Surface.Selected
+        - XY.IconButton.Border.Selected
+            - Value = XY.Border.Color.Selected
+        - XY.IconButton.ActionEdge.Selected
+            - Value = XY.Accent.Strong
+        - XY.IconButton.ActionEdge.Height
+            - Value = 3 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.IconButton.Focus
+            - OutlineWidth = XY.Focus.Control.OutlineWidth
+            - OutlineColor = XY.Focus.Control.OutlineColor
+        - XY.IconButton.HitTarget.Min
+            - Value = XY.HitTarget.Icon.Min
+        - XY.IconButton.AccessibleName
+            - Value = Required
+    - 状态
+        - Default
+        - Hover
+        - Pressed
+        - Selected
+        - Focus
+        - Disabled
+
+- 03 · Toggle Button / 切换按钮
+    - 用途
+        - 切换并保持某个工具、模式或功能状态
+        - 用于具有明确 ON / OFF 状态的操作
+    - 使用场景
+        - 网格吸附
+        - 正交模式
+        - 世界 / 局部模式
+        - 显示辅助元素
+        - 持续绘制工具
+        - 编辑器工具栏
+    - 定稿方案
+        - 方案 1 · Persistent Edge
+    - 设计特征
+        - OFF 状态保持普通交互 Surface
+        - ON 状态持续显示底部 Action Edge
+        - ON 使用 Active / Selected 语义而非独立硬编码颜色
+        - Focus 独立于 ON / OFF 状态
+        - 通过持续状态边而非高饱和背景表达激活
+    - UI代码 / Design Token
+        - XY.ToggleButton.Height
+            - Value = 34 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.ToggleButton.Radius
+            - Value = XY.Radius.Button
+        - XY.ToggleButton.Background.Off
+            - Value = XY.Surface.Raised
+        - XY.ToggleButton.Background.OffHover
+            - Value = XY.State.Color.Hover
+        - XY.ToggleButton.Background.On
+            - Value = XY.State.Color.Active
+        - XY.ToggleButton.Background.OnHover
+            - Value = XY.State.Color.Hover
+        - XY.ToggleButton.Border.Off
+            - Value = XY.Border.Color.Default
+        - XY.ToggleButton.Border.On
+            - Value = XY.Border.Color.Selected
+        - XY.ToggleButton.Text
+            - Value = XY.Text.Primary
+        - XY.ToggleButton.ActionEdge.On
+            - Value = XY.Accent.Strong
+        - XY.ToggleButton.ActionEdge.Height
+            - Value = 3 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.ToggleButton.ActionEdge.HoverHeight
+            - Value = 4 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.ToggleButton.Focus
+            - OutlineWidth = XY.Focus.Control.OutlineWidth
+            - OutlineColor = XY.Focus.Control.OutlineColor
+    - 状态
+        - Off
+        - OffHover
+        - On
+        - OnHover
+        - Pressed
+        - Focus
+        - Disabled
+
+- 04 · Split Button / 分裂按钮
+    - 用途
+        - 一个控件同时提供主操作与扩展操作菜单
+        - 点击主体直接执行默认动作
+        - 点击箭头打开同类操作菜单
+    - 使用场景
+        - 新建 + 新建类型
+        - 运行 + 运行方式
+        - 导入 + 导入格式
+        - 保存 + 保存选项
+    - 定稿方案
+        - 方案 2 · Soft Partition
+    - 设计特征
+        - 整体保持单一 Button 轮廓
+        - 右侧划分独立菜单点击区
+        - 使用短 Divider 而非贯穿式竖线
+        - 保留底部 Action Edge
+        - 主体和菜单区必须拥有独立 Hover / Pressed 状态
+    - UI代码 / Design Token
+        - XY.SplitButton.Height
+            - Value = 34 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.SplitButton.Radius
+            - Value = XY.Radius.Button
+        - XY.SplitButton.MenuZone.Width
+            - Value = 36 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.SplitButton.Divider.Height
+            - Value = 18 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.SplitButton.Background.Default
+            - Value = XY.Surface.Raised
+        - XY.SplitButton.Background.Hover
+            - Value = XY.State.Color.Hover
+        - XY.SplitButton.Background.Pressed
+            - Value = XY.State.Color.Pressed
+        - XY.SplitButton.Border
+            - Color = XY.Border.Color.Default
+            - Width = XY.Border.Width.Default
+        - XY.SplitButton.Divider.Color
+            - Value = XY.Divider.Default
+        - XY.SplitButton.ActionEdge
+            - Value = XY.Accent.Strong
+        - XY.SplitButton.Text
+            - Value = XY.Text.Primary
+        - XY.SplitButton.Focus
+            - OutlineWidth = XY.Focus.Control.OutlineWidth
+            - OutlineColor = XY.Focus.Control.OutlineColor
+    - 状态
+        - Default
+        - MainHover
+        - MainPressed
+        - MenuHover
+        - MenuPressed
+        - Focus
+        - Disabled
+
+- 05 · DropDown Button / 下拉按钮
+    - 用途
+        - 通过单一点击区域打开操作菜单
+        - 整个控件只负责展开，不承担直接执行动作
+    - 使用场景
+        - 视图选项
+        - 坐标系选择
+        - 显示方式
+        - 排序方式
+        - 构建配置
+    - 定稿方案
+        - 方案 4 · Chevron Track
+    - 设计特征
+        - 整个按钮只有一个点击区域
+        - 右侧 Chevron 拥有独立浅色视觉槽
+        - 视觉槽不代表独立点击区
+        - 无 Divider
+        - 通过“有无 Divider”与 Split Button 明确区分
+        - 继承 Button 的 Action Edge 语言
+    - UI代码 / Design Token
+        - XY.DropDownButton.Height
+            - Value = 34 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.DropDownButton.Radius
+            - Value = XY.Radius.Button
+        - XY.DropDownButton.Background.Default
+            - Value = XY.Surface.Raised
+        - XY.DropDownButton.Background.Hover
+            - Value = XY.State.Color.Hover
+        - XY.DropDownButton.Background.Pressed
+            - Value = XY.State.Color.Pressed
+        - XY.DropDownButton.ChevronTrack.Default
+            - Value = XY.Surface.PanelAlt
+        - XY.DropDownButton.ChevronTrack.Hover
+            - Value = XY.State.Color.Hover
+        - XY.DropDownButton.Border
+            - Color = XY.Border.Color.Default
+            - Width = XY.Border.Width.Default
+        - XY.DropDownButton.ActionEdge
+            - Value = XY.Accent.Strong
+        - XY.DropDownButton.Text
+            - Value = XY.Text.Primary
+        - XY.DropDownButton.Chevron
+            - Value = XY.Text.Secondary
+        - XY.DropDownButton.Focus
+            - OutlineWidth = XY.Focus.Control.OutlineWidth
+            - OutlineColor = XY.Focus.Control.OutlineColor
+    - 规则
+        - Split Button
+            - 存在 Divider
+            - 两个独立点击区域
+        - DropDown Button
+            - 不存在 Divider
+            - 单一点击区域
+
+- 06 · Checkbox / 复选框
+    - 用途
+        - 表示独立布尔状态
+        - 允许单项开启 / 关闭
+        - 支持 Mixed / Indeterminate 部分选中状态
+    - 使用场景
+        - 显示网格
+        - 启用阴影
+        - 锁定对象
+        - 导出选项
+        - 批量属性
+        - 设置面板
+    - 定稿方案
+        - 方案 1 · Clean Square
+    - 设计特征
+        - 采用传统方形 Checkbox 语义
+        - 视觉尺寸使用 Foundation Checkbox Size
+        - 保留 2 DIP 小圆角作为组件专用几何
+        - 选中使用 Selected Surface + Accent Glyph
+        - Mixed 使用 Accent 横线
+        - 不额外加入 Action Edge
+        - 视觉尺寸与实际 Hit Target 分离
+    - UI代码 / Design Token
+        - XY.Checkbox.Size
+            - Value = XY.Size.Checkbox
+        - XY.Checkbox.Radius
+            - Value = 2 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.Checkbox.Background.Unchecked
+            - Value = XY.Surface.Input
+        - XY.Checkbox.Background.Checked
+            - Value = XY.Surface.Selected
+        - XY.Checkbox.Background.Hover
+            - Value = XY.State.Color.Hover
+        - XY.Checkbox.Border.Unchecked
+            - Value = XY.Border.Color.Default
+        - XY.Checkbox.Border.Checked
+            - Value = XY.Border.Color.Selected
+        - XY.Checkbox.Glyph.Checked
+            - Value = XY.Accent.Strong
+        - XY.Checkbox.Glyph.Mixed
+            - Value = XY.Accent.Strong
+        - XY.Checkbox.Text
+            - Value = XY.Text.Primary
+        - XY.Checkbox.Focus
+            - OutlineWidth = XY.Focus.Control.OutlineWidth
+            - OutlineColor = XY.Focus.Control.OutlineColor
+    - 状态
+        - Unchecked
+        - Hover
+        - Checked
+        - CheckedHover
+        - Mixed
+        - Focus
+        - Disabled
+
+- 07 · Radio Button / 单选按钮
+    - 用途
+        - 在同一组选项中选择唯一一项
+        - 表达互斥选择关系
+    - 使用场景
+        - 渲染模式
+        - 坐标空间
+        - 插值模式
+        - 导入策略
+        - 输出模式
+    - 定稿方案
+        - 方案 4 · Accent Halo
+    - 设计特征
+        - 保留传统圆形 Radio 语义
+        - 选中状态使用中心 Accent Dot
+        - 外围增加低饱和 AccentSoft Halo
+        - Halo 只强化当前选择定位，不改变点击语义
+    - UI代码 / Design Token
+        - XY.Radio.Size
+            - Value = XY.Size.Radio
+        - XY.Radio.HaloSize
+            - Value = 22 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.Radio.Background
+            - Value = XY.Surface.Input
+        - XY.Radio.Border.Off
+            - Value = XY.Border.Color.Default
+        - XY.Radio.Border.On
+            - Value = XY.Border.Color.Selected
+        - XY.Radio.Dot.On
+            - Value = XY.Accent.Strong
+        - XY.Radio.Dot.Hover
+            - Value = XY.Accent.Strong
+        - XY.Radio.Halo.On
+            - Value = XY.Accent.Soft
+        - XY.Radio.Halo.Hover
+            - Value = XY.State.Color.Hover
+        - XY.Radio.Text
+            - Value = XY.Text.Primary
+        - XY.Radio.Focus
+            - OutlineWidth = XY.Focus.Control.OutlineWidth
+            - OutlineColor = XY.Focus.Control.OutlineColor
+    - 状态
+        - Off
+        - OffHover
+        - On
+        - OnHover
+        - Focus
+        - Disabled
+
+- 08 · Switch / 开关
+    - 用途
+        - 表达功能级持续开启 / 关闭状态
+        - 强调“当前是否启用”
+    - 使用场景
+        - 自动保存
+        - 实时预览
+        - 自动刷新
+        - 物理模拟
+        - 调试信息
+        - 网络同步
+    - 定稿方案
+        - 方案 1 · Compact Track
+    - 设计特征
+        - 保留经典 Track + Thumb 结构
+        - 正式尺寸收敛到 XYUI-0 的 XY.Size.Switch
+        - OFF 使用中性 Surface
+        - ON 使用 Accent Soft 轨道 + Accent Strong Thumb
+        - 不额外加入 Action Edge
+    - UI代码 / Design Token
+        - XY.Switch.Size
+            - Width = XY.Size.Switch.Width
+            - Height = XY.Size.Switch.Height
+        - XY.Switch.TrackRadius
+            - Value = XY.Radius.Full
+        - XY.Switch.ThumbSize
+            - Value = 14 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.Switch.Track.Off
+            - Value = XY.Surface.PanelAlt
+        - XY.Switch.Track.On
+            - Value = XY.Accent.Soft
+        - XY.Switch.Track.Hover
+            - Value = XY.State.Color.Hover
+        - XY.Switch.Border.Off
+            - Value = XY.Border.Color.Default
+        - XY.Switch.Border.On
+            - Value = XY.Border.Color.Selected
+        - XY.Switch.Thumb.Off
+            - Value = XY.Surface.Raised
+        - XY.Switch.Thumb.On
+            - Value = XY.Accent.Strong
+        - XY.Switch.Thumb.OnHover
+            - Value = XY.Accent.Strong
+        - XY.Switch.Text
+            - Value = XY.Text.Primary
+        - XY.Switch.Focus
+            - OutlineWidth = XY.Focus.Control.OutlineWidth
+            - OutlineColor = XY.Focus.Control.OutlineColor
+    - 状态
+        - Off
+        - OffHover
+        - On
+        - OnHover
+        - Focus
+        - Disabled
+
+- 09 · Text Field / 文本输入框
+    - 用途
+        - 输入单行文本信息
+        - 作为名称、路径、标签、ID 等基础文本编辑入口
+    - 使用场景
+        - 对象名称
+        - 地图名称
+        - 资源路径
+        - 搜索关键词
+        - 标签
+        - Inspector 文本属性
+    - 定稿方案
+        - 方案 2 · Focus Edge
+        - Foundation Reconciliation
+            - 组件的“焦点清晰但克制”意图保留
+            - 旧底部 3 DIP Focus Edge 收敛为 XYUI-0 的 2 DIP Focus Outline
+    - 设计特征
+        - Default 使用完整中性细边框
+        - Focus 不改变控件尺寸与布局
+        - Focus 使用独立 Outline，不参与 Hover / Selected 背景覆盖
+        - 输入 Surface 使用 Foundation Input Surface
+    - UI代码 / Design Token
+        - XY.TextField.Height
+            - Value = XY.Size.Input
+        - XY.TextField.Radius
+            - Value = XY.Radius.Input
+        - XY.TextField.Background.Default
+            - Value = XY.Surface.Input
+        - XY.TextField.Border.Default
+            - Color = XY.Border.Color.Default
+            - Width = XY.Border.Width.Default
+        - XY.TextField.Focus
+            - OutlineWidth = XY.Focus.Control.OutlineWidth
+            - OutlineColor = XY.Focus.Control.OutlineColor
+            - Resize = XY.Focus.Control.Resize
+        - XY.TextField.Text
+            - Value = XY.Text.Primary
+        - XY.TextField.Placeholder
+            - Value = XY.Text.Placeholder
+        - XY.TextField.Caret
+            - Value = XY.Accent.Strong
+        - XY.TextField.ReadOnly.Background
+            - Value = XY.State.ReadOnly.Background
+        - XY.TextField.ReadOnly.Text
+            - Value = XY.State.ReadOnly.Text
+        - XY.TextField.Disabled.Background
+            - Value = XY.State.Disabled.Background
+        - XY.TextField.Disabled.Text
+            - Value = XY.State.Disabled.Text
+        - XY.TextField.Error.Border
+            - Value = XY.Semantic.Error.Border
+    - 状态
+        - Default
+        - Hover
+        - Focus
+        - ReadOnly
+        - Disabled
+        - Error
+
+- 10 · Number Field / 数值输入框
+    - 用途
+        - 输入与快速调整数值参数
+        - 兼顾精确键盘输入与连续拖拽调值
+    - 使用场景
+        - 坐标 X / Y / Z
+        - 旋转角度
+        - 缩放
+        - 尺寸
+        - 半径
+        - 距离
+        - 透明度
+        - 强度
+        - 阈值
+    - 定稿方案
+        - Hybrid Number Field
+        - 方案 2 · Hover Stepper
+            - 作为视觉基底
+        - 方案 3 · Drag Interaction
+            - 吸收拖拽快速调值能力
+    - 设计特征
+        - 默认保持干净数值输入框
+        - Hover / Focus 后显示 Stepper
+        - 继承 Text Field 的 Foundation Focus Outline
+        - 支持 Scrub Drag 连续调值
+        - 不常驻独立拖拽柄
+        - Fine / Coarse Pointer 使用不同入口但共享同一数值模型
+    - UI代码 / Design Token
+        - XY.NumberField.Height
+            - Value = XY.Size.Input
+        - XY.NumberField.Radius
+            - Value = XY.Radius.Input
+        - XY.NumberField.Background.Default
+            - Value = XY.Surface.Input
+        - XY.NumberField.Border.Default
+            - Color = XY.Border.Color.Default
+            - Width = XY.Border.Width.Default
+        - XY.NumberField.Focus
+            - OutlineWidth = XY.Focus.Control.OutlineWidth
+            - OutlineColor = XY.Focus.Control.OutlineColor
+        - XY.NumberField.Stepper.Surface
+            - Value = XY.Surface.PanelAlt
+        - XY.NumberField.Stepper.HoverSurface
+            - Value = XY.State.Color.Hover
+        - XY.NumberField.Text
+            - Value = XY.Text.Primary
+        - XY.NumberField.ScrubIndicator
+            - Value = XY.Accent.Strong
+    - 桌面端交互
+        - 单击
+            - 进入文本编辑
+        - 双击
+            - 全选当前数值
+        - 按住数值区域左右拖动
+            - 进入 Scrub
+            - 向左减小
+            - 向右增大
+        - Hover / Focus
+            - 显示 Stepper
+        - Stepper Up
+            - 增加一个 Step
+        - Stepper Down
+            - 减少一个 Step
+    - 移动端交互
+        - Tap
+            - 进入数字输入
+        - Focus
+            - 显示 - / + 微调入口
+        - Long Press
+            - 进入 Scrub 准备状态
+        - Long Press + Horizontal Drag
+            - 连续调整数值
+        - Scrub 期间
+            - 锁定与其冲突的页面滚动
+        - Release
+            - 提交当前值
+    - 响应式输入原则
+        - Fine Pointer
+            - Mouse Scrub
+            - Hover Stepper
+        - Coarse Pointer
+            - Long Press Scrub
+            - Focus ± Controls
+        - 核心数值模型保持一致
+
+- 11 · Slider / 滑块
+    - 用途
+        - 快速连续调整区间数值
+        - 兼顾粗调与精确输入
+    - 使用场景
+        - 透明度
+        - 音量
+        - 光照强度
+        - 相机速度
+        - 笔刷大小
+        - 时间倍率
+        - LOD 距离
+        - 雾密度
+    - 定稿方案
+        - 方案 3 · Integrated Value
+    - 设计特征
+        - Slider 负责连续粗调
+        - 右侧集成 Number Field 负责精确输入
+        - Number Field 复用 10 · Hybrid Number Field 规范
+        - 轨道保持轻量、低视觉噪声
+        - 拖动时 Accent Rail 明确当前位置
+        - 桌面端与移动端共用同一数据模型
+        - 视觉轨道与触控热区分离
+    - UI代码 / Design Token
+        - XY.Slider.Rail.Height
+            - Value = 4 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.Slider.Rail.Inactive
+            - Value = XY.Divider.Default
+        - XY.Slider.Rail.Active
+            - Value = XY.Accent.Default
+        - XY.Slider.Rail.ActiveDragging
+            - Value = XY.Accent.Strong
+        - XY.Slider.Thumb.Size
+            - Value = 14 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.Slider.Thumb.ActiveSize
+            - Value = 16 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.Slider.Thumb.Background
+            - Value = XY.Surface.Raised
+        - XY.Slider.Thumb.Border
+            - Value = XY.Accent.Strong
+        - XY.Slider.NumberField
+            - Component = 10 · Number Field
+            - Height = XY.Size.Input
+        - XY.Slider.TouchTarget.MinHeight
+            - Value = 44 DIP
+            - Type = COMPONENT_SPECIFIC
+    - 交互
+        - Slider Drag
+            - 连续粗调
+        - Number Field
+            - 精确输入
+            - 支持 Stepper
+            - 支持 Scrub Drag
+        - 移动端
+            - 轨道视觉尺寸保持紧凑
+            - 触控热区独立扩大
+            - 拖动 Thumb 或轨道调值
+
+- 12 · ComboBox / 组合框
+    - 用途
+        - 从候选项中选择并显示当前值
+        - 强调当前值与可展开候选列表
+    - 使用场景
+        - 渲染模式
+        - 地图投影
+        - 图层类型
+        - 抗锯齿方式
+        - 单位
+        - 资源类型
+    - 定稿方案
+        - 方案 3 · Chevron Cell
+    - 设计特征
+        - 主体保持输入字段结构
+        - 右侧固定 Chevron Cell
+        - Chevron Cell 是明确的展开视觉区
+        - Open / Focus 使用 Foundation Focus Outline
+        - 当前值区域保持安静
+        - 与 DropDown Button 的命令语义明确区分
+    - UI代码 / Design Token
+        - XY.ComboBox.Height
+            - Value = XY.Size.Input
+        - XY.ComboBox.Radius
+            - Value = XY.Radius.Input
+        - XY.ComboBox.Background
+            - Value = XY.Surface.Input
+        - XY.ComboBox.Border
+            - Color = XY.Border.Color.Default
+            - Width = XY.Border.Width.Default
+        - XY.ComboBox.ChevronCell.Width
+            - Value = 32 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.ComboBox.ChevronCell.Default
+            - Value = XY.Surface.PanelAlt
+        - XY.ComboBox.ChevronCell.Open
+            - Value = XY.State.Color.Hover
+        - XY.ComboBox.Text
+            - Value = XY.Text.Primary
+        - XY.ComboBox.Chevron
+            - Value = XY.Text.Secondary
+        - XY.ComboBox.Focus
+            - OutlineWidth = XY.Focus.Control.OutlineWidth
+            - OutlineColor = XY.Focus.Control.OutlineColor
+    - 状态
+        - Default
+        - Hover
+        - Focus
+        - Open
+        - Disabled
+
+- 13 · Select / 选择框
+    - 用途
+        - 从固定候选项中选择一个值
+        - 不允许用户自由输入新值
+    - 使用场景
+        - 语言
+        - 质量等级
+        - 状态
+        - 类型
+        - 预设
+        - 枚举属性
+    - 定稿方案
+        - 方案 3 · Split Surface
+    - 设计特征
+        - 左侧显示当前值
+        - 右侧使用独立浅色 Chevron Surface
+        - 整体仍然只有一个点击区域
+        - 不使用 Divider
+        - Open / Focus 使用 Foundation Focus Outline
+        - 比 ComboBox 更强调“固定候选项”
+        - 正式高度收敛到 Foundation Input Size
+    - UI代码 / Design Token
+        - XY.Select.Height
+            - Value = XY.Size.Input
+        - XY.Select.Radius
+            - Value = XY.Radius.Input
+        - XY.Select.Background
+            - Value = XY.Surface.Input
+        - XY.Select.Border
+            - Color = XY.Border.Color.Default
+            - Width = XY.Border.Width.Default
+        - XY.Select.ChevronSurface.Width
+            - Value = 36 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.Select.ChevronSurface.Default
+            - Value = XY.Surface.PanelAlt
+        - XY.Select.ChevronSurface.Open
+            - Value = XY.State.Color.Hover
+        - XY.Select.Text
+            - Value = XY.Text.Primary
+        - XY.Select.Chevron
+            - Value = XY.Text.Secondary
+        - XY.Select.Focus
+            - OutlineWidth = XY.Focus.Control.OutlineWidth
+            - OutlineColor = XY.Focus.Control.OutlineColor
+    - 状态
+        - Default
+        - Hover
+        - Focus
+        - Open
+        - Disabled
+
+- 14 · Text Area / 多行文本框
+    - 用途
+        - 编辑多行、长文本内容
+        - 兼顾普通说明文本与复杂编辑内容
+    - 使用场景
+        - 描述
+        - 备注
+        - 地图说明
+        - 数据集注释
+        - 错误详情
+        - AI / Agent Prompt
+        - JSON / 脚本类文本
+    - 定稿方案
+        - Auto Grow + Editor Area
+        - 方案 3 · Auto Grow
+            - 作为基础行为
+        - 方案 4 · Editor Area
+            - 作为增强编辑模式
+    - 设计特征
+        - 默认随内容自动增长
+        - 达到 MaxHeight 后转为内部滚动
+        - 不依赖桌面端 Resize Grip
+        - 桌面 / Web / 移动端行为一致
+        - 普通模式保持干净文本区域
+        - 复杂文本模式显示顶部 Editor Bar
+        - Editor Bar 可显示格式、行数、字符数、状态
+        - Focus 使用 Foundation Focus Outline
+    - UI代码 / Design Token
+        - XY.TextArea.MinHeight
+            - Value = 54 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.TextArea.PreferredHeight
+            - Value = Auto
+        - XY.TextArea.MaxHeight
+            - Value = SceneToken
+        - XY.TextArea.Radius
+            - Value = XY.Radius.Input
+        - XY.TextArea.Background
+            - Value = XY.Surface.Input
+        - XY.TextArea.Border
+            - Color = XY.Border.Color.Default
+            - Width = XY.Border.Width.Default
+        - XY.TextArea.Focus
+            - OutlineWidth = XY.Focus.Control.OutlineWidth
+            - OutlineColor = XY.Focus.Control.OutlineColor
+        - XY.TextArea.EditorBar.Height
+            - Value = 24 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.TextArea.EditorBar.Background
+            - Value = XY.Surface.PanelAlt
+        - XY.TextArea.Text
+            - Value = XY.Text.Primary
+        - XY.TextArea.SecondaryText
+            - Value = XY.Text.Secondary
+    - 模式
+        - Standard
+            - 纯多行文本
+            - Auto Grow
+        - Editor
+            - Auto Grow
+            - Editor Bar
+            - 行数 / 字符数 / 格式状态
+    - 响应式规则
+        - Desktop
+            - 自动增长
+            - 达到最大高度后滚动
+        - Mobile
+            - 自动增长
+            - 不显示 Resize Grip
+            - Editor Bar 可压缩信息
+
+- 15 · Search Field / 搜索框
+    - 用途
+        - 在内容集合中进行关键词检索
+        - 可同时进入筛选条件
+    - 使用场景
+        - 资源浏览器
+        - 地图内容导航
+        - 对象列表
+        - 数据集列表
+        - 文件列表
+        - 设置项搜索
+    - 定稿方案
+        - 方案 4 · Filter Search
+    - 设计特征
+        - 左侧固定 Search Glyph
+        - 中部为关键词输入区
+        - 右侧固定 Filter Cell
+        - Filter Cell 用于打开筛选条件
+        - Focus 使用 Foundation Focus Outline
+        - 输入后支持 Clear
+        - 搜索和筛选属于同一查询上下文
+    - UI代码 / Design Token
+        - XY.SearchField.Height
+            - Value = XY.Size.Input
+        - XY.SearchField.Radius
+            - Value = XY.Radius.Input
+        - XY.SearchField.Background
+            - Value = XY.Surface.Input
+        - XY.SearchField.Border
+            - Color = XY.Border.Color.Default
+            - Width = XY.Border.Width.Default
+        - XY.SearchField.FilterCell.Width
+            - Value = 35 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.SearchField.FilterCell.Default
+            - Value = XY.Surface.PanelAlt
+        - XY.SearchField.FilterCell.Active
+            - Value = XY.State.Color.Active
+        - XY.SearchField.Text
+            - Value = XY.Text.Primary
+        - XY.SearchField.Placeholder
+            - Value = XY.Text.Placeholder
+        - XY.SearchField.Glyph.Default
+            - Value = XY.Text.Secondary
+        - XY.SearchField.Glyph.Active
+            - Value = XY.Accent.Strong
+        - XY.SearchField.Focus
+            - OutlineWidth = XY.Focus.Control.OutlineWidth
+            - OutlineColor = XY.Focus.Control.OutlineColor
+    - 状态
+        - Empty
+        - Hover
+        - Focus
+        - Typing
+        - Filtering
+        - Searching
+        - NoResult
+        - Disabled
+
+- 16 · Password Field / 密码输入框
+    - 用途
+        - 安全输入敏感密码内容
+        - 默认遮蔽字符
+        - 允许用户临时检查实际输入内容
+    - 使用场景
+        - 登录
+        - 账号设置
+        - API / 服务凭据
+        - 项目加密密码
+        - 敏感配置
+    - 定稿方案
+        - 方案 4 · Press-to-Reveal
+    - 设计特征
+        - 默认使用遮蔽字符
+        - 右侧独立 Reveal Cell
+        - 按住 Eye 显示明文
+        - 松开立即恢复遮蔽
+        - 不采用永久切换式显示
+        - Focus 使用 Foundation Focus Outline
+        - 桌面与移动端保持同一交互语义
+    - UI代码 / Design Token
+        - XY.PasswordField.Height
+            - Value = XY.Size.Input
+        - XY.PasswordField.Radius
+            - Value = XY.Radius.Input
+        - XY.PasswordField.RevealCell.Width
+            - Value = 34 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.PasswordField.Background
+            - Value = XY.Surface.Input
+        - XY.PasswordField.RevealCell.Default
+            - Value = XY.Surface.PanelAlt
+        - XY.PasswordField.RevealCell.Holding
+            - Value = XY.State.Color.Pressed
+        - XY.PasswordField.Border
+            - Color = XY.Border.Color.Default
+            - Width = XY.Border.Width.Default
+        - XY.PasswordField.Focus
+            - OutlineWidth = XY.Focus.Control.OutlineWidth
+            - OutlineColor = XY.Focus.Control.OutlineColor
+    - 桌面端
+        - Pointer Down
+            - 显示密码
+        - Pointer Up
+            - 立即隐藏
+    - 移动端
+        - Touch Hold
+            - 显示密码
+        - Touch Release
+            - 立即隐藏
+
+- 17 · Date Picker / 日期选择器
+    - 用途
+        - 选择与编辑日期
+        - 兼顾精确输入、分段修改与快速日期步进
+    - 使用场景
+        - 日志查询
+        - 历史数据
+        - 版本时间
+        - 模拟日期
+        - 项目计划
+        - 事件日期
+    - 定稿方案
+        - Segmented Date + Quick Step
+        - 方案 2 · Segmented Date
+            - 负责年 / 月 / 日分段编辑
+        - 方案 4 · Date + Quick Step
+            - 负责前一天 / 后一天快速切换
+    - 设计特征
+        - 日期由 Year / Month / Day 三段组成
+        - 点击任一日期段可单独编辑
+        - 左右 Quick Step 默认按 ±1 Day 调整
+        - 保留 Calendar Glyph 打开完整日期面板
+        - Focus 使用 Foundation Focus Outline
+        - 日期显示顺序根据 Locale 自适应
+    - UI代码 / Design Token
+        - XY.DatePicker.Height
+            - Value = XY.Size.Input
+        - XY.DatePicker.Radius
+            - Value = XY.Radius.Input
+        - XY.DatePicker.Background
+            - Value = XY.Surface.Input
+        - XY.DatePicker.Border
+            - Color = XY.Border.Color.Default
+            - Width = XY.Border.Width.Default
+        - XY.DatePicker.Segment.ActiveBackground
+            - Value = XY.Surface.Selected
+        - XY.DatePicker.Segment.ActiveText
+            - Value = XY.Accent.Strong
+        - XY.DatePicker.QuickStep.Glyph
+            - Value = XY.Text.Secondary
+        - XY.DatePicker.CalendarCell.Background
+            - Value = XY.Surface.PanelAlt
+        - XY.DatePicker.Focus
+            - OutlineWidth = XY.Focus.Control.OutlineWidth
+            - OutlineColor = XY.Focus.Control.OutlineColor
+    - 桌面端交互
+        - Click Segment
+            - 定位 Year / Month / Day
+        - Keyboard Up / Down
+            - 调整当前 Segment
+        - Mouse Wheel
+            - MAY · 调整当前 Segment
+        - Previous
+            - -1 Day
+        - Next
+            - +1 Day
+        - Calendar
+            - 打开完整日期选择面板
+    - 移动端交互
+        - Tap Segment
+            - 选择对应日期段
+        - Previous / Next
+            - 快速 ±1 Day
+        - Calendar
+            - 打开触控尺寸日期面板
+    - 本地化
+        - Segment Order
+            - Source = Locale
+        - Layout
+            - Source = XY.Localization.Layout
+
+- 18 · Time Picker / 时间选择器
+    - 用途
+        - 输入与调整具体时间
+        - 支持小时 / 分钟 / 秒的精确编辑与连续调节
+    - 使用场景
+        - 日志时间
+        - 模拟世界时间
+        - 事件触发时间
+        - 时间轴定位
+        - 定时任务
+        - 回放时间
+    - 定稿方案
+        - 方案 4 · Segmented Scrub
+    - 设计特征
+        - 时间由 Hour / Minute / Second Segment 构成
+        - 点击 Segment 进入精确编辑
+        - 桌面端按住 Segment 左右拖动进行 Scrub
+        - 移动端长按 Segment 后左右拖动进行 Scrub
+        - 当前 Segment 使用 Selected Surface
+        - Focus 使用 Foundation Focus Outline
+        - 可根据场景隐藏 Second Segment
+    - UI代码 / Design Token
+        - XY.TimePicker.Height
+            - Value = XY.Size.Input
+        - XY.TimePicker.Radius
+            - Value = XY.Radius.Input
+        - XY.TimePicker.Background
+            - Value = XY.Surface.Input
+        - XY.TimePicker.Border
+            - Color = XY.Border.Color.Default
+            - Width = XY.Border.Width.Default
+        - XY.TimePicker.Segment.ActiveBackground
+            - Value = XY.Surface.Selected
+        - XY.TimePicker.Segment.ActiveText
+            - Value = XY.Accent.Strong
+        - XY.TimePicker.ScrubIndicator
+            - Value = XY.Accent.Default
+        - XY.TimePicker.Focus
+            - OutlineWidth = XY.Focus.Control.OutlineWidth
+            - OutlineColor = XY.Focus.Control.OutlineColor
+    - 桌面端交互
+        - Click Segment
+            - 精确编辑当前时间段
+        - Drag Segment
+            - 连续 Scrub
+        - Keyboard Up / Down
+            - 调整当前 Segment
+    - 移动端交互
+        - Tap Segment
+            - 进入精确编辑
+        - Long Press + Horizontal Drag
+            - 进入 Scrub
+        - Release
+            - 提交当前值
+    - 变体
+        - HH:mm
+            - 普通时间
+        - HH:mm:ss
+            - 精确时间
+
+- 19 · Color Picker / 颜色选择器
+    - 用途
+        - 显示与选择颜色
+        - 同时表达 RGB / HEX 与 Alpha 透明度
+    - 使用场景
+        - 材质颜色
+        - 灯光颜色
+        - 图层颜色
+        - Gizmo / Debug 色
+        - 区域标识色
+        - UI Theme Token
+    - 定稿方案
+        - 方案 4 · Alpha Preview
+    - 设计特征
+        - 左侧颜色预览采用棋盘格背景
+        - 颜色覆盖于棋盘格上直接表现 Alpha
+        - 右侧显示 HEX + Alpha 数值
+        - 点击字段打开完整 Color Panel
+        - Focus / Open 使用 Foundation Focus Outline
+        - 棋盘格使用 Foundation 中性 Surface/Border 语义，不再硬编码独立主题色
+    - UI代码 / Design Token
+        - XY.ColorPicker.Height
+            - Value = XY.Size.Input
+        - XY.ColorPicker.Radius
+            - Value = XY.Radius.Input
+        - XY.ColorPicker.Swatch.Width
+            - Value = 28 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.ColorPicker.Swatch.Height
+            - Value = 20 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.ColorPicker.Background
+            - Value = XY.Surface.Input
+        - XY.ColorPicker.Border
+            - Color = XY.Border.Color.Default
+            - Width = XY.Border.Width.Default
+        - XY.ColorPicker.Checker.LightCell
+            - Value = XY.Surface.Raised
+        - XY.ColorPicker.Checker.DarkCell
+            - Value = XY.Border.Color.Subtle
+        - XY.ColorPicker.Text
+            - Value = XY.Text.Primary
+        - XY.ColorPicker.Focus
+            - OutlineWidth = XY.Focus.Control.OutlineWidth
+            - OutlineColor = XY.Focus.Control.OutlineColor
+    - 状态
+        - Default
+        - Hover
+        - Focus
+        - Open
+        - Disabled
+    - 变体
+        - RGB
+        - RGBA
+
+- 20 · Bool Property / 布尔属性控件
+    - 用途
+        - 在 Inspector 中表达布尔型属性
+        - 强调功能当前是否启用
+    - 使用场景
+        - 启用物理模拟
+        - 实时刷新
+        - 投射阴影
+        - 可见
+        - 允许导航
+        - 自动更新
+    - 定稿方案
+        - 方案 3 · Switch Property
+    - 设计特征
+        - 左侧显示 Property Label
+        - Value 区复用 08 · Switch
+        - 属性行本身保持轻量
+        - 不额外增加 Value Cell
+        - ON / OFF 通过 Switch 轨道与 Thumb 明确表达
+        - Inspector 对齐正式服从 XYUI-0 的 Unified Left Alignment
+        - Switch 从 Value Column 左侧基线开始，不再强制右对齐
+    - UI代码 / Design Token
+        - XY.BoolProperty.Row.Height
+            - Value = 34 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.BoolProperty.Label.Text
+            - Value = XY.Text.Primary
+        - XY.BoolProperty.Label.Alignment
+            - Value = XY.Alignment.Label
+        - XY.BoolProperty.Value.Alignment
+            - Value = XY.Alignment.Value
+        - XY.BoolProperty.Switch
+            - Component = 08 · Switch
+        - XY.BoolProperty.InspectorColumn
+            - Value = SharedPropertyColumnRule
+    - 布局
+        - Label
+            - 左对齐
+        - Value
+            - 左对齐
+        - InspectorColumn
+            - 继承统一 Property 列宽规则
+
+- 21 · Number Property / 数值属性行
+    - 用途
+        - 在 Inspector 中显示与编辑数值型属性
+        - 同时支持快速连续调值与精确数值输入
+    - 使用场景
+        - 质量
+        - 速度
+        - 距离
+        - 海拔
+        - 透明度
+        - 强度
+        - 尺寸
+    - 定稿方案
+        - 方案 3 · Label Scrub
+    - 设计特征
+        - 左侧 Property Label
+        - 右侧 Hybrid Number Field
+        - Label 同时承担 Scrub Handle
+        - 不增加额外拖拽按钮
+        - 桌面端拖动 Label 连续调值
+        - 移动端长按 Label 后左右拖动
+        - 点击右侧 Field 进入精确输入
+        - 单位显示在 Value Field 尾部
+        - Label / Value 共同服从 Foundation 左对齐阅读基线
+    - UI代码 / Design Token
+        - XY.NumberProperty.Row.Height
+            - Value = 34 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.NumberProperty.Label.Text
+            - Value = XY.Text.Primary
+        - XY.NumberProperty.Label.ScrubActive
+            - Value = XY.Accent.Strong
+        - XY.NumberProperty.Row.ScrubBackground
+            - Value = XY.State.Color.Hover
+        - XY.NumberProperty.ScrubIndicator
+            - Value = XY.Accent.Strong
+        - XY.NumberProperty.ValueField.Height
+            - Value = XY.Size.Control.S
+        - XY.NumberProperty.ValueField.Component
+            - Value = 10 · Number Field
+        - XY.NumberProperty.Unit.Text
+            - Value = XY.Text.Tertiary
+        - XY.NumberProperty.Label.Alignment
+            - Value = XY.Alignment.Label
+        - XY.NumberProperty.Value.Alignment
+            - Value = XY.Alignment.Number
+    - 交互
+        - Desktop
+            - Click Value
+                - 精确输入
+            - Drag Label
+                - Scrub 连续调值
+        - Mobile
+            - Tap Value
+                - 精确输入
+            - Long Press Label + Horizontal Drag
+                - Scrub 连续调值
+
+- 22 · Vector Property / 向量属性控件
+    - 用途
+        - 在 Inspector 中编辑 Vector2 / Vector3 / Vector4 等多分量数值
+        - 根据可用宽度自动调整布局
+    - 使用场景
+        - Position
+        - Rotation
+        - Scale
+        - Size
+        - Direction
+        - Bounds
+        - Vector2 / Vector3 / Vector4
+    - 定稿方案
+        - 方案 3 · Adaptive Vector
+    - 设计特征
+        - 每个轴使用独立 Number Field
+        - 轴标识与数值始终保持明确对应
+        - 宽度充足时 XYZ 横向并列
+        - 中等宽度时 Label 与向量字段分行
+        - 窄 Inspector / 移动端时 XYZ 自动纵向排列
+        - 不通过强行压缩 Field 维持单行
+        - 各轴继续继承 Hybrid Number Field 的 Scrub 能力
+        - 响应式重排不改变数据和交互语义
+    - UI代码 / Design Token
+        - XY.VectorProperty.Row.Height
+            - Value = Auto
+        - XY.VectorProperty.AxisField.Height
+            - Value = XY.Size.Control.S
+        - XY.VectorProperty.AxisCell.Width
+            - Value = 25 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.VectorProperty.AxisCell.Background
+            - Value = XY.Surface.PanelAlt
+        - XY.VectorProperty.Axis.Text
+            - Value = XY.Text.Secondary
+        - XY.VectorProperty.Field.Background
+            - Value = XY.Surface.Input
+        - XY.VectorProperty.Field.Border
+            - Value = XY.Border.Color.Default
+        - XY.VectorProperty.Text
+            - Value = XY.Text.Primary
+        - XY.VectorProperty.Label.Alignment
+            - Value = XY.Alignment.Label
+        - XY.VectorProperty.Value.Alignment
+            - Value = XY.Alignment.Number
+    - 响应式规则
+        - Wide
+            - Property Label + X + Y + Z 同行
+        - Medium
+            - Property Label 独占一行
+            - XYZ 下一行并列
+        - Compact
+            - Property Label 独占一行
+            - XYZ 纵向排列
+    - 交互
+        - Click Axis Value
+            - 精确输入
+        - Desktop Drag
+            - Scrub 当前轴
+        - Mobile Long Press + Drag
+            - Scrub 当前轴
+
+- 23 · Enum Property / 枚举属性控件
+    - 用途
+        - 在 Inspector 中编辑固定枚举型属性
+        - 显示当前枚举值并展开候选列表
+    - 使用场景
+        - 渲染模式
+        - 投影模式
+        - 道路等级
+        - AI 状态
+        - 混合模式
+        - 质量等级
+    - 定稿方案
+        - 方案 3 · Split Surface Property
+    - 设计特征
+        - 左侧为 Property Label
+        - 右侧直接复用 13 · Select / Split Surface
+        - 当前值区域与 Chevron Surface 明确分工
+        - 整体仍为单一选择控件
+        - Open / Focus 使用 Foundation Focus Outline
+        - 不为 Inspector 重新创造独立下拉视觉
+    - UI代码 / Design Token
+        - XY.EnumProperty.Row.Height
+            - Value = 34 DIP
+            - Type = COMPONENT_SPECIFIC
+        - XY.EnumProperty.Label.Alignment
+            - Value = XY.Alignment.Label
+        - XY.EnumProperty.Value.Alignment
+            - Value = XY.Alignment.Value
+        - XY.EnumProperty.Value.Height
+            - Value = XY.Size.Control.S
+        - XY.EnumProperty.Value.Component
+            - Value = 13 · Select
+        - XY.EnumProperty.Text
+            - Value = XY.Text.Primary
+
+- 24 · Reference Property / 引用属性控件
+    - 用途
+        - 在 Inspector 中引用其他对象、资源或数据
+        - 同时提供引用身份识别与快速操作能力
+    - 使用场景
+        - Entity Reference
+        - Asset Reference
+        - Resource Reference
+        - Dataset Reference
+        - Material Reference
+        - Texture Reference
+        - Script Reference
+    - 定稿方案
+        - Identity Compact Reference
+        - 方案 2 · Identity Reference
+            - 提供 Name / Type / ID 身份信息
+        - 方案 3 · Compact Reference Cell
+            - 提供紧凑布局与快速操作能力
+    - 设计特征
+        - 主名称优先显示
+        - 辅助信息显示 Type · ID
+        - 左侧 Type Cell / Resource Glyph
+        - 右侧集成 Locate 与 Browse
+        - 不额外堆叠独立操作按钮
+        - 同名引用可通过 Type / ID 区分
+        - 宽度不足时按优先级隐藏辅助信息而不是强行压缩
+        - Focus 使用 Foundation Focus Outline
+        - Missing Reference 与普通 Empty 必须使用不同语义
+    - UI代码 / Design Token
+        - XY.ReferenceProperty.Row.Height
+            - Value = Auto
+        - XY.ReferenceProperty.Field.MinHeight
+            - Value = XY.Size.Control.S
+        - XY.ReferenceProperty.Radius
+            - Value = XY.Radius.Input
+        - XY.ReferenceProperty.Background
+            - Value = XY.Surface.Input
+        - XY.ReferenceProperty.Border
+            - Color = XY.Border.Color.Default
+            - Width = XY.Border.Width.Default
+        - XY.ReferenceProperty.TypeCell.Background
+            - Value = XY.Surface.PanelAlt
+        - XY.ReferenceProperty.TypeCell.Active
+            - Value = XY.State.Color.Hover
+        - XY.ReferenceProperty.Name.Text
+            - Value = XY.Text.Primary
+        - XY.ReferenceProperty.Identity.Text
+            - Value = XY.Text.Tertiary
+        - XY.ReferenceProperty.Action.Glyph
+            - Value = XY.Text.Secondary
+        - XY.ReferenceProperty.Action.Active
+            - Value = XY.Accent.Strong
+        - XY.ReferenceProperty.Focus
+            - OutlineWidth = XY.Focus.Control.OutlineWidth
+            - OutlineColor = XY.Focus.Control.OutlineColor
+        - XY.ReferenceProperty.Missing.Text
+            - Value = XY.Semantic.Error.Text
+        - XY.ReferenceProperty.Missing.Border
+            - Value = XY.Semantic.Error.Border
+    - 身份信息
+        - Name
+            - 主要可读名称
+        - Type
+            - 引用对象类型
+        - ID
+            - 稳定唯一标识
+    - 交互
+        - Locate
+            - 定位并高亮当前引用对象
+        - Browse
+            - 打开引用选择器
+            - 支持替换当前引用
+        - Clear
+            - 清除当前引用
+        - Desktop Drag & Drop
+            - 允许兼容类型的对象 / 资源直接拖入赋值
+        - Mobile Tap
+            - 打开引用选择器
+    - 异常状态
+        - Empty
+            - 当前无引用
+        - Missing Reference
+            - 引用目标丢失
+            - 必须明确显示错误语义
+            - 不得伪装成普通 Empty
+            - 不得只靠颜色表达
+        - Type Mismatch
+            - 拖入或指定的对象类型不兼容
+            - 使用错误文字 / 图标 / 边界至少两种表达通道
+    - 响应式规则
+        - Wide
+            - Type Glyph
+            - Name
+            - Type · ID
+            - Locate
+            - Browse
+        - Compact
+            - Type Glyph
+            - Name
+            - Locate
+            - Browse
+            - Type · ID 可隐藏
+        - Mobile / Very Narrow
+            - Name 与身份信息独立区域
+            - Locate / Browse 自动换至操作行
+            - 禁止强制压缩成不可点击的小图标
+
+- 全局继承规则
+    - Foundation Priority
+        - XYUI-0 Foundation 优先于 XYUI-2 早期重复基础参数
+    - Canonical Namespace
+        - Border Color = XY.Border.Color.*
+        - Border Width = XY.Border.Width.*
+        - State Color = XY.State.Color.*
+        - Text Color = XY.Text.*
+        - Surface = XY.Surface.*
+        - Accent = XY.Accent.*
+    - Focus
+        - Source = XY.Focus.*
+        - Input 旧 3 DIP Focus Edge 不再作为正式 Focus 实现
+        - Action Edge 仍可作为 Button 家族组件语义，但不得承担 Focus 语义
+    - State
+        - Source = XY.State.*
+        - ComposeMode = Single
+        - Focus 独立
+        - 状态切换不得导致尺寸变化或布局跳动
+    - Hit Target
+        - Source = XY.HitTarget.*
+        - 视觉尺寸与实际交互热区分离
+    - Accessibility
+        - Source = XY.Accessibility.*
+        - Icon Button 必须有 Accessible Name
+        - Error / Warning / Status / Missing Reference 禁止只靠颜色表达
+    - DPI
+        - Unit = DIP
+        - PhysicalPixelHardcode = Forbidden
+    - Localization
+        - Source = XY.Localization.*
+        - Date Segment Order 随 Locale
+        - 长名称允许 Expand / Ellipsis / Wrap
+    - Component-Specific Token
+        - 允许保留组件独有尺寸与结构参数
+        - 必须进入 XY.<Component>.* 命名空间
+        - 禁止业务界面直接硬编码同一参数

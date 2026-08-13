@@ -1,0 +1,6 @@
+{
+  "phase": "XYUI-PILOT-R5-FAST-CLOSE",
+  "gap_count": 0,
+  "gaps": [],
+  "note": "XYUI-5 设计稿 0 hex / 0 px，全部语义 REF Foundation 或上游组件；无缺失 Token。原稿 Spacing 档位命名（None/XS/S/M/L/XL）为旧命名收敛（Foundation 真值 XY.Space.1~12），非 GAP。"
+}

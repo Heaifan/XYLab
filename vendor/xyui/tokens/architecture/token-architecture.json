@@ -1,0 +1,226 @@
+{
+ "architecture_version": "0.1.0",
+ "phase": "XYUI-A3-R2",
+ "layers": {
+  "PRIMITIVE": {
+   "definition": "承载基础值（颜色 hex / DIP 尺寸等）；A3-R2 以 shared value group 登记，正式 Primitive Token 命名留 A3-R3",
+   "formal_primitive_token": "NOT_YET_NAMED"
+  },
+  "SEMANTIC": {
+   "definition": "承载设计语义（XY.Surface.Panel / XY.Text.Primary 等）"
+  },
+  "ALIAS_MAPPING": {
+   "definition": "仅在 Source 明确依赖时建立（EXPLICIT_ALIAS / EXPLICIT_MAPPING / A2 已裁定）；禁止 value-equality-only alias"
+  },
+  "COMPOSITE_RULE": {
+   "definition": "组合多个 Token 或表达非 Scalar 规则；不得伪装成单值 Token（如 Border 结构规则）"
+  }
+ },
+ "rulings": {
+  "border_ntc": {
+   "color_namespace": [
+    "XY.Border.Color.Subtle",
+    "XY.Border.Color.Default",
+    "XY.Border.Color.Strong",
+    "XY.Border.Color.Focus",
+    "XY.Border.Color.Selected"
+   ],
+   "width_namespace": [
+    "XY.Border.Width.None",
+    "XY.Border.Width.Default",
+    "XY.Border.Width.Strong",
+    "XY.Border.Width.Focus",
+    "XY.Border.Width.Selected"
+   ],
+   "composite_demoted": [
+    "XY.Border.Container",
+    "XY.Border.Control",
+    "XY.Border.Strong",
+    "XY.Border.Focus",
+    "XY.Border.Selected"
+   ],
+   "note": "0.10 中的 XY.Border.Strong/Focus/Selected 为宽度+样式复合规则，不作为 Scalar Token（人工裁定）"
+  },
+  "state_ntc": {
+   "color_namespace": [
+    "XY.State.Color.Hover",
+    "XY.State.Color.Pressed",
+    "XY.State.Color.Selected",
+    "XY.State.Color.Active",
+    "XY.State.Color.Focus",
+    "XY.State.Color.Dragging",
+    "XY.State.Color.DropTarget.Background",
+    "XY.State.Color.DropTarget.Border"
+   ],
+   "state_semantics_kept": [
+    "XY.State.Selected",
+    "XY.State.Dragging",
+    "XY.State.DropTarget"
+   ],
+   "note": "0.20 的状态行为语义 Token 名称不变；0.2-F 颜色迁入 XY.State.Color.*（人工裁定）"
+  },
+  "identical_redeclaration": {
+   "canonical_owner": "XYUI.Foundation.ColorSystem.TextColor（0.2-B）",
+   "ref_occurrences": [
+    "XY.Text.Primary@CorePalette",
+    "XY.Text.Secondary@CorePalette",
+    "XY.Text.Link@Accent"
+   ],
+   "note": "其他完全相同 occurrence 记录为 IDENTICAL_REDECLARATION_REF，不产生第二份值源"
+  },
+  "explicit_semantic_alias": {
+   "XY.Text.Link": "XY.Accent.Default（L398）",
+   "XY.Tool.Active": "XY.Accent.Strong（L399）",
+   "XY.Button.Primary": "XY.Accent.Strong（L400）",
+   "XY.Tag.Accent": "XY.Accent.Soft（L396）"
+  },
+  "color_alias_policy": {
+   "value_equality_only_alias": "FORBIDDEN",
+   "same_color_multi_semantic": "ALLOWED via shared primitive value group",
+   "note": "同色≠同义。多个 Semantic Token 可引用同一 Primitive Value；仅 Source 明确语义来源才建 Semantic Alias"
+  }
+ },
+ "primitive_value_groups": [
+  {
+   "primitive_value": "#D8E7F2/#35536A",
+   "member_semantic_tokens": [
+    "XY.Accent.Soft",
+    "XY.Color.Selected",
+    "XY.Surface.Selected"
+   ]
+  },
+  {
+   "primitive_value": "#4E7B66/#76A58A",
+   "member_semantic_tokens": [
+    "XY.Color.Success",
+    "XY.Semantic.Success.Text"
+   ]
+  },
+  {
+   "primitive_value": "#A57634/#D0A05C",
+   "member_semantic_tokens": [
+    "XY.Color.Warning",
+    "XY.Editor.Dirty",
+    "XY.Semantic.Warning.Text"
+   ]
+  },
+  {
+   "primitive_value": "#B34F58/#D4767D",
+   "member_semantic_tokens": [
+    "XY.Color.Error",
+    "XY.Semantic.Error.Text"
+   ]
+  },
+  {
+   "primitive_value": "#A8B2B8/#697983",
+   "member_semantic_tokens": [
+    "XY.State.Disabled.Text",
+    "XY.Text.Disabled"
+   ]
+  },
+  {
+   "primitive_value": "#F9FBFC/#222E36",
+   "member_semantic_tokens": [
+    "XY.Surface.PanelAlt",
+    "XY.Surface.Toolbar"
+   ]
+  },
+  {
+   "primitive_value": "#FFFFFF/#2A3842",
+   "member_semantic_tokens": [
+    "XY.Surface.Input",
+    "XY.Surface.Raised"
+   ]
+  },
+  {
+   "primitive_value": "#4A789E/#82A9C5",
+   "member_semantic_tokens": [
+    "XY.Accent.Default"
+   ]
+  },
+  {
+   "primitive_value": "#356C99/#7FB0D5",
+   "member_semantic_tokens": [
+    "XY.Accent.Strong"
+   ]
+  },
+  {
+   "primitive_value": "#647681/#B3BFC6",
+   "member_semantic_tokens": [
+    "XY.State.ReadOnly.Text"
+   ]
+  }
+ ],
+ "explicit_dependencies_registry": [
+  {
+   "source_line": "L1265",
+   "from": "0.15 Icon",
+   "to": "0.8 Sizing",
+   "relation": "EXPLICIT_MAPPING",
+   "note": "图标尺寸沿用 0.8 已定的 14/16/20 DIP"
+  },
+  {
+   "source_line": "L1822",
+   "from": "0.25 Scroll",
+   "to": "0.8 Sizing",
+   "relation": "EXPLICIT_MAPPING",
+   "note": "滚动条视觉宽度继续沿用 0.8"
+  },
+  {
+   "source_line": "L1915",
+   "from": "0.27 Resize",
+   "to": "0.22 HitTarget",
+   "relation": "EXPLICIT_MAPPING",
+   "note": "Splitter Hit Target 沿用 0.22，至少 8 DIP"
+  },
+  {
+   "source_line": "L1917",
+   "from": "0.27 Resize",
+   "to": "0.16 Layout",
+   "relation": "EXPLICIT_MAPPING",
+   "note": "0.16 已定默认布局尺寸保持不变"
+  },
+  {
+   "source_line": "L1112-1113",
+   "from": "0.11 Divider",
+   "to": "0.2-D / 0.10",
+   "relation": "EXPLICIT_MAPPING",
+   "note": "颜色沿用 0.2-D，厚度沿用 0.10"
+  },
+  {
+   "source_line": "L1611",
+   "from": "0.21 Focus",
+   "to": "XY.Border.Focus",
+   "relation": "EXPLICIT_ALIAS",
+   "note": "Focus 颜色沿用 XY.Border.Focus"
+  },
+  {
+   "source_line": "L1563",
+   "from": "0.20 InteractionState",
+   "to": "0.2-F",
+   "relation": "EXPLICIT_MAPPING",
+   "note": "状态颜色沿用 0.2-F"
+  },
+  {
+   "source_line": "L2133",
+   "from": "0.31 A11y",
+   "to": "0.21 Focus",
+   "relation": "EXPLICIT_MAPPING",
+   "note": "Focus 视觉规则沿用 0.21"
+  },
+  {
+   "source_line": "L2146",
+   "from": "0.31 A11y",
+   "to": "0.22 HitTarget",
+   "relation": "EXPLICIT_MAPPING",
+   "note": "Hit Target 继续沿用 0.22"
+  },
+  {
+   "source_line": "A2-R2",
+   "from": "0.19 Density",
+   "to": "0.8 Sizing",
+   "relation": "A2_CONFIRMED",
+   "note": "6 条 maps_to/overrides 已裁定"
+  }
+ ]
+}

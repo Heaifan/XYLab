@@ -1,0 +1,29 @@
+{
+  "phase": "XYUI-PILOT-R6-FAST-CLOSE",
+  "gap_count": 1,
+  "gaps": [
+    {
+      "gap_id": "XYUI6-GAP-001",
+      "type": "MISSING_TOKEN",
+      "item": "SORT_INDICATOR_SEMANTIC",
+      "detail": "排序方向指示符（↑↓ 作为 Secondary Direction Indicator 的语义与 glyph）无 Foundation 专用 Semantic Token。设计稿明确排序主表达必须为字段 + 方向语义文字（人口 · 从高到低 / 最近修改），箭头只允许辅助；但辅助指示符本身的语义 Token（方向 glyph 家族）未定义，且与 XYUI1-GAP-001（Icon glyph registry 未建立）同家族。本版不伪造 Canonical Token，由后续 Token Source 阶段登记并裁决。",
+      "occurrences": 4,
+      "components": [
+        "6.02 Table（Header 排序提示）",
+        "6.09 CollectionToolbar.SortArea（名称 ↑ / 修改时间 ↓）",
+        "6.10 Column（Header Sort Indicator）",
+        "6.13 Sorting（DirectionIndicator = Optional/SecondaryOnly）"
+      ],
+      "blocking": false
+    }
+  ],
+  "notes": [
+    "Data Row semantic token（行高/密度档位）：按既有先例裁定为 COMPONENT_SPECIFIC 组件档位（List/Table/DataGrid/Row/ItemView 各自 DIP 档），消费 XY.Density.* Context，非 GAP。",
+    "Table separator role：XY.Divider.ListRow / XY.Divider.Header / XY.Divider.VerticalSplit 已覆盖，非 GAP。",
+    "Aggregation indicator（6.15 组摘要）：以 XY.Text.Secondary 文本 + XY.Alignment.Number 数值表达，无专门视觉 Token 需求，非 GAP。",
+    "Frozen-column shadow（6.10 冻结列边界）：以 XY.Border.Color.Subtle 竖分隔表达，不引入阴影第二真值，非 GAP。",
+    "Data-density-specific parameter：Density 合同归 Foundation（XY.Density.*），XYUI-6 只消费，非 GAP。",
+    "Mini Bar / Mini Progress（6.12 Cell）：REF XYUI-4 ProgressBar Inline Compact Progress 既有 Variant，非 GAP。",
+    "Zebra 斑马纹（6.02）：XY.Surface.Panel / PanelAlt 交替低对比语义，非 GAP。"
+  ]
+}

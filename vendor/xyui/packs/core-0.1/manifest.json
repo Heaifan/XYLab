@@ -1,0 +1,230 @@
+{
+  "pack_id": "XYUI-Core-0.1",
+  "pack_version": "0.1.0",
+  "phase": "XYUI-PILOT",
+  "created_for": "XYLab Agent",
+  "status": "READY_FOR_XYLAB_PILOT",
+  "included_specs": {
+    "XYUI-0": {
+      "available": true,
+      "foundation_registry": "xyui/registry/foundation/foundation-registry.json",
+      "registry_status": "VALIDATED",
+      "registry_commit": "5f288e6",
+      "registry_sha256": "748a0ffaf885a7b3ba1d090257301fc2496eca05b88e9778579d42af7d828a71",
+      "canonical_token_architecture": "xyui/tokens/architecture/token-canonical-map.json",
+      "architecture_commit": "5f288e6",
+      "architecture_sha256": "fbe3a34a2d1b056b85ca2279e286653477fbbcbae9cdaa928d2579303e392d25",
+      "source": "xyui/source/XYUI0/XYUI-0.md",
+      "source_sha256": "e564a4b4bffc518b5df3144ca5834995ce7abd6b649853f2fa845afa3658d0b6"
+    },
+    "XYUI-1": {
+      "available": true,
+      "status": "CLOSED",
+      "canonical_spec": "xyui/specs/XYUI1/XYUI-1.canonical.md",
+      "mapping": "xyui/specs/XYUI1/XYUI-1.mapping.json",
+      "gaps": "xyui/specs/XYUI1/XYUI-1.gaps.json",
+      "source": "xyui/source/XYUI1/XYUI-1.md",
+      "source_bytes": 36412,
+      "source_sha256": "9709a4fde7ec0e2211484f2fdd51a493ef7d472155f332c74bcd350ca0b0a462",
+      "canonical_sha256": "ef623537a5017478b25bc40394f376c8f7872d2626f4bccd5ea4286eba029e0f",
+      "reconciled_commit": "a2076df7"
+    },
+    "XYUI-2": {
+      "available": true,
+      "status": "CLOSED",
+      "canonical_spec": "xyui/specs/XYUI2/XYUI-2.canonical.md",
+      "mapping": "xyui/specs/XYUI2/XYUI-2.mapping.json",
+      "gaps": "xyui/specs/XYUI2/XYUI-2.gaps.json",
+      "source": "xyui/source/XYUI2/XYUI-2.md",
+      "source_bytes": 51858,
+      "source_sha256": "fa1b393f52d429d23c258294531df5d0cd02b0eea621f12ab70395989c6fe86d",
+      "canonical_sha256": "1a51c0b1a1e913b9fbe6417df1c174e6e4ef11165a41291b56d983b6a0a069cf",
+      "reconciled_commit": "c92a873e"
+    },
+    "XYUI-3": {
+      "available": true,
+      "status": "CLOSED",
+      "canonical_spec": "xyui/specs/XYUI3/XYUI-3.canonical.md",
+      "mapping": "xyui/specs/XYUI3/XYUI-3.mapping.json",
+      "gaps": "xyui/specs/XYUI3/XYUI-3.gaps.json",
+      "source": "xyui/source/XYUI3/XYUI-3.md",
+      "source_bytes": 338481,
+      "source_sha256": "4c91ba6aaf182969d5b466c631c3e584f0dbc6b31548d8ee5103e187e8957f1d",
+      "canonical_sha256": "46ba1abd090279a21c68c16af9ce653124bd1d1cf8b553fc11f140da46a83925",
+      "reconciled_commit": "ae79ebea"
+    },
+    "XYUI-4": {
+      "available": true,
+      "status": "CLOSED",
+      "canonical_spec": "xyui/specs/XYUI4/XYUI-4.canonical.md",
+      "mapping": "xyui/specs/XYUI4/XYUI-4.mapping.json",
+      "gaps": "xyui/specs/XYUI4/XYUI-4.gaps.json",
+      "source": "xyui/source/XYUI4/XYUI-4.md",
+      "source_bytes": 155526,
+      "source_sha256": "1d92ca14813ee9377b1a19a9736fdbc3c5226a95dc4ac0815bda50d2e7281bfe",
+      "canonical_sha256": "17dcc6df73d7749c3c8ed31bbafdcd40227c9c29bf420e4c4c36137b42832ae9",
+      "reconciled_commit": "3587ff0"
+    },
+    "XYUI-5": {
+      "available": true,
+      "status": "CLOSED",
+      "canonical_spec": "xyui/specs/XYUI5/XYUI-5.canonical.md",
+      "mapping": "xyui/specs/XYUI5/XYUI-5.mapping.json",
+      "gaps": "xyui/specs/XYUI5/XYUI-5.gaps.json",
+      "source": "xyui/source/XYUI5/XYUI-5.md",
+      "source_bytes": 252471,
+      "source_sha256": "45734e3f4d305e173983f09d6348405d81ec5c97ff8cabe68bb77c641434c523",
+      "canonical_sha256": "c38c5081897388315db843a8933ef532cc35e83c053e353b1f98ecf911e60143",
+      "reconciled_commit": "9345728"
+    },
+    "XYUI-6": {
+      "available": true,
+      "status": "CLOSED",
+      "canonical_spec": "xyui/specs/XYUI6/XYUI-6.canonical.md",
+      "mapping": "xyui/specs/XYUI6/XYUI-6.mapping.json",
+      "gaps": "xyui/specs/XYUI6/XYUI-6.gaps.json",
+      "source": "xyui/source/XYUI6/XYUI-6.md",
+      "source_bytes": 161709,
+      "source_sha256": "15dcf491e7d2512994e2c140b1ea4a526b58aec21f70935d5faeef8f8e92e358",
+      "canonical_sha256": "0b54ccd49cf0e53b54b6142244d0d9e65ed452b4b28b3a1dcb8b6c4364beb7f4",
+      "reconciled_commit": "f7925236"
+    },
+    "XYUI-7": {
+      "available": true,
+      "status": "CANONICAL_COMPLETE",
+      "canonical_spec": "xyui/specs/XYUI7/XYUI-7.canonical.md",
+      "mapping": "xyui/specs/XYUI7/XYUI-7.mapping.json",
+      "gaps": "xyui/specs/XYUI7/XYUI-7.gaps.json",
+      "source": "xyui/source/XYUI7/XYUI-7.md",
+      "source_bytes": 141652,
+      "source_sha256": "8fb6be6cf096b248779cd2d7f79e49f32effd323d7b8f8f32d0c869c59e5040e",
+      "canonical_sha256": "03698f993a1098f9205ac4232705b8b63d0c44b7e4b161bad95863bf24e4c005",
+      "reconciled_commit": "e66b0cdf"
+    },
+    "XYUI-8": {
+      "available": true,
+      "status": "CLOSED",
+      "canonical_spec": "xyui/specs/XYUI8/XYUI-8.canonical.md",
+      "mapping": "xyui/specs/XYUI8/XYUI-8.mapping.json",
+      "gaps": "xyui/specs/XYUI8/XYUI-8.gaps.json",
+      "source": "xyui/source/XYUI8/XYUI-8.md",
+      "source_bytes": 115342,
+      "source_sha256": "4a5a36cc2d6240a17bc3eddfd1468a556bef686901791dc86c33258021928661",
+      "canonical_sha256": "a6db65738641c1bed405c7f383f0287a6a4465c3cf047e6ab4cf82cace1fd683",
+      "reconciled_commit": "926cebc6"
+    }
+  },
+  "foundation_registry_ref": "xyui/registry/foundation/foundation-registry.json",
+  "foundation_registry_sha256": "748a0ffaf885a7b3ba1d090257301fc2496eca05b88e9778579d42af7d828a71",
+  "token_architecture_ref": "xyui/tokens/architecture/token-canonical-map.json",
+  "token_architecture_sha256": "fbe3a34a2d1b056b85ca2279e286653477fbbcbae9cdaa928d2579303e392d25",
+  "git_commit": "5f288e6",
+  "known_gaps": [
+    {
+      "gap_id": "XYUI1-GAP-001",
+      "type": "MISSING_TOKEN",
+      "scope": "Icon glyph registry（0.15 Icon Foundation 未定义 glyph 注册表）",
+      "blocking": false
+    },
+    {
+      "gap_id": "XYUI2-GAP-001",
+      "type": "MISSING_TOKEN",
+      "scope": "XY.Size.Switch 子属性访问",
+      "blocking": false
+    },
+    {
+      "gap_id": "XYUI2-GAP-002",
+      "type": "REQUIRES_DECISION",
+      "scope": "TextArea.MaxHeight=SceneToken",
+      "blocking": false
+    },
+    {
+      "gap_id": "XYUI2-GAP-003",
+      "type": "REQUIRES_DECISION",
+      "scope": "Inspector SharedPropertyColumnRule",
+      "blocking": false
+    },
+    {
+      "gap_id": "XYUI3-GAP-001",
+      "type": "MISSING_TOKEN",
+      "scope": "COMPONENT_SPECIFIC_CONTRAST_FOREGROUND（OnAccent/ContrastForeground 未定义，待后续 Token Source 阶段裁决，不伪造）",
+      "blocking": false
+    },
+    {
+      "gap_id": "XYUI4-GAP-001",
+      "type": "MISSING_TOKEN",
+      "scope": "CONTRAST_SEPARATION_FOREGROUND（4.09 SelectionOutline Separation Stroke）",
+      "blocking": false
+    },
+    {
+      "gap_id": "XYUI4-GAP-002",
+      "type": "MISSING_TOKEN",
+      "scope": "FOCUS_RING_OFFSET（4.04）",
+      "blocking": false
+    },
+    {
+      "gap_id": "XYUI4-GAP-003",
+      "type": "REQUIRES_DECISION",
+      "scope": "MARQUEE_LASSO_FILL_OPACITY（4.07/4.08）",
+      "blocking": false
+    },
+    {
+      "gap_id": "XYUI4-GAP-004",
+      "type": "MISSING_TOKEN",
+      "scope": "CONDITIONAL_DROP_SEMANTIC（4.12）",
+      "blocking": false
+    },
+    {
+      "gap_id": "XYUI6-GAP-001",
+      "type": "MISSING_TOKEN",
+      "scope": "SORT_INDICATOR_SEMANTIC（排序方向指示符 ↑↓ 辅助指示语义无 Foundation Token；与 XYUI1-GAP-001 glyph registry 同家族）",
+      "blocking": false
+    },
+    {
+      "gap_id": "XYUI7-GAP-001",
+      "type": "MISSING_TOKEN",
+      "scope": "WINDOW_CHROME_METRIC（Window chrome 尺寸档：标题栏高度/边框/Resize Handle 命中区；与 XYUI1-GAP-001/XYUI3-GAP-001 同属视觉体系缺口家族）",
+      "blocking": false
+    },
+    {
+      "gap_id": "XYUI8-GAP-001",
+      "type": "MISSING_TOKEN",
+      "scope": "CHART_SERIES_PALETTE（多系列图表 Series 色板 + Heatmap 低→高色阶；与 XYUI1-GAP-001 同家族）",
+      "blocking": false
+    }
+  ],
+  "agent_guide": "xyui/packs/core-0.1/AGENT-GUIDE.md",
+  "spec_paths": [
+    "xyui/registry/foundation/foundation-registry.json",
+    "xyui/tokens/architecture/token-canonical-map.json",
+    "xyui/tokens/architecture/token-architecture.json",
+    "xyui/specs/XYUI1/XYUI-1.canonical.md",
+    "xyui/specs/XYUI1/XYUI-1.mapping.json",
+    "xyui/specs/XYUI2/XYUI-2.canonical.md",
+    "xyui/specs/XYUI2/XYUI-2.mapping.json",
+    "xyui/specs/XYUI3/XYUI-3.canonical.md",
+    "xyui/specs/XYUI3/XYUI-3.mapping.json",
+    "xyui/specs/XYUI4/XYUI-4.canonical.md",
+    "xyui/specs/XYUI4/XYUI-4.mapping.json",
+    "xyui/specs/XYUI4/XYUI-4.gaps.json",
+    "xyui/specs/XYUI5/XYUI-5.canonical.md",
+    "xyui/specs/XYUI5/XYUI-5.mapping.json",
+    "xyui/specs/XYUI5/XYUI-5.gaps.json",
+    "xyui/specs/XYUI6/XYUI-6.canonical.md",
+    "xyui/specs/XYUI6/XYUI-6.mapping.json",
+    "xyui/specs/XYUI6/XYUI-6.gaps.json",
+    "xyui/specs/XYUI7/XYUI-7.canonical.md",
+    "xyui/specs/XYUI7/XYUI-7.mapping.json",
+    "xyui/specs/XYUI7/XYUI-7.gaps.json",
+    "xyui/specs/XYUI8/XYUI-8.canonical.md",
+    "xyui/specs/XYUI8/XYUI-8.mapping.json",
+    "xyui/specs/XYUI8/XYUI-8.gaps.json"
+  ],
+  "forbidden": [
+    "A3-R3 Light/Dark Token Source（本任务暂停）",
+    "Avalonia AXAML / C# 生成",
+    "XYUI-9（不在本包范围）",
+    "XuanYu / XYLab 业务实现",
+    "修改 A2 Registry / A3-R2 Canonical Architecture"
+  ]
+}

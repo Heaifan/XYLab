@@ -1,0 +1,829 @@
+{
+  "mapping_version": "0.1.0",
+  "phase": "XYUI-PILOT-R7-FAST-CLOSE",
+  "scope": "7.01~7.16 FULL",
+  "source": {
+    "path": "xyui/source/XYUI7/XYUI-7.md",
+    "bytes": 141652,
+    "sha256": "8fb6be6cf096b248779cd2d7f79e49f32effd323d7b8f8f32d0c869c59e5040e",
+    "note": "frozen from D:\\MyDoc\\doc-Obsidian\\我的知识库\\XYUI-7.md（用户原始文件 2026-08-13 21:02，原始 SHA 9d84373a…，141,712 B；冻结仅清理 15 处行尾空白，语义零改动；原稿为真实磁盘文件，非转录）"
+  },
+  "canonical_basis": {
+    "foundation_registry": "xyui/registry/foundation/foundation-registry.json (VALIDATED, AMEND-A/B)",
+    "token_architecture": "xyui/tokens/architecture/token-canonical-map.json (A3-R2)"
+  },
+  "global_rules_applied": [
+    "所有权边界：Text/Tooltip 基础→XYUI-1；Input/Button→XYUI-2；Navigation/Menu/CommandPalette 命令契约→XYUI-3；Selection/Feedback/Loading 视觉→XYUI-4；Layout/Dock/Workspace 拓扑/Portal→XYUI-5；Collection→XYUI-6；Visualization→XYUI-8；Overlay/Window presentation & behavior→XYUI-7",
+    "组合优先级：REF → REUSE → COMPOSE → COMPONENT_SPECIFIC → GAP；不创建第二真值",
+    "7.16 关键映射：业务层 L0~L4 语义 MAP ONTO Foundation 五 Host（ContentHost/OverlayHost/DragHost/ModalHost/TooltipHost）+ XY.ZIndex + XYUI-5 5.07 单 Host 内 Planes + 5.17 PortalHost；禁止第二套 Z 数字/Plane 命名",
+    "7.04/7.10 关键裁定：菜单命令结构 = REF XYUI-3 3.03 ContextMenu；命令搜索契约 = REF XYUI-3 3.18 CommandPalette；7-04/7-10 只拥有 Overlay 承载、上下文调用与响应式承载",
+    "7.08 关键裁定：Layout topology/persistence = XYUI-5 5.12 WorkspaceLayout + 5.04 Dock；Runtime workspace interaction = 7.08（Area Split/Join/Detach/Reattach/Restore）；不建第二套 Dock/Layout Engine",
+    "效率三原则全局生效：第一眼关键信息 / 高频一层直达 / 一次点击不两次；危险/不可逆例外（confirmation/undo/safety）",
+    "移动端不得依赖 Hover（Long Press / Tap / Bottom Sheet / Placement Mode 等价入口）；桌面与移动保持相同功能语义",
+    "State（AMEND-A）= XY.State.ComposeMode（Single Primary Owner per Visual Channel）；状态文字+颜色双通道",
+    "Typography = XY.Font.UI；遮罩 = XY.Opacity.Backdrop/Hidden/Overlay；浮层阴影 = XY.Shadow.*；Focus 视觉 = XY.Focus.* + XYUI-4 FocusIndicator",
+    "Drag 机制 = XYUI.Foundation.DragDrop（AMEND-B 含 DirectTarget）；Resize 机制 = XYUI.Foundation.ResizeSplitter；Focus Trap/Restore 生命周期 = 7.16",
+    "性能合同：Overlay 打开只算当前上下文；PointerMove 只做轻量 Hit Test；统一 Overlay Manager 只监听 Active Overlay 事件；进度节流；大量事件聚合",
+    "0 hex / 0 rgb / 0 hsl / 0 旧字体 / 0 硬编码 px；window chrome 尺寸档缺口登记 GAP 不伪造数值"
+  ],
+  "components": [
+    {
+      "component_id": "XYUI-7-7.01",
+      "name": "Dialog",
+      "title": "Dialog / 对话框",
+      "ref_count": 8,
+      "refs": [
+        {
+          "property": "Variant",
+          "value": "default | danger（Compact Confirm 默认基线；危险在基线上升级内容）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Actions",
+          "value": "Primary 动名词（删除/保存/覆盖/应用）+ Secondary 取消；onConfirm/onCancel/onDismiss",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Danger",
+          "value": "XY.Semantic.Error + 不可逆后果 + 对象数量 + 恢复能力（文字双通道；禁止只靠红色）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Backdrop",
+          "value": "XY.Opacity.Backdrop（0.28 语义；轻量遮罩禁过黑压迫，保持原上下文可辨认）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Focus",
+          "value": "Modal Focus Trap + Restore 生命周期（REF XYUI-7 7.16）+ Foundation.Focus 视觉",
+          "kind": "COMPOSE"
+        },
+        {
+          "property": "Layer",
+          "value": "ModalHost（REF Foundation 五 Host 体系，经 7.16 映射；禁魔法 ZIndex）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Controls",
+          "value": "Reference XYUI-2（Buttons）；XYUI-1（文本）；触发器来自 XYUI-2",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-7-7.02",
+      "name": "Popover",
+      "title": "Popover / 气泡浮层",
+      "ref_count": 7,
+      "refs": [
+        {
+          "property": "Variant",
+          "value": "inspector | quickSetting | actions（Inspector 为主；Quick Actions 不作核心形态）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "ResponsiveMode",
+          "value": "anchored | bottomSheet（承载方式变、功能语义不变）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Placement",
+          "value": "Right/Bottom/Top/Left + AutoFlip + ViewportAvoidance（REF XY.Tooltip.* 语义）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Layer / Anchor",
+          "value": "OverlayHost + Target 绑定（REF Foundation 五 Host + 7.16；Target 移动更新、消失关闭）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Controls / State",
+          "value": "Reference XYUI-2（Inputs）；XYUI-4（Feedback）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "InspectorLink",
+          "value": "Reference XYUI-5（Inspector 宿主；Popover 不膨胀成缩小版 Inspector）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-7-7.03",
+      "name": "Tooltip",
+      "title": "Tooltip / 提示浮层",
+      "ref_count": 8,
+      "refs": [
+        {
+          "property": "Variant",
+          "value": "data | hint（Data Tooltip 为主；Responsive Hint 辅助）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "DeviceMode",
+          "value": "desktop | tablet | mobilePortrait | mobileLandscape（移动端禁照搬 Hover）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Base",
+          "value": "Reference XYUI-1 Tooltip（1.19）+ XY.Tooltip.*（MaxWidth 280 DIP / ShowDelay 400 ms / ViewportAvoidance / AutoFlip / PointerCapture Forbidden / InteractiveContent Forbidden / LongHelp HelpOrInspector）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Link",
+          "value": "Reference XYUI-8 8.16 Visualization Interaction + 8.15（Inspect 跟随/Crosshair 同步/Lock 移交 Chart Inspector）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Layer",
+          "value": "Foundation TooltipHost（REF 五 Host 体系，经 7.16 映射）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Upgrade",
+          "value": "可操作内容升级 XYUI-7 7.02 Popover / XYUI-5 Inspector",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "ErrorRole",
+          "value": "不作为主要错误反馈机制（错误必须直接可见，REF XYUI-4）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-7-7.04",
+      "name": "ContextMenu",
+      "title": "Context Menu / 上下文菜单",
+      "ref_count": 8,
+      "refs": [
+        {
+          "property": "Commands",
+          "value": "Reference XYUI-3 3.03 ContextMenu（菜单结构/命令导航 = 上游 canonical owner）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Invocation",
+          "value": "RightClick | ContextKey | LongPress（deviceMode 承载变、语义不变）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Adaptation",
+          "value": "对象/上下文命令适配（常用命令名称与顺序稳定约束）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Layer / Dismiss",
+          "value": "OverlayHost + Topmost Dismiss（REF XYUI-7 7.16）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Danger",
+          "value": "独立区域 + XY.Semantic.Error；确认 REF XYUI-7 7.01（省略号标记后续流程）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "State",
+          "value": "Closed | Open | Hover | Focused | Disabled | Executing",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Shortcut",
+          "value": "右对齐次级文字（加速器非唯一操作方式）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-7-7.05",
+      "name": "Toast",
+      "title": "Toast / Snackbar / 短暂反馈提示",
+      "ref_count": 9,
+      "refs": [
+        {
+          "property": "Variant",
+          "value": "success | info | undo | warning | error（四方案全采，同一套反馈系统）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Duration",
+          "value": "按严重程度决定；Undo 按 UndoWindow；Error 默认不自动关闭；禁止统一固定时长",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Undo",
+          "value": "结果 + 恢复期限 + 一层直达 Undo Action；可逆优先原则（立即执行+Undo 反馈，而非确认再确认）",
+          "kind": "COMPOSE"
+        },
+        {
+          "property": "Persistent",
+          "value": "Error 默认 true；说明发生了什么/当前数据是否安全/下一步恢复动作",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Placement",
+          "value": "Notification Corner / Safe Area 避开；移动端避开 Bottom Action Bar 与系统 Safe Area",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "State",
+          "value": "XY.Semantic.*（状态色辅助表达；文字双通道）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Layer",
+          "value": "Reference XYUI-7 7.16（Toast 保持可见但不覆盖 Modal 核心操作；Modal 存在时可位于可见区或延后）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "History",
+          "value": "Reference XYUI-7 7.11 Notification Center（重要事件历史）+ Log（技术事件长期记录）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-7-7.06",
+      "name": "Drawer",
+      "title": "Drawer / Side Sheet / 抽屉与侧滑面板",
+      "ref_count": 8,
+      "refs": [
+        {
+          "property": "Variant",
+          "value": "inspector | task | peek（Inspector + Responsive 为核心；Task/Peek 为正式变体）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Side",
+          "value": "left | right | bottom（承载方向变、功能语义不变）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Layout",
+          "value": "Reference XYUI-5（内部布局；标题/关键操作稳定，内容区独立滚动）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Promote",
+          "value": "onPin / onPromoteToPanel（升级后保持同一内容语义，不是重开一套组件）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "DirtyClose",
+          "value": "自动保存 | 保留草稿 | 必要时确认（未提交编辑不得无提示丢失）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Layer / Focus",
+          "value": "Reference XYUI-7 7.16（Overlay Parent；打开不一定抢焦点，开始编辑再进入）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "PopoverLink / DangerLink / ToastLink",
+          "value": "Reference XYUI-7 7.02 / 7.01 / 7.05",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-7-7.07",
+      "name": "Window",
+      "title": "Window / Floating Window / 独立与浮动窗口",
+      "ref_count": 8,
+      "refs": [
+        {
+          "property": "Variant",
+          "value": "tool | document | monitor（四方案均为可选能力，dockable 为能力；按场景启用）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "State",
+          "value": "floating | docked | minimized | maximized | pinned",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Chrome",
+          "value": "紧凑标题栏合同（Title + Status + Window Actions）；尺寸档 → GAP:XYUI7-GAP-001（Foundation 无 window chrome metric）",
+          "kind": "GAP"
+        },
+        {
+          "property": "Resize / Drag",
+          "value": "Reference XY.Foundation.ResizeSplitter / DragDrop（机制；生命周期 REF Foundation）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Layer",
+          "value": "Reference XYUI-7 7.16（Owner Window Context；Active/Pinned/Modal 层级；禁无限 Z-Index）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Dock",
+          "value": "Reference XYUI-7 7.08（停靠行为统一管理，不建第二套 Dock 引擎）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "DisplaySafety",
+          "value": "离屏自动拉回 / 分辨率重限 Bounds / DPI 重算；窗口永不永久丢失在不可见区域",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-7-7.08",
+      "name": "WorkspaceRuntime",
+      "title": "Docking & Window Management / 停靠与窗口管理",
+      "ref_count": 8,
+      "refs": [
+        {
+          "property": "Verbs",
+          "value": "onSplitArea | onJoinArea | onResizeArea | onSwitchEditor | onDetachArea | onReattachArea | onSaveWorkspace | onRestoreWorkspace | onResetWorkspace",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Topology",
+          "value": "Reference XYUI-5 5.12 WorkspaceLayout（layoutTree 拓扑/persistence）+ 5.04 Dock（Layout topology = XYUI-5）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "SplitPreview",
+          "value": "轻量半透明；明确原 Area/新 Area；几何反馈优先于装饰动画",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "JoinPreview",
+          "value": "明确谁保留谁被合并；合并仅影响布局，保护未提交编辑",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "EditorState",
+          "value": "per-Area Editor State 保存/恢复（缩放位置/当前对象/过滤条件）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "DisplaySafety",
+          "value": "离屏拉回 / 分辨率重限 / DPI 重算安全恢复",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Resize",
+          "value": "Reference XY.Foundation.ResizeSplitter（机制）+ MinSize 合同（达下限建议 Collapse/合并）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-7-7.09",
+      "name": "FocusPreview",
+      "title": "Lightbox & Fullscreen Preview / 聚焦与全屏预览",
+      "ref_count": 9,
+      "refs": [
+        {
+          "property": "Variant",
+          "value": "focus | media | compare（Focus + Responsive Fullscreen 为核心；Media/Compare 为可选能力）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Interaction",
+          "value": "Reference XYUI-8 8.16 Visualization Interaction（交互继承；不建第二套 Chart Gesture）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "StateInherit",
+          "value": "Zoom Range / Locked Position / Selected Range / Current Object 进入保持、退出同步回原组件",
+          "kind": "COMPOSE"
+        },
+        {
+          "property": "Media",
+          "value": "Fit | 100% | Zoom | Pan | Close；Progressive Load（图片区域最大、工具紧凑）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Compare",
+          "value": "A/B 明确；同步 Zoom/Pan/Cursor/Crosshair 可选解除；必须有真实视觉核对价值",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Backdrop",
+          "value": "XY.Opacity（轻量弱化；禁过黑；原工作区可辨认）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Layer",
+          "value": "Reference XYUI-7 7.16（Focus Layer）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Upgrade",
+          "value": "独立长期内容升级 XYUI-7 7.07 Window",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-7-7.10",
+      "name": "CommandPalette",
+      "title": "Command Palette / 命令面板",
+      "ref_count": 9,
+      "refs": [
+        {
+          "property": "Search",
+          "value": "Reference XYUI-3 3.18 CommandPalette（命令搜索契约 = 上游 canonical owner）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Surface",
+          "value": "Centered Compact | Bottom Command Sheet（deviceMode 承载）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "ResultType",
+          "value": "command | object | navigation（清晰分组；不混成无结构列表）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Input",
+          "value": "Reference XYUI-2（Search Input）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "List",
+          "value": "Reference XYUI-6（紧凑结果行；大集合虚拟化/首屏限制）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "CommandContract",
+          "value": "与 XYUI-7 7.04 共享（正式 Command ID 唯一；Toolbar/ContextMenu/Palette/Shortcut 消费同一 Command Contract）",
+          "kind": "COMPOSE"
+        },
+        {
+          "property": "Layer",
+          "value": "Reference XYUI-7 7.16（OverlayHost + 统一 OverlayRoot）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Danger / Feedback",
+          "value": "Reference XYUI-7 7.01 / 7.05（安全合同不绕过；危险命令执行仍走确认/Undo）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-7-7.11",
+      "name": "NotificationCenter",
+      "title": "Notification Center / 通知中心",
+      "ref_count": 8,
+      "refs": [
+        {
+          "property": "State",
+          "value": "unread | read | actionRequired | resolved | expired（Read ≠ Resolved，阅读状态与问题状态分开）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Group",
+          "value": "Workflow Grouping 优先（World Build/数据编辑/实验运行/导出）；时间分组辅助",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Actions",
+          "value": "onAction/onResolve/onArchive/onClear；最重要恢复动作一层直达",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "ToastLink / TaskLink",
+          "value": "Reference XYUI-7 7.05（即时反馈）/ 7.12（任务联动）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "List",
+          "value": "Reference XYUI-6（紧凑列表；分页/虚拟化；有限历史）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Carrier",
+          "value": "Reference XYUI-7 7.06 Drawer / 移动 Full View",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "StateVisual",
+          "value": "XY.Semantic.*（Error 危险语义色；ActionRequired 明确；文字双通道）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-7-7.12",
+      "name": "TaskProgress",
+      "title": "Progress Overlay & Task Monitor / 进度浮层与任务监控",
+      "ref_count": 9,
+      "refs": [
+        {
+          "property": "Variant",
+          "value": "nonBlocking | transaction | taskMonitor",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "State",
+          "value": "queued | running | paused | cancelling | completed | failed",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "ProgressVisual",
+          "value": "Reference XYUI-4 ProgressBar（4.16）/ProgressRing（4.17）/LoadingIndicator（4.14）（细而清晰；禁巨大 Spinner）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Cancel",
+          "value": "CancelImmediately | CancelAfterCurrentStep | CancelAndRollback（不能只有模糊取消）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Blocking",
+          "value": "四条件全满足才允许全局阻塞（一致性/冲突/安全风险/无法局部 Disabled）；局部阻塞优先",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Progress",
+          "value": "真实进度优先（百分比/计数/阶段）；Indeterminate 显示阶段文字；ETA 稳定才显示",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Feedback",
+          "value": "Reference XYUI-7 7.05（Toast）/ 7.11（Notification Center）完成/失败联动",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Focus",
+          "value": "Reference XYUI-7 7.16（仅 Blocking Overlay 允许 Modal Focus）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-7-7.13",
+      "name": "Coachmark",
+      "title": "Spotlight & Coachmark / 聚焦引导与功能提示",
+      "ref_count": 8,
+      "refs": [
+        {
+          "property": "Variant",
+          "value": "coachmark | spotlight | tour（once 默认；Tour 极少使用）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Target",
+          "value": "绑定真实 UI Target；目标移动同步更新、消失自动关闭",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Anchor / Layer",
+          "value": "Reference XYUI-7 7.16（Anchor 绑定 + Spotlight 轻量弱化层；不覆盖更高等级 Modal）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Content",
+          "value": "Reference XYUI-1（短、直接、告诉具体动作；禁“这里是我们全新的…”式文案）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Mask",
+          "value": "轻量弱化（禁深黑遮罩；目标区域最清晰）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "State",
+          "value": "hidden | eligible | visible | dismissed | completed | disabled（偏好持久化）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "HelpLink",
+          "value": "正式帮助交给 Help / Documentation（Coachmark 自身不承担完整教程）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-7-7.14",
+      "name": "DragOverlay",
+      "title": "Drag & Drop Overlay / 拖放覆盖层",
+      "ref_count": 9,
+      "refs": [
+        {
+          "property": "Variant",
+          "value": "directTarget | multiZone | invalidFeedback | placementMode",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "DropIntent",
+          "value": "合法目标必须说明松手后的结果（Drop Before Validate）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Accepts",
+          "value": "类型合同声明（RoadDataset/RegionDataset/ImageAsset/ExperimentResult/MapFeature）；权限/锁定/业务状态提前 Disabled+原因",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "DragMechanics",
+          "value": "Reference XY.Foundation.DragDrop（Ghost/Cursor 机制；AMEND-B DirectTarget）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "InsertMarker",
+          "value": "列表重排插入前/后 Marker（供 XYUI-6 集合组件消费；禁只靠列表跳动猜测）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "State",
+          "value": "idle | dragging | valid | invalid | committing | completed | failed",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Undo / Danger",
+          "value": "Reference XYUI-7 7.05（Undo Snackbar）/ 7.01（危险覆盖 Dialog）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Layer",
+          "value": "Reference XYUI-7 7.16（OverlayHost）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-7-7.15",
+      "name": "ResourcePicker",
+      "title": "File Dialog & Resource Picker / 文件与资源选择器",
+      "ref_count": 9,
+      "refs": [
+        {
+          "property": "Bridge",
+          "value": "accept | multiple | initialLocation | purpose（系统文件交给平台原生 Provider；禁重复实现 Explorer/Finder）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Scope",
+          "value": "项目业务结构（地图→道路→roads-main）；非磁盘文件夹树；磁盘路径默认不显示为主要信息",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "List",
+          "value": "Reference XYUI-6（资源列表；虚拟化；搜索索引）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Validation",
+          "value": "Passed | Warning | Failed（Failed 禁 Commit；Warning 说明影响可继续）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Import",
+          "value": "Transaction + 回滚；选中 ≠ 写入；ID 自动分配",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Duplicate",
+          "value": "Rename | Replace | Skip（危险 Replace 走安全合同）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "PreviewLink / ProgressLink / DragLink",
+          "value": "Reference XYUI-7 7.09 / 7.12 / 7.14",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Feedback",
+          "value": "Reference XYUI-7 7.05 / 7.11",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-7-7.16",
+      "name": "OverlayStack",
+      "title": "Overlay Stack & Focus Management / 浮层层级与焦点管理",
+      "ref_count": 9,
+      "refs": [
+        {
+          "property": "Layer",
+          "value": "业务语义映射（L0 App→ContentHost；L1 Window/Drawer→ContentHost+LocalOrder；L2 Local Overlay→OverlayHost；L3 Modal→ModalHost；L4 Critical→ModalHost+全局限制）+ XY.ZIndex（禁魔法数字/禁跨 Host 覆盖）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Planes",
+          "value": "Reference XYUI-5 5.07 OverlayLayout（单 Host 内 Semantic Planes：Base/Decoration/Selection/Interaction/Feedback/Transient + LocalOrder；禁自建命名）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Portal",
+          "value": "Reference XYUI-5 5.17 PortalHost（Portal Placement；Popover/Tooltip/ContextMenu/Dialog/Toast/CommandPalette/Coachmark 进统一 Portal）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Parent",
+          "value": "Overlay Tree；parentId 决定局部 Z Order/关闭关系/焦点恢复目标",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Focus",
+          "value": "Foundation.Focus 视觉 + Focus Trap/Restore 生命周期（Trigger Record/Initial Focus/Trigger Disappeared 恢复链）",
+          "kind": "COMPOSE"
+        },
+        {
+          "property": "EscOrder",
+          "value": "Topmost only（Tooltip→ContextMenu→Popover→Drawer→Window）；一次 Escape 只退一层",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "SafeArea",
+          "value": "Safe Area（Top/Bottom/Left/Right）+ Keyboard Insets + 底部协调优先级（Safe Area→Navigation→Active Sheet→Snackbar/Task Indicator）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Backdrop",
+          "value": "XY.Opacity（Backdrop 0.28 / Hidden 0.18 / Overlay 0.92 语义；禁越叠越黑）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    }
+  ]
+}

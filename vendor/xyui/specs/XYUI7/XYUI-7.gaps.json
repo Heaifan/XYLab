@@ -1,0 +1,28 @@
+{
+  "phase": "XYUI-PILOT-R7-FAST-CLOSE",
+  "gap_count": 1,
+  "gaps": [
+    {
+      "gap_id": "XYUI7-GAP-001",
+      "type": "MISSING_TOKEN",
+      "item": "WINDOW_CHROME_METRIC",
+      "detail": "Window chrome 尺寸档（标题栏高度、窗口边框宽度、Resize Handle 命中区尺寸）在 Foundation 均未定义。Source 明确要求「标题栏紧凑」「Resize Handle 保持清晰」「合理 Min Width/Height，不能缩小到内容完全不可用」，但 XYUI-0 只有 XY.Shadow.*/XY.Opacity.* 等浮层视觉 Token，无 window chrome 尺寸档。本版不伪造 Canonical 数值，由后续 Token Source 阶段登记并裁决；与 XYUI1-GAP-001（glyph registry）/XYUI3-GAP-001（ContrastForeground）同属视觉体系缺口家族。",
+      "occurrences": 3,
+      "components": [
+        "7.07 Window（XY.Window.Chrome 尺寸档；canonical「已知待后续 Token 层补齐」+「标题栏/缩放」+「XY.Window.Chrome」共 3 处引用）"
+      ],
+      "blocking": false
+    }
+  ],
+  "notes": [
+    "遮罩透明度：XY.Opacity.Backdrop=0.28 / Hidden=0.18 / Overlay=0.92，非 GAP。",
+    "浮层阴影：XY.Shadow.Tooltip/Popup/DragPreview/Panel/Control，非 GAP。",
+    "Overlay 层级：XY.Overlay.ContentHost/OverlayHost/DragHost/ModalHost/TooltipHost + XY.ZIndex（禁魔法数字/禁跨 Host 覆盖），非 GAP。",
+    "Tooltip 基础：REF XYUI-1 Tooltip（1.19）+ XY.Tooltip.*（MaxWidth 280 DIP / ShowDelay 400 ms / PointerCapture Forbidden / InteractiveContent Forbidden），非 GAP。",
+    "Drag 机制：REF XYUI.Foundation.DragDrop（AMEND-B 已含 DirectTarget 入口）；Resize 机制：REF XYUI.Foundation.ResizeSplitter，非 GAP。",
+    "进度/加载视觉：REF XYUI-4 ProgressBar（4.16）/ProgressRing（4.17）/LoadingIndicator（4.14），非 GAP。",
+    "菜单命令结构：REF XYUI-3 3.03 ContextMenu；命令搜索契约：REF XYUI-3 3.18 CommandPalette，非 GAP。",
+    "布局拓扑/Portal：REF XYUI-5 5.12 WorkspaceLayout / 5.04 Dock / 5.07 OverlayLayout / 5.17 PortalHost，非 GAP。",
+    "Dock Zones / Tab Group：Source 定义为 Advanced/Optional，保持可选不升格默认，非 GAP。"
+  ]
+}

@@ -3,7 +3,7 @@
 - **地位**：三位一体治理中的「一体」——XYLab 开发与代码的最高规则，高于任何单轮指令。
 - **版本**：1.0 · 生效日期 2026-08-13 · 由 XYLAB-GOV-01 正式启用
 - **适用范围**：XYLab 仓库全部手写源码（TypeScript/Web/Simulation Runtime/Expression/Protocol/Monitoring/UI），不涉及 C#/Avalonia/Vulkan 等玄域引擎专属条款。
-- **术语**：「三位一体治理」是 XY 系列项目默认工程治理基线，含义固定为：审计位 + 经验位 + 底线位，一体 = 本宪法（+ 未来 UI 宪法）。
+- **术语**：「三位一体治理」是 XY 系列项目默认工程治理基线，含义固定为：审计位 + 经验位 + 底线位，一体 = 本宪法（+ 已批准的 UI 权威，见 Article 5）。
 
 ```text
                     一体
@@ -53,7 +53,12 @@
 
 ## Article 5 · 一体
 
-本宪法（Development Constitution）为当前「一体」唯一生效文件。UI Constitution 状态：**RESERVED / NOT YET RATIFIED**——未经批准，任何轮次禁止自行设计或引用其内容；批准后成为与本宪法并列的最高 UI 规则（Token/Layout/Density/Spacing/Interaction/Selection/Feedback/Navigation/Responsive/Accessibility/XYUI Component Contract）。
+本宪法（Development Constitution）与 UI 权威共同构成「一体」。UI 权威状态：**RATIFIED（2026-08-13 · XYLAB-XYUI-CONSUMER-INTAKE 裁定解除 RESERVED）**——XYLab UI 的批准设计依据为 **XYUI Core Pack**（vendored 于 `vendor/xyui/`，以 `vendor/xyui/UPSTREAM-PIN.json` 锁定来源与实测 SHA）。规则：
+
+- UI 权威覆盖：Token/Layout/Density/Spacing/Interaction/Selection/Feedback/Navigation/Responsive/Accessibility/XYUI Component Contract；Foundation/组件/可视化冲突时以 vendored XYUI Canonical 为准。
+- `vendor/xyui/**` 是只读上游物料：XYLab 任何轮次不得修改 XYUI 内容；规范变更一律以 XYUI_GAP 形式回流上游，重新出包后才允许更新 vendor；`UPSTREAM-PIN.json.localMutation` 恒为 0。
+- XYLab 只做项目组合（页面组合、实验工作流、数据绑定、响应式组合、Mobile Bottom Sheet/IA），不得私设第二套视觉规范；不得重定义 Foundation 颜色、状态语义、组件视觉契约、XYUI-8 可视化交互语义。
+- A3-R3 Light/Dark Token Source 暂停期间：禁止伪造 Foundation Canonical Tokens；缺失的 Light 标量必须以消费层/GAP（B 类）显式表达，不得冒充 canonical 契约（A 类）。
 
 ## Article 6 · 任务冻结与范围控制
 
@@ -100,7 +105,7 @@
 治理状态
 ────────
 开发宪法：PASS
-UI宪法：N/A / PASS（当前恒 N/A，未批准）
+UI宪法：PASS（UI 权威 = vendor/xyui/ XYUI Core Pack，只读；见 Article 5）
 5：PASS
 100：PASS
 SRP：PASS

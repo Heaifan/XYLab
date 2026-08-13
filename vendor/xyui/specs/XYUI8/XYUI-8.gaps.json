@@ -1,0 +1,28 @@
+{
+  "phase": "XYUI-PILOT-R8-FAST-CLOSE",
+  "gap_count": 1,
+  "gaps": [
+    {
+      "gap_id": "XYUI8-GAP-001",
+      "type": "MISSING_TOKEN",
+      "item": "CHART_SERIES_PALETTE",
+      "detail": "多系列图表的系列色板（Line/Area/Bar/Distribution/Scatter 的 Series 分组色）与 Heatmap 低→高顺序色阶（sequential color scale）在 Foundation 均未定义。Source 明确要求「颜色必须有明确高低语义、浅低深高、需要图例说明、不能只靠主观审美配色、相邻级别应容易区分」，但 XYUI-0 仅有单一 Accent/Semantic 状态色，无 categorical palette 与 quantitative ramp。本版不伪造 Canonical 色值，由后续 Token Source 阶段登记并裁决；与 XYUI1-GAP-001（glyph registry）/XYUI3-GAP-001（ContrastForeground）同属视觉体系缺口家族。",
+      "occurrences": 2,
+      "components": [
+        "8.06 Line Chart（Series 色板）",
+        "8.11 Heatmap（低→高色阶）"
+      ],
+      "blocking": false
+    }
+  ],
+  "notes": [
+    "阈值档位（Normal/Notice/Warning/Critical）：映射为中性 Surface + XY.Semantic.Info/Warning/Error，文字+颜色双通道，非 GAP。",
+    "图表 Grid：XY.Editor.Grid.Minor 语义；Crosshair：XY.Editor.Guide 语义，非 GAP。",
+    "完成度视觉：REF XYUI-4 ProgressBar/ProgressRing（4.16/4.17），非 GAP。",
+    "框选/套索：REF XYUI-4 Marquee/Lasso（4.07/4.08），非 GAP。",
+    "Zoom/Pan 视图变换：REF XYUI-5 ViewportContainer（5.16），非 GAP。",
+    "Tooltip 浮层基础：REF XYUI-1 Tooltip（1.19）+ Foundation XY.Tooltip.*，非 GAP。",
+    "降采样/视口渲染：observable performance expectation（性能合同），实现归框架，非 GAP。",
+    "数据缺失/离线/过期状态：REF XYUI-6 6.19 状态语义，非 GAP。"
+  ]
+}

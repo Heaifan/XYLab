@@ -1,0 +1,82 @@
+{
+  "pin_version": 1,
+  "round": "XYLAB-XYUI-CONSUMER-INTAKE",
+  "intake_date": "2026-08-13",
+  "upstream": {
+    "source_repository": "XuanYuEngine-XYUI",
+    "source_repository_note": "上游本机仓库不可见（XYUI-PLAN-U002）；仓库/分支事实源为上游治理文档 governance/XYUI-A-plan.md §2 工作区划分表（XuanYuEngine-XYUI/ → XYUI Agent，独立 XYUI worktree）。该文档未随 Consumer Pack 保留，本 PIN 为其在 XYLab 侧的唯一 provenance 记录。",
+    "source_branch": "feat/XYUI-A",
+    "source_commit": "5f288e6",
+    "source_commit_note": "取自 packs/core-0.1/manifest.json 字段 git_commit（registry_commit / architecture_commit 同为 5f288e6）。"
+  },
+  "pack": {
+    "pack_id": "XYUI-Core-0.1",
+    "pack_version": "0.1.0",
+    "phase": "XYUI-PILOT",
+    "status": "READY_FOR_XYLAB_PILOT",
+    "manifest_sha256": "c0ebe74bffdf151ee9fbe5cec8dbbb79a44141f986f66c38123cca77b104bf3a"
+  },
+  "localMutation": 0,
+  "localMutation_policy": "vendor/xyui/** 为只读上游物料区：XYLab 任何轮次不得修改 XYUI 内容；规范变更一律以 XYUI_GAP 形式回流上游，重新出包后再更新本目录。intake 实测 SHA（下方 measured）是 XYLab 侧内容完整性的权威基准。",
+  "verification": {
+    "method": "sha256sum；对根目录交付件 xyui/** 与 vendored 副本逐字节比对一致（LF 行尾）",
+    "measured": {
+      "packs/core-0.1/manifest.json": "c0ebe74bffdf151ee9fbe5cec8dbbb79a44141f986f66c38123cca77b104bf3a",
+      "packs/core-0.1/AGENT-GUIDE.md": "8402534ec22a62c86b87b2830aec41971fca166a4412ebc0c714e22bfb2b0927",
+      "packs/core-0.1/README.md": "7e1f28c06940dee6538877f0094a119422afd923f65ec0d4c3706cd89a1daaf1",
+      "packs/core-0.1/gaps.json": "79fbdacf8bf4d7fec07ed0ccae1dc6f682d2e8e442ad2bc578ac5227b7c7cdf5",
+      "audit/cross-audit.md": "669c4551cbbf92f9cde2d9885e1a333ae9ce9e2479c2232deb98befd81fd2241",
+      "registry/foundation/foundation-registry.json": "a69bd2d4fc70ff189d02473580ea5defb06b16697c2614547e604adfdcd0628d",
+      "tokens/architecture/token-canonical-map.json": "457e82371ec56e99bbf3c3f3725c47ea539569e90ac6d119e20ddefe2961a4e1",
+      "tokens/architecture/token-architecture.json": "a43552445d7020b17214e3ef825906b5c15ca2d3243e959be1e1b40926bf65c3",
+      "specs/XYUI1/XYUI-1.canonical.md": "9ec395e6a542ac3a30ae25fc947a0c1b61c99d875cc93f8868767a524bb2c206",
+      "specs/XYUI1/XYUI-1.mapping.json": "3e31376caca0cc5c73a8ea19f68f516784e70edccf93c79446f3840bf24a1e3e",
+      "specs/XYUI1/XYUI-1.gaps.json": "9e0b5f30944998e58298b2704645897cf94a4f71b9cd960543c825542c49b621",
+      "specs/XYUI2/XYUI-2.canonical.md": "ca4b046c137b8cec54a50e6fcc8210806ef9f3742bed5ed8450d9611a49e6883",
+      "specs/XYUI2/XYUI-2.mapping.json": "2fd7a549b3ff6550e1dc90b1b9147ae7d74c606c85b2bb3b9a008828c3f9ddf0",
+      "specs/XYUI2/XYUI-2.gaps.json": "48854852e1afed1448f9117a88dbd007d6917afacba97d0fc10ba1190c495c49",
+      "specs/XYUI3/XYUI-3.canonical.md": "bb8a0ce843bcc6cad608b44ad5f6e3049b92743c371b85bc679126548ef5c252",
+      "specs/XYUI3/XYUI-3.mapping.json": "40c9f4ddb842bd121999a51223fa6d4a3234a05094ddaa953cbacd7d889f6112",
+      "specs/XYUI3/XYUI-3.gaps.json": "44e9929f3f4afc556cb6bdc91b75f7af28094bb654a98d4df2e1c58c2e0da149",
+      "specs/XYUI4/XYUI-4.canonical.md": "a143206ab5a6919a9f95130125b9666da52c95037b3a1d1166ccef132a8aa381",
+      "specs/XYUI4/XYUI-4.mapping.json": "c860e680d7ff6e57a4fec2dbb807b068b5b6bd17f297b960df7bbd2e65fc4ff0",
+      "specs/XYUI4/XYUI-4.gaps.json": "a274cc51acbacc2be03f956d5f6429f78833a9aed0b314c0b39bb6bf7c91e29b",
+      "specs/XYUI5/XYUI-5.canonical.md": "db069c5fcbd4cc2de647ca41eec29b487b1c3c9b64ec1b1b41d6088605b7db1b",
+      "specs/XYUI5/XYUI-5.mapping.json": "ef1217146cc3b4e610c2dcbe95a172e915569d77eec93b10b060ce07b087fd3e",
+      "specs/XYUI5/XYUI-5.gaps.json": "7fc3575d329833b0185ca597d7ae5b46865633beec1c2060d30f393115b47491",
+      "specs/XYUI6/XYUI-6.canonical.md": "686f1e7ff47fb4fba5c5be8dc2cae992ac9e7336a08fe7757666f285e02604d8",
+      "specs/XYUI6/XYUI-6.mapping.json": "811ae1298839da8bcf50fa8b0065003518bc98e5c6f6a043d4a74acb056cf9f8",
+      "specs/XYUI6/XYUI-6.gaps.json": "9ac996b6e2ffd0ad1b674da8dea629a482768a616f695614135f799be7e0c52b",
+      "specs/XYUI7/XYUI-7.canonical.md": "03698f993a1098f9205ac4232705b8b63d0c44b7e4b161bad95863bf24e4c005",
+      "specs/XYUI7/XYUI-7.mapping.json": "893162f16cf2524b98a9fc82c09ba26085d5ac0ea24855ff768f84203fd14ef7",
+      "specs/XYUI7/XYUI-7.gaps.json": "81943d6bf27525b067fe8468e9488ddc854123b7580f137fb894ee060858dcda",
+      "specs/XYUI8/XYUI-8.canonical.md": "623a7a0011ea3a11ed192e9de2df86f2c3e3cbc738f7da94434a6f60bc32f7fa",
+      "specs/XYUI8/XYUI-8.mapping.json": "7952dc2f0e0f943eefd9a3d55774680a07b11c7ab2a388e290fe53e690526ed2",
+      "specs/XYUI8/XYUI-8.gaps.json": "56c07b40eacfeb426967e1b91288baac55585c21a68f2b3439d94781594498a2"
+    },
+    "note": "audit/cross-audit.md 与 packs/core-0.1 的 AGENT-GUIDE/README/gaps 在 manifest 中无 SHA 字段，仅登记 intake 实测值。"
+  },
+  "manifest_sha_discrepancies": {
+    "summary": "上游 pack 内部不一致（intake 前已存在，非 XYLab 变更）：manifest 中 9 处记录 SHA 与交付件实测 SHA 不符；source_sha256 抽查（XYUI-1 source）与 manifest 完全一致，XYUI-7 canonical_sha256 一致，说明哈希机制本身有效；差异原因未知（UPSTREAM-UNKNOWN）。仅如实登记，不修改上游物料，不脑补原因。",
+    "items": [
+      { "file": "registry/foundation/foundation-registry.json", "manifest_sha256": "748a0ffaf885a7b3ba1d090257301fc2496eca05b88e9778579d42af7d828a71", "measured_sha256": "a69bd2d4fc70ff189d02473580ea5defb06b16697c2614547e604adfdcd0628d" },
+      { "file": "tokens/architecture/token-canonical-map.json", "manifest_sha256": "fbe3a34a2d1b056b85ca2279e286653477fbbcbae9cdaa928d2579303e392d25", "measured_sha256": "457e82371ec56e99bbf3c3f3725c47ea539569e90ac6d119e20ddefe2961a4e1" },
+      { "file": "specs/XYUI1/XYUI-1.canonical.md", "manifest_sha256": "ef623537a5017478b25bc40394f376c8f7872d2626f4bccd5ea4286eba029e0f", "measured_sha256": "9ec395e6a542ac3a30ae25fc947a0c1b61c99d875cc93f8868767a524bb2c206" },
+      { "file": "specs/XYUI2/XYUI-2.canonical.md", "manifest_sha256": "1a51c0b1a1e913b9fbe6417df1c174e6e4ef11165a41291b56d983b6a0a069cf", "measured_sha256": "ca4b046c137b8cec54a50e6fcc8210806ef9f3742bed5ed8450d9611a49e6883" },
+      { "file": "specs/XYUI3/XYUI-3.canonical.md", "manifest_sha256": "46ba1abd090279a21c68c16af9ce653124bd1d1cf8b553fc11f140da46a83925", "measured_sha256": "bb8a0ce843bcc6cad608b44ad5f6e3049b92743c371b85bc679126548ef5c252" },
+      { "file": "specs/XYUI4/XYUI-4.canonical.md", "manifest_sha256": "17dcc6df73d7749c3c8ed31bbafdcd40227c9c29bf420e4c4c36137b42832ae9", "measured_sha256": "a143206ab5a6919a9f95130125b9666da52c95037b3a1d1166ccef132a8aa381" },
+      { "file": "specs/XYUI5/XYUI-5.canonical.md", "manifest_sha256": "c38c5081897388315db843a8933ef532cc35e83c053e353b1f98ecf911e60143", "measured_sha256": "db069c5fcbd4cc2de647ca41eec29b487b1c3c9b64ec1b1b41d6088605b7db1b" },
+      { "file": "specs/XYUI6/XYUI-6.canonical.md", "manifest_sha256": "0b54ccd49cf0e53b54b6142244d0d9e65ed452b4b28b3a1dcb8b6c4364beb7f4", "measured_sha256": "686f1e7ff47fb4fba5c5be8dc2cae992ac9e7336a08fe7757666f285e02604d8" },
+      { "file": "specs/XYUI8/XYUI-8.canonical.md", "manifest_sha256": "a6db65738641c1bed405c7f383f0287a6a4465c3cf047e6ab4cf82cace1fd683", "measured_sha256": "623a7a0011ea3a11ed192e9de2df86f2c3e3cbc738f7da94434a6f60bc32f7fa" }
+    ],
+    "matching": ["specs/XYUI7/XYUI-7.canonical.md", "source SHA 抽查：xyui/source/XYUI1/XYUI-1.md = 9709a4fd…（一致）"]
+  },
+  "consumer_rules": {
+    "authority": "XYUI Core Pack（vendored）= XYLab 已批准的 UI 设计权威；Foundation/组件/可视化冲突以 XYUI Canonical 为准。",
+    "xylab_may": ["页面组合", "实验工作流", "数据绑定", "响应式组合", "Mobile Bottom Sheet / IA"],
+    "xylab_may_not": ["重定义 Foundation 颜色", "重定义状态语义", "重定义组件视觉契约", "重定义 XYUI-8 可视化交互语义", "修改 vendor/xyui/** 内容"],
+    "product_direction": "Light First · Mobile Portrait First · 低饱和 · 紧凑/高信息密度 · XYUI-8 Visualization First；Mobile Portrait = Primary Design Target，Desktop/Tablet = Adaptive Expansion。",
+    "light_dark_status": "A3-R3 Light/Dark Token Source 暂停：禁止伪造 Foundation Canonical Tokens；缺失 Light Scalar Tokens 必须以消费层/GAP（B 类）显式表达，不得冒充 canonical（A 类）。",
+    "consumption_flow": "AGENT-GUIDE → Manifest → Foundation → 当前任务相关 Canonical → Mapping/GAP → 实现。移动端层级：主规范 XYUI-8 / 布局 XYUI-5 / 输入 XYUI-2 / 状态 XYUI-4 / 文本 XYUI-1 / 数据 XYUI-6 / 导航 XYUI-3 / 浮层 XYUI-7 / 基础 XYUI-0。"
+  }
+}

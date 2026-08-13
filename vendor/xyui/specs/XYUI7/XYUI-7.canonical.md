@@ -1,0 +1,969 @@
+<!--
+  XYUI-7 canonical spec · XYUI-PILOT-R7 · FAST-CLOSE + XYUI CORE CROSS-AUDIT（7.01~7.16）
+  Source: xyui/source/XYUI7/XYUI-7.md (immutable Evidence)
+    original: D:\MyDoc\doc-Obsidian\我的知识库\XYUI-7.md  SHA 9d84373a… (141712B / 4565L, attachment copy identical)
+    frozen:   SHA 8fb6be6c… (141652B / 4565L; trailing whitespace stripped 15 lines, semantics untouched)
+  Canonical basis: XYUI-0 Foundation Registry (VALIDATED, AMEND-A/B) + A3-R2 Token Architecture + XYUI-1/2/3/4/5/6/8 canonical
+  规则: 组件语义保留；Foundation 重复值全部映射 canonical；#hex/px/旧字体/旧命名空间 = 0
+  Reconciliation 关键裁定: 7.04→REF XYUI-3 3.03 ContextMenu；7.10→REF XYUI-3 3.18 CommandPalette；
+    7.08→topology=XYUI-5 5.12/runtime interaction=7.08；7.16→map onto Foundation 五 Host（禁止新 Plane 命名）；
+    7.09→REF XYUI-8 交互继承；7.14→REF Foundation.DragDrop；7.03→base REF XYUI-1 Tooltip + XY.Tooltip.*
+-->
+# XYUI-7 · Overlays & Windows｜浮层与窗口（Canonical）
+
+> XYUI-PILOT R7 产物（FAST-CLOSE）。基于 `xyui/source/XYUI7/XYUI-7.md`（frozen SHA-256: 8fb6be6c…）reconciliation。
+> 上位规则：A2 Foundation Registry（VALIDATED，AMEND-A/B）+ A3-R2 Canonical Token Architecture + XYUI-1/2/3/4/5/6/8 canonical。
+> 本文件中的 `XY.*` 引用全部为 Canonical Token 引用（见 XYUI-7.mapping.json）。
+> XYUI-7 只负责：临时层、浮层、窗口、任务表面、跨层交互与运行时工作区承载；不重新拥有内部 Primitive。
+
+- 整理依据
+    - 原始组件设计
+        - XYUI-7.md（7.01~7.16，16 项，内建 Ownership Check 与跨组件关系）
+    - 上位规范
+        - XYUI-0.md + Foundation Registry（含 AMEND-A/B）+ A3-R2 Token Architecture
+        - XYUI-1/2/3/4/5/6/8 canonical
+    - 整理原则
+        - 保留 XYUI-7 已定稿的组件职责、浮层语义、交互与 Variant
+        - Text→XYUI-1；Input/Button→XYUI-2；Navigation/Menu/CommandPalette→XYUI-3；Selection/Feedback/Loading→XYUI-4；Layout/Dock/Workspace 拓扑/Portal→XYUI-5；Collection→XYUI-6；Visualization→XYUI-8；Overlay/Window presentation & behavior→XYUI-7
+        - 组合优先级：REF → REUSE → COMPOSE → COMPONENT_SPECIFIC → GAP；不创建第二真值
+        - 效率三原则全局生效：第一眼关键信息 / 高频一层直达 / 一次点击不两次；危险/不可逆例外（confirmation/undo/safety）
+        - 移动端不得依赖 Hover（Long Press / Tap / Bottom Sheet 等价入口）；桌面与移动保持相同功能语义
+        - 状态语义与视觉 REF XYUI-4 + XY.Semantic.\*；状态文字+颜色双通道
+        - 所有几何单位统一使用 DIP；浮层动画轻量，不得延迟实际操作
+
+- Foundation Reconciliation
+    - Overlay 宿主体系（7.16 关键映射）
+        - Foundation owns：Global Host Hierarchy（ContentHost / OverlayHost / DragHost / ModalHost / TooltipHost）+ XY.Foundation.ZIndex + CrossHostOverride = Forbidden + 禁魔法 ZIndex
+        - XYUI-5 5.07 OverlayLayout owns：单 Host 内部 Semantic Planes（Base/Decoration/Selection/Interaction/Feedback/Transient）+ LocalOrder（禁各模块自建 Plane 命名）
+        - XYUI-5 5.17 PortalHost owns：Portal Placement
+        - XYUI-7 7.16 业务层语义映射（L0~L4）必须 MAP ONTO 上述体系，不创建第二套 Z 数字/Plane Token：
+          L0 App Content → ContentHost；L1 Window/Drawer → ContentHost+LocalOrder；L2 Local Overlay（Popover/Menu/Tooltip/Palette/Picker）→ OverlayHost；L3 Modal → ModalHost；L4 Critical → ModalHost+全局限制策略
+    - Tooltip 基础（7.03 关键映射）
+        - XY.Tooltip.\*：ContentMode Adaptive / ShortContent SingleLine / LongContent WrapOrTwoLevel / MaxWidth 280 DIP / ShowDelay 400 ms / ViewportAvoidance / AutoFlip / PointerCapture Forbidden / InteractiveContent Forbidden / LongHelp HelpOrInspector
+        - Tooltip 进入 Foundation TooltipHost（不进 5.07 Local Plane）
+    - Backdrop / Shadow
+        - 遮罩透明度 = XY.Foundation.Opacity（Backdrop=0.28 / Hidden=0.18 / Overlay=0.92）；禁止越叠越黑
+        - 浮层阴影 = XY.Foundation.Shadow（轻阴影档）；Flat 基线
+    - Drag / Resize / Focus
+        - Drag 机制 = XY.Foundation.DragDrop（Drag Ghost 足够可见 / Cursor）；7.14 只拥有 Drop Target Overlay 语义
+        - Resize 命中与反馈 = XY.Foundation.ResizeSplitter；7.08 Area Corner Split/Join 几何为 7.08 独有合同
+        - Focus 视觉 = XY.Foundation.Focus + XYUI-4 FocusIndicator；Focus Trap/Restore 生命周期 = 7.16
+    - State（AMEND-A）
+        - ComposeMode = XY.State.ComposeMode（Single Primary Owner per Visual Channel）；Disabled 最高优先级；状态文字+颜色双通道
+        - Normal/Notice/Warning/Critical → 中性 + XY.Semantic.Info/Warning/Error
+    - Typography / 文案
+        - XY.Font.UI；Title 明确但不过度放大；Message 用次级文字；正文与标题不得重复同一句话
+        - 危险操作：危险语义色 + 明确不可逆后果 + 影响对象数量 + 恢复能力；禁止只靠红色
+    - Motion
+        - XY.Motion.Fast/Normal；Split/Join 几何反馈优先于装饰动画；动画不改变真实 Layer Order
+    - 性能合同（XYUI-7 全局）
+        - Overlay 打开只计算当前上下文数据，不全局扫描；PointerMove 只做轻量 Hit Test；Drag 不触发无关业务计算；Toast/Notification 大量事件聚合；TaskMonitor 进度更新节流
+        - 统一 Overlay Manager：只监听当前 Active Overlay 所需事件；禁止所有 Overlay 永久监听 PointerMove
+
+- 上游所有权边界（Canonical Cross-Component Ownership）
+    - Visual Foundation → XYUI-0；Text → XYUI-1；Input/Button → XYUI-2；Navigation/Menu/CommandPalette 命令契约 → XYUI-3；Selection/Feedback/Loading 视觉 → XYUI-4；Layout/Dock/Workspace 拓扑/Portal → XYUI-5；Collection → XYUI-6；Visualization → XYUI-8；Overlay/Window presentation & behavior → XYUI-7
+
+- 已知待后续 Token 层补齐
+    - 窗口 chrome 尺寸档（标题栏高度/边框/Resize Handle 命中区）Foundation 无 token → [GAP:XYUI7-GAP-001]，本轮不伪造数值（见 XYUI-7.gaps.json）
+    - 其余缺口：0（Backdrop 透明度/五 Host ZIndex/Tooltip 基础/Shadow/DragDrop/ResizeSplitter 均有合法上游 REF）
+
+- 7.01 · Dialog / 对话框
+    - 控件定位
+        - 类型
+            - Blocking Decision Surface / 短暂阻塞式决策表面
+        - 层级
+            - 浮层层（NEW；不是信息展示容器，不是大型设置面板）
+        - 主要用途
+            - 需要用户明确确认后才能继续的操作：确认、取消、必要后果说明
+    - Ownership
+        - Inherits：XYUI-1 文本；XYUI-2 Buttons；XY.Semantic.\* 危险状态；7.16 Modal Layer + Focus Trap
+        - Owns：modal semantics（阻塞范围）；task boundary；action placement；dismissal contract；danger 内容增强；Processing 防重
+        - Must Not Redefine：按钮/输入控件（REF XYUI-2）/ 焦点视觉（REF Foundation.Focus + XYUI-4）/ 危险色（REF XY.Semantic.Error）
+    - 最终方案
+        - 方案1 Compact Confirm 为默认基线；危险操作在基线上升级内容（状态色/不可逆后果/对象数量/恢复能力）
+    - 核心原则
+        - 只在真正需要确认时出现；能直接执行并支持 Undo 的操作不滥用 Dialog；主要操作始终一层直达
+        - 动作名直接明确（删除/保存/覆盖/应用），不用模糊“是/否”承担复杂语义
+    - 结构 / 尺寸
+        - Title（一句话说明确认什么）+ Message（一至两句后果）+ Actions（Secondary 取消 + Primary 动名词）；默认紧凑，正文短时禁止人为扩大
+    - 危险操作 / 复杂决策
+        - 危险：不可逆后果 + 影响数量 + 恢复能力；支持 Undo 必须告知；禁止连续弹两次确认制造安全感
+        - 复杂决策：三个及以上真正不同决策 → 升级专门 Decision Flow；禁止 是/否/取消 承担三个不同结果
+    - 关闭 / 键盘 / 焦点
+        - 取消按钮 / Escape；普通低风险可点遮罩关闭，危险操作不依赖遮罩关闭；关闭后不得产生副作用
+        - Enter 仅在主动作明确且安全时触发默认动作；危险操作避免误按 Enter；默认焦点按风险（危险 → 取消/安全位置）
+        - 打开焦点入 Dialog；关闭返回原触发控件；Tab 不得逃出模态区
+    - 遮罩 / 视觉
+        - 轻量遮罩（Opacity=Backdrop 0.28 语义），保持原上下文可辨认；浅色基线 + 轻边框 + 轻阴影；危险动作用危险语义色
+    - 响应式
+        - Desktop 居中紧凑；Tablet 压缩边距；Mobile Portrait 保持紧凑宽度 + 安全边距 + 触控面积；Mobile Landscape 接近桌面；移动端不自动变全屏页面
+    - 状态
+        - Default / Focused / Processing（防重复触发，不重复创建 Dialog）/ Danger / Disabled / Error（失败保留上下文并说明）
+    - Canonical Token
+        - XY.Dialog.Variant
+            - Type = COMPONENT_SPECIFIC（default | danger）
+        - XY.Dialog.Actions
+            - Type = COMPONENT_SPECIFIC（Primary 动名词 + Secondary 取消；onConfirm/onCancel/onDismiss）
+        - XY.Dialog.Danger
+            - Value = XY.Semantic.Error + 不可逆后果 + 对象数量 + 恢复能力（文字双通道）
+        - XY.Dialog.Backdrop
+            - Value = XY.Foundation.Opacity（Backdrop=0.28 语义；禁过黑压迫）
+        - XY.Dialog.Focus
+            - Value = Reference XYUI-7 7.16（Modal Focus Trap + Restore）+ Foundation.Focus 视觉
+        - XY.Dialog.Layer
+            - Value = ModalHost（REF Foundation 五 Host 体系，经 7.16 映射）
+        - XY.Dialog.Controls
+            - Value = Reference XYUI-2（Buttons）；XYUI-1（文本）
+        - XY.Dialog.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 大面积空白 / 标题正文重复 / 只有“确定/取消”不说明对象 / 所有操作都弹确认 / 连续两层确认框
+        - 只靠红色不解释后果 / 塞大型复杂表单 / 移动端改造成全屏页面 / 高频操作被 Dialog 阻断
+
+- 7.02 · Popover / 气泡浮层
+    - 控件定位
+        - 类型
+            - Transient Anchored Surface / 锚定瞬态表面
+        - 层级
+            - 浮层层（NEW；非阻塞，不要求离开当前上下文）
+        - 主要用途
+            - 围绕当前对象提供短暂就地信息与轻量操作；连接对象与其关键信息
+    - Ownership
+        - Inherits：XYUI-1 文本层级；XYUI-2 Inputs；XYUI-4 状态；7.16 OverlayHost + Anchor + Dismiss
+        - Owns：anchor/placement/collision（AutoFlip/ViewportAvoidance 语义）；Inspector/quickSetting/actions 三 Variant；ResponsiveMode（anchored/bottomSheet）；与 Inspector/Dialog 边界
+        - Must Not Redefine：Tooltip（REF XYUI-1 + Foundation）/ Menu（REF XYUI-3）/ Dialog（REF 7.01）/ 布局（REF XYUI-5）
+    - 最终方案
+        - 方案2 Inspector Popover 为主；方案1 Anchored Quick Setting 辅助；方案4 Responsive Popover 辅助；方案3 Quick Actions 不作核心形态
+    - 核心原则
+        - 对象优先（明确属于哪个触发对象）/ 就地优先 / 紧凑优先 / 非阻塞 / 高频功能不能全部藏入 Popover
+    - 内容层级 / 尺寸 / 滚动
+        - Primary（名称/核心值/核心状态）→ Secondary（ID/Type/辅助）→ Optional Action（查看详细属性/打开 Inspector）
+        - 默认紧凑，宽度按内容，禁止无限纵向增长；短内容不滚动，超最大高度内部滚动；长期滚动说明组件选择错误 → 转 Panel/Inspector
+    - 打开 / 关闭 / 键盘
+        - Click / Enter / Space / 移动 Tap；不得把 Hover 作为唯一打开方式
+        - 再次点击触发对象 / 点击外部 / Escape / 一次性动作执行完自动关闭；复杂检查可保持打开
+        - Tab 仅内部有交互元素时进入；Arrow Keys 选项导航；Enter 执行
+    - 状态 / 性能
+        - Closed/Opening/Open/Focused/Loading/Disabled/Error；局部加载不阻塞页面，失败给简短错误
+        - 打开只查询当前对象必要数据；地图用已存在命中结果；图表复用 Inspect 数据；关闭后释放订阅
+    - 边界（Popover vs Inspector / Dialog）
+        - Popover 快速看/快速改/短暂；Inspector 详细看/完整编辑/长期驻留；Popover 不能膨胀成缩小版 Inspector
+        - Popover 非阻塞可随时关闭；Dialog 需明确决策阻塞流程；危险确认不得仅用 Popover 替代 Dialog
+    - Canonical Token
+        - XY.Popover.Variant
+            - Type = COMPONENT_SPECIFIC（inspector | quickSetting | actions）
+        - XY.Popover.ResponsiveMode
+            - Type = COMPONENT_SPECIFIC（anchored | bottomSheet；承载变、语义不变）
+        - XY.Popover.Placement
+            - Value = Right/Bottom/Top/Left + AutoFlip + ViewportAvoidance（REF XY.Tooltip.\* 语义）
+        - XY.Popover.Layer / Anchor
+            - Value = OverlayHost + Target 绑定（REF Foundation 五 Host + 7.16；Target 移动更新、消失关闭）
+        - XY.Popover.Controls / State
+            - Value = Reference XYUI-2（Inputs）；XYUI-4（Feedback）
+        - XY.Popover.InspectorLink
+            - Value = Reference XYUI-5（Inspector 宿主）
+        - XY.Popover.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 塞满复杂表单 / 变成大型悬浮窗口 / 高频操作全藏 More / 移动端硬挤桌面浮层 / 依赖 Hover / 多个 Popover 叠加
+        - Popover 内无限嵌套 Popover / 把完整 Inspector 塞进 Popover
+
+- 7.03 · Tooltip / 提示浮层
+    - 控件定位
+        - 类型
+            - Transient Data Hint / 瞬时数据提示
+        - 层级
+            - 浮层层（NEW；服务数据检查与即时解释；不承担复杂操作，不替代 Popover/Inspector）
+    - Ownership
+        - Inherits：XYUI-1 Tooltip（1.19）基础 + Foundation XY.Tooltip.\*（ShowDelay/MaxWidth/ViewportAvoidance/AutoFlip/PointerCapture Forbidden/InteractiveContent Forbidden）；7.16 TooltipHost
+        - Owns：data/hint 两 Variant；XYUI-8 Inspect 联动（跟随/Crosshair/Lock 移交）；Responsive Hint（移动端无 Hover 替代）；跟随稳定性
+        - Must Not Redefine：Tooltip 基础合同（XYUI-1 已拥有）/ 长期检查（REF XYUI-8 8.15 Chart Inspector）/ 可操作内容（升级 Popover）
+    - 最终方案
+        - 方案2 Data Tooltip 为主；方案4 Responsive Hint 为辅助
+    - 核心目标
+        - 快速查看当前数据、不打断操作、桌面与移动相同信息语义、移动端不依赖 Hover、内容紧凑
+    - 与 Visualization Interaction 联动（8.16/8.15）
+        - Inspect → Tooltip 跟随检查位置；Hover → 桌面实时更新；Crosshair → 同步；Lock → 由 Chart Inspector 承担长期信息
+        - 原则：Tooltip 是瞬时检查，Inspector 是锁定后的稳定检查
+    - 触发 / 移动端
+        - Desktop Hover/PointerMove；Tablet Tap/Drag Crosshair；Mobile Tap/Long Press/Drag Crosshair
+        - 核心检查行为 = 触摸数据区域/拖动 Crosshair；Long Press 或首次 Hint 用于解释功能；核心功能不能只有 Hint 才能发现
+    - 内容层级 / 数据数量
+        - Primary（当前时间/对象）→ Data（Metric Name/Value/Unit）→ Optional（变化量/状态/极短操作提示）
+        - 只显示当前判断需要的数据；多 Series 仅显示可见/命中 Series；数据过多升级 Chart Inspector
+    - 位置 / 跟随 / 延迟
+        - 靠近 Inspect Point，不遮挡被检查数据点，Viewport 自动翻转，屏幕边缘安全距离
+        - Pointer Move 允许跟随但必须稳定，禁止高频左右跳动；Data Tooltip 近乎即时，辅助 Hint 允许轻微延迟
+    - 数据格式 / 性能 / 可访问性
+        - 数字格式统一、单位不丢失、百分比统一、时间统一、Delta 明确正负
+        - PointerMove 不扫描全部数据，只检查可见 Series，复用 Inspect 结果，不重新计算完整 Dataset，快速移动避免大量布局对象
+        - 信息不能只靠颜色；桌面键盘有等价检查能力；移动端触控替代；核心信息不能永久依赖 Hover
+    - Canonical Token
+        - XY.Tooltip7.Variant
+            - Type = COMPONENT_SPECIFIC（data | hint）
+        - XY.Tooltip7.DeviceMode
+            - Type = COMPONENT_SPECIFIC（desktop | tablet | mobilePortrait | mobileLandscape；禁照搬 Hover）
+        - XY.Tooltip7.Base
+            - Value = Reference XYUI-1 Tooltip（1.19）+ XY.Tooltip.\*（ShowDelay/MaxWidth/ViewportAvoidance/AutoFlip/InteractiveContent Forbidden）
+        - XY.Tooltip7.Link
+            - Value = Reference XYUI-8 8.16 Visualization Interaction + 8.15 Chart Inspector（Lock 移交）
+        - XY.Tooltip7.Layer
+            - Value = Foundation TooltipHost（REF 五 Host 体系，经 7.16 映射）
+        - XY.Tooltip7.Upgrade
+            - Value = 可操作内容升级 XYUI-7 7.02 Popover / XYUI-5 Inspector
+        - XY.Tooltip7.ErrorRole
+            - Value = 不作为主要错误反馈机制（错误必须直接可见，REF XYUI-4）
+        - XY.Tooltip7.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 移动端照搬 Hover / 放大型表单 / 内嵌复杂按钮 / 一次显示大量指标 / 遮挡当前数据点 / PointerMove 全量扫描
+        - 错误只能通过 Tooltip 查看 / 多个 Tooltip 堆叠 / 频繁左右跳动
+
+- 7.04 · Context Menu / 上下文菜单
+    - 控件定位
+        - 类型
+            - Contextual Command Overlay / 上下文命令浮层
+        - 层级
+            - 浮层层（NEW；服务桌面专业工具快速操作；移动 Long Press 等价入口；不能替代主界面高频操作）
+    - Ownership（关键裁定：XYUI-3 3.03 ContextMenu 已拥有菜单命令结构）
+        - Inherits：XYUI-3 3.03 ContextMenu（菜单结构/命令导航 = 上游 canonical owner）；7.16 OverlayHost + Topmost Dismiss；XYUI-4 Selection
+        - Owns：invocation context（右键/Context Key/Long Press）；overlay placement；dismiss；object/context adaptation（动态上下文命令）；命令与 7.10 共享 Command Contract
+        - Must Not Redefine：菜单结构/子菜单导航（REF XYUI-3 3.03/3.04）/ 按钮图标（REF XYUI-2）/ 危险确认（REF 7.01）
+    - 最终方案
+        - 方案2 Compact Command Menu 为主；方案1 Object Context Menu 辅助；方案4 Responsive 辅助；方案3 Smart Context 仅强上下文场景
+    - 核心目标
+        - 高命令密度、短操作路径、清晰分组、快捷键可发现、对象相关、桌面移动动作语义一致
+    - 命令结构 / 高频 / 快捷键
+        - Primary Commands（最相关对象动作）→ Secondary（管理/复制/导出）→ Destructive（独立区域）；分隔线少而明确
+        - 高频操作仍一层直达，Context Menu 是快捷/补充/对象相关入口，不能成为唯一入口
+        - 快捷键右对齐（Ctrl/Alt/Shift/F/单键）；加速器非唯一方式
+    - 动态上下文
+        - 允许按对象状态变化（锁定时间点 → 设为比较点 B）；常用命令名称与顺序保持稳定，不能每次重排破坏肌肉记忆
+        - 强上下文（方案3）仅在价值明显时启用（图表时间点/地图命中对象/局部分析）；上下文必须真正减少操作步骤
+    - 打开 / 关闭 / 位置 / 移动端
+        - Desktop Right Click/Context Key；Tablet Long Press；Mobile Long Press → 空间足够浮动菜单，Portrait 优先 Bottom Action Sheet
+        - 点击命令/点击外部/Escape/打开另一菜单/原对象失效；桌面优先 Pointer 附近，不遮挡目标关键区域，自动翻转不超 Viewport
+        - 动作名称与桌面一致；危险动作保持独立视觉区域；触控目标放大
+    - 尺寸 / 视觉 / 子菜单 / Disabled
+        - 宽度按最长有效命令，紧凑；浅色+轻边框+轻阴影；Hover 项轻量高亮；快捷键次级文字；危险动作危险语义色；Disabled 明确弱化
+        - 图标仅在语义明显时使用；子菜单最多一层，高频不得藏入深层子菜单；Disabled 保留位置并可说明原因，禁止点击后才知道
+    - 危险 / 性能 / 可访问性
+        - 可触发危险操作但不直接承担完整确认（交给 Dialog 或 Undo Toast）；省略号表示后续仍有流程
+        - 打开只计算当前对象命令，不全局扫描；Enabled 状态来自已有对象状态
+        - 键盘可打开、Arrow Keys 导航、Enter 执行、Escape 关闭、焦点回到原对象；功能不能只有右键入口
+    - Canonical Token
+        - XY.ContextMenu7.Commands
+            - Value = Reference XYUI-3 3.03 ContextMenu（菜单结构 canonical owner）
+        - XY.ContextMenu7.Invocation
+            - Type = COMPONENT_SPECIFIC（RightClick | ContextKey | LongPress；deviceMode 承载变语义不变）
+        - XY.ContextMenu7.Adaptation
+            - Type = COMPONENT_SPECIFIC（对象/上下文命令适配；名称顺序稳定约束）
+        - XY.ContextMenu7.Layer / Dismiss
+            - Value = OverlayHost + Topmost Dismiss（REF 7.16）
+        - XY.ContextMenu7.Danger
+            - Value = 独立区域 + XY.Semantic.Error；确认 REF XYUI-7 7.01（省略号标记）
+        - XY.ContextMenu7.State
+            - Type = COMPONENT_SPECIFIC（Closed | Open | Hover | Focused | Disabled | Executing）
+        - XY.ContextMenu7.Shortcut
+            - Value = 右对齐次级文字（加速器非唯一方式）
+        - XY.ContextMenu7.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 高频命令全藏右键 / 同一命令每次位置不同 / 间距过大 / 大量无意义分隔线 / 为“智能”频繁重排 / 移动端照搬右键
+        - 无限嵌套 / 混入大量无关全局命令 / 危险动作与普通动作混在一起
+
+- 7.05 · Toast / Snackbar / 短暂反馈提示
+    - 控件定位
+        - 类型
+            - Transient Feedback Surface / 跨局部区域的临时通知表面
+        - 层级
+            - 浮层层（NEW；反馈刚发生的操作结果；不阻塞、不抢焦点）
+        - 主要用途
+            - 统一管理 Success、Undo、Warning、Error 短时反馈；严重程度决定持续时间与操作能力
+    - Ownership
+        - Inherits：XYUI-4 Feedback 语义（严重程度视觉 REF XY.Semantic.\*）；7.16 OverlayRoot；7.11 Notification Center（历史关系）
+        - Owns：Success/Undo/Persistent Error/Warning 四 Variant；持续时间规则（按严重程度）；Undo Window；堆叠/聚合；位置（Notification Corner/Safe Area）
+        - Must Not Redefine：InlineFeedback（XYUI-4 内容上下文内反馈；两者不能互相替代）/ Dialog（不可逆危险操作 REF 7.01）/ Log（长期记录）
+    - 最终方案
+        - 方案1 Compact Success + 方案2 Undo Snackbar + 方案3 Persistent Error + 方案4 Responsive Toast 全部正式采用，共同组成同一套反馈系统
+    - 核心原则
+        - 反馈严重程度决定持续时间和操作能力；成功尽量轻；可逆优先 Undo；错误不能自动消失到来不及处理；不抢焦点不阻塞
+    - Success / Undo / Error / Warning
+        - Success：紧凑、自动消失、不要求确认；正文非常短；禁止成功后再弹 Dialog、所有小操作连续刷 Toast
+        - Undo：结果 + 恢复期限 + Undo Action；撤销一层直达不入 More；执行后立即出现；时间结束状态明确结束
+        - Undo 优先原则：可逆操作 → 立即执行 + Undo 反馈，而不是 确认→再确认→执行；真正不可逆/高风险仍交给 Dialog
+        - Error：Persistent，不自动快速消失；说明发生了什么/当前数据是否安全/下一步（Retry/Open Details/Copy Error/Close 主恢复一层直达）
+        - Warning：按是否需要处理决定持续时间；无需处理可自动消失，需要处理保持到确认或解除
+    - 持续时间 / 位置 / 堆叠 / 重复
+        - Success/Info 短；Undo 按 Undo Window；Warning 按重要性；Error 默认不自动快速关闭；禁止统一固定时长
+        - Desktop 优先右下/统一 Notification Corner；Tablet 靠近安全边缘；Mobile Portrait 底部优先避开 Bottom Action Bar/Safe Area；Mobile Landscape 边缘不遮挡 Plot
+        - Desktop 少量纵向堆叠；Mobile 单条优先；大量反馈聚合或转 Notification Center/Log；禁止无限堆积
+        - 相同短时间消息合并（显示重复次数/最新状态），连续保存不出十个“已保存”
+    - 布局 / 视觉 / 焦点 / 交互
+        - 紧凑、内容横向优先、主文字突出、Action 靠近结果；Success 轻量成功状态不用大面积绿色；Undo 高对比稳定背景；Error 危险色作语义强调正文保持可读；状态色辅助表达不能只靠颜色
+        - 默认不抢焦点；含 Action 时键盘必须可访问；关闭后不破坏原工作焦点；Escape 不全局误关闭所有 Toast
+        - 允许 Undo/Retry/Open/Close；禁止复杂表单/多步骤/大量按钮
+    - 与日志 / 通知中心 / 性能 / 安全
+        - Toast 即时反馈、Log 长期记录、Notification Center 历史可重处理；重要错误同时写 Log；大量后台事件不能全 Toast 化
+        - 创建不触发主界面重布局；大量事件合并；动画轻量；异步操作必须真正完成后才显示成功；不得虚假成功状态
+    - Canonical Token
+        - XY.Toast.Variant
+            - Type = COMPONENT_SPECIFIC（success | info | undo | warning | error）
+        - XY.Toast.Duration
+            - Type = COMPONENT_SPECIFIC（按严重程度；Undo 按 UndoWindow；Error 默认不自动关闭）
+        - XY.Toast.Undo
+            - Type = COMPONENT_SPECIFIC（结果+恢复期限+一层直达 Undo Action；可逆优先原则）
+        - XY.Toast.Persistent
+            - Type = COMPONENT_SPECIFIC（Error 默认 true；说明对象/数据安全/恢复动作）
+        - XY.Toast.Placement
+            - Type = COMPONENT_SPECIFIC（Notification Corner / Safe Area 避开；移动端避开 Bottom Action Bar）
+        - XY.Toast.State
+            - Value = XY.Semantic.\*（状态色辅助表达；文字双通道）
+        - XY.Toast.Layer
+            - Value = Reference XYUI-7 7.16（Toast 保持可见但不覆盖 Modal 核心操作；Modal 存在时可位于 Modal 可见区或延后）
+        - XY.Toast.History
+            - Value = Reference XYUI-7 7.11 Notification Center（重要事件）+ Log（技术事件）
+        - XY.Toast.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 成功操作弹确认框 / 错误 Toast 两秒消失 / 所有消息永久驻留 / 无限堆叠 / 移动端遮挡底部操作栏 / 所有小动作刷 Toast
+        - Undo 藏二级菜单 / 错误只写“失败”不说明对象 / 请求未成功就提示“保存成功”
+
+- 7.06 · Drawer / Side Sheet / 抽屉与侧滑面板
+    - 控件定位
+        - 类型
+            - Contextual Side Surface / 上下文侧边表面
+        - 层级
+            - 浮层层（NEW；介于 Popover 与完整 Window 之间；保留主工作区上下文）
+        - 主要用途
+            - 中等复杂度持续编辑、临时任务、快速查看；桌面 Side Drawer，移动 Bottom Sheet
+    - Ownership
+        - Inherits：XYUI-5 布局（Drawer 内布局 REF XYUI-5）；7.02 Popover（升级路径）；7.16 Overlay Parent
+        - Owns：inspector/task/peek 三 Variant；非模态层级规则；宽度/高度合同；Pin/Promote 升级 Panel；未保存关闭策略
+        - Must Not Redefine：布局机制（REF XYUI-5）/ Inspector 内容本身（不归 Drawer）/ Dialog（阻塞决策用 7.01）/ Window（独立生命周期用 7.07）
+    - 最终方案
+        - 方案1 Inspector Drawer + 方案4 Responsive Drawer 为核心；方案2 Task Drawer、方案3 Peek Drawer 为正式变体
+    - 核心原则
+        - 主内容尽量保持可见；内容量超 Popover 再用 Drawer；需长期固定升级 Panel；桌面移动相同功能语义
+    - Inspector Drawer / Task / Peek
+        - Inspector：对象持续检查编辑（Popover 快速检查 → 打开 Drawer → 持续编辑）；主画布保持可见；不得膨胀为第二主界面
+        - Task：一次性中等复杂任务（导出/批量设置/创建对象/导入）；完成后自动或主动关闭；不用大型 Dialog 阻塞也不长期占位
+        - Peek：短暂查看辅助信息（日志/对象列表/事件流）；边缘快速展开；需长期观察时固定为常驻 Panel
+    - 响应式 / 宽度 / 高度 / 层级
+        - Desktop Right Drawer 默认（必要时 Left）；Tablet 空间不足转 Bottom Sheet；Mobile Portrait Bottom Sheet；Mobile Landscape 按空间选
+        - 桌面宽度按内容自适应，禁止默认占一半以上；复杂内容升级 Panel/Window；移动端不得无必要铺满屏幕，Bottom Sheet 允许多档高度
+        - 非模态默认（主工作区仍可操作）；任务型可暂时限制部分冲突操作；默认不用全屏遮罩；需阻塞决策改 Dialog
+    - 未保存 / Pin / 焦点 / 键盘
+        - 未提交编辑不能无提示丢失（自动保存/保留草稿/必要时确认）；Escape 关闭临时 Drawer；Tab 内部导航；Ctrl+Enter 提交类任务（非唯一入口）
+        - Pin/Promote：临时 Drawer 可升级常驻 Panel，升级后同一内容语义；Peek Handle 明显但不长期抢视觉，禁止边缘排列大量 Handle
+    - 状态 / 性能
+        - Closed/Opening/Open/Editing/Loading/Submitting/Error/Pinned
+        - 打开只加载当前需要数据；对象切换局部更新；不重建主视图；主地图/Plot 不无关重绘；隐藏后释放监听
+    - Canonical Token
+        - XY.Drawer.Variant
+            - Type = COMPONENT_SPECIFIC（inspector | task | peek）
+        - XY.Drawer.Side
+            - Type = COMPONENT_SPECIFIC（left | right | bottom；承载方向变、功能语义不变）
+        - XY.Drawer.Layout
+            - Value = Reference XYUI-5（内部布局；标题/关键操作稳定，内容区独立滚动）
+        - XY.Drawer.Promote
+            - Type = COMPONENT_SPECIFIC（onPin / onPromoteToPanel；升级后同一内容语义）
+        - XY.Drawer.DirtyClose
+            - Type = COMPONENT_SPECIFIC（自动保存 | 保留草稿 | 必要时确认）
+        - XY.Drawer.Layer / Focus
+            - Value = Reference XYUI-7 7.16（Overlay Parent；打开不强抢焦点，开始编辑再进入）
+        - XY.Drawer.PopoverLink / DangerLink / ToastLink
+            - Value = Reference XYUI-7 7.02 / 7.01 / 7.05
+        - XY.Drawer.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 做成大型全屏页面 / 打开后主工作区完全不可用 / 手机硬塞超窄右侧 Drawer / Popover 能解决也开 Drawer / 万能 Drawer
+        - 任务完成仍永久占位 / 多层 Drawer 套娃 / Drawer 内再塞大型 Dialog 流程 / 无必要大面积 Padding
+
+- 7.07 · Window / Floating Window / 独立与浮动窗口
+    - 控件定位
+        - 类型
+            - Independent Window Surface / 独立窗口表面
+        - 层级
+            - 浮层层（NEW；脱离原始布局独立存在；桌面专业工具；移动端不强制复制自由多窗口）
+        - 主要用途
+            - 持续工具操作、独立文档、长期关键指标观察、可停靠工具
+    - Ownership
+        - Inherits：7.16 Owner Window Context（每 Native Window 独立 Overlay Context）；Foundation ResizeSplitter（Resize 命中）；7.08（停靠行为统一管理）
+        - Owns：window chrome（紧凑标题栏/Window Actions）；move/resize/maximize/minimize/restore 合同；modality/ownership；多窗口数量控制；第二显示器/置顶/离屏恢复
+        - Must Not Redefine：Resize/Drag 生命周期机制（REF Foundation ResizeSplitter/DragDrop）/ 内容（REF 对应模块）/ 停靠重组（REF 7.08）
+    - 最终方案
+        - 方案1 Floating Tool Window / 方案2 Document Window / 方案3 Pinned Monitor Window / 方案4 Dockable Responsive Window 全部为可选能力，按场景启用
+    - 核心原则
+        - 只有真正需要脱离主布局才升级 Window；简单检查 Popover、持续侧边编辑 Drawer、长期固定 Panel；不得为“专业感”滥用
+    - 四变体
+        - Floating Tool：持续工具操作（Drag/Resize/Minimize/Close/Optional Dock）；Document：独立内容上下文（独立标题/生命周期/Maximize/Restore/Second Monitor）
+        - Pinned Monitor：少量关键指标（Always On Top/Compact Mode/Move/Close；体积克制不长期遮挡主内容）
+        - Dockable：Floating ↔ Docked Panel 转换（内容语义不变只是承载形态变化）
+    - 标题栏 / 拖动 / 缩放
+        - 紧凑标题栏：Title + Optional Status + Window Actions（Minimize/Maximize-Restore/Pin/Dock/Close，按类型显示）
+        - 标题栏为主要拖动区域；位置反馈实时；不得触发主内容大量重绘
+        - Resize Handle 清晰；Min Width/Height 保证内容可用；内容响应式调整（chrome 尺寸 → GAP:XYUI7-GAP-001）
+    - 窗口层级 / 焦点 / 多窗口
+        - Active Window 最高普通层级；Pinned 高于普通窗口；Modal Dialog 高于相关窗口；Tooltip/Context Menu 遵循对应 Overlay 层级；禁止任意组件无限提高 Z-Index（REF 7.16）
+        - 点击激活；键盘输入到 Active Window；关闭后焦点返回合理上一上下文
+        - 允许多窗口但控制数量；相似窗口考虑 Tab Group/Dock Group；禁止几十个小窗口
+    - 第二显示器 / 置顶 / 关闭 / 状态
+        - 第二显示器可选；适合 Log/Monitor/Inspector/Preview；显示器断开必须恢复到可见区域（Display Change Safety）
+        - 置顶仅真正需要持续观察的窗口；状态明确可取消；不能默认全部置顶
+        - Close/Alt+F4/应用级窗口管理；未保存内容遵循对应保存合同；状态 Floating/Docked/Active/Inactive/Minimized/Maximized/Pinned/Loading/Error
+    - Canonical Token
+        - XY.Window.Variant
+            - Type = COMPONENT_SPECIFIC（tool | document | monitor；dockable 为能力）
+        - XY.Window.State
+            - Type = COMPONENT_SPECIFIC（floating | docked | minimized | maximized | pinned）
+        - XY.Window.Chrome
+            - Value = 紧凑标题栏合同；尺寸档 → GAP:XYUI7-GAP-001（Foundation 无 window chrome metric）
+        - XY.Window.Resize / Drag
+            - Value = Reference XY.Foundation.ResizeSplitter / DragDrop（机制）
+        - XY.Window.Layer
+            - Value = Reference XYUI-7 7.16（Owner Window Context；Active/Pinned/Modal 层级）
+        - XY.Window.Dock
+            - Value = Reference XYUI-7 7.08（停靠行为统一管理）
+        - XY.Window.DisplaySafety
+            - Type = COMPONENT_SPECIFIC（离屏自动拉回 / 分辨率重限 Bounds / DPI 重算；窗口永不永久丢失）
+        - XY.Window.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 所有功能都弹独立 Window / 大量小窗口铺满屏幕 / 默认全部置顶 / 无法拖回可见区域 / 显示器断开后永久丢失
+        - 手机照搬桌面自由窗口 / Window 与 Panel 职责混乱 / Window 内套多层 Floating Window
+
+- 7.08 · Docking & Window Management / 停靠与窗口管理
+    - 控件定位
+        - 类型
+            - Runtime Workspace Surface / 运行时工作区重组表面
+        - 层级
+            - 浮层层（NEW；统一管理桌面专业工具的工作区拆分/合并/调整/拆出/恢复；核心参考 Blender Area Model 直接操作思想）
+        - 主要用途
+            - 用户运行时主动重组工作区；不是静态页面 Layout、不是单纯 Floating Window
+    - Ownership（关键裁定：Layout topology = XYUI-5；Runtime interaction = 7.08）
+        - Inherits：XYUI-5 WorkspaceLayout（5.12 布局拓扑/persistence/split/dock/geometry）+ XYUI-5 5.04 Dock + Foundation ResizeSplitter；7.07（Window 能力）；7.16（Overlay 承载）
+        - Owns：Area Split/Join 直接操作语义（Corner Drag + Preview）；Editor Switch；Detach/Reattach；Workspace Restore/Reset；Display Change Safety；Dock Zones 降级高级辅助、Tab Group 可选辅助
+        - Must Not Redefine：布局拓扑模型（REF 5.12）/ Dock 引擎（REF 5.04）/ Resize 机制（REF Foundation ResizeSplitter）
+    - 最终方案
+        - Blender-style Direct Area Manipulation 为核心：Area Split/Join、Editor Switch、Direct Resize、Detach/Reattach、Workspace Restore；Dock Zones 降级高级辅助；Tab Group 可选辅助
+    - 核心原则
+        - Direct Manipulation：能直接拖动完成就不要求先切工具模式；Area First：Area 是基础容器不绑定唯一工具类型；Content Semantic Stable：Area/Window/Docked Panel 只是承载，切换承载不改变功能语义
+    - Area Split / Join / Resize
+        - Split：Area Corner Drag → Horizontal/Vertical Split Preview（轻量半透明实时跟随）→ 释放立即完成；不要求进入 Split Mode
+        - Join：Corner 拖向相邻 Area → Merge Preview 明确谁保留谁被合并 → 释放执行；合并仅影响布局不删除内容数据，未提交编辑必须保护
+        - Resize：直接拖动 Area Border，无需 Resize Mode；Min Size 保证内容可识别，达下限可建议 Collapse/合并
+    - Corner Handle / Editor Switch / Editor State
+        - Corner 默认极弱不抢视觉，Hover 轻微增强出现拆分提示；可发现性比 Blender 原始 Handle 略明确，但不做成大型按钮
+        - 任何 Area 可切换 Editor Type（Map/Inspector/Log/Plot/Dataset/Resource Browser）；切换不重建整个工作区；每 Area 保存自己的 Editor State（缩放位置/当前对象/过滤条件）
+    - Detach / Reattach / 第二显示器 / Display Safety
+        - Detach：Area 拆成 Floating Window（第二显示器/持续监控/独立工具）；不复制业务对象只改变承载位置
+        - Reattach：Floating Window 重新进入（独立 Area/Dock Group/可选 Tab）；恢复后内容状态尽量不丢失
+        - 显示器断开自动拉回；分辨率改变重限 Bounds；DPI 改变重算尺寸；窗口永不永久丢失
+    - Workspace / Preset / Restore / Reset
+        - Workspace = Area Tree + Split Ratio + Editor Type + Dock State + Floating Window + Bounds + Display Assignment
+        - Preset 示例：地图编辑/数据分析/双屏调试；应用重开恢复上次工作区；布局损坏恢复默认；Reset Workspace 必须存在且不删业务数据
+        - Auto Save：布局变化自动保存；重要命名工作区显式保存
+    - Dock Zones / Tab Group / 移动端 / 键盘
+        - Dock Zones 高级辅助不作主交互，默认不长期显示，不能取代 Corner Split/Join；Tab Group 可选（Inspector/Log/Monitor），不强制全 Tab 化
+        - 移动端不复制 Area Split/Join（固定响应式布局）；Tablet 有限 Split + 触控 Resize Handle 放大；不要求精确 Corner Pixel 操作
+        - 键盘高级快捷命令（Split/Close Area/Switch Editor/Reset Workspace）为加速器非唯一入口
+    - 性能 / 数据安全
+        - Drag PointerMove 不触发无关业务计算；Resize 只更新受影响区域；Preview 不重建 Editor 内容；布局树变化后执行必要 Layout Commit；大 Plot/Map 轻量重绘
+        - 布局操作不删业务数据；Join ≠ 关闭文档；Editor Switch ≠ 删除对象；关闭未保存 Window 遵循保存规则
+    - Canonical Token
+        - XY.WorkspaceRuntime.Verbs
+            - Type = COMPONENT_SPECIFIC（onSplitArea | onJoinArea | onResizeArea | onSwitchEditor | onDetachArea | onReattachArea | onSaveWorkspace | onRestoreWorkspace | onResetWorkspace）
+        - XY.WorkspaceRuntime.Topology
+            - Value = Reference XYUI-5 5.12 WorkspaceLayout（layoutTree 拓扑/persistence）+ 5.04 Dock
+        - XY.WorkspaceRuntime.SplitPreview
+            - Type = COMPONENT_SPECIFIC（轻量半透明；明确原 Area/新 Area；几何反馈优先于装饰动画）
+        - XY.WorkspaceRuntime.JoinPreview
+            - Type = COMPONENT_SPECIFIC（明确谁保留谁被合并；保护未提交编辑）
+        - XY.WorkspaceRuntime.EditorState
+            - Type = COMPONENT_SPECIFIC（per-Area Editor State 保存/恢复）
+        - XY.WorkspaceRuntime.DisplaySafety
+            - Type = COMPONENT_SPECIFIC（离屏拉回/分辨率/DPI 安全恢复）
+        - XY.WorkspaceRuntime.Resize
+            - Value = Reference XY.Foundation.ResizeSplitter（机制）+ MinSize 合同
+        - XY.WorkspaceRuntime.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 拆分前必须进入布局模式 / 合并前必须打开布局设置 / 所有 Dock 依赖大型 Dock Zones / 拖动无结果预览 / 合并时不知道谁消失
+        - Area 内容类型永久写死 / 拆出后无法重新进入 / 显示器断开窗口永久丢失 / 拖乱无 Reset / 移动端照搬桌面多窗口 / 大量复杂 Dock 图标
+
+- 7.09 · Lightbox & Fullscreen Preview / 聚焦与全屏预览
+    - 控件定位
+        - 类型
+            - Focus Presentation Shell / 聚焦呈现外壳
+        - 层级
+            - 浮层层（NEW；临时放大当前内容检查；介于嵌入内容与独立 Window 之间；不承担完整独立文档生命周期）
+        - 主要用途
+            - 媒体、图表、地图、结果和视觉对比的临时放大检查
+    - Ownership（关键裁定：Presentation shell = 7.09；Content = 对应模块）
+        - Inherits：XYUI-8 Visualization Interaction（交互继承）；7.16 OverlayRoot；XYUI-7 7.07（升级路径）
+        - Owns：Focus Preview 外壳（打开/关闭/Header/Controls/遮罩）；状态继承（Zoom Range/Locked Position/Selected Range/Current Object 进入保持、退出同步回）；Media/Compare 可选变体；Progressive Load
+        - Must Not Redefine：Visualization 手势（REF XYUI-8 8.16，不建第二套 Chart Gesture）/ Media/Data/Viz 内容（对应模块）/ Window 生命周期（REF 7.07）
+    - 最终方案
+        - 方案2 Focus Preview + 方案4 Responsive Fullscreen Preview 为核心；方案1 Media Lightbox、方案3 Compare Lightbox 为可选能力
+    - 核心原则
+        - 优先复用原内容；放大不等于重新创建另一套 Viewer；原交互语义尽量保持；桌面保持上下文感；手机空间不足直接全屏；关闭回到原始位置和状态
+    - 交互继承 / 状态继承
+        - 原组件核心操作继续存在（Inspect/Lock/Compare/Pan/Zoom/Range/Fit）；进入 Focus 不重新定义一套交互
+        - 进入前状态（Zoom Range/Locked Position/Selected Range/Current Object）尽量保持；退出后同步回原组件
+    - Media / Compare Lightbox
+        - Media：Image/Reference Image/Texture/Screenshot/Rendered Output；Fit/100%/Zoom/Pan/Close；图片区域尽量最大，工具紧凑，背景弱化但仍可辨认来源
+        - Compare：Before/After、A/B、Map A/B；两视图同时存在明确 A/B；可选同步 Zoom/Pan/Cursor/Crosshair；必须有真实视觉核对价值，不能所有 Preview 默认分屏
+    - 响应式 / 移动端
+        - Desktop 居中大型或近全屏 Focus Layer；Tablet 扩大必要时全屏；Mobile Portrait 全屏；Mobile Landscape 全屏或近全屏
+        - 移动端 Pinch Zoom、单指 Pan、明确 Close、Edge/Bottom Controls；不硬缩桌面 Lightbox
+    - 打开 / 关闭 / 焦点 / 遮罩 / Header / Controls
+        - Thumbnail Click/Preview Action/Focus Action/可选 Double Click/快捷键加速器
+        - Close/Escape；桌面低风险可点遮罩；移动端明确 Close + 可选 Back Gesture；关闭后焦点与 Locked Data 返回原内容
+        - Desktop 轻量背景弱化（禁过黑）；Focus 内容必须成为第一视觉层；Header 紧凑（Title/State/Close + 可选 Fit/Zoom/Compare）；Controls 仅显示当前需要操作
+    - 性能 / 加载 / 错误 / 安全
+        - 复用原渲染资源；不默认重新加载全部数据；大图表继续 Viewport 降采样；图片按 Zoom 加载必要分辨率；关闭释放临时高成本资源
+        - 高分辨率媒体 Progressive Load，已有低分辨率先显示保持比例；失败明确对象 + Retry，不拖垮主界面
+        - Preview 默认为只读或沿用原组件编辑权限；不因全屏突然开放危险编辑；危险操作继续交给对应确认机制
+    - 边界
+        - Preview 短暂依赖原上下文关闭后返回；Window 独立长期拥有独立生命周期；Popover 少量局部信息；Focus Preview 直接复用 XYUI-8 Visualization Interaction
+    - Canonical Token
+        - XY.FocusPreview.Variant
+            - Type = COMPONENT_SPECIFIC（focus | media | compare）
+        - XY.FocusPreview.Interaction
+            - Value = Reference XYUI-8 8.16 Visualization Interaction（不建第二套 Chart Gesture）
+        - XY.FocusPreview.StateInherit
+            - Type = COMPONENT_SPECIFIC（Zoom/Lock/Selection/CurrentObject 进入保持、退出同步）
+        - XY.FocusPreview.Media
+            - Type = COMPONENT_SPECIFIC（Fit | 100% | Zoom | Pan | Close；Progressive Load）
+        - XY.FocusPreview.Compare
+            - Type = COMPONENT_SPECIFIC（A/B 明确；同步 Zoom/Pan/Cursor/Crosshair 可选解除）
+        - XY.FocusPreview.Backdrop
+            - Value = XY.Foundation.Opacity（轻量弱化；禁过黑；原工作区可辨认）
+        - XY.FocusPreview.Layer
+            - Value = Reference XYUI-7 7.16（Focus Layer）
+        - XY.FocusPreview.Upgrade
+            - Value = 独立长期内容升级 XYUI-7 7.07 Window
+        - XY.FocusPreview.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 每次放大创建新 Window / Focus 后丢失 Zoom/Lock 状态 / 媒体工具栏占据大量空间 / 手机把桌面弹窗等比例缩小
+        - Compare 默认用于所有内容 / 关闭后找不到原内容位置 / Preview 内无限弹 Preview
+
+- 7.10 · Command Palette / 命令面板
+    - 控件定位
+        - 类型
+            - Global Command Overlay / 全局命令搜索浮层
+        - 层级
+            - 浮层层（NEW；统一命令搜索与快速执行入口；同时支持命令、对象和导航搜索）
+        - 主要用途
+            - 减少记忆菜单层级成本；键盘快速完成操作；专业用户效率入口
+    - Ownership（关键裁定：XYUI-3 3.18 CommandPalette 已拥有命令搜索契约）
+        - Inherits：XYUI-3 3.18 CommandPalette（命令搜索/命令契约 = 上游 canonical owner）；XYUI-2（Search Input）；XYUI-6（结果集合列表）；7.04（共享 Command Contract）；7.16 OverlayRoot
+        - Owns：palette overlay/surface（设备承载形态：Centered/Sheet）；统一搜索分组展示；参数化命令第二步委托；Recent/Favorites；键盘完整操作
+        - Must Not Redefine：命令搜索契约（REF 3.18）/ 搜索输入（REF XYUI-2）/ 结果集合（REF XYUI-6）/ 成为第二套 Search/List/Menu（禁止）
+    - 最终方案
+        - 方案1 Action Search + 方案2 Unified Command Palette 为核心；方案4 Responsive Command Palette 响应式核心；方案3 Context-aware Palette 增强能力
+    - 核心目标 / 三原则
+        - 任何可执行命令都可被搜索；命令名称稳定；结果清晰分类；键盘完整操作；移动端同一命令语义；上下文只提高相关性
+        - Action First（不要求知道菜单路径）；Stable Command（同一动作同一正式名称）；Unified Search（Command/Object/Navigation 清晰分组，不混成无结构列表）
+    - 搜索 / 分组 / Context
+        - 实时过滤、模糊匹配、关键词、中文名称、英文命令名、可选 Alias、相关度排序；空状态显示 Recent/Frequent/Context Commands
+        - 分组：Command/Open/Navigate/Recent + 可选 Settings/Files，分类克制；Result 行紧凑，大型说明文字与复杂卡片禁止
+        - Context 读取 Selected Object/Active Editor/Current Dataset/Current Mode 提高排序与推荐；只影响排序/推荐/可用状态，不频繁改变正式命令名/结构/肌肉记忆
+    - 键盘 / 参数化 / Disabled / 危险
+        - Arrow Up/Down 选择、Enter 执行、Escape 关闭、Tab 类别/参数补全；完整键盘操作
+        - 简单参数执行后轻量第二步；复杂参数打开 Drawer/Dialog；禁止把大型表单塞进 Palette
+        - Disabled 显示并说明原因；危险命令被搜索但执行仍遵循安全合同（Dialog/Undo），Palette 不绕过安全机制
+    - 响应式 / 移动端 / 命令注册 / 唯一性
+        - Desktop Centered Compact；Tablet Centered/Expanded；Mobile Portrait Bottom Command Sheet；Mobile Landscape Centered/Bottom
+        - 移动端输入框靠近键盘、键盘弹起结果仍可查看、触控目标增大、命令名称与桌面一致，不建第二套移动命令体系
+        - Command 定义 id/label/keywords/category/shortcut/availability/action + 可选 aliases/contextPriority；正式 Command ID 唯一
+        - Toolbar/Context Menu/Command Palette/Shortcut 消费同一 Command Contract
+    - 性能 / 安全
+        - 搜索即时响应；命令索引预构建或增量维护；不每字符扫描整个业务模型；Object Search 用已有索引；大集合限制首屏结果
+        - 不绕过权限/危险确认/Mode 限制；不可用命令明确 Disabled
+    - Canonical Token
+        - XY.CommandPalette7.Search
+            - Value = Reference XYUI-3 3.18 CommandPalette（命令搜索契约 canonical owner）
+        - XY.CommandPalette7.Surface
+            - Type = COMPONENT_SPECIFIC（Centered Compact | Bottom Command Sheet；deviceMode 承载）
+        - XY.CommandPalette7.ResultType
+            - Type = COMPONENT_SPECIFIC（command | object | navigation；清晰分组）
+        - XY.CommandPalette7.Input
+            - Value = Reference XYUI-2（Search Input）
+        - XY.CommandPalette7.List
+            - Value = Reference XYUI-6（紧凑结果行；大集合虚拟化/首屏限制）
+        - XY.CommandPalette7.CommandContract
+            - Value = 与 XYUI-7 7.04 共享（正式 Command ID 唯一；各入口消费同一契约）
+        - XY.CommandPalette7.Layer
+            - Value = Reference XYUI-7 7.16（OverlayHost + 统一 OverlayRoot）
+        - XY.CommandPalette7.Danger / Feedback
+            - Value = Reference XYUI-7 7.01 / 7.05（安全合同不绕过）
+        - XY.CommandPalette7.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 命令只能在 Palette 中找到 / 所有功能依赖搜索 / 结果混一起不分类 / 上下文频繁改命令名 / 大型卡片结果
+        - 危险命令绕过确认 / 移动端另造命令名称 / 每输入全量扫描大型数据
+
+- 7.11 · Notification Center / 通知中心
+    - 控件定位
+        - 类型
+            - Persistent Notification Surface / 持久通知表面
+        - 层级
+            - 浮层层（NEW；保存值得用户长期知道或后续需要重新处理的通知；承接 Toast 消失后的重要事件）
+        - 主要用途
+            - 实验运行完成、后台 Build 完成、导出完成、自动保存失败、任务失败、需处理警告、重要后台状态变化
+    - Ownership
+        - Inherits：7.05（Toast 即时反馈关系）；7.06（Drawer 承载）；7.12（Task Monitor 联动）；XYUI-6（列表语义）
+        - Owns：进入通知中心的事件筛选标准；Unread/Read/ActionRequired/Resolved/Expired 状态机；Workflow Grouping；聚合；Archive；持久化策略
+        - Must Not Redefine：Log（技术事件/高频/详细诊断；Notification 克制）/ 列表布局（REF XYUI-6）/ 危险确认（REF 7.01）
+    - 最终方案
+        - 方案1 Compact Notification Drawer + 方案3 Actionable Notifications 为核心；方案2 Workflow Grouping、方案4 Responsive 为辅助
+    - 与 Toast / Log 边界
+        - Toast 即时反馈短暂出现；Notification Center 历史记录可重新查看可重新处理；典型流程 操作完成 → Toast → 消失 → 重要事件保留在中心
+        - 不适合进入：Pointer Hover/普通选择变化/每一个 Tick/大量调试日志/频繁低价值状态变化；Log 可以有成百上千条，Notification Center 必须克制
+    - 状态机 / 分组 / 排序 / 聚合
+        - Unread/Read/ActionRequired/Resolved/Expired；Read ≠ Resolved（阅读状态与问题状态必须分开）
+        - 多时按工作流/来源分组（World Build/数据编辑/实验运行/导出/自动保存）；时间分组为辅助（刚刚/今天/更早）
+        - 未解决重要问题优先 + 最近优先 + 同工作流稳定顺序；避免“智能排序”导致通知不断跳动
+        - 普通成功事件聚合（连续 8 次 Build 完成归入 World Build）；失败事件不得因聚合被隐藏
+    - Actions / 标记 / 响应式
+        - Open/Retry/Show Details/Open Folder/Resume Task/Resolve；最重要恢复动作一层直达；危险动作走对应安全机制
+        - 全部已读只改 Read State 不自动把 ActionRequired 标记成 Resolved；未解决默认不建议静默清除，可 Archive
+        - Desktop Right Notification Drawer；Tablet Side Drawer/Full Height Sheet；Mobile Portrait Full Notification View；Mobile Landscape Side Sheet/Full View；承载变语义不变
+    - 视觉 / 性能 / 持久化
+        - 高信息密度、浅色、轻边框、未读轻量强调、Error 危险语义色、ActionRequired 明确、Resolved 弱化；避免社交产品式大型通知卡片；未读数量 3/9+/99+ 简化，禁止高刺激红点体系
+        - 不保存全部技术日志；有限历史；大量历史分页或虚拟化；未打开不持续重绘
+        - 重要通知跨会话保留；ActionRequired 保持到解决或明确清除；普通成功按项目决定
+    - Canonical Token
+        - XY.NotificationCenter.State
+            - Type = COMPONENT_SPECIFIC（unread | read | actionRequired | resolved | expired；Read ≠ Resolved）
+        - XY.NotificationCenter.Group
+            - Type = COMPONENT_SPECIFIC（Workflow Grouping 优先；时间分组辅助）
+        - XY.NotificationCenter.Actions
+            - Type = COMPONENT_SPECIFIC（onAction/onResolve/onArchive/onClear；主恢复一层直达）
+        - XY.NotificationCenter.ToastLink / TaskLink
+            - Value = Reference XYUI-7 7.05 / 7.12
+        - XY.NotificationCenter.List
+            - Value = Reference XYUI-6（紧凑列表；分页/虚拟化）
+        - XY.NotificationCenter.Carrier
+            - Value = Reference XYUI-7 7.06 Drawer / 移动 Full View
+        - XY.NotificationCenter.StateVisual
+            - Value = XY.Semantic.\*（Error 危险语义色；文字双通道）
+        - XY.NotificationCenter.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 所有 Log 塞进通知中心 / 通知无限堆积 / 所有事件都弹 Toast 并留历史 / Read 等于 Resolved / 失败通知无法重新处理
+        - 通知只有“失败”没有对象 / 每条通知塞大量按钮 / 移动端硬塞窄侧栏 / 大量高刺激红色数字
+
+- 7.12 · Progress Overlay & Task Monitor / 进度浮层与任务监控
+    - 控件定位
+        - 类型
+            - Task Progress Surface / 任务进度表面
+        - 层级
+            - 浮层层（NEW；统一管理长时间操作、后台任务和关键事务的进度反馈；区分普通后台任务与必须阻塞的关键事务）
+        - 主要用途
+            - 实验运行、数据分析、图片处理、导出、后台索引、缓存生成；避免所有 Loading 都锁死整个界面
+    - Ownership
+        - Inherits：XYUI-4 ProgressBar/LoadingIndicator（进度视觉）；7.05/7.11（完成/失败反馈）；7.06（Task Monitor 承载）；7.16（Blocking 时 Modal Focus）
+        - Owns：nonBlocking/transaction/taskMonitor 三 Variant；任务状态机（Queued/Running/Paused/Cancelling/Completed/Failed）；真实进度与 Indeterminate；Cancel 语义；Critical Transaction Blocking 条件；Rollback；ETA 规则
+        - Must Not Redefine：进度视觉（REF XYUI-4）/ 全局阻塞判定（只有 7.12 的 Blocking 条件允许，禁止“实现简单就锁全屏”）
+    - 最终方案
+        - 方案1 Non-blocking Progress Overlay + 方案3 Task Monitor + 方案4 Responsive Task Progress 为核心；方案2 Critical Transaction Overlay 为严格限定变体
+    - 核心原则
+        - 默认非阻塞；长时间不等于必须阻塞；用户必须知道当前正在做什么；有确定进度显示真实进度；无确定进度说明当前阶段；取消能力必须说明取消结果
+    - 真实进度 / Indeterminate / 后台继续
+        - 优先显示 百分比/已完成数量/总数量/当前阶段；禁止伪造精确百分比、不知道总量却一直显示 99%
+        - Indeterminate 显示当前阶段（正在初始化 Vulkan/正在读取 Dataset Registry）；允许轻量 Activity Indicator，但不能只剩无解释转圈
+        - 长任务允许后台继续；关闭临时进度卡 ≠ 取消任务；任务进入 Task Monitor；完成后 Toast 或 Notification Center
+    - Task Monitor / Queue / Actions / Cancel / Retry
+        - 状态 Queued/Running/Paused/Cancelling/Completed/Failed；显示 Task Name/State/Progress/Current Step/Optional Actions
+        - Queued 明确说明等待哪个任务/依赖什么资源，禁止看起来像卡死；Pause 仅任务支持安全暂停时提供；Retry 保留原任务上下文
+        - Cancel 语义明确：Cancel Immediately / Cancel After Current Step / Cancel And Rollback；不能只有模糊“取消”
+        - Completed 退出 Active 列表可短暂保留；Failed 不自动消失，说明失败对象/阶段/数据状态/恢复动作
+    - Critical Transaction Overlay / Blocking 条件 / Rollback / 局部阻塞
+        - 仅用于提交地图文件/原子数据迁移/关键项目切换/不可安全并行的状态转换；普通实验运行/导出/加载不适合
+        - Blocking 条件（全部满足才允许）：继续操作破坏事务一致性 / 导致数据冲突 / 存在明确安全风险 / 无法通过局部 Disabled 解决
+        - 内容：任务标题 + 为什么受限 + 当前步骤 + 进度 + 可取消时明确取消结果；支持回滚时取消动作写为“取消并回滚”，回滚失败升级 Error
+        - 局部阻塞优先：只影响 Panel 只禁用 Panel，只影响对象只锁对象；禁止为方便实现锁整个应用
+    - 多任务 / 聚合 / 父子 / ETA / 关闭应用
+        - 单任务 Compact Progress；多任务统一 Task Monitor；禁止每任务各弹一个窗口；同批任务总体进度 + 展开单项
+        - 父子任务默认只突出当前阶段，不暴露内部几十步；ETA 只有估算稳定时显示，禁止频繁跳动虚假剩余时间
+        - 存在后台任务时按任务性质决定：允许后台终止/请求确认/阻止关闭；必须明确告诉用户任务影响；可恢复任务重开应用恢复状态，不可恢复标记 Interrupted
+    - 通知联动 / 焦点 / 性能 / 安全
+        - Started 通常不 Toast；Completed 重要任务进 Notification Center；Failed → Toast + Notification Center；用户主动查看 → Task Monitor
+        - 非阻塞不抢焦点；Task Monitor 主动打开后才进入焦点；Blocking Overlay 才允许 Modal Focus
+        - 进度更新节流，不每 Tick 重绘整个 UI；主任务与 UI 更新频率解耦；Task Monitor 只更新变化任务
+        - 任务真实完成才显示 Completed；取消不能伪装成成功；失败说明数据安全状态；关键事务取消明确 Rollback；Blocking 必须有实际理由
+    - Canonical Token
+        - XY.TaskProgress.Variant
+            - Type = COMPONENT_SPECIFIC（nonBlocking | transaction | taskMonitor）
+        - XY.TaskProgress.State
+            - Type = COMPONENT_SPECIFIC（queued | running | paused | cancelling | completed | failed）
+        - XY.TaskProgress.ProgressVisual
+            - Value = Reference XYUI-4 ProgressBar / LoadingIndicator（进度条细而清晰；禁巨大 Spinner）
+        - XY.TaskProgress.Cancel
+            - Type = COMPONENT_SPECIFIC（CancelImmediately | CancelAfterCurrentStep | CancelAndRollback）
+        - XY.TaskProgress.Blocking
+            - Type = COMPONENT_SPECIFIC（四条件全满足才允许全局阻塞；局部阻塞优先）
+        - XY.TaskProgress.Progress
+            - Type = COMPONENT_SPECIFIC（真实进度优先；Indeterminate 显示阶段文字；ETA 稳定才显示）
+        - XY.TaskProgress.Feedback
+            - Value = Reference XYUI-7 7.05 / 7.11（完成/失败联动）
+        - XY.TaskProgress.Focus
+            - Value = Reference XYUI-7 7.16（仅 Blocking 允许 Modal Focus）
+        - XY.TaskProgress.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 长任务一律锁全屏 / 只有无限转圈没有文字 / 伪造进度百分比 / 任务失败自动消失 / 取消按钮不说明后果
+        - 每任务单独弹窗口 / 手机任务卡遮挡主导航 / 任务已失败仍显示 Running / 只因为实现简单就使用 Blocking Overlay
+
+- 7.13 · Spotlight & Coachmark / 聚焦引导与功能提示
+    - 控件定位
+        - 类型
+            - Discovery Guidance Overlay / 发现引导浮层
+        - 层级
+            - 浮层层（NEW；帮助用户第一次发现难以自然发现的重要能力；不是完整帮助系统/强制新手教程/弥补基础 UI 缺陷）
+        - 主要用途
+            - 重大新功能首次出现时的轻量说明；难发现但高价值的直接操作（Area Corner Split/运行速度倍率）
+    - Ownership
+        - Inherits：XYUI-1（文本信息设计）；7.16（Anchor + Spotlight Layer）
+        - Owns：coachmark/spotlight/tour 三 Variant；一次性原则；触发条件；Target 绑定；新功能标记生命周期；用户偏好
+        - Must Not Redefine：文本设计（REF XYUI-1）/ 帮助系统（正式帮助交给 Help/Documentation）/ 目标控件（来自对应 XYUI Component）
+    - 最终方案
+        - 方案1 One-shot Coachmark 为主；方案4 Responsive Coachmark 响应式核心；方案2 Spotlight 仅重大新能力；方案3 Minimal Guided Tour 极少使用
+    - 核心原则
+        - UI 自解释优先；引导只补充难发现能力；默认一次性；允许跳过/不再提示；不阻挡正常工作；不因功能多连续弹教程
+    - One-shot / Spotlight / Tour
+        - One-shot：首次进入相关功能/首次 Hover 隐藏能力附近/首次执行相关操作/升级后首次重大能力；默认展示一次，知道后不再自动重复，Help 中可重新查看
+        - Spotlight：目标区域明确高亮 + 其他内容轻量弱化 + 简短说明 + 试用或跳过；门槛：对现有工作流有明显变化/用户很可能不知道/值得主动打断一次
+        - Tour：极少使用；步骤必须少、每步只解释一个动作、始终允许 下一步/跳过全部/退出；需要十几步说明应使用正式教程或文档
+    - 目标绑定 / 位置 / 遮罩 / 移动端
+        - 绑定真实 UI Target；目标移动同步更新；目标消失自动关闭；不漂浮在无关位置；不遮住目标本身
+        - Desktop Anchored；Top/Bottom/Left/Right 自动翻转；移动端 Bottom Coach Sheet，重要 Target 保持高亮；禁 Hover；禁小气泡遮满屏幕
+        - Spotlight 遮罩必须轻，保留原界面辨识度，目标区域最清晰；禁大面积深黑遮罩
+    - 内容 / 新功能标记 / 用户偏好
+        - Title 可选 + Message 核心说明 + Action（知道了/试试看/下一步）+ Secondary（跳过/不再提示）；文案短、直接、告诉具体动作
+        - 允许短期 New/轻量 Dot；用户了解后自动消除；禁止长期挂 New
+        - 可保存 已看过/不再提示；升级仅重大变化允许重新触发；已关闭 Coachmark 可通过 Help 再次查看
+    - 状态 / 动画 / 焦点 / 可访问性 / 安全
+        - Hidden/Eligible/Visible/Dismissed/Completed/Disabled；轻量出现、目标高亮平滑、无大幅弹跳、不延迟实际操作
+        - 普通 Coachmark 不强抢焦点；Spotlight 可限制焦点到当前说明范围；关闭后焦点返回原上下文
+        - 不能只靠位置关系表达；内容可被辅助技术读取；Escape 关闭当前引导
+        - Coachmark 不直接执行危险操作；试试看仍遵循正常安全合同；不绕过 Dialog/Undo
+    - Canonical Token
+        - XY.Coachmark.Variant
+            - Type = COMPONENT_SPECIFIC（coachmark | spotlight | tour；once 默认）
+        - XY.Coachmark.Target
+            - Type = COMPONENT_SPECIFIC（绑定真实 Target；移动同步/消失自动关闭）
+        - XY.Coachmark.Anchor / Layer
+            - Value = Reference XYUI-7 7.16（Anchor 绑定 + Spotlight 轻量弱化层；不覆盖更高等级 Modal）
+        - XY.Coachmark.Content
+            - Value = Reference XYUI-1（短、直接、具体动作文案）
+        - XY.Coachmark.Mask
+            - Value = 轻量弱化（禁深黑遮罩；目标区域最清晰）
+        - XY.Coachmark.State
+            - Type = COMPONENT_SPECIFIC（hidden | eligible | visible | dismissed | completed | disabled；偏好持久化）
+        - XY.Coachmark.HelpLink
+            - Value = 正式帮助交给 Help / Documentation（Coachmark 自身不承担完整教程）
+        - XY.Coachmark.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 第一次启动连续十几个引导 / 每次打开重复提示 / 不能跳过 / 用 Coachmark 弥补看不懂的基础 UI / 移动端照搬 Hover Hint
+        - 深黑遮罩覆盖整个应用 / 目标已消失 Coachmark 仍浮着 / New 标记永久不消失 / 为普通小改动使用 Spotlight
+
+- 7.14 · Drag & Drop Overlay / 拖放覆盖层
+    - 控件定位
+        - 类型
+            - Drag-Drop Feedback Overlay / 拖放反馈覆盖层
+        - 层级
+            - 浮层层（NEW；统一管理拖放过程中的有效目标、无效目标、放置结果预览和响应式输入方式）
+        - 主要用途
+            - 资源拖入、文件导入、地图对象放置、Dataset 分配和 Compare 投放；重点是 Drop 前是否清楚知道结果
+    - Ownership
+        - Inherits：XY.Foundation.DragDrop（Ghost/Cursor 机制）+ XYUI-4（选择视觉）；7.16 OverlayHost；7.15（外部文件导入联动）
+        - Owns：Drop Target Overlay 语义（Direct Target/Multi-zone/Invalid Feedback）；Drop Intent 预览；Placement Mode（移动端）；Drop 前验证；Commit 分离
+        - Must Not Redefine：Drag 机制（REF Foundation.DragDrop）/ 业务 Transaction（Drop 只是提交意图）/ 列表重排语义（Insert Marker 合同，消费方为集合组件）
+    - 最终方案
+        - 方案1 Direct Target Overlay + 方案3 Invalid Drop Feedback + 方案4 Responsive Drag & Placement 为核心；方案2 Multi-zone Drop Overlay 为多目标辅助能力
+    - 核心原则
+        - Drop Before Validate（拖动中实时判断目标合法性）；Result Preview（合法目标说明松手后结果）；Invalid Early（无效目标 Drop 前明确反馈）；Input Semantic Stable（桌面 Drag/移动 Placement 业务语义一致）
+    - Direct / Multi-zone / Invalid
+        - Direct：一个对象只有一个明确合法目标；进入目标范围轻量高亮 + Drop Intent（“放到地图中/松手创建城镇标记”）
+        - Multi-zone：多个合法业务去向（作为新实验打开/加入 Compare A/导入数据集）；每个 Zone 说明结果；确实存在多个合理结果才使用，普通拖放不默认铺满 Drop Zone
+        - Invalid：显示“不能放到这里”+ 拒绝原因 + 可选合法去向；不能只显示禁止 Cursor；不能等 Drop 后再弹错误
+    - 类型约束 / 权限状态约束
+        - Drop Target 声明 accepts（RoadDataset/RegionDataset/ImageAsset/ExperimentResult/MapFeature）；验证基于正式类型合同，不依赖显示名称猜测
+        - 类型正确还需判断 Mode/权限/锁定状态/业务状态；不可用目标提前 Disabled 并说明原因
+    - Drop Commit / Undo / 危险 Drop / 外部文件
+        - 松手只是提交意图；真正修改遵循业务 Transaction；失败明确反馈；不能视觉成功就假设业务成功；失败对象回到原状态
+        - 可逆 Drop 优先 Undo（Undo Snackbar）；危险 Drop（覆盖重要数据）遵循 Dialog 合同
+        - 桌面系统拖文件进入：先判断文件类型再显示合法 Target；未知文件提前拒绝；需要导入配置进入 Import Flow（7.15）
+    - 地图放置 / 列表重排 / 跨容器 / Modifier
+        - 地图：目标地图高亮 + Placement Marker 表示真实落点；地图移动落点随 Pointer 更新；不能因 Overlay 重绘影响 Pointer 性能
+        - 列表重排：Insert Marker（插入前/后）比整块高亮更适合排序；禁止只靠列表项上下跳动猜测位置
+        - 跨容器：明确 Move/Copy/Link；不能让用户不知道是复制还是移动；Modifier（Ctrl/Option=Copy，Shift=特殊）必须同时有视觉提示
+    - Responsive / Mobile Placement / 批量
+        - Desktop Drag & Drop；Tablet Drag 或 Placement Mode；Mobile Portrait Placement Mode 优先；Mobile Landscape 按距离与空间选择
+        - Mobile Placement：选择资源 → 放置 → 进入 Placement → 移动地图 → 点击目标位置 → 确认；不强迫长距离精确拖动、不依赖 Hover、触控目标增大、允许取消、确认按钮明确
+        - Placement Mode：当前待放对象明确；地图可移动；目标位置明确；完成后自动退出或继续批量放置；批量明确 当前对象/已放数量/完成
+    - 视觉 / 动画 / 性能 / 可访问性
+        - Valid 低饱和强调；Invalid Danger 语义；Pending 轻量 Preview；Committed Toast/Selection Feedback；不能只靠颜色判断 Valid/Invalid
+        - Drop Zone 出现迅速、Drop 成功可轻微吸附；禁大型弹跳动画；Drop 成功动画不得先于真实 Commit
+        - PointerMove 只做轻量 Hit Test；不每 PointerMove 全量扫描大型业务集合；合法目标预先计算或局部索引；Overlay 更新与业务提交分离
+        - Drag & Drop 必须有键盘替代（Move To/Place/Assign）；不能让拖动成为唯一业务入口
+    - Canonical Token
+        - XY.DragOverlay.Variant
+            - Type = COMPONENT_SPECIFIC（directTarget | multiZone | invalidFeedback | placementMode）
+        - XY.DragOverlay.DropIntent
+            - Type = COMPONENT_SPECIFIC（合法目标必须说明松手后结果）
+        - XY.DragOverlay.Accepts
+            - Type = COMPONENT_SPECIFIC（类型合同声明；权限/锁定/业务状态提前 Disabled+原因）
+        - XY.DragOverlay.DragMechanics
+            - Value = Reference XY.Foundation.DragDrop（Ghost/Cursor 机制）
+        - XY.DragOverlay.InsertMarker
+            - Type = COMPONENT_SPECIFIC（列表重排插入前/后；供 XYUI-6 集合消费）
+        - XY.DragOverlay.State
+            - Type = COMPONENT_SPECIFIC（idle | dragging | valid | invalid | committing | completed | failed）
+        - XY.DragOverlay.Undo / Danger
+            - Value = Reference XYUI-7 7.05（Undo Snackbar）/ 7.01（危险覆盖 Dialog）
+        - XY.DragOverlay.Layer
+            - Value = Reference XYUI-7 7.16（OverlayHost）
+        - XY.DragOverlay.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - Drop 后才第一次验证 / 只显示禁止鼠标不说明原因 / 合法目标没有结果说明 / 普通拖放满屏 Drop Zone / 移动端跨屏长拖
+        - 拖放是唯一业务入口 / Move/Copy 语义不明确 / Drop 成功动画先于真实 Commit / PointerMove 全量扫描 / 失败后对象停留在错误位置
+
+- 7.15 · File Dialog & Resource Picker / 文件与资源选择器
+    - 控件定位
+        - 类型
+            - Resource Selection Surface / 资源选择表面
+        - 层级
+            - 浮层层（NEW；统一管理外部文件选择、项目内部资源选择和导入前确认；系统文件与项目资源必须区分）
+        - 主要用途
+            - 打开外部文件、导入数据、选择导出目录、选择图片模型；选择文件与真正写入项目必须区分
+    - Ownership
+        - Inherits：XYUI-6（资源列表/虚拟化）；7.09（复杂预览）；7.12（导入进度）；7.14（外部 Drag Import 联动）；平台原生文件 Provider
+        - Owns：System File Picker Bridge 合同（Allowed Types/Initial Location/Multi Select/Purpose/Return Contract）；Project Resource Picker（业务层级/搜索/类型约束/最近/收藏）；Import Preview & Validation（识别/校验/提交事务）
+        - Must Not Redefine：系统文件管理器（Windows Explorer/macOS Finder/移动文件管理器，禁重复实现）/ 资源列表布局（REF XYUI-6）/ 完整编辑器（复杂预览 REF 7.09）
+    - 最终方案
+        - 方案1 System File Picker Bridge + 方案2 Project Resource Picker + 方案3 Import Preview & Validation + 方案4 Responsive Resource Picker 全部正式采用
+    - 核心原则
+        - 外部磁盘文件交给操作系统选择器；项目内部资源用项目自己的资源语义；UI 不暴露不必要真实磁盘结构；文件选择成功不等于立即修改项目；真正导入前必须允许识别、校验和预览
+    - System File Picker Bridge / 系统 Picker 原则
+        - XYUI 负责 Allowed Types/Initial Location/Multi Select/Picker Purpose/Return Contract；操作系统负责文件浏览/磁盘目录/权限/系统最近位置
+        - 不重复实现 Explorer/Finder；不在移动端模拟 Android/iOS 文件管理器；使用平台原生文件或照片 Provider
+        - File Filter 按业务限制格式（JSON/GeoJSON/CSV/PNG/JPEG/Project File）显示人类可理解格式名称；Initial Location 记住上次有效位置，失效回退安全默认；Multi Select 仅业务支持批量时开启
+    - Project Resource Picker / 层级 / 搜索 / 约束
+        - 选择项目内部已注册业务资源（RoadDataset/RegionDataset/Map/Texture/Experiment/Simulation Result）；不是文件系统浏览器
+        - Primary Name；Secondary Type/Count/Status；Optional ID/Project Path；磁盘路径默认不显示为主要信息
+        - 使用项目业务结构（地图→道路→roads-main），不能直接等价为磁盘文件夹树；搜索 Name/Type/ID/Tags，不能退化成路径匹配器
+        - 类型约束：Picker 声明 accepts，只显示或优先显示可接受资源，不兼容隐藏或明确 Disabled；Single/Multi 按业务；当前选中状态明确
+    - Import Preview & Validation
+        - 流程：Select File → Parse/Detect → Preview → Validate → Confirm Import；选择文件不直接修改项目
+        - 识别结果显示 Detected Type/Object Count/Schema/Coordinate System/Resolution；目标位置用项目业务路径；ID 默认自动分配不要求用户手填
+        - Schema Validation：Passed/Warning/Failed；Failed 禁止 Commit 并说明原因；Warning 允许继续时说明影响，不能把 Warning 当 Error 阻断
+        - Import Commit：用户确认后才真正修改项目；遵循 Transaction；失败回滚；成功后更新项目 Registry 与 UI；成功 Toast、失败 Error Feedback/Notification Center
+    - Duplicate / 资源引用 / 路径显示 / 响应式 / 性能
+        - 重名检测：Rename/Replace/Skip；危险 Replace 遵循安全合同；Picker 返回正式 Resource Identity，不能返回路径字符串作为唯一业务身份
+        - 业务资源默认显示 Project Path；真实 File System Path 仅诊断/导出/高级信息场景显示
+        - Desktop Dialog 或 Window 按内容复杂度；Tablet Expanded Picker；Mobile Portrait Full-height Picker；Mobile Landscape Large Sheet/Full View；搜索框顶部可见，键盘弹起列表仍可用
+        - 项目资源用索引；大型列表虚拟化；搜索不扫描完整磁盘；预览按需加载；空状态说明筛选条件允许清除，无资源提供创建/导入入口
+    - 权限 / 安全
+        - 系统文件选择遵循平台权限；项目资源遵循项目权限；不可访问资源明确 Disabled；外部路径不能直接成为内部身份
+        - 选择文件不直接修改项目；导入前校验；真正写入使用事务；失败允许回滚；危险覆盖必须确认或可恢复
+    - Canonical Token
+        - XY.ResourcePicker.Bridge
+            - Type = COMPONENT_SPECIFIC（accept | multiple | initialLocation | purpose；平台原生 Provider）
+        - XY.ResourcePicker.Scope
+            - Type = COMPONENT_SPECIFIC（项目业务结构；非磁盘文件夹树）
+        - XY.ResourcePicker.List
+            - Value = Reference XYUI-6（资源列表；虚拟化；搜索索引）
+        - XY.ResourcePicker.Validation
+            - Type = COMPONENT_SPECIFIC（Passed | Warning | Failed；Failed 禁 Commit）
+        - XY.ResourcePicker.Import
+            - Type = COMPONENT_SPECIFIC（Transaction + 回滚；选中 ≠ 写入）
+        - XY.ResourcePicker.Duplicate
+            - Type = COMPONENT_SPECIFIC（Rename | Replace | Skip；Replace 危险走安全合同）
+        - XY.ResourcePicker.PreviewLink / ProgressLink / DragLink
+            - Value = Reference XYUI-7 7.09 / 7.12 / 7.14
+        - XY.ResourcePicker.Feedback
+            - Value = Reference XYUI-7 7.05 / 7.11
+        - XY.ResourcePicker.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 项目内部资源要求用户找真实 JSON 文件 / 自己重新实现完整系统文件管理器 / 选中文件立即写入项目 / 用户手工维护所有内部 ID
+        - 移动端模拟桌面文件浏览器 / Resource Picker 直接暴露大量磁盘路径 / 类型不兼容直到确认后才报错
+
+- 7.16 · Overlay Stack & Focus Management / 浮层层级与焦点管理
+    - 控件定位
+        - 类型
+            - Overlay Infrastructure Contract / 浮层基础设施合同
+        - 层级
+            - 浮层层（NEW；XYUI-7 全部浮层与窗口组件的系统级底层合同；避免组件各自维护任意 Z-Index/焦点丢失/嵌套关闭混乱/Overflow 裁切/Safe Area 冲突）
+        - 主要用途
+            - 统一管理所有 Overlay/Window/Drawer/Dialog 的视觉层级、焦点、父子关系、关闭顺序和渲染根
+    - Ownership（关键裁定：Map onto Foundation，不建第二套 Z/Plane）
+        - Inherits：Foundation 五 Host 体系（ContentHost/OverlayHost/DragHost/ModalHost/TooltipHost）+ XY.Foundation.ZIndex（禁魔法 ZIndex/禁跨 Host 覆盖）+ XYUI-5 5.07 OverlayLayout（单 Host 内 Planes）+ 5.17 PortalHost（Portal Placement）+ Foundation.Focus
+        - Owns：业务层语义映射（L0~L4 → Foundation Host）；Focus Trap & Restore 生命周期；Overlay Parent 树；Esc Close Order；Outside Click；Safe Area/Keyboard Insets 协调；OverlayRoot 协调合同
+        - Must Not Redefine：Z 数字体系（REF Foundation.ZIndex）/ 单 Host 内 Plane 命名（REF 5.07）/ Portal 机制（REF 5.17）/ 焦点视觉（REF Foundation.Focus + XYUI-4）
+    - 最终方案
+        - 方案1 Semantic Overlay Stack + 方案2 Focus Trap & Restore + 方案3 Nested Overlay Resolution + 方案4 Overlay Root & Safe Area 全部正式采用，共同构成统一 Overlay Infrastructure
+    - Semantic Layer 映射（L0~L4 → Foundation）
+        - L0 App Content → ContentHost；L1 Window/Drawer → ContentHost + LocalOrder；L2 Local Overlay（Popover/ContextMenu/Tooltip/CommandPalette/局部 Picker）→ OverlayHost（Tooltip 专项 → TooltipHost）；L3 Modal → ModalHost；L4 Critical → ModalHost + 全局限制策略
+        - 同类组件共享统一 Layer Token；出现层级冲突先检查语义归属再检查 Overlay Parent；禁止 z-index 9999/99999/业务模块自定义无限层级
+    - 局部层级 / Modal / Critical / Toast / Coachmark
+        - Popover 位于所属 Window/Drawer 上方；Context Menu 位于当前交互上下文上方；Tooltip 位于 Target 所属 Overlay 上方；局部层级不能越过不相关的 Modal
+        - Modal Dialog 高于当前普通工作区；多独立 Window 架构下 Modal 可绑定 Owner Window；禁止局部 Dialog 无意义阻塞整个多窗口应用
+        - Critical 最高普通业务层级，仅真正需要全局限制的状态（不可安全并行关键事务/系统连接断裂应用无法继续）；不能用于普通 Loading
+        - Toast 保持可见但不覆盖 Modal 核心操作（Modal 存在时位于 Modal 可见区或延后）；危险提示不能依赖 Toast 抢最高层级
+        - Coachmark 跟随 Target 所在 Context；Spotlight 对当前上下文轻量弱化；不能覆盖更高等级 Modal Dialog
+    - Overlay Parent / Nested Resolution / Esc Order / Outside Click
+        - 每个 Overlay 声明 Parent（Drawer→Popover→Tooltip）；Parent 决定局部 Z Order/关闭关系/焦点恢复目标；嵌套必须形成 Overlay Tree，禁止全部作为互不相关全局兄弟
+        - Esc Close Order：只处理当前最上层可关闭 Overlay（Tooltip→ContextMenu→Popover→Drawer→Window）；一次 Escape 只退一层，不能一次关闭整棵 Tree
+        - Outside Click 只作用于最上层支持 Outside Dismiss 的 Overlay；点击 Parent 内部不误关闭 Parent；点击 Child 不算点击 Parent 外部
+    - Focus Management
+        - 记录 Trigger Focus（Active Element/Owner Window/Parent Overlay）；Overlay 打开按类型决定是否转移焦点；关闭恢复到合理 Trigger 或上一上下文
+        - Focus Trap 仅需要 Modal Focus 的组件启用（Dialog/关键事务 Modal）；Tab/Shift+Tab 在 Modal 内循环，不能跳到背景
+        - Non-modal：Popover 按内容决定；Tooltip 通常不获取；Toast 默认不获取；Drawer 打开不一定抢焦点，开始编辑再进入
+        - Trigger Disappeared → Parent Context → Owner Window → Main Workspace 最近合理目标；禁止焦点掉到 document body 或页面第一个按钮
+        - Initial Focus：Dialog 按内容选择安全初始焦点；危险 Dialog 默认不把焦点放到危险 Primary Action；Input Dialog 输入框可成为 Initial Focus
+    - Keyboard Scope / OverlayRoot / Portal / Anchor
+        - Overlay 打开只激活当前合理快捷键作用域；Modal 存在时背后 Window 冲突 Shortcut 暂停；Global Shortcut 按安全规则决定
+        - 所有浮层进统一 OverlayRoot（Portal + Layer + Parent Relation + Focus + Dismiss）；避免 Parent Overflow Hidden/Transform Stacking Context/Clip/复杂嵌套 Z-Index
+        - Popover/Tooltip/ContextMenu/Dialog/Toast/CommandPalette/Coachmark 按组件合同进统一 Portal；渲染到 Root 仍绑定原始 Target（移动更新/消失关闭）
+        - Viewport Collision：Flip/Shift/Resize，优先保证内容可访问；Window Boundary：多窗口场景 OverlayRoot 按 Native Window 分离，Popover 不能跑到另一独立系统窗口
+    - Safe Area / Bottom / Keyboard Insets
+        - Mobile Top/Bottom/Left/Right Safe Area；Overlay 不能被 Notch/Status Bar/Home Indicator/System Gesture Area 遮挡
+        - 底部协调优先级：System Safe Area → Navigation → Active Sheet → Snackbar/Task Indicator；禁止组件互相覆盖
+        - 软键盘出现重新计算 Overlay 可用高度；Input Dialog/Command Palette/Resource Picker 保持输入框和关键 Action 可见
+    - Backdrop / Scroll / Pointer / Unmount / Debug
+        - 只有需要弱化背景或 Modal 时使用；Popover 通常无 Backdrop；Dialog 轻量；Critical Modal 可适当加强；禁止所有 Overlay 都带遮罩；嵌套 Modal 只保留合理遮罩层，不越叠越黑
+        - Modal 按平台限制背景 Scroll；Popover 通常不锁；移动 Sheet 区分 Sheet Scroll 与 Background Scroll；滚动边界避免无意传递（Overscroll Containment）
+        - Drag/Resize 期间允许临时 Pointer Capture，操作结束必须释放；Overlay 销毁时清理 Focus Trap/Pointer Capture/Event Listener/Scroll Lock/Parent Relation
+        - 开发模式可提供 Overlay Inspector（ID/Type/Layer/Parent/Focus Owner）用于排查，生产模式不显示
+    - Canonical Token
+        - XY.OverlayStack.Layer
+            - Value = 业务语义映射（L0~L4 → ContentHost/OverlayHost/ModalHost/TooltipHost + XY.Foundation.ZIndex；禁魔法数字）
+        - XY.OverlayStack.Planes
+            - Value = Reference XYUI-5 5.07 OverlayLayout（单 Host 内 Planes；禁自建命名）
+        - XY.OverlayStack.Portal
+            - Value = Reference XYUI-5 5.17 PortalHost（Portal Placement）
+        - XY.OverlayStack.Parent
+            - Type = COMPONENT_SPECIFIC（Overlay Tree；parentId 决定 Z Order/关闭关系/焦点恢复）
+        - XY.OverlayStack.Focus
+            - Value = Foundation.Focus 视觉 + Trap/Restore 生命周期（7.16 合同）
+        - XY.OverlayStack.EscOrder
+            - Type = COMPONENT_SPECIFIC（Topmost only；一次一层）
+        - XY.OverlayStack.SafeArea
+            - Type = COMPONENT_SPECIFIC（Safe Area + Keyboard Insets + 底部协调优先级）
+        - XY.OverlayStack.Backdrop
+            - Value = XY.Foundation.Opacity（Backdrop 0.28/Hidden 0.18/Overlay 0.92 语义）
+        - XY.OverlayStack.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - z-index 999999 / 每业务模块自定义层级数字 / Tooltip 被父容器 Overflow 裁掉 / Popover 出现在所属 Window 后面 / Esc 一次关闭全部浮层
+        - Dialog 关闭后焦点跑到页面顶部 / Modal 打开后 Tab 能进入背景 / 手机 Bottom Sheet 覆盖 Home Indicator / 软键盘遮住输入框
+        - 多个 Backdrop 叠成黑屏 / Child 关闭导致 Parent 一起消失 / Target 已销毁 Overlay 继续漂浮

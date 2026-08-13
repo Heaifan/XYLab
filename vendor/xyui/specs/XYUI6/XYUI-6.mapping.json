@@ -1,0 +1,1194 @@
+{
+  "mapping_version": "0.1.0",
+  "phase": "XYUI-PILOT-R6-FAST-CLOSE",
+  "scope": "6.01~6.20 FULL",
+  "source": {
+    "path": "xyui/source/XYUI6/XYUI-6.md",
+    "bytes": 161709,
+    "sha256": "15dcf491e7d2512994e2c140b1ea4a526b58aec21f70935d5faeef8f8e92e358",
+    "note": "trailing whitespace stripped (19 lines); original SHA a52fd6cd… recorded in commit message"
+  },
+  "canonical_basis": {
+    "foundation_registry": "xyui/registry/foundation/foundation-registry.json (VALIDATED, AMEND-A/B)",
+    "token_architecture": "xyui/tokens/architecture/token-canonical-map.json (A3-R2)"
+  },
+  "global_rules_applied": [
+    "所有权边界：Text→XYUI-1；Input/Action/Search→XYUI-2；Navigation/Pagination/Switching→XYUI-3；Hover/Selected/Focus/Feedback→XYUI-4；Layout/Scroll/Virtualization/Container→XYUI-5；Data & Collection Semantics→XYUI-6",
+    "组合优先级：REF → REUSE → COMPOSE → COMPONENT_SPECIFIC → GAP；不创建第二真值",
+    "State（AMEND-A）= XY.State.ComposeMode（Single Primary Owner per Visual Channel）；XYUI-6 不建第二套 State Priority",
+    "Typography = XY.Font.UI + XY.FontSize.* / XY.FontWeight.*；Primary = XY.Text.Primary；TruncatedText / Tooltip REF XYUI-1",
+    "Alignment = XY.Alignment.Text / Number 消费（文字左、数值右、Boolean/Icon 居中）",
+    "Density = XY.Density.*（Auto|Compact|Comfortable）；行高/密度档位 = COMPONENT_SPECIFIC；Compact≠拥挤",
+    "分隔 = XY.Divider.ListRow / Header / VerticalSplit；默认全网格深色框线 Forbidden；Zebra = Surface 交替低对比",
+    "Scroll = XYUI-5 ScrollArea（XY.Scrollbar.* 视觉）；Virtualization 机制 = XYUI-5 5.14；数据层合同 = 6.20",
+    "Selection/Focus/HitTarget = XYUI-4 + XY.HitTarget.ListRow/TreeRow；Input = XYUI-2；Pagination = XYUI-3；ViewSwitcher = XYUI-3",
+    "效率三原则：第一眼看到关键信息 / 高频操作一层直达 / 一次点击不两次（危险不可逆例外：confirmation+undo+guard）",
+    "信息优先级 P0~P3 = XYUI-6 集合层机制（P3→P2→P1 隐藏；P0 不得隐藏）",
+    "排序表达 = 字段 + 方向语义文字；↑↓ 仅 Secondary Direction Indicator（GAP:XYUI6-GAP-001）",
+    "性能合同 = Virtualization / Incremental Update / Stable Identity / Minimal Re-render / Local Update / 禁无谓全量重建",
+    "响应式 = same semantics, different presentation/input；移动端 ≠ Desktop Table 缩小版",
+    "原稿 16 处 px 叙述尺寸收敛为 DIP 组件档位（COMPONENT_SPECIFIC）；0 hex / 0 rgb / 0 hsl / 0 旧字体"
+  ],
+  "components": [
+    {
+      "component_id": "XYUI-6-6.01",
+      "name": "List",
+      "title": "List / 列表",
+      "ref_count": 8,
+      "refs": [
+        {
+          "property": "Variant",
+          "value": "Rich | Compact | Detail | Block（同一组件四 Variant）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "ItemHeight",
+          "value": "Compact 28–34 / Regular 36–44 / Rich 44–56 DIP（Adaptive，非不可变约束）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Visual",
+          "value": "Plain | Divider | SoftBlock；Divider = XY.Divider.ListRow",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "PrimaryText",
+          "value": "SingleLine + Ellipsis（REF XYUI-1 TruncatedText）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Selection / Focus",
+          "value": "Reference XYUI-4（不重复建立 Selection 规则）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Scrolling",
+          "value": "Reference XYUI-5 ScrollArea",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Virtualization",
+          "value": "Reference XYUI-6 6.20（机制 REF XYUI-5 5.14）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-6-6.02",
+      "name": "Table",
+      "title": "Table / 表格",
+      "ref_count": 10,
+      "refs": [
+        {
+          "property": "Variant",
+          "value": "Rich | Linear | ColumnStructured | Zebra（同一 Table Component）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "RowHeight",
+          "value": "Compact 30–36 / Regular 36–44 / Rich 42–52 DIP（Header 30–36 DIP）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "GridLines",
+          "value": "None | Horizontal（XY.Divider.ListRow）| ColumnSoft（XY.Divider.VerticalSplit）；Full Dark Grid = Forbidden",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Zebra",
+          "value": "XY.Surface.Panel / PanelAlt 交替低对比（Subtle，不得形成彩条）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Header",
+          "value": "浅背景 XY.Surface.PanelAlt + XY.FontWeight.Semibold",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextOverflow",
+          "value": "Ellipsis（REF XYUI-1 TruncatedText）| Wrap（业务指定）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Selection / Focus",
+          "value": "Reference XYUI-4",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Sorting / Filtering",
+          "value": "Reference XYUI-6 6.13 / 6.14",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Virtualization",
+          "value": "Reference XYUI-6 6.20",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-6-6.03",
+      "name": "Data Grid",
+      "title": "Data Grid / 数据网格",
+      "ref_count": 14,
+      "refs": [
+        {
+          "property": "SelectionMode",
+          "value": "Row | MultiRow | CellRange",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "ActiveCell",
+          "value": "Single（与 Row Selection / Editing Cell 分离建模）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "EditMode",
+          "value": "OnDoubleClick | OnEnter | Explicit",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Density",
+          "value": "Dense | Compact | Regular（Dense 不改变核心交互合同）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "GridLines",
+          "value": "None | Horizontal | ColumnSoft | Full（Full 非默认）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Columns",
+          "value": "Resizable | Reorderable | Hideable | Freezable（REF 6.10 Column 规则）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Clipboard",
+          "value": "Optional（粘贴前必须数据类型验证，非法数据不得静默写入）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Input 控件",
+          "value": "Reference XYUI-2（不重新设计输入控件）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Selection / Focus 视觉",
+          "value": "Reference XYUI-4",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Scrolling",
+          "value": "Reference XYUI-5（Header 可固定；冻结规则不影响数据语义）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Sorting / Filtering / Grouping",
+          "value": "Reference XYUI-6 6.13 / 6.14 / 6.15",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "InlineEditing / BulkOperations",
+          "value": "Reference XYUI-6 6.17 / 6.18",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Virtualization",
+          "value": "Reference XYUI-6 6.20（机制 REF 5.14）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-6-6.04",
+      "name": "Property Grid",
+      "title": "Property Grid / 属性网格",
+      "ref_count": 10,
+      "refs": [
+        {
+          "property": "Layout",
+          "value": "TwoColumn | AdaptiveSplit | InlineComposite | Expanded | Stacked",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Splitter",
+          "value": "Resizable（视觉 REF XY.Resize.Splitter.Visual）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "ValueType",
+          "value": "Text|Number|Boolean|Enum|Color|Vector|Range|Path|Reference|Custom",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "State",
+          "value": "Default | ReadOnly | Disabled | Mixed | Invalid | Modified（视觉 REF XYUI-4）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Reset",
+          "value": "Optional（不占大量永久空间）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "PropertyRow 尺寸",
+          "value": "普通 28–34 DIP / Section Header 28–32 DIP / 复杂 Adaptive",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Validation",
+          "value": "Reference XYUI-4",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Input",
+          "value": "Reference XYUI-2（16 类 Property 输入控件）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Scrolling",
+          "value": "Reference XYUI-5",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-6-6.05",
+      "name": "Hierarchical Data View",
+      "title": "Hierarchical Data View / 层级数据视图",
+      "ref_count": 11,
+      "refs": [
+        {
+          "property": "Variant",
+          "value": "Guide | Compact | Rich | TreeTable（同一 Hierarchy 体系）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "GuideLine",
+          "value": "Full | ActiveBranch | Off（低对比强制；REF 6.15 Grouping 复用）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Indent",
+          "value": "XY.Indent.PerLevel（Adaptive；每级统一 Indent Step）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selection",
+          "value": "Single | Multi | Range（视觉 REF XYUI-4）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Expand",
+          "value": "Manual | Lazy（LoadingChildren 只影响当前 Branch）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Drag",
+          "value": "None | Reorder | Reparent | Both（输入合同 REF XY.Drag.*；视觉 REF XYUI-4）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Content",
+          "value": "Simple | Typed | Rich | Structured",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "TreeNavigation 边界",
+          "value": "核心是导航 → REF XYUI-3；本项核心是数据关系（不合并）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Filtering",
+          "value": "Reference XYUI-6 6.14（深层命中自动展开祖先路径）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Virtualization",
+          "value": "Reference XYUI-6 6.20（机制 REF 5.14）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-6-6.06",
+      "name": "Item View",
+      "title": "Item View / 条目视图",
+      "ref_count": 10,
+      "refs": [
+        {
+          "property": "Variant",
+          "value": "Rich | Regular | Compact（Single-Line / Two-Level = Adaptive Slot 裁剪）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Leading",
+          "value": "None | Icon | Thumbnail | TypeMarker（必须辅助识别）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Primary",
+          "value": "Required + SingleLine + Ellipsis（REF XYUI-1 TruncatedText）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Secondary / Metadata / Status / Action",
+          "value": "Optional；Status 视觉 REF XYUI-1 StatusBadge / StatusDot",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Density",
+          "value": "Compact 30–36 / Regular 40–48 / Rich 52–64 DIP（Extended 仅特殊场景）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Adaptive",
+          "value": "On（Adaptive Slot 裁剪机制，非另一套组件）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "InformationPriority",
+          "value": "P0 | P1 | P2 | P3（P3→P2→P1 隐藏；P0 不得隐藏）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Selection",
+          "value": "Reference XYUI-4",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "复用",
+          "value": "XY.List.Item / XY.AssetGrid.Item / XY.SearchResult.Item / XY.Picker.Item / XY.Recent.Item",
+          "kind": "COMPOSE"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-6-6.07",
+      "name": "Asset Grid",
+      "title": "Asset Grid / 资源网格",
+      "ref_count": 10,
+      "refs": [
+        {
+          "property": "Variant",
+          "value": "Rich | PreviewFirst | Compact | Dense",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Preview",
+          "value": "Image|Texture|Model|Material|Generated|Placeholder（无 Preview 必须类型占位）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "TileSize",
+          "value": "Small | Medium | Large（尺寸变化不得改变数据语义）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Metadata / Status / Action",
+          "value": "Optional；Status 视觉 REF XYUI-1 StatusBadge",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "InformationPriority",
+          "value": "P0 = 名称+Preview+严重异常（不得隐藏）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Selection",
+          "value": "Reference XYUI-4（选中状态不得遮挡 Preview）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Sorting / Filtering / Grouping",
+          "value": "Reference XYUI-6 6.13 / 6.14 / 6.15",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Preview Loading",
+          "value": "局部 Skeleton / Placeholder（REF XYUI-4 Skeleton；不得阻塞整个 Grid）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Virtualization",
+          "value": "Reference XYUI-6 6.20（Thumbnail 缓存；不可见不生成 Preview）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-6-6.08",
+      "name": "Collection Header",
+      "title": "Collection Header / 集合头部",
+      "ref_count": 8,
+      "refs": [
+        {
+          "property": "Identity",
+          "value": "Title 必选 + Count + Secondary（可选）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Status",
+          "value": "Optional（Selected/Modified/Error/Warning/Filtered Count/Loading/Sync；视觉 REF XYUI-4 / XYUI-1 StatusBadge）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Action",
+          "value": "Primary | Secondary | Overflow（危险动作不得作为默认 Primary）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Variant",
+          "value": "Adaptive | Minimal",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Priority / Collapse",
+          "value": "P0~P3 + Adaptive（P0 必须保留）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Sorting / Filtering",
+          "value": "Reference XYUI-6 6.13 / 6.14",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "BulkOperations / CollectionState",
+          "value": "Reference XYUI-6 6.18 / 6.19",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-6-6.09",
+      "name": "Collection Toolbar",
+      "title": "Collection Toolbar / 集合工具栏",
+      "ref_count": 12,
+      "refs": [
+        {
+          "property": "Search",
+          "value": "Reference XYUI-2 Search Field（极窄降级为图标但展开后立即获得焦点）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Filter",
+          "value": "Reference XYUI-6 6.14（FilterState：Expanded | Count；Token 直接移除）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Sort",
+          "value": "Reference XYUI-6 6.13（语义化方向指示；↑↓ 仅辅助）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Group",
+          "value": "Reference XYUI-6 6.15（无分组不强制占位）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "View",
+          "value": "Reference XYUI-3 ViewSwitcher（数据集视图模式集合：List | Grid | Table | Compact）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Display",
+          "value": "Columns | ThumbnailSize | Density | MetadataVisibility | GuideLine",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Overflow",
+          "value": "低频工具（不得承载唯一核心搜索/筛选/排序入口）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Variant",
+          "value": "Adaptive | Compact",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Collapse",
+          "value": "PriorityBased（状态压缩不得导致状态丢失）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Toolbar 结构",
+          "value": "通用工具栏 REF XYUI-3 Toolbar；本项拥有集合上下文工作状态",
+          "kind": "COMPOSE"
+        },
+        {
+          "property": "Height",
+          "value": "约 36–44 DIP（允许多行 Filter Token 时自适应）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-6-6.10",
+      "name": "Column",
+      "title": "Column / 列",
+      "ref_count": 11,
+      "refs": [
+        {
+          "property": "WidthMode",
+          "value": "Auto | Fixed | Fit | Flex | MinMax",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Priority",
+          "value": "P0 | P1 | P2 | P3（空间不足按 Priority 裁剪，不从最右侧隐藏）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "MinWidth",
+          "value": "Required（Name 保证识别；Action 保证热区）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "MaxWidth",
+          "value": "Optional（避免 Flex Column 超宽屏无限拉长）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Resizable / Reorderable / Hideable / Freezable",
+          "value": "True | False（Resize 输入合同 REF XY.Resize.*）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Alignment",
+          "value": "XY.Alignment.Text / Number 消费（Left | Center | Right）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Overflow",
+          "value": "Ellipsis（REF XYUI-1 TruncatedText）| Wrap",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "FrozenBoundary",
+          "value": "XY.Border.Color.Subtle（冻结列竖分隔，不引入阴影第二真值）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "横向滚动",
+          "value": "Reference XYUI-5 ScrollArea（与列隐藏可组合）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Sorting / Filtering",
+          "value": "Reference XYUI-6 6.13 / 6.14（Header 状态直接可见）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-6-6.11",
+      "name": "Row",
+      "title": "Row / 行",
+      "ref_count": 10,
+      "refs": [
+        {
+          "property": "Variant",
+          "value": "AdaptiveRich | Rich | ActionAware | Minimal",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Density",
+          "value": "Dense 26–32 / Compact 32–40 / Rich 42–52 DIP（Expanded 非默认）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Leading / Secondary / Status",
+          "value": "Optional；Status 视觉 REF XYUI-1 StatusBadge / StatusDot",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "QuickActions.MaxPrimaryActions",
+          "value": "1 | 2（高频安全操作；More 不得成为最高频唯一入口）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Priority",
+          "value": "P0~P3（P3→P2→P1 裁剪；P0 始终优先保留）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Selection",
+          "value": "Reference XYUI-4（Row Selected ≠ Cell Editing；Active Cell 分离 REF 6.03）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Column",
+          "value": "Reference XYUI-6 6.10",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Expandable",
+          "value": "Reference XYUI-6 6.16",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Virtualization",
+          "value": "Reference XYUI-6 6.20",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-6-6.12",
+      "name": "Cell",
+      "title": "Cell / 单元格",
+      "ref_count": 10,
+      "refs": [
+        {
+          "property": "Display",
+          "value": "Plain | Semantic | Custom",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "DataType",
+          "value": "Text|Number|Percentage|Boolean|Status|Progress|Color|Enum|DateTime|Reference|Icon|Composite|Custom（与 InteractionMode 独立建模）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "InteractionMode",
+          "value": "ReadOnly | Inspect | Editable | DirectEdit",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "State",
+          "value": "Default | Active | Editing | Modified | Invalid | Disabled | Missing（视觉 REF XYUI-4）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Alignment",
+          "value": "XY.Alignment.Text / Number 消费（Left | Center | Right；同 Column 一致）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Overflow",
+          "value": "Ellipsis（REF XYUI-1 TruncatedText）| Wrap",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "MiniProgress",
+          "value": "Reference XYUI-4 ProgressBar（Inline Compact Progress，不改变 Row 高度）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Input / Feedback",
+          "value": "Reference XYUI-2 / XYUI-4",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "DataGrid / Virtualization",
+          "value": "Reference XYUI-6 6.03 / 6.20",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-6-6.13",
+      "name": "Sorting",
+      "title": "Sorting / 排序",
+      "ref_count": 9,
+      "refs": [
+        {
+          "property": "Control",
+          "value": "Field Required + Order Semantic（人类可理解方向表达）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Mode",
+          "value": "Single | Multi | Manual（Manual Order 与字段排序必须区分）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Display",
+          "value": "Compact | Standard | Rich | Advanced（多级：1 · 人口 · 从高到低）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Entry",
+          "value": "Control | ColumnHeader | Toolbar（Context-Aware；共享同一 Sorting 状态模型）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "DirectionIndicator",
+          "value": "Optional；SecondaryOnly；↑↓ 禁止作为主要表达 → GAP:XYUI6-GAP-001",
+          "kind": "GAP"
+        },
+        {
+          "property": "MultiSort",
+          "value": "Optional（Primary/Secondary/Tertiary；非普通界面默认）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "输入控件",
+          "value": "Reference XYUI-2",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Toolbar / Column / DataGrid",
+          "value": "Reference XYUI-6 6.09 / 6.10 / 6.03",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-6-6.14",
+      "name": "Filtering",
+      "title": "Filtering / 筛选",
+      "ref_count": 11,
+      "refs": [
+        {
+          "property": "Summary / Token",
+          "value": "状态摘要 + 可移除 Token（128 → 6；+N 展开完整条件）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Builder",
+          "value": "Advanced（嵌套 Group；调整/删除/复制/禁用条件）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Mode",
+          "value": "Quick | Advanced（Progressive Complexity）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "GroupLogic",
+          "value": "All | Any | Not（AND/OR 文字语义强制，不得仅图标）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Operator",
+          "value": "TypeAware（18 种 + 业务 Custom Operator）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Preset",
+          "value": "Optional（Save/Rename/Duplicate/Delete/Set Default；与临时 Filter 区分）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "StateVisible",
+          "value": "True",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Search 边界",
+          "value": "全文关键词 = XYUI-2 Search Field 语义；Filter = 结构化条件；可组合结果交集，不得混为一个状态",
+          "kind": "COMPOSE"
+        },
+        {
+          "property": "InvalidCondition 反馈",
+          "value": "Reference XYUI-4（不得静默忽略无效条件）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Sorting / Grouping / Virtualization",
+          "value": "Reference XYUI-6 6.13 / 6.15 / 6.20",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-6-6.15",
+      "name": "Grouping",
+      "title": "Grouping / 分组",
+      "ref_count": 9,
+      "refs": [
+        {
+          "property": "Group / Header / Summary",
+          "value": "Group Name + Count + Summary + Status + ExpandControl（摘要 2~4 项）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Mode",
+          "value": "SingleLevel | MultiLevel",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Visual",
+          "value": "RichSummary | TreeGuide（多级强制 Tree Guide Line；No Card Nesting）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Collapsible",
+          "value": "True（折叠后关键异常仍必须可见）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "SummaryMetric",
+          "value": "Count | Sum | Average | Min | Max | StatusCount | Custom（聚合摘要以 XY.Text.Secondary 文本+数值表达）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "GuideLine",
+          "value": "Reference XYUI-6 6.05（低对比；Active Branch 可选）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "SelectionGroup 边界",
+          "value": "SelectionGroup = 选择集合（XYUI-4 4.06）；Data Group = 数据归类（本项）；不合并",
+          "kind": "COMPOSE"
+        },
+        {
+          "property": "Sorting / Filtering / Virtualization",
+          "value": "Reference XYUI-6 6.13 / 6.14 / 6.20（Group Order 与组内排序分离）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-6-6.16",
+      "name": "Expandable Row",
+      "title": "Expandable Row / 展开行",
+      "ref_count": 8,
+      "refs": [
+        {
+          "property": "Panel",
+          "value": "Rich（Summary + Properties + Status + Preview + Quick Actions + Detail Link）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "ExpansionMode",
+          "value": "Single | Multiple | LimitedMultiple | Adaptive（Wide=Multiple；Game UI=Single 优先）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Placement",
+          "value": "Inline | FullWidth | Sheet（Mobile 可转换承载形式）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Loading",
+          "value": "Lazy（只加载当前 Row；失败只影响当前 Panel）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Selection",
+          "value": "Independent（Expanded 与 Selected 分离，REF XYUI-4）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "DataGrid / Row",
+          "value": "Reference XYUI-6 6.03（Active Cell/Row Selection/Expanded 三者独立）/ 6.11",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Virtualization",
+          "value": "Reference XYUI-6 6.20（展开高度正确处理）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-6-6.17",
+      "name": "Inline Editing",
+      "title": "Inline Editing / 行内编辑",
+      "ref_count": 9,
+      "refs": [
+        {
+          "property": "Mode",
+          "value": "Direct | Inline | ContextualCommit | Explicit | Protected（频率×风险×复杂度矩阵）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "EditFrequency / Risk / Complexity",
+          "value": "Low|Medium|High / Low|Medium|High / Simple|Structured|Complex",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Commit",
+          "value": "Enter | Tab | Apply | ConfigurableBlur（高风险字段不得 Blur 静默提交）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Cancel",
+          "value": "Esc | ExplicitCancel（取消后不得留下半提交状态）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "State",
+          "value": "View | Editing | Modified | Invalid | Committing（视觉 REF XYUI-4）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Undo",
+          "value": "Optional（成功提交后接入宿主 Undo/Redo；Undo ≠ 替代高风险确认）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Input / Feedback",
+          "value": "Reference XYUI-2 / XYUI-4",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Cell / DataGrid / BulkOperations",
+          "value": "Reference XYUI-6 6.12 / 6.03 / 6.18（单 Cell 编辑不自动扩展为批量修改）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-6-6.18",
+      "name": "Bulk Operations",
+      "title": "Bulk Operations / 批量操作",
+      "ref_count": 11,
+      "refs": [
+        {
+          "property": "Bar / Summary / Workbench",
+          "value": "ContextualBar（无多选自动隐藏）；Basic | Rich（类型构成+关键状态）；复杂能力",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Action",
+          "value": "高频 1~3 直达 + More（不得变成几十个按钮）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "ApplicableState",
+          "value": "Full | Partial | None（Partial 必须显示实际数量）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "ApplicableCount",
+          "value": "RequiredForPartial（18/24 仅 City；不得静默跳过不兼容对象）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Risk",
+          "value": "Low | Medium | High | Destructive（风险越大保护越高）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Placement",
+          "value": "ContextualBar | Workbench | MobileSheet",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Undo",
+          "value": "SingleLogicalUnit（一次批量操作 = 一个逻辑 Undo Unit）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Selection",
+          "value": "Reference XYUI-4（Multi Selection 状态）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Mixed Value 编辑",
+          "value": "Reference XYUI-6 6.04 Property Grid Mixed Value 规则",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Toolbar / InlineEditing",
+          "value": "Reference XYUI-6 6.09（保留原工作上下文）/ 6.17",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-6-6.19",
+      "name": "Collection State",
+      "title": "Collection State / 集合状态",
+      "ref_count": 8,
+      "refs": [
+        {
+          "property": "State",
+          "value": "Ready|InitialEmpty|FilteredEmpty|SearchEmpty|Loading|IncrementalLoading|PartialFailure|FullFailure|PermissionBlocked|Unavailable|Offline|Stale|Disabled（13 态语义分离）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Scope",
+          "value": "Item | Group | Collection | Page（错误尽可能停留在最低有效层级）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Presentation",
+          "value": "Inline | Banner | ContentState（Toast 仅瞬时反馈）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Diagnostic",
+          "value": "Cause | Impact | Context | Recovery（每状态说明原因/影响/恢复）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "RecoveryAction",
+          "value": "ContextAware（Retry/ClearFilter/ClearSearch/Create/OpenLog/Locate/Refresh；不得统一「刷新」）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Visual 承载",
+          "value": "Reference XYUI-4 EmptyState（仅 Initial Empty）/ LoadingIndicator / Skeleton / InlineFeedback",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Filtering / Virtualization",
+          "value": "Reference XYUI-6 6.14（FilteredEmpty 摘要+原始数量）/ 6.20（局部刷新）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-6-6.20",
+      "name": "Virtualized Collection",
+      "title": "Virtualized Collection / 虚拟化大数据集合",
+      "ref_count": 11,
+      "refs": [
+        {
+          "property": "Mode",
+          "value": "Standard | Progressive | Streaming",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "ItemSize",
+          "value": "Fixed | Variable（Variable Height 必须支持）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Overscan",
+          "value": "Reference XYUI-5 VirtualizedLayout（Adaptive）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Identity",
+          "value": "Required（Stable Identity；Selection/Expansion/ActiveCell/Editing 持久化 = IdentityBased）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Anchor",
+          "value": "Identity + Offset（数据变化后优先保持视觉位置；Index 仅内部优化）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "RangeAwareness",
+          "value": "Off | Auto | Always（视觉 REF XYUI-1 Caption / Badge）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "JumpTo / ProgressiveLoading / FollowMode",
+          "value": "Optional（跳转后目标成为新 Anchor；Progressive 不清空现有 Collection；Resume Follow 明确）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "TotalCount",
+          "value": "Known | Estimated | Unknown（不得伪造精确总量）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Mechanics",
+          "value": "Reference XYUI-5 VirtualizedLayout（Viewport/Overscan/Recycling/SizeCache；不建第二套布局基础设施）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "CollectionState / ExpandableRow / Grouping / Filtering / Sorting / BulkOperations",
+          "value": "Reference XYUI-6 6.19 / 6.16 / 6.15 / 6.14 / 6.13 / 6.18",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1965 @@
+{
+ "mapping_version": "0.1.0",
+ "phase": "XYUI-PILOT-R2",
+ "source": {
+  "path": "xyui/source/XYUI2/XYUI-2.md",
+  "sha256": "fa1b393f52d429d23c258294531df5d0cd02b0eea621f12ab70395989c6fe86d"
+ },
+ "canonical_basis": {
+  "foundation_registry": "xyui/registry/foundation/foundation-registry.json",
+  "token_architecture": "xyui/tokens/architecture/token-canonical-map.json"
+ },
+ "renamed_mappings": [],
+ "composite_mappings": [
+  {
+   "old": "XY.Size.Switch.Width",
+   "new": "XY.Size.Switch",
+   "note": "Foundation 中 Switch 为复合 token 34x18 DIP；子属性访问形态待 A3 定义（GAP-001）"
+  },
+  {
+   "old": "XY.Size.Switch.Height",
+   "new": "XY.Size.Switch",
+   "note": "同上"
+  }
+ ],
+ "components": [
+  {
+   "component_id": "XYUI-2-01",
+   "name": "Button",
+   "title": "Button / 按钮",
+   "ref_count": 14,
+   "refs": [
+    {
+     "property": "XY.Button.Height",
+     "value": "34 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Button.Radius",
+     "value": "XY.Radius.Button",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Button"
+    },
+    {
+     "property": "XY.Button.Background.Default",
+     "value": "XY.Surface.Raised",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Raised"
+    },
+    {
+     "property": "XY.Button.Background.Hover",
+     "value": "XY.State.Color.Hover",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Hover"
+    },
+    {
+     "property": "XY.Button.Background.Pressed",
+     "value": "XY.State.Color.Pressed",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Pressed"
+    },
+    {
+     "property": "XY.Button.Border.Color",
+     "value": "XY.Border.Color.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Default"
+    },
+    {
+     "property": "XY.Button.Border.Width",
+     "value": "XY.Border.Width.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Width.Default"
+    },
+    {
+     "property": "XY.Button.Text",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.Button.ActionEdge.Color",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.Button.ActionEdge.Height",
+     "value": "3 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Button.ActionEdge.HoverHeight",
+     "value": "4 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "….OutlineWidth",
+     "value": "XY.Focus.Control.OutlineWidth",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineWidth"
+    },
+    {
+     "property": "….OutlineColor",
+     "value": "XY.Focus.Control.OutlineColor",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineColor"
+    },
+    {
+     "property": "….Policy",
+     "value": "XY.HitTarget.VisualSizeIndependent",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.HitTarget.VisualSizeIndependent"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-02",
+   "name": "Icon Button",
+   "title": "Icon Button / 图标按钮",
+   "ref_count": 18,
+   "refs": [
+    {
+     "property": "XY.IconButton.IconSize",
+     "value": "XY.Icon.Size.M",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Icon.Size.M"
+    },
+    {
+     "property": "XY.IconButton.Radius",
+     "value": "XY.Radius.Button",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Button"
+    },
+    {
+     "property": "XY.IconButton.Icon.Default",
+     "value": "XY.Text.Secondary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Secondary"
+    },
+    {
+     "property": "XY.IconButton.Icon.Hover",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.IconButton.Icon.Selected",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.IconButton.Background.Default",
+     "value": "Transparent",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.IconButton.Background.Hover",
+     "value": "XY.State.Color.Hover",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Hover"
+    },
+    {
+     "property": "XY.IconButton.Background.Pressed",
+     "value": "XY.State.Color.Pressed",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Pressed"
+    },
+    {
+     "property": "XY.IconButton.Background.Selected",
+     "value": "XY.Surface.Selected",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Selected"
+    },
+    {
+     "property": "XY.IconButton.Border.Selected",
+     "value": "XY.Border.Color.Selected",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Selected"
+    },
+    {
+     "property": "XY.IconButton.ActionEdge.Selected",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.IconButton.ActionEdge.Height",
+     "value": "3 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.IconButton.HitTarget.Min",
+     "value": "XY.HitTarget.Icon.Min",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.HitTarget.Icon.Min"
+    },
+    {
+     "property": "XY.IconButton.AccessibleName",
+     "value": "Required",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "….Width",
+     "value": "34 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "….Height",
+     "value": "34 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "….OutlineWidth",
+     "value": "XY.Focus.Control.OutlineWidth",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineWidth"
+    },
+    {
+     "property": "….OutlineColor",
+     "value": "XY.Focus.Control.OutlineColor",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineColor"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-03",
+   "name": "Toggle Button",
+   "title": "Toggle Button / 切换按钮",
+   "ref_count": 14,
+   "refs": [
+    {
+     "property": "XY.ToggleButton.Height",
+     "value": "34 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.ToggleButton.Radius",
+     "value": "XY.Radius.Button",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Button"
+    },
+    {
+     "property": "XY.ToggleButton.Background.Off",
+     "value": "XY.Surface.Raised",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Raised"
+    },
+    {
+     "property": "XY.ToggleButton.Background.OffHover",
+     "value": "XY.State.Color.Hover",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Hover"
+    },
+    {
+     "property": "XY.ToggleButton.Background.On",
+     "value": "XY.State.Color.Active",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Active"
+    },
+    {
+     "property": "XY.ToggleButton.Background.OnHover",
+     "value": "XY.State.Color.Hover",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Hover"
+    },
+    {
+     "property": "XY.ToggleButton.Border.Off",
+     "value": "XY.Border.Color.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Default"
+    },
+    {
+     "property": "XY.ToggleButton.Border.On",
+     "value": "XY.Border.Color.Selected",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Selected"
+    },
+    {
+     "property": "XY.ToggleButton.Text",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.ToggleButton.ActionEdge.On",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.ToggleButton.ActionEdge.Height",
+     "value": "3 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.ToggleButton.ActionEdge.HoverHeight",
+     "value": "4 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "….OutlineWidth",
+     "value": "XY.Focus.Control.OutlineWidth",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineWidth"
+    },
+    {
+     "property": "….OutlineColor",
+     "value": "XY.Focus.Control.OutlineColor",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineColor"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-04",
+   "name": "Split Button",
+   "title": "Split Button / 分裂按钮",
+   "ref_count": 14,
+   "refs": [
+    {
+     "property": "XY.SplitButton.Height",
+     "value": "34 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.SplitButton.Radius",
+     "value": "XY.Radius.Button",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Button"
+    },
+    {
+     "property": "XY.SplitButton.MenuZone.Width",
+     "value": "36 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.SplitButton.Divider.Height",
+     "value": "18 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.SplitButton.Background.Default",
+     "value": "XY.Surface.Raised",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Raised"
+    },
+    {
+     "property": "XY.SplitButton.Background.Hover",
+     "value": "XY.State.Color.Hover",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Hover"
+    },
+    {
+     "property": "XY.SplitButton.Background.Pressed",
+     "value": "XY.State.Color.Pressed",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Pressed"
+    },
+    {
+     "property": "XY.SplitButton.Divider.Color",
+     "value": "XY.Divider.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Divider.Default"
+    },
+    {
+     "property": "XY.SplitButton.ActionEdge",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.SplitButton.Text",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "….Color",
+     "value": "XY.Border.Color.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Default"
+    },
+    {
+     "property": "….Width",
+     "value": "XY.Border.Width.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Width.Default"
+    },
+    {
+     "property": "….OutlineWidth",
+     "value": "XY.Focus.Control.OutlineWidth",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineWidth"
+    },
+    {
+     "property": "….OutlineColor",
+     "value": "XY.Focus.Control.OutlineColor",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineColor"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-05",
+   "name": "DropDown Button",
+   "title": "DropDown Button / 下拉按钮",
+   "ref_count": 14,
+   "refs": [
+    {
+     "property": "XY.DropDownButton.Height",
+     "value": "34 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.DropDownButton.Radius",
+     "value": "XY.Radius.Button",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Button"
+    },
+    {
+     "property": "XY.DropDownButton.Background.Default",
+     "value": "XY.Surface.Raised",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Raised"
+    },
+    {
+     "property": "XY.DropDownButton.Background.Hover",
+     "value": "XY.State.Color.Hover",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Hover"
+    },
+    {
+     "property": "XY.DropDownButton.Background.Pressed",
+     "value": "XY.State.Color.Pressed",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Pressed"
+    },
+    {
+     "property": "XY.DropDownButton.ChevronTrack.Default",
+     "value": "XY.Surface.PanelAlt",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.PanelAlt"
+    },
+    {
+     "property": "XY.DropDownButton.ChevronTrack.Hover",
+     "value": "XY.State.Color.Hover",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Hover"
+    },
+    {
+     "property": "XY.DropDownButton.ActionEdge",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.DropDownButton.Text",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.DropDownButton.Chevron",
+     "value": "XY.Text.Secondary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Secondary"
+    },
+    {
+     "property": "….Color",
+     "value": "XY.Border.Color.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Default"
+    },
+    {
+     "property": "….Width",
+     "value": "XY.Border.Width.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Width.Default"
+    },
+    {
+     "property": "….OutlineWidth",
+     "value": "XY.Focus.Control.OutlineWidth",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineWidth"
+    },
+    {
+     "property": "….OutlineColor",
+     "value": "XY.Focus.Control.OutlineColor",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineColor"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-06",
+   "name": "Checkbox",
+   "title": "Checkbox / 复选框",
+   "ref_count": 12,
+   "refs": [
+    {
+     "property": "XY.Checkbox.Size",
+     "value": "XY.Size.Checkbox",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Size.Checkbox"
+    },
+    {
+     "property": "XY.Checkbox.Radius",
+     "value": "2 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Checkbox.Background.Unchecked",
+     "value": "XY.Surface.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Input"
+    },
+    {
+     "property": "XY.Checkbox.Background.Checked",
+     "value": "XY.Surface.Selected",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Selected"
+    },
+    {
+     "property": "XY.Checkbox.Background.Hover",
+     "value": "XY.State.Color.Hover",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Hover"
+    },
+    {
+     "property": "XY.Checkbox.Border.Unchecked",
+     "value": "XY.Border.Color.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Default"
+    },
+    {
+     "property": "XY.Checkbox.Border.Checked",
+     "value": "XY.Border.Color.Selected",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Selected"
+    },
+    {
+     "property": "XY.Checkbox.Glyph.Checked",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.Checkbox.Glyph.Mixed",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.Checkbox.Text",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "….OutlineWidth",
+     "value": "XY.Focus.Control.OutlineWidth",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineWidth"
+    },
+    {
+     "property": "….OutlineColor",
+     "value": "XY.Focus.Control.OutlineColor",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineColor"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-07",
+   "name": "Radio Button",
+   "title": "Radio Button / 单选按钮",
+   "ref_count": 12,
+   "refs": [
+    {
+     "property": "XY.Radio.Size",
+     "value": "XY.Size.Radio",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Size.Radio"
+    },
+    {
+     "property": "XY.Radio.HaloSize",
+     "value": "22 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Radio.Background",
+     "value": "XY.Surface.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Input"
+    },
+    {
+     "property": "XY.Radio.Border.Off",
+     "value": "XY.Border.Color.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Default"
+    },
+    {
+     "property": "XY.Radio.Border.On",
+     "value": "XY.Border.Color.Selected",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Selected"
+    },
+    {
+     "property": "XY.Radio.Dot.On",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.Radio.Dot.Hover",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.Radio.Halo.On",
+     "value": "XY.Accent.Soft",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Soft"
+    },
+    {
+     "property": "XY.Radio.Halo.Hover",
+     "value": "XY.State.Color.Hover",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Hover"
+    },
+    {
+     "property": "XY.Radio.Text",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "….OutlineWidth",
+     "value": "XY.Focus.Control.OutlineWidth",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineWidth"
+    },
+    {
+     "property": "….OutlineColor",
+     "value": "XY.Focus.Control.OutlineColor",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineColor"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-08",
+   "name": "Switch",
+   "title": "Switch / 开关",
+   "ref_count": 15,
+   "refs": [
+    {
+     "property": "XY.Switch.TrackRadius",
+     "value": "XY.Radius.Full",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Full"
+    },
+    {
+     "property": "XY.Switch.ThumbSize",
+     "value": "14 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Switch.Track.Off",
+     "value": "XY.Surface.PanelAlt",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.PanelAlt"
+    },
+    {
+     "property": "XY.Switch.Track.On",
+     "value": "XY.Accent.Soft",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Soft"
+    },
+    {
+     "property": "XY.Switch.Track.Hover",
+     "value": "XY.State.Color.Hover",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Hover"
+    },
+    {
+     "property": "XY.Switch.Border.Off",
+     "value": "XY.Border.Color.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Default"
+    },
+    {
+     "property": "XY.Switch.Border.On",
+     "value": "XY.Border.Color.Selected",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Selected"
+    },
+    {
+     "property": "XY.Switch.Thumb.Off",
+     "value": "XY.Surface.Raised",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Raised"
+    },
+    {
+     "property": "XY.Switch.Thumb.On",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.Switch.Thumb.OnHover",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.Switch.Text",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "….Width",
+     "value": "XY.Size.Switch.Width",
+     "kind": "CANONICAL_COMPOSITE_MAPPING",
+     "canonical_target": "XY.Size.Switch"
+    },
+    {
+     "property": "….Height",
+     "value": "XY.Size.Switch.Height",
+     "kind": "CANONICAL_COMPOSITE_MAPPING",
+     "canonical_target": "XY.Size.Switch"
+    },
+    {
+     "property": "….OutlineWidth",
+     "value": "XY.Focus.Control.OutlineWidth",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineWidth"
+    },
+    {
+     "property": "….OutlineColor",
+     "value": "XY.Focus.Control.OutlineColor",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineColor"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-09",
+   "name": "Text Field",
+   "title": "Text Field / 文本输入框",
+   "ref_count": 16,
+   "refs": [
+    {
+     "property": "XY.TextField.Height",
+     "value": "XY.Size.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Size.Input"
+    },
+    {
+     "property": "XY.TextField.Radius",
+     "value": "XY.Radius.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Input"
+    },
+    {
+     "property": "XY.TextField.Background.Default",
+     "value": "XY.Surface.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Input"
+    },
+    {
+     "property": "XY.TextField.Text",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.TextField.Placeholder",
+     "value": "XY.Text.Placeholder",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Placeholder"
+    },
+    {
+     "property": "XY.TextField.Caret",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.TextField.ReadOnly.Background",
+     "value": "XY.State.ReadOnly.Background",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.ReadOnly.Background"
+    },
+    {
+     "property": "XY.TextField.ReadOnly.Text",
+     "value": "XY.State.ReadOnly.Text",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.ReadOnly.Text"
+    },
+    {
+     "property": "XY.TextField.Disabled.Background",
+     "value": "XY.State.Disabled.Background",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Disabled.Background"
+    },
+    {
+     "property": "XY.TextField.Disabled.Text",
+     "value": "XY.State.Disabled.Text",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Disabled.Text"
+    },
+    {
+     "property": "XY.TextField.Error.Border",
+     "value": "XY.Semantic.Error.Border",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Semantic.Error.Border"
+    },
+    {
+     "property": "….Color",
+     "value": "XY.Border.Color.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Default"
+    },
+    {
+     "property": "….Width",
+     "value": "XY.Border.Width.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Width.Default"
+    },
+    {
+     "property": "….OutlineWidth",
+     "value": "XY.Focus.Control.OutlineWidth",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineWidth"
+    },
+    {
+     "property": "….OutlineColor",
+     "value": "XY.Focus.Control.OutlineColor",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineColor"
+    },
+    {
+     "property": "….Resize",
+     "value": "XY.Focus.Control.Resize",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.Resize"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-10",
+   "name": "Number Field",
+   "title": "Number Field / 数值输入框",
+   "ref_count": 11,
+   "refs": [
+    {
+     "property": "XY.NumberField.Height",
+     "value": "XY.Size.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Size.Input"
+    },
+    {
+     "property": "XY.NumberField.Radius",
+     "value": "XY.Radius.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Input"
+    },
+    {
+     "property": "XY.NumberField.Background.Default",
+     "value": "XY.Surface.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Input"
+    },
+    {
+     "property": "XY.NumberField.Stepper.Surface",
+     "value": "XY.Surface.PanelAlt",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.PanelAlt"
+    },
+    {
+     "property": "XY.NumberField.Stepper.HoverSurface",
+     "value": "XY.State.Color.Hover",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Hover"
+    },
+    {
+     "property": "XY.NumberField.Text",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.NumberField.ScrubIndicator",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "….Color",
+     "value": "XY.Border.Color.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Default"
+    },
+    {
+     "property": "….Width",
+     "value": "XY.Border.Width.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Width.Default"
+    },
+    {
+     "property": "….OutlineWidth",
+     "value": "XY.Focus.Control.OutlineWidth",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineWidth"
+    },
+    {
+     "property": "….OutlineColor",
+     "value": "XY.Focus.Control.OutlineColor",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineColor"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-11",
+   "name": "Slider",
+   "title": "Slider / 滑块",
+   "ref_count": 10,
+   "refs": [
+    {
+     "property": "XY.Slider.Rail.Height",
+     "value": "4 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Slider.Rail.Inactive",
+     "value": "XY.Divider.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Divider.Default"
+    },
+    {
+     "property": "XY.Slider.Rail.Active",
+     "value": "XY.Accent.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Default"
+    },
+    {
+     "property": "XY.Slider.Rail.ActiveDragging",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.Slider.Thumb.Size",
+     "value": "14 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Slider.Thumb.ActiveSize",
+     "value": "16 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Slider.Thumb.Background",
+     "value": "XY.Surface.Raised",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Raised"
+    },
+    {
+     "property": "XY.Slider.Thumb.Border",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.Slider.TouchTarget.MinHeight",
+     "value": "44 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "….Height",
+     "value": "XY.Size.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Size.Input"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-12",
+   "name": "ComboBox",
+   "title": "ComboBox / 组合框",
+   "ref_count": 12,
+   "refs": [
+    {
+     "property": "XY.ComboBox.Height",
+     "value": "XY.Size.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Size.Input"
+    },
+    {
+     "property": "XY.ComboBox.Radius",
+     "value": "XY.Radius.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Input"
+    },
+    {
+     "property": "XY.ComboBox.Background",
+     "value": "XY.Surface.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Input"
+    },
+    {
+     "property": "XY.ComboBox.ChevronCell.Width",
+     "value": "32 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.ComboBox.ChevronCell.Default",
+     "value": "XY.Surface.PanelAlt",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.PanelAlt"
+    },
+    {
+     "property": "XY.ComboBox.ChevronCell.Open",
+     "value": "XY.State.Color.Hover",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Hover"
+    },
+    {
+     "property": "XY.ComboBox.Text",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.ComboBox.Chevron",
+     "value": "XY.Text.Secondary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Secondary"
+    },
+    {
+     "property": "….Color",
+     "value": "XY.Border.Color.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Default"
+    },
+    {
+     "property": "….Width",
+     "value": "XY.Border.Width.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Width.Default"
+    },
+    {
+     "property": "….OutlineWidth",
+     "value": "XY.Focus.Control.OutlineWidth",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineWidth"
+    },
+    {
+     "property": "….OutlineColor",
+     "value": "XY.Focus.Control.OutlineColor",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineColor"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-13",
+   "name": "Select",
+   "title": "Select / 选择框",
+   "ref_count": 12,
+   "refs": [
+    {
+     "property": "XY.Select.Height",
+     "value": "XY.Size.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Size.Input"
+    },
+    {
+     "property": "XY.Select.Radius",
+     "value": "XY.Radius.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Input"
+    },
+    {
+     "property": "XY.Select.Background",
+     "value": "XY.Surface.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Input"
+    },
+    {
+     "property": "XY.Select.ChevronSurface.Width",
+     "value": "36 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.Select.ChevronSurface.Default",
+     "value": "XY.Surface.PanelAlt",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.PanelAlt"
+    },
+    {
+     "property": "XY.Select.ChevronSurface.Open",
+     "value": "XY.State.Color.Hover",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Hover"
+    },
+    {
+     "property": "XY.Select.Text",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.Select.Chevron",
+     "value": "XY.Text.Secondary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Secondary"
+    },
+    {
+     "property": "….Color",
+     "value": "XY.Border.Color.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Default"
+    },
+    {
+     "property": "….Width",
+     "value": "XY.Border.Width.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Width.Default"
+    },
+    {
+     "property": "….OutlineWidth",
+     "value": "XY.Focus.Control.OutlineWidth",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineWidth"
+    },
+    {
+     "property": "….OutlineColor",
+     "value": "XY.Focus.Control.OutlineColor",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineColor"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-14",
+   "name": "Text Area",
+   "title": "Text Area / 多行文本框",
+   "ref_count": 13,
+   "refs": [
+    {
+     "property": "XY.TextArea.MinHeight",
+     "value": "54 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.TextArea.PreferredHeight",
+     "value": "Auto",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.TextArea.MaxHeight",
+     "value": "SceneToken",
+     "kind": "GAP_REF",
+     "canonical_target": "XYUI2-GAP-002"
+    },
+    {
+     "property": "XY.TextArea.Radius",
+     "value": "XY.Radius.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Input"
+    },
+    {
+     "property": "XY.TextArea.Background",
+     "value": "XY.Surface.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Input"
+    },
+    {
+     "property": "XY.TextArea.EditorBar.Height",
+     "value": "24 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.TextArea.EditorBar.Background",
+     "value": "XY.Surface.PanelAlt",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.PanelAlt"
+    },
+    {
+     "property": "XY.TextArea.Text",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.TextArea.SecondaryText",
+     "value": "XY.Text.Secondary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Secondary"
+    },
+    {
+     "property": "….Color",
+     "value": "XY.Border.Color.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Default"
+    },
+    {
+     "property": "….Width",
+     "value": "XY.Border.Width.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Width.Default"
+    },
+    {
+     "property": "….OutlineWidth",
+     "value": "XY.Focus.Control.OutlineWidth",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineWidth"
+    },
+    {
+     "property": "….OutlineColor",
+     "value": "XY.Focus.Control.OutlineColor",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineColor"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-15",
+   "name": "Search Field",
+   "title": "Search Field / 搜索框",
+   "ref_count": 14,
+   "refs": [
+    {
+     "property": "XY.SearchField.Height",
+     "value": "XY.Size.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Size.Input"
+    },
+    {
+     "property": "XY.SearchField.Radius",
+     "value": "XY.Radius.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Input"
+    },
+    {
+     "property": "XY.SearchField.Background",
+     "value": "XY.Surface.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Input"
+    },
+    {
+     "property": "XY.SearchField.FilterCell.Width",
+     "value": "35 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.SearchField.FilterCell.Default",
+     "value": "XY.Surface.PanelAlt",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.PanelAlt"
+    },
+    {
+     "property": "XY.SearchField.FilterCell.Active",
+     "value": "XY.State.Color.Active",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Active"
+    },
+    {
+     "property": "XY.SearchField.Text",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.SearchField.Placeholder",
+     "value": "XY.Text.Placeholder",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Placeholder"
+    },
+    {
+     "property": "XY.SearchField.Glyph.Default",
+     "value": "XY.Text.Secondary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Secondary"
+    },
+    {
+     "property": "XY.SearchField.Glyph.Active",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "….Color",
+     "value": "XY.Border.Color.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Default"
+    },
+    {
+     "property": "….Width",
+     "value": "XY.Border.Width.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Width.Default"
+    },
+    {
+     "property": "….OutlineWidth",
+     "value": "XY.Focus.Control.OutlineWidth",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineWidth"
+    },
+    {
+     "property": "….OutlineColor",
+     "value": "XY.Focus.Control.OutlineColor",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineColor"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-16",
+   "name": "Password Field",
+   "title": "Password Field / 密码输入框",
+   "ref_count": 10,
+   "refs": [
+    {
+     "property": "XY.PasswordField.Height",
+     "value": "XY.Size.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Size.Input"
+    },
+    {
+     "property": "XY.PasswordField.Radius",
+     "value": "XY.Radius.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Input"
+    },
+    {
+     "property": "XY.PasswordField.RevealCell.Width",
+     "value": "34 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.PasswordField.Background",
+     "value": "XY.Surface.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Input"
+    },
+    {
+     "property": "XY.PasswordField.RevealCell.Default",
+     "value": "XY.Surface.PanelAlt",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.PanelAlt"
+    },
+    {
+     "property": "XY.PasswordField.RevealCell.Holding",
+     "value": "XY.State.Color.Pressed",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Pressed"
+    },
+    {
+     "property": "….Color",
+     "value": "XY.Border.Color.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Default"
+    },
+    {
+     "property": "….Width",
+     "value": "XY.Border.Width.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Width.Default"
+    },
+    {
+     "property": "….OutlineWidth",
+     "value": "XY.Focus.Control.OutlineWidth",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineWidth"
+    },
+    {
+     "property": "….OutlineColor",
+     "value": "XY.Focus.Control.OutlineColor",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineColor"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-17",
+   "name": "Date Picker",
+   "title": "Date Picker / 日期选择器",
+   "ref_count": 11,
+   "refs": [
+    {
+     "property": "XY.DatePicker.Height",
+     "value": "XY.Size.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Size.Input"
+    },
+    {
+     "property": "XY.DatePicker.Radius",
+     "value": "XY.Radius.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Input"
+    },
+    {
+     "property": "XY.DatePicker.Background",
+     "value": "XY.Surface.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Input"
+    },
+    {
+     "property": "XY.DatePicker.Segment.ActiveBackground",
+     "value": "XY.Surface.Selected",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Selected"
+    },
+    {
+     "property": "XY.DatePicker.Segment.ActiveText",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.DatePicker.QuickStep.Glyph",
+     "value": "XY.Text.Secondary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Secondary"
+    },
+    {
+     "property": "XY.DatePicker.CalendarCell.Background",
+     "value": "XY.Surface.PanelAlt",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.PanelAlt"
+    },
+    {
+     "property": "….Color",
+     "value": "XY.Border.Color.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Default"
+    },
+    {
+     "property": "….Width",
+     "value": "XY.Border.Width.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Width.Default"
+    },
+    {
+     "property": "….OutlineWidth",
+     "value": "XY.Focus.Control.OutlineWidth",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineWidth"
+    },
+    {
+     "property": "….OutlineColor",
+     "value": "XY.Focus.Control.OutlineColor",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineColor"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-18",
+   "name": "Time Picker",
+   "title": "Time Picker / 时间选择器",
+   "ref_count": 10,
+   "refs": [
+    {
+     "property": "XY.TimePicker.Height",
+     "value": "XY.Size.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Size.Input"
+    },
+    {
+     "property": "XY.TimePicker.Radius",
+     "value": "XY.Radius.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Input"
+    },
+    {
+     "property": "XY.TimePicker.Background",
+     "value": "XY.Surface.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Input"
+    },
+    {
+     "property": "XY.TimePicker.Segment.ActiveBackground",
+     "value": "XY.Surface.Selected",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Selected"
+    },
+    {
+     "property": "XY.TimePicker.Segment.ActiveText",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.TimePicker.ScrubIndicator",
+     "value": "XY.Accent.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Default"
+    },
+    {
+     "property": "….Color",
+     "value": "XY.Border.Color.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Default"
+    },
+    {
+     "property": "….Width",
+     "value": "XY.Border.Width.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Width.Default"
+    },
+    {
+     "property": "….OutlineWidth",
+     "value": "XY.Focus.Control.OutlineWidth",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineWidth"
+    },
+    {
+     "property": "….OutlineColor",
+     "value": "XY.Focus.Control.OutlineColor",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineColor"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-19",
+   "name": "Color Picker",
+   "title": "Color Picker / 颜色选择器",
+   "ref_count": 12,
+   "refs": [
+    {
+     "property": "XY.ColorPicker.Height",
+     "value": "XY.Size.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Size.Input"
+    },
+    {
+     "property": "XY.ColorPicker.Radius",
+     "value": "XY.Radius.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Input"
+    },
+    {
+     "property": "XY.ColorPicker.Swatch.Width",
+     "value": "28 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.ColorPicker.Swatch.Height",
+     "value": "20 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.ColorPicker.Background",
+     "value": "XY.Surface.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Input"
+    },
+    {
+     "property": "XY.ColorPicker.Checker.LightCell",
+     "value": "XY.Surface.Raised",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Raised"
+    },
+    {
+     "property": "XY.ColorPicker.Checker.DarkCell",
+     "value": "XY.Border.Color.Subtle",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Subtle"
+    },
+    {
+     "property": "XY.ColorPicker.Text",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "….Color",
+     "value": "XY.Border.Color.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Default"
+    },
+    {
+     "property": "….Width",
+     "value": "XY.Border.Width.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Width.Default"
+    },
+    {
+     "property": "….OutlineWidth",
+     "value": "XY.Focus.Control.OutlineWidth",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineWidth"
+    },
+    {
+     "property": "….OutlineColor",
+     "value": "XY.Focus.Control.OutlineColor",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineColor"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-20",
+   "name": "Bool Property",
+   "title": "Bool Property / 布尔属性控件",
+   "ref_count": 5,
+   "refs": [
+    {
+     "property": "XY.BoolProperty.Row.Height",
+     "value": "34 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.BoolProperty.Label.Text",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.BoolProperty.Label.Alignment",
+     "value": "XY.Alignment.Label",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Alignment.Label"
+    },
+    {
+     "property": "XY.BoolProperty.Value.Alignment",
+     "value": "XY.Alignment.Value",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Alignment.Value"
+    },
+    {
+     "property": "XY.BoolProperty.InspectorColumn",
+     "value": "SharedPropertyColumnRule",
+     "kind": "GAP_REF",
+     "canonical_target": "XYUI2-GAP-003"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-21",
+   "name": "Number Property",
+   "title": "Number Property / 数值属性行",
+   "ref_count": 10,
+   "refs": [
+    {
+     "property": "XY.NumberProperty.Row.Height",
+     "value": "34 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.NumberProperty.Label.Text",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.NumberProperty.Label.ScrubActive",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.NumberProperty.Row.ScrubBackground",
+     "value": "XY.State.Color.Hover",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Hover"
+    },
+    {
+     "property": "XY.NumberProperty.ScrubIndicator",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.NumberProperty.ValueField.Height",
+     "value": "XY.Size.Control.S",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Size.Control.S"
+    },
+    {
+     "property": "XY.NumberProperty.ValueField.Component",
+     "value": "10",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.NumberProperty.Unit.Text",
+     "value": "XY.Text.Tertiary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Tertiary"
+    },
+    {
+     "property": "XY.NumberProperty.Label.Alignment",
+     "value": "XY.Alignment.Label",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Alignment.Label"
+    },
+    {
+     "property": "XY.NumberProperty.Value.Alignment",
+     "value": "XY.Alignment.Number",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Alignment.Number"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-22",
+   "name": "Vector Property",
+   "title": "Vector Property / 向量属性控件",
+   "ref_count": 10,
+   "refs": [
+    {
+     "property": "XY.VectorProperty.Row.Height",
+     "value": "Auto",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.VectorProperty.AxisField.Height",
+     "value": "XY.Size.Control.S",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Size.Control.S"
+    },
+    {
+     "property": "XY.VectorProperty.AxisCell.Width",
+     "value": "25 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.VectorProperty.AxisCell.Background",
+     "value": "XY.Surface.PanelAlt",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.PanelAlt"
+    },
+    {
+     "property": "XY.VectorProperty.Axis.Text",
+     "value": "XY.Text.Secondary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Secondary"
+    },
+    {
+     "property": "XY.VectorProperty.Field.Background",
+     "value": "XY.Surface.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Input"
+    },
+    {
+     "property": "XY.VectorProperty.Field.Border",
+     "value": "XY.Border.Color.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Default"
+    },
+    {
+     "property": "XY.VectorProperty.Text",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.VectorProperty.Label.Alignment",
+     "value": "XY.Alignment.Label",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Alignment.Label"
+    },
+    {
+     "property": "XY.VectorProperty.Value.Alignment",
+     "value": "XY.Alignment.Number",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Alignment.Number"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-23",
+   "name": "Enum Property",
+   "title": "Enum Property / 枚举属性控件",
+   "ref_count": 6,
+   "refs": [
+    {
+     "property": "XY.EnumProperty.Row.Height",
+     "value": "34 DIP",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.EnumProperty.Label.Alignment",
+     "value": "XY.Alignment.Label",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Alignment.Label"
+    },
+    {
+     "property": "XY.EnumProperty.Value.Alignment",
+     "value": "XY.Alignment.Value",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Alignment.Value"
+    },
+    {
+     "property": "XY.EnumProperty.Value.Height",
+     "value": "XY.Size.Control.S",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Size.Control.S"
+    },
+    {
+     "property": "XY.EnumProperty.Value.Component",
+     "value": "13",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.EnumProperty.Text",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    }
+   ]
+  },
+  {
+   "component_id": "XYUI-2-24",
+   "name": "Reference Property",
+   "title": "Reference Property / 引用属性控件",
+   "ref_count": 16,
+   "refs": [
+    {
+     "property": "XY.ReferenceProperty.Row.Height",
+     "value": "Auto",
+     "kind": "LITERAL",
+     "canonical_target": null
+    },
+    {
+     "property": "XY.ReferenceProperty.Field.MinHeight",
+     "value": "XY.Size.Control.S",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Size.Control.S"
+    },
+    {
+     "property": "XY.ReferenceProperty.Radius",
+     "value": "XY.Radius.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Radius.Input"
+    },
+    {
+     "property": "XY.ReferenceProperty.Background",
+     "value": "XY.Surface.Input",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.Input"
+    },
+    {
+     "property": "XY.ReferenceProperty.TypeCell.Background",
+     "value": "XY.Surface.PanelAlt",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Surface.PanelAlt"
+    },
+    {
+     "property": "XY.ReferenceProperty.TypeCell.Active",
+     "value": "XY.State.Color.Hover",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.State.Color.Hover"
+    },
+    {
+     "property": "XY.ReferenceProperty.Name.Text",
+     "value": "XY.Text.Primary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Primary"
+    },
+    {
+     "property": "XY.ReferenceProperty.Identity.Text",
+     "value": "XY.Text.Tertiary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Tertiary"
+    },
+    {
+     "property": "XY.ReferenceProperty.Action.Glyph",
+     "value": "XY.Text.Secondary",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Text.Secondary"
+    },
+    {
+     "property": "XY.ReferenceProperty.Action.Active",
+     "value": "XY.Accent.Strong",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Accent.Strong"
+    },
+    {
+     "property": "XY.ReferenceProperty.Missing.Text",
+     "value": "XY.Semantic.Error.Text",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Semantic.Error.Text"
+    },
+    {
+     "property": "XY.ReferenceProperty.Missing.Border",
+     "value": "XY.Semantic.Error.Border",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Semantic.Error.Border"
+    },
+    {
+     "property": "….Color",
+     "value": "XY.Border.Color.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Color.Default"
+    },
+    {
+     "property": "….Width",
+     "value": "XY.Border.Width.Default",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Border.Width.Default"
+    },
+    {
+     "property": "….OutlineWidth",
+     "value": "XY.Focus.Control.OutlineWidth",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineWidth"
+    },
+    {
+     "property": "….OutlineColor",
+     "value": "XY.Focus.Control.OutlineColor",
+     "kind": "CANONICAL_REF",
+     "canonical_target": "XY.Focus.Control.OutlineColor"
+    }
+   ]
+  }
+ ]
+}

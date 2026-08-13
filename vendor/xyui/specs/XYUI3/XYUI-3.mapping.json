@@ -1,0 +1,3541 @@
+{
+  "mapping_version": "0.1.0",
+  "phase": "XYUI-PILOT-R3",
+  "source": {
+    "path": "xyui/source/XYUI3/XYUI-3.md",
+    "bytes": 338481,
+    "sha256": "4c91ba6aaf182969d5b466c631c3e584f0dbc6b31548d8ee5103e187e8957f1d"
+  },
+  "canonical_basis": {
+    "foundation_registry": "xyui/registry/foundation/foundation-registry.json (VALIDATED)",
+    "token_architecture": "xyui/tokens/architecture/token-canonical-map.json (A3-R2)"
+  },
+  "global_rules_applied": [
+    "Border Color = XY.Border.Color.* / Border Width = XY.Border.Width.*",
+    "State Color = XY.State.Color.*",
+    "Focus = XY.Focus.Control.* (KeyboardFocusVisible Required, 2 DIP Outline, 独立于 Hover/Selected)",
+    "Drag Threshold = XY.Drag.Threshold = 6 DIP（无范围型第二真值）",
+    "Overlay = XY.Overlay.OverlayHost/DragHost/ModalHost/TooltipHost；Numeric ZIndex = Forbidden",
+    "Motion = XY.Motion.Instant/Fast/Normal/Slow；无任意 ms magic number",
+    "Density = XY.Density.Compact.*/Comfortable.*（Toolbar/TreeRow/Input）",
+    "Indent = XY.Indent.PerLevel = 16 DIP（Foundation 唯一真值）"
+  ],
+  "components": [
+    {
+      "component_id": "XYUI-3-3.01",
+      "name": "MenuBar",
+      "title": "MenuBar / 菜单栏",
+      "ref_count": 34,
+      "refs": [
+        {
+          "property": "Focus 不应只依赖颜色",
+          "value": "XY.Focus.Control",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Hover 背景仅使用轻微圆角",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "MenuBar Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "App Background",
+          "value": "XY.Surface.App",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Border / Divider",
+          "value": "XY.Divider.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Default Text",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Secondary Text",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Hover Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Active Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Disabled Text",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "桌面默认",
+          "value": "XY.Font.UI",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Default Weight",
+          "value": "XY.FontWeight.Regular",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Active Weight",
+          "value": "XY.FontWeight.Medium",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "MenuBar.Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "MenuBar.Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "MenuBar.Text",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "MenuBar.Hover.Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "MenuBar.Active.Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "MenuBar.Active.Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "MenuBar.Disabled.Text",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "MenuBar.Item.Radius",
+          "value": "XY.Radius.Popup",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BorderColor",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Body",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Regular",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Radius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Semibold",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IndicatorColor",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.02",
+      "name": "Menu",
+      "title": "Menu / 菜单",
+      "ref_count": 11,
+      "refs": [
+        {
+          "property": "键盘导航必须有明确焦点",
+          "value": "XY.Focus.Control",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Menu Radius",
+          "value": "XY.Radius.Popup",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Menu Background",
+          "value": "XY.Surface.Overlay",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Menu Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Menu Text",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Secondary Text",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Hover Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Hover Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Separator",
+          "value": "XY.Divider.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Check / Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Disabled Text",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.03",
+      "name": "ContextMenu",
+      "title": "ContextMenu / 上下文菜单",
+      "ref_count": 43,
+      "refs": [
+        {
+          "property": "ContextMenu Background",
+          "value": "XY.Surface.Overlay",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ContextHeader Background",
+          "value": "XY.Surface.Overlay",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Primary Text",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Secondary Text",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Hover Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Hover Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Disabled Text",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "低饱和暗红",
+          "value": "XY.Semantic.Error.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "字号",
+          "value": "XY.FontSize.Caption",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "字重",
+          "value": "XY.FontWeight.Regular",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "字号",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "字重",
+          "value": "XY.FontWeight.Medium",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "字号",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "字重",
+          "value": "XY.FontWeight.Regular",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "字号",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ContextMenu.Radius",
+          "value": "XY.Radius.Popup",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ContextMenu.BorderWidth",
+          "value": "XY.Border.Width.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ContextMenu.Background",
+          "value": "XY.Surface.Overlay",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ContextMenu.Header.Background",
+          "value": "XY.Surface.Overlay",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ContextMenu.Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ContextMenu.Text",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ContextMenu.SecondaryText",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ContextMenu.Hover.Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ContextMenu.Hover.Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ContextMenu.Danger.Text",
+          "value": "XY.Semantic.Error.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Overlay",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BorderWidth",
+          "value": "XY.Border.Width.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BorderColor",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CornerRadius",
+          "value": "XY.Radius.Popup",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Overlay",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Caption",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Semibold",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Semantic.Error.Text",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.04",
+      "name": "SubMenu",
+      "title": "SubMenu / 子菜单",
+      "ref_count": 31,
+      "refs": [
+        {
+          "property": "与 Menu 统一",
+          "value": "XY.Radius.Popup",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "SubMenu Background",
+          "value": "XY.Surface.Overlay",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "SubMenu Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Parent Active Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Parent Active Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Connector",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Anchor Dot",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Default Text",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Secondary Text",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Disabled Text",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "与 Menu 保持一致",
+          "value": "XY.Font.UI",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "MenuItem FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Default Weight",
+          "value": "XY.FontWeight.Regular",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "SubMenu.Background",
+          "value": "XY.Surface.Overlay",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "SubMenu.Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "SubMenu.Active.Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "SubMenu.Active.Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "SubMenu.Connector",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "SubMenu.Anchor",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "SubMenu.Radius",
+          "value": "XY.Radius.Popup",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Overlay",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BorderWidth",
+          "value": "XY.Border.Width.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BorderColor",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CornerRadius",
+          "value": "XY.Radius.Popup",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IndicatorColor",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IndicatorColor",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Color",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "AnchorColor",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.05",
+      "name": "NavigationMenu",
+      "title": "NavigationMenu / 导航菜单",
+      "ref_count": 45,
+      "refs": [
+        {
+          "property": "Icon Size",
+          "value": "XY.Icon.Size.S",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Radius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Item Text",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Secondary Text",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Icon",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Hover Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Icon",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Accent Bar",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Disabled",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Regular",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Medium",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Caption",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Regular",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationMenu.Icon.Size",
+          "value": "XY.Icon.Size.M",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationMenu.Item.Radius",
+          "value": "XY.Radius.Popup",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationMenu.Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationMenu.Text",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationMenu.SecondaryText",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationMenu.Hover.Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationMenu.Selected.Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationMenu.Selected.Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationMenu.Selected.Icon",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationMenu.Selected.Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Caption",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IconSize",
+          "value": "XY.Icon.Size.M",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Regular",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IconColor",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CornerRadius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IconColor",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Semibold",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "AccentColor",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IconColor",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.06",
+      "name": "Sidebar",
+      "title": "Sidebar / 侧边导航栏",
+      "ref_count": 31,
+      "refs": [
+        {
+          "property": "允许轻量宽度过渡",
+          "value": "XY.Motion.Fast",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Sidebar Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Header Background",
+          "value": "XY.Surface.PanelAlt",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Context Background",
+          "value": "XY.Surface.PanelAlt",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Resize Handle",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Primary Text",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Secondary Text",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Hover Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Primary Navigation",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Secondary Navigation",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Footer",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Sidebar.Width.Default",
+          "value": "XY.Resize.Left.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Sidebar.Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Sidebar.Header.Background",
+          "value": "XY.Surface.PanelAlt",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Sidebar.Context.Background",
+          "value": "XY.Surface.PanelAlt",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Sidebar.Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Sidebar.ResizeHandle",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Sidebar.Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Width",
+          "value": "XY.Resize.Left.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BorderColor",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.PanelAlt",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.PanelAlt",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BorderColor",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Color",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.07",
+      "name": "NavigationRail",
+      "title": "NavigationRail / 导航轨",
+      "ref_count": 36,
+      "refs": [
+        {
+          "property": "图标尺寸",
+          "value": "XY.Icon.Size.M",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Item Radius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Rail Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Hover Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Icon",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Default Icon",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Accent Bar",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Connector",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Flyout Background",
+          "value": "XY.Surface.Overlay",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Flyout Border",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Tooltip Background",
+          "value": "XY.Surface.Overlay",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Tooltip Text",
+          "value": "COMPONENT_SPECIFIC_CONTRAST_FOREGROUND",
+          "kind": "GAP_REF",
+          "gap_id": "XYUI3-GAP-001"
+        },
+        {
+          "property": "NavigationRail.Icon.Size",
+          "value": "XY.Icon.Size.L",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationRail.Item.Radius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationRail.Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationRail.Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationRail.Hover.Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationRail.Selected.Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationRail.Selected.Icon",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationRail.Selected.Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationRail.Connector",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BorderColor",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IconSize",
+          "value": "XY.Icon.Size.L",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CornerRadius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IconColor",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "AccentColor",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Overlay",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BorderWidth",
+          "value": "XY.Border.Width.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BorderColor",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CornerRadius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Color",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.08",
+      "name": "Tabs",
+      "title": "Tabs / 页签",
+      "ref_count": 33,
+      "refs": [
+        {
+          "property": "TabBar Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Default Text",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Active Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Hover Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Accent Line",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Divider",
+          "value": "XY.Divider.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Close Icon",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Modified Dot",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Disabled",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "默认字体",
+          "value": "XY.Font.UI",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Default Weight",
+          "value": "XY.FontWeight.Regular",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Weight",
+          "value": "XY.FontWeight.Medium",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Tab.Icon.Size",
+          "value": "XY.Icon.Size.S",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Tab.Hover.Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Tab.Selected.Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Tab.Text",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Tab.Selected.Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Tab.Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Tab.Divider",
+          "value": "XY.Divider.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Regular",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Medium",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IndicatorColor",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Color",
+          "value": "XY.Divider.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IconSize",
+          "value": "XY.Icon.Size.S",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IconColor",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IndicatorColor",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.09",
+      "name": "TabBar",
+      "title": "TabBar / 页签栏",
+      "ref_count": 14,
+      "refs": [
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Control Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Control Hover",
+          "value": "XY.Surface.PanelAlt",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Control Icon",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Disabled Icon",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Overflow Active",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TabBar.Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TabBar.Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TabBar.Control.Hover",
+          "value": "XY.Surface.PanelAlt",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TabBar.Control.Icon",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TabBar.Control.Disabled",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.10",
+      "name": "DockTabs",
+      "title": "DockTabs / 停靠页签",
+      "ref_count": 27,
+      "refs": [
+        {
+          "property": "正式阈值",
+          "value": "XY.Drag.Threshold",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "DockTabBar Background",
+          "value": "XY.Surface.PanelAlt",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Default Text",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Background",
+          "value": "XY.Surface.Raised",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Grip Default",
+          "value": "XY.Text.Tertiary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Grip Hover",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Divider",
+          "value": "XY.Divider.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Dock Preview Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Default Weight",
+          "value": "XY.FontWeight.Regular",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Weight",
+          "value": "XY.FontWeight.Medium",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "DockTabBar.Background",
+          "value": "XY.Surface.PanelAlt",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "DockTab.Selected.Background",
+          "value": "XY.Surface.Raised",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "DockTab.Selected.Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "DockTab.Selected.Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "DockTab.Grip",
+          "value": "XY.Text.Tertiary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Color",
+          "value": "XY.Text.Tertiary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Raised",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IndicatorColor",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BorderWidth",
+          "value": "XY.Border.Width.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BorderColor",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.11",
+      "name": "Breadcrumb",
+      "title": "Breadcrumb / 面包屑导航",
+      "ref_count": 29,
+      "refs": [
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Default Text",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Active Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Hover Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Expanded Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Separator",
+          "value": "XY.Divider.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Regular",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Medium",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Radius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Breadcrumb.Item.Radius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Breadcrumb.Text",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Breadcrumb.Current.Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Breadcrumb.Hover.Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Breadcrumb.Expanded.Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Breadcrumb.Separator",
+          "value": "XY.Divider.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Regular",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CornerRadius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Semibold",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Color",
+          "value": "XY.Divider.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.12",
+      "name": "TreeNavigation",
+      "title": "TreeNavigation / 树形导航",
+      "ref_count": 42,
+      "refs": [
+        {
+          "property": "基础缩进",
+          "value": "XY.Indent.PerLevel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Canonical",
+          "value": "XY.Indent.PerLevel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Text",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Secondary Text",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Hover Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Default Guide",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Active Ancestor Guide",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Chevron",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Disabled",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Regular",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Medium",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "DensityDriven",
+          "value": "XY.Density.Compact.TreeRow",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Compact = XY.Density.Compact.TreeRow",
+          "value": "XY.Density.Comfortable.TreeRow",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TreeNavigation.Indent",
+          "value": "XY.Indent.PerLevel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TreeNavigation.Chevron.Size",
+          "value": "XY.Icon.Size.S",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TreeNavigation.Icon.Size",
+          "value": "XY.Icon.Size.S",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TreeNavigation.Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TreeNavigation.Text",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TreeNavigation.Hover.Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TreeNavigation.Selected.Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TreeNavigation.Selected.Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TreeNavigation.Selected.Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TreeNavigation.Guide.Default",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TreeNavigation.Guide.Active",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "DensityDriven",
+          "value": "XY.Density.Compact.TreeRow",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Compact = XY.Density.Compact.TreeRow",
+          "value": "XY.Density.Comfortable.TreeRow",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IndentPerLevel",
+          "value": "XY.Indent.PerLevel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "AccentColor",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "DefaultColor",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ActiveAncestorColor",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IconColor",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.13",
+      "name": "Pagination",
+      "title": "Pagination / 分页",
+      "ref_count": 28,
+      "refs": [
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Text",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Primary Text",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Hover Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Current Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Current Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Current Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Disabled",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Medium",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Pagination.Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Pagination.Text",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Pagination.Current.Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Pagination.Current.Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Pagination.Current.Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Pagination.Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BorderColor",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CornerRadius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IndicatorColor",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BorderColor",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.14",
+      "name": "Steps",
+      "title": "Steps / 步骤导航",
+      "ref_count": 32,
+      "refs": [
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Completed",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Current Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Current Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Current Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Pending Border",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Pending Text",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Completed Connector",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Pending Connector",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Semibold",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Caption",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Steps.Completed",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Steps.Current.Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Steps.Current.Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Steps.Pending.Border",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Steps.Pending.Text",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Steps.Pending.Connector",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IconColor",
+          "value": "COMPONENT_SPECIFIC_CONTRAST_FOREGROUND",
+          "kind": "GAP_REF",
+          "gap_id": "XYUI3-GAP-001"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BorderWidth",
+          "value": "XY.Border.Width.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BorderColor",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "InnerIndicatorColor",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BorderWidth",
+          "value": "XY.Border.Width.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BorderColor",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Color",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Color",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.15",
+      "name": "Toolbar",
+      "title": "Toolbar / 工具栏",
+      "ref_count": 24,
+      "refs": [
+        {
+          "property": "Toolbar Height",
+          "value": "XY.Density.Comfortable.Toolbar",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Toolbar Height",
+          "value": "XY.Density.Compact.Toolbar",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Icon Size",
+          "value": "XY.Icon.Size.M",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Radius",
+          "value": "XY.Radius.Toolbar",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "DensityDriven",
+          "value": "XY.Density.Compact.Toolbar",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Compact = XY.Density.Compact.Toolbar",
+          "value": "XY.Density.Comfortable.Toolbar",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Toolbar.Icon.Size",
+          "value": "XY.Icon.Size.M",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Toolbar.Selected.Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Toolbar.Selected.Icon",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Toolbar.Selected.Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Toolbar.Hover.Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Toolbar.Separator",
+          "value": "XY.Divider.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Toolbar.Background",
+          "value": "XY.Surface.Toolbar",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "DensityDriven",
+          "value": "XY.Density.Compact.Toolbar",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Compact = XY.Density.Compact.Toolbar",
+          "value": "XY.Density.Comfortable.Toolbar",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Toolbar",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IconSize",
+          "value": "XY.Icon.Size.M",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CornerRadius",
+          "value": "XY.Radius.Toolbar",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IconColor",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IndicatorColor",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Color",
+          "value": "XY.Divider.Default",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.16",
+      "name": "ToolGroup",
+      "title": "ToolGroup / 工具组",
+      "ref_count": 15,
+      "refs": [
+        {
+          "property": "Hover Radius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Group Hover Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Separator",
+          "value": "XY.Divider.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Active Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Active",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Default Text / Icon",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Collapsed Trigger Background",
+          "value": "XY.Surface.PanelAlt",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ToolGroup.Separator.Color",
+          "value": "XY.Divider.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ToolGroup.Hover.Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ToolGroup.Hover.Radius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ToolGroup.Collapsed.Background",
+          "value": "XY.Surface.PanelAlt",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Color",
+          "value": "XY.Divider.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CornerRadius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.PanelAlt",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.17",
+      "name": "CommandBar",
+      "title": "CommandBar / 命令栏",
+      "ref_count": 30,
+      "refs": [
+        {
+          "property": "PrimaryAction Radius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Toolbar",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Text",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Secondary",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Hover",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Light Emphasis",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Active Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Context Background",
+          "value": "XY.Surface.Toolbar",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Danger Text",
+          "value": "XY.Semantic.Error.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Disabled",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Medium",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Caption",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CommandBar.Background",
+          "value": "XY.Surface.Toolbar",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CommandBar.Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CommandBar.Hover",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CommandBar.Emphasis",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CommandBar.Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CommandBar.Danger",
+          "value": "XY.Semantic.Error.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Toolbar",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "PrimaryBackground",
+          "value": "XY.Surface.Toolbar",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "PrimaryText",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ContextBackground",
+          "value": "XY.Surface.Toolbar",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CornerRadius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Semantic.Error.Text",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.18",
+      "name": "CommandPalette",
+      "title": "CommandPalette / 命令面板",
+      "ref_count": 28,
+      "refs": [
+        {
+          "property": "Panel",
+          "value": "XY.Surface.Overlay",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Input",
+          "value": "COMPONENT_SPECIFIC_CONTRAST_FOREGROUND",
+          "kind": "GAP_REF",
+          "gap_id": "XYUI3-GAP-001"
+        },
+        {
+          "property": "Border",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Text",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Secondary",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Divider",
+          "value": "XY.Divider.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Caption",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Caption",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Body",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CommandPalette.Radius",
+          "value": "XY.Radius.Popup",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CommandPalette.Panel",
+          "value": "XY.Surface.Overlay",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CommandPalette.Input",
+          "value": "COMPONENT_SPECIFIC_CONTRAST_FOREGROUND",
+          "kind": "GAP_REF",
+          "gap_id": "XYUI3-GAP-001"
+        },
+        {
+          "property": "CommandPalette.Border",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CommandPalette.Selected",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CommandPalette.Selected.Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CommandPalette.Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Overlay",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BorderWidth",
+          "value": "XY.Border.Width.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BorderColor",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CornerRadius",
+          "value": "XY.Radius.Popup",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Input",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.19",
+      "name": "BackForwardNavigation",
+      "title": "BackForwardNavigation / 前进后退导航",
+      "ref_count": 14,
+      "refs": [
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Icon",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Hover",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Active",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Active Icon",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Disabled",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Text",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Secondary",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BackForward.Hover",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BackForward.Active",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BackForward.Icon",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BackForward.ActiveIcon",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BackForward.Disabled",
+          "value": "XY.State.Disabled.Text",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.20",
+      "name": "WorkspaceSwitcher",
+      "title": "WorkspaceSwitcher / 工作区切换器",
+      "ref_count": 19,
+      "refs": [
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Hover",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Secondary",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Modified Indicator",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Medium",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Caption",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Caption",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "WorkspaceSwitcher.Icon.Size",
+          "value": "XY.Icon.Size.M",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "WorkspaceSwitcher.Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "WorkspaceSwitcher.Hover",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "WorkspaceSwitcher.Selected",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "WorkspaceSwitcher.Selected.Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "WorkspaceSwitcher.Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "WorkspaceSwitcher.Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.21",
+      "name": "ViewSwitcher",
+      "title": "ViewSwitcher / 视图切换器",
+      "ref_count": 25,
+      "refs": [
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Hover",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Icon",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Secondary",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Medium",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Radius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ViewSwitcher.Icon.Size",
+          "value": "XY.Icon.Size.M",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ViewSwitcher.Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ViewSwitcher.Hover",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ViewSwitcher.Selected",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ViewSwitcher.Selected.Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ViewSwitcher.Selected.Icon",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "ViewSwitcher.Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CornerRadius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IconColor",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IndicatorColor",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.22",
+      "name": "TableOfContents",
+      "title": "TableOfContents / 目录导航",
+      "ref_count": 29,
+      "refs": [
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Text",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Primary Text",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Hover",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Guide",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Auxiliary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Caption",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Medium",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Radius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TOC.Level2.Indent",
+          "value": "XY.Indent.PerLevel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TOC.Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TOC.Text",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TOC.Hover",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TOC.Selected",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TOC.Selected.Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TOC.Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TOC.Guide",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CornerRadius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "AccentColor",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Level2Indent",
+          "value": "XY.Indent.PerLevel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "GuideColor",
+          "value": "XY.Border.Color.Subtle",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.23",
+      "name": "BottomNavigation",
+      "title": "BottomNavigation / 底部导航",
+      "ref_count": 25,
+      "refs": [
+        {
+          "property": "Selected Region Radius",
+          "value": "XY.Radius.Control",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Icon",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Label",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "XY.Surface.Selected",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Icon",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Primary Action",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Primary Action Text / Icon",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Caption",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontWeight",
+          "value": "XY.FontWeight.Medium",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "FontSize",
+          "value": "XY.FontSize.Caption",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BottomNavigation.Icon.Size",
+          "value": "XY.Icon.Size.L",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BottomNavigation.Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BottomNavigation.Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BottomNavigation.Selected.Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BottomNavigation.Selected.Icon",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "BottomNavigation.Selected.Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IconSize",
+          "value": "XY.Icon.Size.L",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "LabelFontSize",
+          "value": "XY.FontSize.Caption",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "IconColor",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-3-3.24",
+      "name": "NavigationDrawer",
+      "title": "NavigationDrawer / 抽屉导航",
+      "ref_count": 19,
+      "refs": [
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Text",
+          "value": "XY.Text.Primary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Secondary",
+          "value": "XY.Text.Secondary",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Hover",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selected Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Edge Peek",
+          "value": "XY.Surface.PanelAlt",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationDrawer.Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationDrawer.Border",
+          "value": "XY.Border.Color.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationDrawer.Hover",
+          "value": "XY.State.Color.Hover",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationDrawer.Selected",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationDrawer.Selected.Text",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "NavigationDrawer.Accent",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Panel",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background",
+          "value": "XY.Surface.Selected",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "TextColor",
+          "value": "XY.Accent.Strong",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "AccentColor",
+          "value": "XY.Accent.Default",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    }
+  ]
+}

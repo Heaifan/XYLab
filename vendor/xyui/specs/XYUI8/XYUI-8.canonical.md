@@ -1,0 +1,936 @@
+<!--
+  XYUI-8 canonical spec · XYUI-PILOT-R8 · FAST-CLOSE（8.01~8.16）
+  Source: xyui/source/XYUI8/XYUI-8.md (immutable Evidence)
+    bytes: 115343
+    SHA-256: 303f8108d9631a6b9ecec26947eb35cc1124d940ff866df94478839aee3bbc1a
+    provenance: 本轮指令消息内附件全文落盘（磁盘附件目录未落盘，无原始文件 SHA；见 source-audit.md）
+  Canonical basis: XYUI-0 Foundation Registry (VALIDATED, AMEND-A/B) + A3-R2 Canonical Token Architecture
+  规则: 组件语义保留；Foundation 重复值全部映射 canonical；#hex/px/旧字体/旧命名空间 = 0
+  Reconciliation 裁定: 6 项所有权划清（8-04 vs XYUI-4 Progress / 8-10 vs XYUI-4 Marquee / 8-12 vs XYUI-3 Steps /
+    8-15 vs XYUI-1 Tooltip / 8-16 vs XYUI-5 ViewportContainer / 8-01 vs XYUI-6 6.19 状态语义）
+  Source 缺陷: 8-10 使用原则段原文复制粘贴错乱（SFD，Source 原文不动；canonical 按意图落，defect ref 记录）
+  GAP 标注见 xyui/specs/XYUI8/XYUI-8.gaps.json
+-->
+# XYUI-8 · Visualization｜数据可视化（Canonical）
+
+> XYUI-PILOT R8 产物（FAST-CLOSE）。基于 `xyui/source/XYUI8/XYUI-8.md`（SHA-256: 303f8108…）reconciliation。
+> 上位规则：A2 Foundation Registry（VALIDATED，AMEND-A/B）+ A3-R2 Canonical Token Architecture + XYUI-1/2/3/4/5/6 canonical。
+> 本文件中的 `XY.*` 引用全部为 Canonical Token 引用（见 XYUI-8.mapping.json）。
+> 组件职责/结构/交互/变体 = 已定稿，保留原样；Foundation 视觉值 = 引用 XYUI-0，无第二套真值。
+> XYUI-8 只负责：数据可视化语义（图表/指标/阈值/时间锁定/联动/交互合同）；不重新拥有上游 Primitive。
+> 名称说明：路线图名「Media & Visualization」，Source 实际无 Media 组件，本轮范围 = Visualization。
+
+- 整理依据
+    - 原始组件设计
+        - XYUI-8.md（8.01~8.16，16 项，内建 Ownership Check 与联动关系）
+    - 上位规范
+        - XYUI-0.md + Foundation Registry（含 AMEND-A/B）+ A3-R2 Token Architecture
+        - XYUI-1/2/3/4/5/6 canonical
+    - 整理原则
+        - 保留 XYUI-8 已定稿的组件职责、图表语义、交互与 Variant
+        - Text→XYUI-1；Input→XYUI-2；Navigation→XYUI-3；Selection/Feedback→XYUI-4；Layout/Viewport→XYUI-5；Collection 语义→XYUI-6；Visualization 语义→XYUI-8
+        - 组合优先级：REF → REUSE → COMPOSE → COMPONENT_SPECIFIC → GAP；不创建第二真值
+        - 用户已定交互合同全局生效：Direct Manipulation + Compact Interaction Bar + Responsive Interaction 为主；Contextual Interaction 仅低频辅助（8-16 定义，各组件消费）
+        - 时间锁定联动 = XYUI-8 全局机制：锁定后 Metric / Metric Group / Sparkline / Timeline / Log / 共享时间轴图表同步刷新
+        - 移动端不得依赖 Hover（触控：单指 Pan / 双指 Zoom / 长按或 Tap 锁定 / 底部动作条）；桌面与移动保持相同交互语义
+        - 视觉纪律：浅底 / 低饱和 / 轻边框 / 平面 / 紧凑 / 少装饰；禁止 Dashboard 大卡片、汽车仪表盘、彩虹渐变、无意义留白
+        - 所有几何单位统一使用 DIP；图表性能 = 视口优先 / 降采样 / 局部重绘 / PointerMove 禁全量扫描
+        - 组件独有尺寸档位保留为 COMPONENT_SPECIFIC，不得成为新的 Foundation 默认值
+        - Light / Dark 由 Foundation Semantic Token 映射，不在组件规范重复硬编码主题色
+
+- Foundation Reconciliation
+    - State（AMEND-A）
+        - ComposeMode = XY.State.ComposeMode（Single Primary Owner per Visual Channel）；Layering Forbidden；Disabled 最高优先级
+        - 状态不得仅靠颜色（ColorOnlyState Forbidden）；Metric/Gauge/Threshold 状态必须文字+颜色双通道
+        - 状态语义：Normal / Notice / Warning / Critical → Notice = XY.Semantic.Info、Warning = XY.Semantic.Warning、Critical = XY.Semantic.Error（Normal = 中性 Surface，不设强调色）；Threshold Band 消费同一映射
+    - Typography / 数值
+        - UI Font = XY.Font.UI；数值优先使用 XY.Font.Mono / XY.FontSize.Mono（表格化读数）；标签 = XY.FontSize.Auxiliary / Caption
+        - Value 为第一信息层级（XY.Text.Primary）；Label 第二；Delta/Status 第三；Context 第四；超长 = XYUI-1 TruncatedText + Tooltip
+    - Grid / Axis / Crosshair
+        - 图表 Grid 弱化 = XY.Editor.Grid.Minor 语义（允许关闭；不得压过数据）；轴标签简洁不堆刻度
+        - Crosshair / 检查线 = XY.Editor.Guide 语义（细；锁定后视觉权重提高、Hover 时轻）；数据点 Marker 视觉 REF XYUI-4 Selected 语义
+    - Tooltip（XYUI-1 基础合同）
+        - 浮层基础合同 = XY.Tooltip.*（ShowDelay / ViewportAvoidance / AutoFlip）与 XYUI-1 Tooltip（1.19）
+        - XYUI-8 只增加图表检查器语义（Crosshair 联动 / 锁定 / Series 读值 / Edge Inspector 承载）；Hover Tooltip 内容保持轻量
+    - Progress / Range
+        - 完成度视觉 = XYUI-4 ProgressBar（4.16）/ ProgressRing（4.17）；XYUI-8 8-04 只增加 Target Band / Threshold Range / Compare Range 语义
+    - Selection（框选）
+        - 框选/套索输入与视觉 = XYUI-4 MarqueeSelection（4.07）/ LassoSelection（4.08）；XYUI-8 8-10 只增加选区统计与联动语义
+    - Viewport
+        - Zoom / Pan 视图变换机制 = XYUI-5 ViewportContainer（5.16，不改 Logical Position）；XYUI-8 8-16 拥有交互合同（手势/状态机/FollowLive/缩放限制）
+    - 集合状态语义
+        - 图表数据缺失 / 连接断开 / 采样停止 / 离线 / 过期 = REF XYUI-6 6.19 状态语义（PartialFailure / Offline / Stale）+ XYUI-4 视觉承载；已有数据不得因局部失败清空图表
+    - Motion
+        - 状态过渡 = XY.Motion.Fast / Normal；禁止装饰性动效；Reduced Motion 必须保留
+    - 性能合同（XYUI-8 全局）
+        - 视口优先渲染 / 大数据降采样 / 缩放后按显示密度重采样 / PointerMove 禁全量数据扫描 / Crosshair 只计算可见 Series / Tooltip 更新禁整页重绘
+        - XYUI 定义 observable performance expectation，不绑定具体前端技术栈
+
+- 上游所有权边界（Canonical Cross-Component Ownership）
+    - Visual Foundation → XYUI-0；Text / Tooltip 基础 → XYUI-1；Input → XYUI-2；Navigation / Steps → XYUI-3；Selection / Feedback / Progress 视觉 → XYUI-4；Layout / Viewport / Scroll → XYUI-5；Collection 状态语义 → XYUI-6；Visualization 语义（图表/指标/阈值/锁定联动/交互合同）→ XYUI-8
+
+- 已知待后续 Token 层补齐
+    - 图表系列色板（多系列 Series 色 + Heatmap 低→高色阶）无 Foundation 定义 → [GAP:XYUI8-GAP-001]，本轮不伪造色值（见 XYUI-8.gaps.json）
+    - 其余缺口：0（阈值档位 → XY.Semantic.* 映射；Grid/Crosshair → XY.Editor.* 语义；数字格式 → XYUI-1）
+
+- 8.01 · Visualization Container / 可视化容器
+    - 控件定位
+        - 类型
+            - Visualization Shell / 可视化工作台容器
+        - 层级
+            - 可视化层（NEW；所有图表/指标/监测图/热力图/时间轴/性能图的统一外壳）
+        - 主要用途
+            - XYLab、玄域调试面板、未来游戏数据界面的可视化工作台容器；不是普通 Card
+    - Ownership
+        - Inherits：XYUI-5 布局（Stack/Grid/ScrollArea）；XYUI-6 6.19 状态语义；XYUI-4 反馈视觉
+        - Owns：容器分层结构（Header/Context/Toolbar/Canvas/SnapshotRail/Inspector/Footer）；布局 Variant 体系；时间锁定联动承载；高频操作一层直达
+        - Must Not Redefine：布局机制（REF XYUI-5）/ 状态视觉（REF XYUI-4）/ 图表组件语义（承载关系，不重新定义 8-02~8-16）
+    - 最终方案
+        - 方案4 分层状态框（Layered Frame）为主；吸收方案1 标准工作台结构 + 方案2 大画布优先 + 方案3 检查器联动；结论 = 统一规则下的容器布局体系，非唯一单形态
+    - 核心原则
+        - 图表主区必须是容器视觉主角，优先保证宽度和高度；不得为装饰牺牲图表面积
+        - 高频操作一层直达（缩放全部/跟随实时/锁定时间/比较/导出）；低频收进 More
+        - 图表与指标不得各自孤立；锁定时间后必须有联动反馈（指标/事件/日志同步）
+    - 结构
+        - VisualizationContainer → Header（图表名称+数据对象+实验上下文；可含实时状态/标签/采样信息/时间范围）+ Context + Toolbar（高频操作）+ Canvas（图表主体）+ SnapshotRail（底部快照带，默认联动形态）+ Inspector（侧边检查器，扩展形态）+ Footer
+        - 联动区两种合法形态：底部状态带（默认优先）/ 侧边检查器（扩展）；底部状态带容量有限时仍需要可展开检查器
+    - 布局 Variant
+        - layered（标准分层型，默认，对应方案4）/ workbench（紧凑工作台型，信息较多的标准仪表板）/ canvas（大画布型，Heatmap/Scatter/地图/超宽趋势图，工具收边图表占满）/ inspector（分析检查器型，深度实验分析，Inspector 可收起）
+    - 状态反馈
+        - 运行状态：实时运行 / 暂停 / 历史回放 / 离线数据（必须清楚）
+        - 异常状态：数据缺失 / 连接断开 / 采样停止 / 超出阈值（语义 REF 6.19：PartialFailure/Offline/Stale；视觉 REF XYUI-4；文字+颜色双通道）
+    - 视觉原则
+        - 浅底、清晰分层、低饱和蓝灰系、边框轻、少装饰；强调有效信息密度，避免大留白与普通卡片系统观感
+    - Canonical Token
+        - XY.VisualizationContainer.Slots
+            - Type = COMPONENT_SPECIFIC（Header | Context | Toolbar | Canvas | SnapshotRail | Inspector | Footer）
+        - XY.VisualizationContainer.Variant
+            - Type = COMPONENT_SPECIFIC（layered | workbench | canvas | inspector）
+        - XY.VisualizationContainer.LinkedRail
+            - Type = COMPONENT_SPECIFIC（底部状态带默认；侧边检查器扩展；锁定后联动反馈 Required）
+        - XY.VisualizationContainer.State
+            - Value = 运行/异常语义 REF XYUI-6 6.19 + 视觉 REF XYUI-4
+        - XY.VisualizationContainer.Layout / Scrolling
+            - Value = Reference XYUI-5（Stack / Grid / ScrollArea）
+        - XY.VisualizationContainer.Interaction
+            - Value = Reference XYUI-8 8.16
+        - XY.VisualizationContainer.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止为装饰牺牲图表面积 / 操作分散到多层菜单 / 图表与指标各自孤立 / 锁定时间后没有联动反馈
+        - 禁止演变成普通卡片系统 / 标题区堆太多次要说明 / 底部状态带容量超载时不提供检查器出口
+
+- 8.02 · Metric / 指标值
+    - 控件定位
+        - 类型
+            - Data Node Component / 紧凑数据观察节点
+        - 层级
+            - 可视化层（NEW；不是 Dashboard 大卡片，不是单纯放大数字）
+        - 主要用途
+            - 表达一个关键数据当前值；可嵌入 XYLab、编辑器、Inspector、Visualization Container；与时间、图表、日志、事件联动
+    - Ownership
+        - Inherits：XYUI-1 文本（Label/Value/Delta）；XY.Semantic.* 状态；8-15/8-16 联动合同
+        - Owns：信息层级（Value > Label > Delta/Status > Context）；联动快照语义（锁定时间点数据快照）；尺寸档位 Small/Medium/Large；Compare 入口
+        - Must Not Redefine：状态颜色（REF XY.Semantic.* + XYUI-4）/ 文本组件（REF XYUI-1）/ 布局（REF XYUI-5）
+    - 最终方案
+        - 方案4 联动快照指标块为核心；方案1 主指标块为主要辅助；默认 Small / Medium，Large 仅用于真正重要的主指标
+    - 核心原则
+        - Metric 是数据节点不是装饰卡片；数值优先、名称次之、变化和状态辅助、上下文按需
+        - 第一眼看清当前数值、快速判断状态与变化方向；不为视觉效果制造大面积留白
+    - 结构
+        - Metric → Label + Value + Unit + Delta（变化值+方向）+ Status（Normal/Notice/Warning/Critical）+ Context（锁定时间/对象/数据源）+ Accessory
+        - 信息层级：第一层 Value；第二层 Label；第三层 Delta/Status；第四层 Context/辅助说明
+    - 尺寸
+        - Small（120–180 × 60–90 DIP；Inspector/列表/状态栏/Snapshot Rail；Label+Value+可选 Delta）
+        - Medium（默认；180–260 × 100–140 DIP；XYLab 指标区/Container/概览面板；+Delta+Status+可选 Context）
+        - Large（260–360 × 160–220 DIP；关键战况/首页核心指标；只能少量使用，不能批量排列）（COMPONENT_SPECIFIC）
+    - 变化显示 / 状态显示
+        - 变化：增加/减少/持平/波动；表达 = 数值+方向符号+趋势短语（+12% / -4% / +1.8/min / 持续上升）；不得只靠颜色表达正负
+        - 状态：Normal / Notice / Warning / Critical；文字+颜色双通道；Notice=XY.Semantic.Info、Warning=XY.Semantic.Warning、Critical=XY.Semantic.Error
+    - 时间联动
+        - Current（当前实时值）/ Locked（锁定时间值）/ Historical（历史值）；锁定状态必须明确表达时间上下文（文字显示锁定时间）
+        - 用户锁定 18:42 → Metric 自动刷新到 18:42 数据快照；相关事件同步刷新；日志可定位
+    - 交互
+        - 点击 = 打开详细信息 / 高亮对应图表曲线 / 定位日志；Compare 模式 = 选中指标加入比较；Hover = 详细单位/原始值/采样时间
+    - Canonical Token
+        - XY.Metric.Slots
+            - Type = COMPONENT_SPECIFIC（Label | Value | Unit | Delta | Status | Context | Accessory）
+        - XY.Metric.Size
+            - Type = COMPONENT_SPECIFIC（small | medium | large；默认 small/medium）
+        - XY.Metric.Emphasis
+            - Type = COMPONENT_SPECIFIC（normal | primary）
+        - XY.Metric.State
+            - Value = XY.Semantic.Info / Warning / Error 映射（Normal 中性；文字+颜色双通道）
+        - XY.Metric.Value
+            - Value = 第一信息层级（REF XYUI-1 Text；数值优先 XY.Font.Mono）
+        - XY.Metric.TimeContext
+            - Type = COMPONENT_SPECIFIC（Current | Locked | Historical；锁定时间文字必显）
+        - XY.Metric.Interaction
+            - Value = Reference XYUI-8 8.16（锁定联动）+ 8.15（Chart Inspector）
+        - XY.Metric.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止巨大 Dashboard 卡片 / 数字占据绝大部分屏幕 / 大面积渐变 / 大量状态颜色 / 汽车仪表盘式设计
+        - 禁止为了高级感制造无意义留白 / 一个 Metric 塞入过多指标 / 状态只靠颜色表达
+
+- 8.03 · Metric Group / 指标组
+    - 控件定位
+        - 类型
+            - Visualization Composition / 指标组合组件
+        - 层级
+            - 可视化层（NEW；不是 Dashboard 卡片墙，不是简单 Grid 排列）
+        - 主要用途
+            - 统一组织多个 Metric，帮助快速扫读、比较和判断多个指标之间的关系；支持时间点/对象/方案/基线/目标比较
+    - Ownership
+        - Inherits：8-02 Metric；8-04/8-05 组合；8-15/8-16 联动
+        - Owns：比较关系表达（Value A/Value B/Delta/Status）；布局 Variant（Compare/Rail/Matrix/Priority）；指标层级（Primary/Secondary/Supporting）；数量规则（2~4/5~12/>12）
+        - Must Not Redefine：Metric 单组件语义（REF 8-02）/ 排序（图表内排序归 8-08；本组按语义排序）/ 布局 Grid 机制（REF XYUI-5）
+    - 最终方案
+        - 方案4 Linked Compare Group 为主；方案1 Compact Metric Rail（实时扫读）/ 方案2 Dense Metric Matrix（中密度）/ 方案3 Priority Metric Group（主变量实验）为辅助 Variant；统一核心规则 + 多种合法布局
+    - 核心原则
+        - 一组 Metric 不只是同时显示，而是承担比较关系表达；避免大量指标形成杂乱数字墙
+        - 不是所有 Metric 必须同等级（Primary/Secondary/Supporting）；常用比较操作一层直达
+    - 布局 Variant / 比较模式
+        - Compare（默认主 Variant；Dimension + Value A + Value B + Delta + Status）
+        - Rail（横向紧凑带，高度最低；指标过多允许横向滚动与折叠低优先级）
+        - Matrix（2×N / 3×N 自适应 Grid；超过建议数量进入分组或滚动）
+        - Priority（Primary Metric + Secondary Metrics；实验焦点第一眼明确）
+        - 比较模式：Time（时间 A/B）/ Entity（对象 A/B）/ Scenario（方案 A/B）/ Baseline（基线 vs 当前）/ Target（预期 vs 实际）
+    - Delta 表达 / 指标层级 / 数量规则
+        - Delta：数值变化/百分比变化/比率变化/状态变化（正常 → 预警）；不能只用颜色表达正负
+        - 层级：Primary（核心指标）/ Secondary（直接相关）/ Supporting（辅助判断）
+        - 数量：2~4 项 Rail/Compare；5~12 项 Matrix/Compare；>12 项必须分组/搜索/筛选/折叠，不得一次全部铺开
+    - 时间 / 图表 / 日志联动
+        - Container 锁定时间 → 整组同步刷新；Compare 模式可同时锁定时间 A 与 B；时间变化后 Delta 自动重算
+        - 点击指标高亮对应曲线；点击 Value A/B 定位对应时间；点击 Delta 查看变化区间；异常指标可直接跳转相关日志
+    - 交互原则
+        - 常用比较操作一层直达，不要求先进入二级详情页；允许快速交换 A/B；允许固定一侧为 Baseline；允许加入或移除指标
+    - 视觉原则
+        - 平面、低饱和、弱边框、紧凑间距、数字对齐、比较列对齐、Delta 独立列；避免每个 Metric 都有独立厚重 Card
+    - Canonical Token
+        - XY.MetricGroup.Variant
+            - Type = COMPONENT_SPECIFIC（compare | rail | matrix | priority）
+        - XY.MetricGroup.CompareMode
+            - Type = COMPONENT_SPECIFIC（time | entity | scenario | baseline | target）
+        - XY.MetricGroup.Level
+            - Type = COMPONENT_SPECIFIC（Primary | Secondary | Supporting）
+        - XY.MetricGroup.MaxVisible
+            - Type = COMPONENT_SPECIFIC（2~4 / 5~12 / >12 分组折叠）
+        - XY.MetricGroup.Delta
+            - Value = 数字+文字双通道（不得只靠颜色）
+        - XY.MetricGroup.Child
+            - Value = Reference XYUI-8 8.02 Metric（Small/Medium 体系，组不主动放大子 Metric）
+        - XY.MetricGroup.Layout
+            - Value = Reference XYUI-5 Grid / Stack（紧凑间距）
+        - XY.MetricGroup.Interaction
+            - Value = Reference XYUI-8 8.16 + 8.15（锁定联动）
+        - XY.MetricGroup.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止大量独立大卡片 / 所有指标视觉权重相同 / 依赖颜色判断比较结果 / 比较值左右位置不断变化
+        - 禁止指标太多仍强行全部展开 / 为装饰增加无意义空白 / 比较必须先进入二级详情页
+
+- 8.04 · Progress & Range / 进度与区间
+    - 控件定位
+        - 类型
+            - Visualization Primitive / 范围可视化原语
+        - 层级
+            - 可视化层（NEW；不仅是传统 Progress Bar）
+        - 主要用途
+            - 表达连续数值当前所在位置、目标范围、阈值范围和完成程度；重点服务 XYLab 实验调参、状态监测、阈值判断和方案比较
+    - Ownership
+        - Inherits：XYUI-4 ProgressBar（4.16）/ ProgressRing（4.17）完成度视觉；XY.Semantic.* 阈值映射；8-13 共享阈值语义；8-16 交互
+        - Owns：Target Band 语义（合理目标范围判断）；Threshold Range（多段区间）；Comparative Range（A/B 双值）；Distance To Target
+        - Must Not Redefine：完成度 Progress 视觉（REF XYUI-4 4.16/4.17）/ 状态颜色（REF XY.Semantic.*）/ 参数编辑输入控件（REF XYUI-2）
+    - 最终方案
+        - 方案3 Target Band 为主；方案1 Compact Progress（基础完成度）/ 方案2 Threshold Range（阈值监测）/ 方案4 Comparative Range（比较分析）为辅助；统一 Range 核心 + 多种语义 Variant
+    - 核心原则
+        - 不是判断数值越大越好，而是判断当前值是否处在合理目标范围（能处理并非越大越好的指标）
+        - 范围本身是主要信息；Current Marker 必须清晰；Target Band 明显但不抢数据主体
+    - 结构 / Variant
+        - ProgressRange → Label + Value + Track + TargetBand + ThresholdBands + Marker + Delta + Status
+        - Variant：progress（传统完成度）/ target（默认主 Variant）/ threshold（阈值监测）/ compare（对比分析）
+    - Target Band 规则
+        - 目标范围清楚可见；当前值有独立 Marker；必须能判断低于目标/处于目标/高于目标；建议显示距离目标下限/上限
+        - 目标范围来源：用户手动设置 / 实验预设 / 系统推荐 / 历史基线
+    - Threshold 规则
+        - 多段区间 Normal / Notice / Warning / Critical（Notice=XY.Semantic.Info、Warning=XY.Semantic.Warning、Critical=XY.Semantic.Error）；阈值线弱于 Current Marker
+        - 阈值不能只使用颜色表达（需要文字：安全/预警/危险）
+    - Compare 规则 / 数值范围 / 方向
+        - 双值 A/B + Absolute Delta + Percent Delta；共享同一阈值或目标区间；两值稳定位置和清晰标识
+        - 数值范围：0~100% / 0~1 / 自定义 Min-Max / 物理量；必须明确处理低于 Min、高于 Max、未知范围
+        - Horizontal 默认优先；Vertical 仅特殊空间布局
+    - 交互 / 实时状态 / 尺寸
+        - Hover 查看精确值与范围说明；Click 打开详情；Drag 仅组件承担参数编辑职责时允许（纯监测模式禁止拖动）；Compare 允许切换 A/B
+        - Live（Marker 随数据更新）/ Locked（固定在锁定时间值）/ Historical（历史值）
+        - Compact（Metric/Inspector/列表）/ Standard（Container/调参面板）/ Detailed（独立实验分析区域）
+    - Canonical Token
+        - XY.ProgressRange.Variant
+            - Type = COMPONENT_SPECIFIC（progress | target | threshold | compare）
+        - XY.ProgressRange.TargetBand
+            - Type = COMPONENT_SPECIFIC（目标范围必须可见；belowTarget | inTarget | aboveTarget 三态）
+        - XY.ProgressRange.ThresholdBands
+            - Value = XY.Semantic.Info / Warning / Error 映射（Normal 中性；文字+颜色双通道）
+        - XY.ProgressRange.ProgressVisual
+            - Value = Reference XYUI-4 ProgressBar（4.16）/ ProgressRing（4.17）
+        - XY.ProgressRange.Marker
+            - Value = 清晰于阈值线（COMPONENT_SPECIFIC 强制）
+        - XY.ProgressRange.State
+            - Type = COMPONENT_SPECIFIC（Live | Locked | Historical）
+        - XY.ProgressRange.Interaction
+            - Value = Reference XYUI-8 8.16
+        - XY.ProgressRange.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止无意义的彩虹渐变 / 汽车仪表盘装饰 / 只靠颜色区分区间 / 目标区间和危险区间混淆
+        - 禁止 Current Marker 不清楚 / 为美观隐藏精确数值 / 纯监测模式允许拖动
+
+- 8.05 · Sparkline / 微型趋势图
+    - 控件定位
+        - 类型
+            - Visualization Primitive / 微型趋势表达
+        - 层级
+            - 可视化层（NEW；不是完整图表，不是精确读数工具）
+        - 主要用途
+            - 以极小空间表达一个指标最近的变化趋势；嵌入 Metric、Metric Group、列表、Inspector、日志检查器
+    - Ownership
+        - Inherits：8-02/8-03 嵌入承载；8-06 主图联动；8-15/8-16 交互合同
+        - Owns：趋势语义（Up/Down/Flat/Volatile）；时间窗口（最近 5/10/30 min 或 N 采样点）；Compare 形态；Locked 锁点模式；阈值线
+        - Must Not Redefine：完整图表能力（REF 8-06 只做跳转入口）/ 坐标轴体系（禁大量坐标轴）/ 布局（REF XYUI-5）
+    - 最终方案
+        - 方案1 Inline Sparkline + 方案4 Compare Sparkline 为主；方案2 Threshold Sparkline（阈值增强）/ 方案3 Locked Sparkline（锁定联动）为辅助；默认 Small / Embedded
+    - 核心原则
+        - Sparkline 默认比 Metric 更从属，不能喧宾夺主；不承担精确时间读数；不承载复杂交互
+        - 趋势语义不能只依赖颜色（折线形状 + Delta + 方向符号 + 简短文案）
+    - 尺寸 / 信息层级
+        - Embedded（默认，Metric/列表/Inspector；高度很低，宽度自适应）/ Compact（摘要面板，更清楚折线）/ Compare（双线或上下双轨）
+        - 信息层级：第一层 Value；第二层 Sparkline 走势；第三层 Delta/Status；第四层 Time Window/Source
+    - Compare / 阈值 / Locked 规则
+        - Compare：双线重叠或上下双轨；必须清楚区分 A/B；比较走势形态/峰值/波动强度/转折点/最终值（即使最终值相同也能看出增长节奏不同）
+        - Threshold：允许阈值线；阈值线弱于主趋势线；不可让 Sparkline 变成完整图表
+        - Locked：响应主图锁定时间；窗口中心切换到锁定时间点，显示附近小范围趋势上下文
+    - 交互 / 视觉
+        - Hover 显示精确值与时间窗口；Click 跳转主图或打开详细图表；Linked 允许被主 Line Chart 高亮或锁定驱动
+        - 极简、紧凑、低占位、线条清晰、无厚边框、无装饰背景；默认不独立成大 Card
+    - Canonical Token
+        - XY.Sparkline.Variant
+            - Type = COMPONENT_SPECIFIC（inline | compare | threshold | locked）
+        - XY.Sparkline.Size
+            - Type = COMPONENT_SPECIFIC（embedded | compact）
+        - XY.Sparkline.TimeWindow
+            - Type = COMPONENT_SPECIFIC（5/10/30 min 或 N 采样点；Locked 模式中心 = 锁定时间）
+        - XY.Sparkline.Trend
+            - Value = Up | Down | Flat | Volatile（形状+Delta+文字，不得只靠颜色）
+        - XY.Sparkline.Threshold
+            - Value = 阈值线弱于主趋势线（REF XY.Semantic.* 映射）
+        - XY.Sparkline.Link
+            - Value = Reference XYUI-8 8.06（主图联动）+ 8.15 + 8.16
+        - XY.Sparkline.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止做成小型完整版折线图 / 为美观加入大量坐标轴 / 为装饰增加大面积留白 / 线条过粗
+        - 禁止多条线混杂难辨 / 把 Sparkline 做成视觉主角 / 趋势只靠颜色表达
+
+- 8.06 · Line Chart / 折线图
+    - 控件定位
+        - 类型
+            - Primary Chart Component / 主分析图表
+        - 层级
+            - 可视化层（NEW；XYLab 最重要的主分析图表之一）
+        - 主要用途
+            - 表达一个或多个连续变量随时间、序列或实验步骤变化；服务实验观察、时间锁定、变量比较、长时段分析
+    - Ownership
+        - Inherits：8-01 承载；8-02/8-03/8-05 联动；8-14 Legend；8-15 Chart Inspector；8-16 交互合同
+        - Owns：Series 语义（单线 1 条/多线 2~4 条/Compare A-B）；时间锁定；Range Selection；Brush Overview；Follow Live；降采样性能合同
+        - Must Not Redefine：Grid/Crosshair 视觉（REF XY.Editor.*）/ Tooltip 基础（REF XYUI-1 + XY.Tooltip.*）/ 视图变换机制（REF XYUI-5 ViewportContainer）
+    - 最终方案
+        - 方案1 Compact Single Line / 方案2 Compact Multi-Line / 方案3 Compare Line Chart / 方案4 Focus & Brush 全部正式保留为合法 Variant；不设唯一主样式
+    - 核心原则
+        - 保持紧凑，不做大屏 Dashboard 风格；Plot 必须是视觉主体；Header 高度尽量低；工具栏不占过多高度
+        - Grid 弱化只辅助读取；曲线数量必须限制；不可无限叠线
+    - Variant
+        - single：单变量观察（疲劳/FPS/士气/延迟；视觉噪声最低）
+        - multi：多关联变量同步观察（共享时间轴/同一 Crosshair/同一锁定时间；2~4 条建议，超过筛选分组隐藏）
+        - compare：方案/对象/Baseline A-B（同时间基准/同量纲/清楚标识；允许 Delta、Peak Difference、End Difference）
+        - focusBrush：长时间大数据（Focus Plot + Brush Overview；拖动范围/缩放时间窗/移动窗口）
+    - 坐标轴 / Grid / Series / Legend
+        - X 默认时间（可实验步骤/帧/采样序号）；Y 指标值；轴标签简洁不堆刻度
+        - Grid 弱化（XY.Editor.Grid.Minor 语义），可关闭，不得压过折线
+        - Series 单线默认 1 条；多线建议 2~4 条；超过必须筛选/分组/隐藏，不可无限叠加
+        - Legend：单线通常省略；多线和 Compare 建议显示；紧凑；允许点击隐藏 Series（REF 8-14）
+    - Crosshair / Tooltip / 时间锁定
+        - Crosshair：垂直时间线（可选水平值线）；锁定后保持位置；所有 Series 同步读值（REF 8-15）
+        - Tooltip：时间 + 当前 Series 值 + 可选 Delta/状态；多线模式同一 Tooltip 显示所有 Series 当前值
+        - 时间锁定：点击数据点或 Crosshair 进入 Locked；锁定后 Metric / Metric Group / Sparkline / 日志 / 事件同步
+    - Range Selection / Brush / Follow Live
+        - Range Select：拖拽选择时间区间（Zoom/统计/比较/导出局部数据）；选区轻量不遮挡数据
+        - Brush：仅长时间数据场景出现，默认高度较低，提供 Overview，主图显示 Brush 当前窗口
+        - Follow Live：主图持续跟随最新数据；用户手动 Pan 后允许暂停 Follow；一键回到 Live（REF 8-16）
+    - 性能原则
+        - 大数据量必须考虑降采样，不能简单绘制所有原始点；视口内优先；缩放后按显示密度重新采样；避免 PointerMove 全量数据扫描
+    - Canonical Token
+        - XY.LineChart.Variant
+            - Type = COMPONENT_SPECIFIC（single | multi | compare | focusBrush）
+        - XY.LineChart.Series
+            - Type = COMPONENT_SPECIFIC（单线 1 / 多线 2~4 / 超过筛选分组；色板 → GAP:XYUI8-GAP-001）
+        - XY.LineChart.Grid / Crosshair
+            - Value = XY.Editor.Grid.Minor / XY.Editor.Guide（弱化；可关闭）
+        - XY.LineChart.State
+            - Type = COMPONENT_SPECIFIC（live | locked | historical | comparing）
+        - XY.LineChart.FollowLive
+            - Type = COMPONENT_SPECIFIC（Pan 后暂停；一键恢复；状态必须明确）
+        - XY.LineChart.LockedLink
+            - Value = 锁定后 Metric / MetricGroup / Sparkline / Log / Event 同步（XYUI-8 全局联动合同）
+        - XY.LineChart.Tooltip / Crosshair
+            - Value = Reference XYUI-8 8.15
+        - XY.LineChart.Interaction
+            - Value = Reference XYUI-8 8.16
+        - XY.LineChart.Legend
+            - Value = Reference XYUI-8 8.14
+        - XY.LineChart.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止巨大 Header / 大量装饰性色块 / 过粗折线 / 过多 Series 同屏 / Grid 比数据更显眼
+        - 禁止 Tooltip 遮挡大量曲线 / 为展示全部数据牺牲可读性 / PointerMove 全量扫描
+
+
+- 8.07 · Area Chart / 面积趋势图
+    - 控件定位
+        - 类型
+            - Primary Chart Component / 面积语义图表
+        - 层级
+            - 可视化层（NEW；不是单纯「折线下方填色」）
+        - 主要用途
+            - 表达连续变化中的累计量、总量、组成比例和区间范围；只有当面积本身具有语义时才使用
+    - Ownership
+        - Inherits：8-01 承载；8-02/8-03 联动；8-14 Legend；8-15 Chart Inspector；8-16 交互合同
+        - Owns：量面积（累计/总量/构成/差异）与区间面积（上下限/波动带/置信区间）语义分组；Comparable Stacked 增强 Variant；面积语义规则
+        - Must Not Redefine：Line Chart（8-06 承担折线趋势；面积只在有语义时使用）/ Grid/Crosshair（REF XY.Editor.*）/ Tooltip 基础（REF XYUI-1）
+    - 最终方案
+        - 方案1 Compact Area / 方案2 Stacked Area / 方案3 Range Area / 方案4 Compare Area 正式保留；方案2 吸收方案4 比较能力形成 comparableStacked 增强 Variant
+    - 关键语义分组（核心）
+        - 量面积（方案1/2/4）= 累计量、总量、构成、差异；区间面积（方案3）= 上下限、波动带、置信区间
+        - 量面积与区间面积语义不同，实现和命名必须分开，不能混成一个模糊组件
+    - 面积语义规则
+        - 只有在面积本身有语义时才用：累计量 → 单面积；构成量 → 堆叠面积；区间范围 → 范围带
+        - 如果只是想让图更饱满：禁止把 Line 强行改成 Area
+    - Variant
+        - single（累计伤亡/累计资源消耗/累计任务量；比折线更强调「总量积累」）
+        - stacked（总量+构成比例变化：伤亡构成/资源消耗构成/CPU 时间构成；2~4 个构成部分）
+        - range（面积表示区间，中间线表示 Median/Mean/Reference；清楚标明上界/下界/中心值；不得让用户误以为累计量）
+        - compare（方案/对象/Baseline A-B；比较累计总量差异与差距起始时间；需要控制重叠遮挡）
+        - comparableStacked（增强；同时表达总量+构成+A/B 差异；并排比较/分面比较/交互切换；不建议多层重叠后继续叠 A/B）
+    - Compare 规则 / Series 数量
+        - Compare：支持方案 A/B、对象 A/B、Baseline/Current；比较最终总量差异、曲线斜率差异、差距起始时间、构成差异；显示方式 Overlay / Small Multiples / Toggle / Split View；优先避免严重重叠遮挡、优先可读性
+        - Series 数量：单面积 1 个主 Series；堆叠 2~4 个构成部分；对比 A/B 两组；超过必须分组/筛选/分页
+    - 时间轴 / 交互
+        - 时间轴默认连续时间（可实验步骤或采样序列）；长时间数据支持缩放与范围刷选（REF 8-16）
+        - Hover 显示当前时间点总量/构成详情/范围上下界；Click 锁定时间同步 Metric/日志；Compare 允许切换 A/B 并查看构成差值
+    - 视觉原则
+        - 低饱和、面积填充轻、边界线清晰；避免过厚填色与大量透明重叠导致脏乱；优先保证数据层次清晰；控件整体保持紧凑
+    - Canonical Token
+        - XY.AreaChart.Variant
+            - Type = COMPONENT_SPECIFIC（single | stacked | range | compare | comparableStacked）
+        - XY.AreaChart.Semantics
+            - Type = COMPONENT_SPECIFIC（量面积 | 区间面积；命名与实现必须分开）
+        - XY.AreaChart.Range
+            - Type = COMPONENT_SPECIFIC（上界/下界/中心值必须标明；中心线 = Median | Mean | Reference）
+        - XY.AreaChart.StackMode
+            - Type = COMPONENT_SPECIFIC（构成 2~4 段；超过分组）
+        - XY.AreaChart.Grid / Crosshair
+            - Value = XY.Editor.Grid.Minor / XY.Editor.Guide
+        - XY.AreaChart.LockedLink
+            - Value = 锁定后 Metric / MetricGroup / Log 同步（XYUI-8 全局联动合同）
+        - XY.AreaChart.Tooltip / Interaction / Legend
+            - Value = Reference XYUI-8 8.15 / 8.16 / 8.14
+        - XY.AreaChart.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止只因好看而使用面积 / 构成项太多仍强行堆叠 / 区间面积与累计面积混用 / 多组对比大量重叠难以辨认
+        - 禁止填色过深遮挡信息 / 为装饰增加无意义渐变 / 把 Line 强行改成 Area
+
+- 8.08 · Bar Chart / 柱状图
+    - 控件定位
+        - 类型
+            - Primary Chart Component / 离散比较图表
+        - 层级
+            - 可视化层（NEW；XYLab 中最适合做离散比较的基础图表之一）
+        - 主要用途
+            - 表达离散对象之间的横向比较：排序、分组比较、构成和偏差判断；重点不是连续时间变化
+    - Ownership
+        - Inherits：8-01 承载；8-02/8-03 联动；8-14 Legend；8-15 Tooltip；8-16 交互合同
+        - Owns：四种比较维度（排序/分组比较/构成/偏差）；方向（Horizontal 默认优先）；排序规则；偏差规则（中心零线）；标签规则
+        - Must Not Redefine：连续时间轴趋势（REF 8-06 Line / 8-07 Area）/ Grid 视觉（REF XY.Editor.*）/ Tooltip 基础（REF XYUI-1）
+    - 最终方案
+        - 方案1 Ranked Bar / 方案2 Grouped Compare Bar / 方案3 Stacked Composition Bar / 方案4 Delta Bar 全部正式保留为 Variant
+    - 核心原则
+        - XYLab 默认优先横向柱图（标签较长与排序判断更友好）；优先保证比较关系清楚；不要做成厚重 Dashboard 卡片
+    - Variant
+        - ranked（按数值排序的横向比较：各军疲劳/算法耗时/方案评分/资源储量；默认按值排序，支持升序/降序/保持原始顺序；用户排序方式可持久化）
+        - groupedCompare（同一指标项下 A/B 对比：18:32 vs 18:42、方案 A vs B、对象 A vs B；每组柱建议 2 个、最多 3 个；同组柱共享刻度和基准）
+        - stackedComposition（总量+构成：总伤亡构成/资源消耗构成；构成项 2~4 段；连续时间轴优先考虑 Area Chart）
+        - delta（相对目标或基线的正负偏差；必须有中心零线；偏差不应只依赖颜色，需明确显示数值；实验工具意味最强）
+    - 比较维度
+        - 排序（谁更高/更低/第几）/ 分组比较（A vs B、前后时刻、对象对比）/ 构成（总量由什么组成）/ 偏差（相对目标/基线/期望）
+    - 数量 / 标签规则
+        - 对象较少完整显示；对象过多分页/搜索/筛选/滚动；不应强行同屏塞过多对象
+        - 对象名称清楚；数值尽量靠近柱末端或固定位置显示；长标签截断 + Tooltip
+    - 交互
+        - Hover 显示精确值/单位/附加信息；Click 高亮对象/查看详情/联动其他图表；Sort 一键切换排序方式；Compare 切换比较基准
+        - 排序切换必须文字语义（升序/降序），不依赖图标（与 6-13 语义化排序精神一致；本项为图表内排序，非 Collection 排序）
+    - Canonical Token
+        - XY.BarChart.Variant
+            - Type = COMPONENT_SPECIFIC（ranked | groupedCompare | stackedComposition | delta）
+        - XY.BarChart.Orientation
+            - Type = COMPONENT_SPECIFIC（Horizontal 默认优先 | Vertical）
+        - XY.BarChart.SortMode
+            - Type = COMPONENT_SPECIFIC（升序 | 降序 | 原始顺序；文字语义表达；用户顺序可持久化）
+        - XY.BarChart.Delta
+            - Type = COMPONENT_SPECIFIC（中心零线 Required；正负偏差数值必须显示）
+        - XY.BarChart.GroupRule
+            - Type = COMPONENT_SPECIFIC（每组 2 柱建议 / 最多 3；构成 2~4 段）
+        - XY.BarChart.Grid
+            - Value = XY.Editor.Grid.Minor（弱化）
+        - XY.BarChart.Tooltip / Interaction / Legend
+            - Value = Reference XYUI-8 8.15 / 8.16 / 8.14
+        - XY.BarChart.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止柱体过多导致难读 / 依赖颜色完成全部区分 / 排序场景不排序 / 分组过多 / 构成段过多
+        - 禁止为装饰加入无意义渐变或阴影 / 连续时间轴趋势误用 Bar（应 Line/Area）
+
+- 8.09 · Distribution / 分布图
+    - 控件定位
+        - 类型
+            - Primary Chart Component / 分布分析图表
+        - 层级
+            - 可视化层（NEW；重点不是时间变化也不是简单高低排序）
+        - 主要用途
+            - 表达一批样本值如何分布：集中程度、离散程度、偏斜、长尾、多峰和分组差异
+    - Ownership
+        - Inherits：8-01 承载；8-02/8-03 联动；8-14 Legend；8-15 Tooltip；8-16 交互合同
+        - Owns：核心观察维度（Center/Spread/Shape/Tail/Compare）；Bin 规则；Box Summary；Percentile Band；统计标记（Mean/Median/P10/P90/Outlier）
+        - Must Not Redefine：Scatter 关系分析（REF 8-10）/ 时间趋势（REF 8-06）/ Grid 视觉（REF XY.Editor.*）
+    - 最终方案
+        - 方案2 Compare Distribution 为主方案；方案1 Compact Histogram（基础分布）/ 方案3 Box Summary（多组摘要）/ 方案4 Percentile Band（紧凑摘要）为辅助；形成以「比较」为核心的 Distribution 体系
+    - 核心原则
+        - 分布图不只是看单批样本，而是优先服务比较（比只看均值更真实、比只看最终结果更适合实验分析）
+        - 只展示均值却叫分布图 = 禁止；摘要图不得强行替代完整分布图
+    - Variant
+        - histogram（单批样本完整分布观察；Bin 数量根据样本数量和区间范围自动调整，不过少也不过密，必要时允许手动调整）
+        - compareHistogram（默认主 Variant；方案 A/B、对象 A/B、基线 vs 当前；比较均值/峰值位置/离散程度/尾部风险/稳定性差异）
+        - boxSummary（多组快速摘要：Min/Q1/Median/Q3/Max；紧凑适合一屏多组；丢失分布细节）
+        - percentileBand（超紧凑摘要：P10/P25/Median/P75/P90；适合 Inspector/摘要卡片/小面板；无法展示多峰和局部形态）
+    - Compare 规则
+        - 比较对象共享相同刻度与相同 Bin 规则（不得 A/B 不同区间切分）；显示方式 Overlay / Side by Side / Small Multiples；优先保证可读性
+    - 统计标记 / 交互
+        - 支持显示 Mean / Median / P10 / P90 / Outlier；标记轻量不得压过主分布
+        - Hover 显示区间范围/样本数/比例；Click 查看该区间详细样本并联动日志或对象列表；Compare 切换 A/B 或样本组
+    - 视觉原则
+        - 紧凑、背景浅、Grid 弱化、主分布清楚、辅助标记轻量；对比时优先确保两组差异容易看出
+    - Canonical Token
+        - XY.DistributionChart.Variant
+            - Type = COMPONENT_SPECIFIC（histogram | compareHistogram | boxSummary | percentileBand）
+        - XY.DistributionChart.Compare
+            - Type = COMPONENT_SPECIFIC（共享刻度 + 共享 Bin；Overlay | SideBySide | SmallMultiples）
+        - XY.DistributionChart.Stats
+            - Type = COMPONENT_SPECIFIC（Mean | Median | P10 | P90 | Outlier；轻量标记）
+        - XY.DistributionChart.Box
+            - Type = COMPONENT_SPECIFIC（Min | Q1 | Median | Q3 | Max）
+        - XY.DistributionChart.Percentile
+            - Type = COMPONENT_SPECIFIC（P10 | P25 | Median | P75 | P90）
+        - XY.DistributionChart.Grid
+            - Value = XY.Editor.Grid.Minor
+        - XY.DistributionChart.Tooltip / Interaction / Legend
+            - Value = Reference XYUI-8 8.15 / 8.16 / 8.14
+        - XY.DistributionChart.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止只展示均值却叫分布图 / A/B 使用不同尺度 / Bin 切分不一致 / 摘要图强行替代完整分布图
+        - 禁止为装饰加入过度填色 / 统计标记压过主分布
+
+- 8.10 · Scatter Plot / 散点图
+    - 控件定位
+        - 类型
+            - Analytical Chart Component / 关系分析图表
+        - 层级
+            - 可视化层（NEW；不是默认高频图表，属于按需调用的分析型组件）
+        - 主要用途
+            - 分析两个变量之间的关系、聚类差异、风险象限判断和局部样本分析
+    - Ownership
+        - Inherits：8-01 承载；8-03 联动；8-09 Distribution 联动；8-14 Legend；8-15 Tooltip；8-16 交互合同
+        - Owns：关系分析（正/负相关、无关系、聚类、异常点）；象限规则（仅明确阈值时）；选区分析（Rectangle/Lasso Select + 选区统计）
+        - Must Not Redefine：框选/套索视觉与输入（REF XYUI-4 MarqueeSelection 4.07 / LassoSelection 4.08）/ 趋势线拟合输入（趋势线为可选辅助，不得自动把相关性解释成因果关系）
+    - 最终方案
+        - 方案2 Grouped Scatter 为默认主 Variant（方案1 Basic Scatter 基础单组能力合并进方案2，不单独保留）；方案3 Quadrant Scatter（阈值分析）/ 方案4 Selection Scatter（深度分析）为高级 Variant
+    - 使用原则（SFD 注）
+        - Scatter Plot 不作为所有实验默认图表；只有当存在两个连续变量关系时使用
+        - 比较几个对象数值 → 优先 Bar Chart；观察时间趋势 → 优先 Line Chart；观察分布 → 优先 Distribution
+        - [SOURCE_FORMATTING_DEFECT:XYUI8-SFD-001] Source 8-10「使用原则」段原文存在复制粘贴错乱（「优先 Plot 不作为所有实验默认图表」「只有当存在两个连续 Bar Chart」两行），Source 原文不动；按上文意图落 canonical
+    - Variant
+        - grouped（默认主 Variant；单组模式等价基础 Scatter，多组模式支持方案/对象/实验批次分组；默认 1~3 组、建议最多 4 组，超过筛选/分面/隐藏）
+        - quadrant（风险判断/状态分类；X/Y 都存在明确业务阈值时才使用；阈值线比 Grid 明显；象限背景非常轻；风险象限必须有文字语义）
+        - selection（框选局部样本/异常簇分析/局部统计；Rectangle Select + Lasso Select 可选；Selected Count/Mean/Range 摘要）
+    - 点 / 数量 / 轴规则
+        - 默认小点、不做大 Bubble；颜色用于 Group；选中状态独立轮廓；异常点可有额外标记
+        - 少量正常绘制；中量降低 Point Size 与透明度；大量必须采样/密度聚合，避免直接绘制所有点
+        - X/Y 为连续变量，必须标明 Label 与 Unit；避免无意义的双轴
+    - 选择交互 / Tooltip / 图表联动
+        - Click 单点选择；Rectangle 框选；Lasso 可选高级能力（视觉与输入 REF XYUI-4 4.07/4.08）；选择后显示样本数量与摘要统计，联动对象列表与日志
+        - Tooltip：X/Y 值、Object ID/Name、Group、可选时间；大量数据时必须避免全量命中扫描
+        - 选区样本 → Metric Group 显示选区摘要 / Distribution 显示选中样本分布 / 日志定位 / 地图高亮相关对象
+    - Canonical Token
+        - XY.ScatterPlot.Variant
+            - Type = COMPONENT_SPECIFIC（grouped | quadrant | selection）
+        - XY.ScatterPlot.SelectionMode
+            - Type = COMPONENT_SPECIFIC（none | point | rectangle | lasso）
+        - XY.ScatterPlot.Quadrant
+            - Type = COMPONENT_SPECIFIC（仅明确阈值时启用；文字语义强制）
+        - XY.ScatterPlot.SelectionVisual
+            - Value = Reference XYUI-4 MarqueeSelection / LassoSelection
+        - XY.ScatterPlot.Point
+            - Type = COMPONENT_SPECIFIC（小点；大量采样/密度聚合）
+        - XY.ScatterPlot.Trend
+            - Type = COMPONENT_SPECIFIC（可选 Trend/Regression Line；相关 ≠ 因果）
+        - XY.ScatterPlot.Tooltip / Interaction / Legend
+            - Value = Reference XYUI-8 8.15 / 8.16 / 8.14
+        - XY.ScatterPlot.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止没有两个连续变量却强行使用 Scatter / 点巨大遮挡 / 颜色组过多 / 大样本全部直接绘制
+        - 禁止把相关性直接解释为因果关系 / 象限没有明确阈值仍强行划分 / 框选视觉另造一套（REF XYUI-4）
+
+- 8.11 · Heatmap / 热力图
+    - 控件定位
+        - 类型
+            - Primary Chart Component / 矩阵热力图表
+        - 层级
+            - 可视化层（NEW；服务大量数据整体扫读）
+        - 主要用途
+            - 通过颜色强弱表达二维矩阵、对象×时间、参数网格或空间网格中的数值分布；快速发现高值区、异常区、模式区和甜蜜区
+    - Ownership
+        - Inherits：8-01 承载；8-02/8-03 联动；8-06/8-12 联动；8-15 Tooltip；8-16 交互合同
+        - Owns：四种 Heatmap 类型（Time-Metric/Entity-Time/Parameter-Grid/Spatial）；颜色语义规则（浅=低、深=高）；格子规则；推荐区标注规则；空间热力规则
+        - Must Not Redefine：色阶 Token（Foundation 无 → GAP:XYUI8-GAP-001，不伪造色值）/ Tooltip 基础（REF XYUI-1）/ 地图坐标系统（空间热力叠加由玄域地图系统实现，XYUI 只定义可视化合同）
+    - 最终方案
+        - 方案2 Entity-Time Heatmap / 方案3 Parameter Grid Heatmap / 方案4 Spatial Heatmap 为主；方案1 Time-Metric Heatmap 为辅助 Variant
+    - 核心原则
+        - 颜色必须有明确高低语义（浅色低、深色高），需要图例说明，不能只靠主观审美配色；相邻级别应容易区分
+        - 辅助标注（推荐区）轻量，不能压过热力图本体；空间热图以可解释的网格或区域为主，不应只做模糊光斑装饰
+    - Variant
+        - timeMetric（时间 × 指标；快速发现多个指标同时恶化的时间段）
+        - entityTime（对象 × 时间：各军疲劳/各单位士气/各模块负载；适合找出「谁在什么时候异常」；横轴默认时间，支持锁定时间）
+        - parameterGrid（参数 × 参数网格：疲劳恢复速率 × 行军负荷、命中率 × 士气衰减；两轴明确参数名和取值；结果值 Tooltip 查看；允许圈选一片区域作为候选方案区）
+        - spatial（空间密度热力：伤亡密度/战斗密度/资源密度/路径拥堵/性能热点；必须与地图坐标或空间网格系统结合；允许网格热图/区域热图/地块热图；直接服务玄域地图和战场系统）
+    - 推荐区标注规则（parameterGrid 关键修正）
+        - 推荐区域不能遮挡格子识读；默认禁止大面积半透明覆盖块；优先采用细描边/四角括号/外侧注释线/hover 高亮；推荐区是辅助提示
+    - 格子 / 颜色 / 时间规则
+        - 格子数量过多时需要缩放/抽样/分页/聚合；不能无条件展示海量单元导致难读
+        - 颜色语义：浅=低、深=高；图例说明 Required；色板 → GAP:XYUI8-GAP-001
+        - Entity-Time 与 Time-Metric 横轴默认时间；支持锁定时间并联动其他组件
+    - 交互 / 联动
+        - Hover 查看格子精确值与对象/时间/参数/区域信息；Click 锁定单元并联动 Metric/日志/地图或对象；Select 允许框选区域或选中参数区
+        - 锁定某时间列 → Line Chart 与 Metric Group 同步；选择某参数区 → 结果摘要与推荐参数列表同步；选择空间网格 → 地图详情与日志同步
+    - Canonical Token
+        - XY.Heatmap.Variant
+            - Type = COMPONENT_SPECIFIC（timeMetric | entityTime | parameterGrid | spatial）
+        - XY.Heatmap.ColorScale
+            - Value = GAP:XYUI8-GAP-001（浅低深高语义强制；图例 Required；不伪造色值）
+        - XY.Heatmap.Cell
+            - Type = COMPONENT_SPECIFIC（数量过多缩放/抽样/分页/聚合）
+        - XY.Heatmap.Annotation
+            - Type = COMPONENT_SPECIFIC（细描边 | 四角括号 | 外侧注释线 | hover 高亮；禁大面积半透明覆盖）
+        - XY.Heatmap.Spatial
+            - Type = COMPONENT_SPECIFIC（网格/区域/地块热图；可解释为主，模糊光斑装饰禁止）
+        - XY.Heatmap.LockedLink
+            - Value = 锁定时间列 → LineChart / MetricGroup 同步（XYUI-8 全局联动合同）
+        - XY.Heatmap.Tooltip / Interaction
+            - Value = Reference XYUI-8 8.15 / 8.16
+        - XY.Heatmap.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止推荐区域大块遮挡 / 颜色无明确语义 / 空间热图只做模糊装饰 / 对象过多仍强行全铺开
+        - 禁止为好看加入复杂渐变干扰识读 / 辅助标注比数据更显眼
+
+
+- 8.12 · Timeline / 时间轴可视化
+    - 控件定位
+        - 类型
+            - Visualization Component / 事件时间轴
+        - 层级
+            - 可视化层（NEW；不是普通项目管理 Timeline）
+        - 主要用途
+            - 按时间组织事件、阶段、状态变化和日志节点；重点服务 XYLab 实验回放、战斗过程分析、日志联动和时间锁定
+        - 与 XYUI-3 边界：XYUI-3 Steps = 流程步骤导航（导航语义）；8-12 Timeline = 事件/阶段时间轴可视化（分析语义）；两者不合并
+    - Ownership
+        - Inherits：8-01 承载；8-02/8-03/8-06/8-11 联动；8-15 Chart Inspector；8-16 交互合同
+        - Owns：事件模型（Point/Interval/System/Alert）；事件优先级（Primary/Secondary/Background）；Scrubber；事件聚合；时间锁定入口语义
+        - Must Not Redefine：Steps 导航语义（REF XYUI-3 3.14，不合并）/ 完整日志阅读（Timeline 只展示关键关联日志，完整阅读交宿主）/ 缩放交互合同（REF 8-16）
+    - 最终方案
+        - 方案1 Compact Event Timeline + 方案4 Inspector Timeline 为主；方案2 Lane Timeline（泳道）/ 方案3 Interval Timeline（阶段区间）为可选 Variant
+    - 核心原则
+        - 快速知道什么时候发生了什么、快速识别关键事件、支持锁定时间继续检查
+        - 默认 Timeline 不应把所有日志都显示出来，只显示有分析价值的事件；保持紧凑，不做大面积时间管理界面
+    - Variant
+        - compact（一根主时间线只挂关键事件：接敌/疲劳越线/补给不足/伤亡陡增/效率下降/撤退；最轻、占用高度低）
+        - inspector（时间检查入口：Scrubber + 当前锁定时间 + 当前事件 + 关联日志；典型流程 拖到 18:42 → 锁定 → 显示事件与日志 → 联动 Metric/Line Chart）
+        - lane（事件来源多、密度高时按泳道分组：战斗/补给/状态/系统；只有事件来源确实需要分组时使用）
+        - interval（持续状态与阶段：接敌/交火/补给不足/撤退/Buff/Debuff；不仅看何时发生还要看持续多久）
+    - 事件模型 / 优先级 / 聚合
+        - 事件类型：Point Event（瞬时）/ Interval Event（持续）/ System Event（系统）/ Alert Event（阈值或异常）
+        - 优先级：Primary（关键战斗/实验事件）/ Secondary（辅助）/ Background（低优先级系统）
+        - 聚合：同一短时间内大量同类事件允许聚合（伤亡事件 × 28、补给告警 × 12）；点击聚合节点展开详情；不能把几十个事件标签同时铺开
+    - 时间锁定 / Scrubber / 日志联动
+        - 点击事件锁定该事件时间；拖动 Scrubber 连续检查时间；锁定后 Metric / Metric Group / Line Chart / Heatmap / 日志同步
+        - Scrubber 仅 Inspector Timeline 默认具备；支持拖动/点击跳转/键盘微调；当前时间必须清晰显示
+        - Timeline 不直接承担完整日志阅读；只展示关键关联日志；一键跳转完整日志；锁定时间后日志自动定位附近记录
+    - 缩放 / 视觉
+        - 支持 Zoom In / Zoom Out / Fit All；长时间数据应支持 Range Select（REF 8-16）
+        - 时间轴细、节点小、标签紧凑、当前锁定时间明显、事件颜色低饱和；避免装饰型大节点
+    - Canonical Token
+        - XY.Timeline.Variant
+            - Type = COMPONENT_SPECIFIC（compact | inspector | lane | interval）
+        - XY.Timeline.EventType
+            - Type = COMPONENT_SPECIFIC（Point | Interval | System | Alert）
+        - XY.Timeline.Priority
+            - Type = COMPONENT_SPECIFIC（Primary | Secondary | Background）
+        - XY.Timeline.Scrubber
+            - Type = COMPONENT_SPECIFIC（Inspector Variant 默认；拖动/点击跳转/键盘微调；当前时间清晰显示）
+        - XY.Timeline.Aggregate
+            - Type = COMPONENT_SPECIFIC（同类事件聚合 + 点击展开）
+        - XY.Timeline.LockedLink
+            - Value = 锁定后 Metric / MetricGroup / LineChart / Heatmap / Log 同步（XYUI-8 全局联动合同）
+        - XY.Timeline.State
+            - Type = COMPONENT_SPECIFIC（live | locked | historical）
+        - XY.Timeline.Inspector / Interaction
+            - Value = Reference XYUI-8 8.15 / 8.16
+        - XY.Timeline.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止把所有日志都塞进时间轴 / 事件标签大面积重叠 / 节点尺寸过大 / 为视觉效果做复杂轨道装饰
+        - 禁止时间锁定后没有联动反馈 / 与 XYUI-3 Steps 语义混用
+
+- 8.13 · Gauge / 仪表与阈值指标
+    - 控件定位
+        - 类型
+            - Visualization Primitive / 阈值判断组件
+        - 层级
+            - 可视化层（NEW；不是汽车仪表盘式装饰组件）
+        - 主要用途
+            - 快速判断当前值与阈值、目标或基线之间的关系；服务监测、调参、目标判断和偏差分析；默认保持小型、紧凑
+    - Ownership
+        - Inherits：8-04 Progress & Range（共享阈值语义）；8-02 Metric 嵌入；XY.Semantic.* 状态映射
+        - Owns：Linear Threshold / Bullet（实际 vs 目标）/ Deviation（中心正负偏差）三种正式 Variant；Compact Arc 可选视觉 Variant；目标/偏差规则
+        - Must Not Redefine：阈值语义定义（REF 8-04 Threshold 规则，不重复定义 Normal/Notice/Warning/Critical）/ 完成度语义（REF XYUI-4 ProgressBar/ProgressRing）/ 状态颜色（REF XY.Semantic.*）
+    - 最终方案
+        - 方案1 Linear Threshold Gauge / 方案2 Bullet Gauge / 方案4 Deviation Gauge 正式保留；方案3 Compact Arc Gauge 作为可选视觉 Variant（不是默认 Gauge）
+    - 核心原则
+        - 第一眼知道当前值在哪里、是否越阈值、是否达目标、偏离基线多少；尽量减少空间占用
+        - 平面、紧凑、浅色背景、低饱和；不追求「仪表盘科技感」
+    - Variant
+        - threshold（线性阈值仪表：Current Value + Linear Track + Threshold Bands + Current Marker + Status；最紧凑，最适合高频监测）
+        - bullet（目标子弹仪表：Actual + Track + Target Marker + Delta；实际值 vs 目标值/基线值；比传统 Gauge 更适合实验调参，目标位置非常明确）
+        - deviation（中心偏差仪表：Negative Range + Zero/Target + Positive Range + Current Marker；以目标或基线为中心判断正负偏差；非常适合 XYLab Compare）
+        - arc（紧凑弧形仪表：仅少量关键状态、需要更强视觉辨识度时；只使用半弧，不要完整圆盘/复杂刻度/渐变/大面积铺开）
+    - 阈值 / 目标 / 偏差规则
+        - 阈值：Normal/Notice/Warning/Critical（REF 8-04 共享语义）；阈值必须有明确文字语义，不能只依赖颜色；Current Marker 必须比区间更加明显
+        - 目标：支持 Target Value / Target Range / Baseline；目标线清楚但不压过当前值；允许显示距离目标差值与是否达到目标
+        - 偏差：Zero/Baseline 位于中心；左侧负偏差、右侧正偏差；支持绝对或百分比偏差；不能只靠方向判断，必须显示数值
+    - 尺寸 / 交互
+        - Small（默认，Metric/Inspector）/ Medium（Container）/ Large（谨慎使用，仅少量关键指标）；整体优先小型化
+        - Hover 显示精确值/阈值定义/目标信息；Click 打开详情并联动趋势图；Compare 切换 Baseline 并显示 Delta
+    - Canonical Token
+        - XY.Gauge.Variant
+            - Type = COMPONENT_SPECIFIC（threshold | bullet | deviation | arc）
+        - XY.Gauge.Threshold
+            - Value = Reference XYUI-8 8.04 Threshold 规则（Normal/Notice/Warning/Critical；XY.Semantic.* 映射；文字双通道）
+        - XY.Gauge.Target
+            - Type = COMPONENT_SPECIFIC（Target Value | Target Range | Baseline；目标线不压过当前值）
+        - XY.Gauge.Deviation
+            - Type = COMPONENT_SPECIFIC（中心 Zero/Baseline；正负数值必须显示）
+        - XY.Gauge.Size
+            - Type = COMPONENT_SPECIFIC（small 默认 | medium | large 谨慎）
+        - XY.Gauge.Marker
+            - Value = Current Marker 比阈值区间更明显（强制）
+        - XY.Gauge.Interaction
+            - Value = Reference XYUI-8 8.15（Tooltip）+ 8.16
+        - XY.Gauge.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止巨大圆形仪表盘 / 大量复杂刻度 / 汽车仪表盘装饰 / 彩虹渐变 / 同时铺大量 Arc Gauge / 只靠颜色表达危险
+        - 禁止重复定义阈值语义（REF 8-04）/ 目标线与危险区间混淆
+
+- 8.14 · Legend / 图例系统
+    - 控件定位
+        - 类型
+            - Visualization Primitive / Series 控制组件
+        - 层级
+            - 可视化层（NEW；说明 Series/分类/数据对象 + 基础 Series 控制）
+        - 主要用途
+            - 让用户快速知道每条线或每组数据代表什么；一键隐藏/显示、聚焦、多选 Series；不独立占据大量画布空间
+    - Ownership
+        - Inherits：8-15/8-16 联动；XYUI-1 文本
+        - Owns：Series 状态（Visible/Hidden/Focused/Selected）；聚焦模式（其他 Series 自动弱化）；Current Value 显示；数量规则；颜色+线型+点型组合标识
+        - Must Not Redefine：选择状态视觉（REF XYUI-4）/ Tooltip（REF 8-15）/ 独立大图例面板（禁止）
+    - 最终方案
+        - 只采用 Interactive Legend 单套交互逻辑；简单场景自动退化为精简图例；复杂场景继续使用同一套交互逻辑；不维护多套正式 Variant
+    - 基本结构 / 默认形态
+        - LegendItem → Series Marker + Series Name + 可选 Current Value + Visible State + Focus State
+        - 默认嵌入图表 Header、横向排列、尽量不独立占据一整行；2~4 个 Series 直接全部显示
+    - 状态 / 交互 / 聚焦模式
+        - Visible（正常）/ Hidden（隐藏但保留弱化项）/ Focused（聚焦，其他自动弱化）/ Selected（多选比较）
+        - 单击聚焦 Series；再次单击恢复全部；隐藏操作显示/隐藏 Series；多选保留多个 Series 同时高亮；高频操作必须直接完成，不要求进入二级菜单
+        - 聚焦后目标 Series 保持正常强调、其他 Series 自动降低视觉权重、Tooltip 优先显示目标 Series
+    - 数量规则 / Current Value / 时间锁定联动
+        - 1 个 Series 通常隐藏 Legend；2~4 个默认横向显示；5~8 个紧凑换行或横向滚动；超过 8 个优先筛选或分组图表本身（不通过扩大 Legend 解决）
+        - Current Value 可选（疲劳 63%、士气 71%）；只在实时或锁定时间场景使用；空间不足时自动隐藏数值
+        - 图表锁定 18:42 → Legend 可显示 18:42 当前值；解除锁定恢复实时值或隐藏数值
+    - 颜色 / 空间 / 视觉规则
+        - Marker 与 Series 使用相同视觉标识；不能仅靠颜色区分（必要时结合线型/点型/标签）
+        - 默认优先占用 Header 剩余空间，不能明显压缩 Plot；空间不足优先隐藏 Current Value、其次允许滚动；不主动增加巨大 Legend 区域
+        - 小型、紧凑、低占位、状态清楚、聚焦后差异明显；不使用厚重 Card
+    - Canonical Token
+        - XY.Legend.Item
+            - Type = COMPONENT_SPECIFIC（Marker | Label | Value）
+        - XY.Legend.State
+            - Type = COMPONENT_SPECIFIC（visible | hidden | focused | selected；视觉 REF XYUI-4）
+        - XY.Legend.Focus
+            - Type = COMPONENT_SPECIFIC（聚焦后其他 Series 自动弱化；Tooltip 优先目标）
+        - XY.Legend.Count
+            - Type = COMPONENT_SPECIFIC（1 隐藏 / 2~4 全显 / 5~8 换行滚动 / >8 筛选分组图表）
+        - XY.Legend.CurrentValue
+            - Type = COMPONENT_SPECIFIC（实时或锁定场景；空间不足自动隐藏）
+        - XY.Legend.Marker
+            - Value = 颜色+线型+点型组合（不得仅靠颜色）
+        - XY.Legend.Inspector / Interaction
+            - Value = Reference XYUI-8 8.15 / 8.16
+        - XY.Legend.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止默认独立大侧栏 / 图例比图表更显眼 / 所有 Series 都需进入二级菜单管理 / Series 过多仍无限扩张 Legend
+        - 禁止只靠颜色识别 Series
+
+- 8.15 · Chart Tooltip & Crosshair / 图表检查器
+    - 控件定位
+        - 类型
+            - Visualization Inspector / 图表检查入口
+        - 层级
+            - 可视化层（NEW；不是单纯的悬浮提示框）
+        - 主要用途
+            - 在图表中精确检查某个时间、位置或数据点；统一管理 Crosshair、Tooltip、时间锁定和边缘检查；是图表与 Metric、Timeline、日志联动的重要入口
+    - Ownership
+        - Inherits：XYUI-1 Tooltip 基础合同（1.19）+ Foundation XY.Tooltip.*（ShowDelay/ViewportAvoidance/AutoFlip）；8-02/8-03/8-05/8-12 联动；8-16 统一控制
+        - Owns：Locked Inspector（锁定检查器）；Edge Inspector（边缘检查器）；Compare 模式（Inspector 的模式，不是独立组件）；Tooltip 内容优先级；Crosshair/Data Marker 语义
+        - Must Not Redefine：浮层基础合同（REF XY.Tooltip.* + XYUI-1 Tooltip）/ 锁定状态视觉（REF XYUI-4）/ 完整日志阅读（只放 Key Event，不塞完整日志）
+    - 最终方案
+        - 方案2 Locked Inspector + 方案4 Edge Inspector 为主；方案1 Hover Inspector 并入默认 Hover 状态；方案3 Dual Compare Inspector 作为 Compare 模式；最终形成一套统一 Chart Inspector
+    - 默认交互流程
+        - Hover → Crosshair 出现 + 轻量 Tooltip；Click → 锁定当前时间或数据点进入 Locked；Locked → Crosshair 保持 + Metric/Timeline/日志同步
+        - 信息较多 → Tooltip 转为 Edge Inspector；Compare → 追加第二个锁定点，显示 A/B/Delta
+    - 主形态
+        - Locked Inspector：Crosshair + Data Point Marker + Time + Series Values + 可选 Key Event；点击后不会因为鼠标移动丢失状态
+        - Edge Inspector：Series 较多、信息较多、Tooltip 容易遮挡图形时使用；读值位置稳定、不遮挡 Plot、适合持续拖动 Crosshair；小屏场景可转为底部检查区
+        - Hover 状态：未锁定时跟随指针、离开 Plot 自动消失；内容轻量（Time/X + 当前 Series Values），不显示大量日志
+        - Compare 模式：锁定 A → 进入 Compare → 选择 B；显示 A Time/A Value/B Time/B Value/Delta；Compare 是 Inspector 的模式不是独立组件
+    - Crosshair / Data Marker / Tooltip 优先级
+        - Crosshair 默认垂直时间线、按需水平值线；锁定后视觉权重提高、Hover 时视觉较轻；不能遮挡主要数据（视觉 = XY.Editor.Guide 语义）
+        - Data Marker：Crosshair 与 Series 交汇处显示；多 Series 每条可见 Series 可显示；隐藏 Series 不显示
+        - Tooltip 内容优先级：第一 Time/X → 第二 Series Value → 第三 Delta/Status → 第四 Key Event；低优先信息空间不足自动省略
+    - Edge Inspector 触发条件 / 解除锁定 / 触控
+        - 触发：Series 较多 / Tooltip 内容过高 / 会遮挡主要数据 / 用户主动固定检查器 / 小屏转底部
+        - 解除锁定：点击空白区域 / Escape / 解除锁定操作；恢复 Hover/Live 状态
+        - 触控：移动指针概念替换为拖动 Crosshair；点击或长按完成锁定；信息过多优先边缘或底部区域；不能依赖 Hover 才能完成核心操作
+    - 时间锁定联动 / 性能
+        - 锁定 18:42 → Metric/Metric Group 更新到 18:42、Sparkline 显示附近趋势、Timeline 定位、日志定位附近事件、其他共享时间轴图表同步 Crosshair
+        - PointerMove 不允许每帧全量扫描所有数据；基于当前可见数据和索引定位最近点；大量 Series 只计算可见 Series；Tooltip 更新不能触发整个页面重绘
+    - Canonical Token
+        - XY.ChartInspector.Mode
+            - Type = COMPONENT_SPECIFIC（hover | locked | compare）
+        - XY.ChartInspector.Presentation
+            - Type = COMPONENT_SPECIFIC（floating | edge | bottom）
+        - XY.ChartInspector.Crosshair
+            - Value = XY.Editor.Guide 语义（细；锁定权重高、Hover 轻；不遮挡数据）
+        - XY.ChartInspector.TooltipBase
+            - Value = Reference XYUI-1 Tooltip + XY.Tooltip.*（浮层基础合同）
+        - XY.ChartInspector.ContentPriority
+            - Type = COMPONENT_SPECIFIC（Time/X > Series Value > Delta/Status > Key Event）
+        - XY.ChartInspector.LockedLink
+            - Value = 锁定后 Metric/MetricGroup/Sparkline/Timeline/Log/共享时间轴同步（XYUI-8 全局联动合同）
+        - XY.ChartInspector.Unlock
+            - Type = COMPONENT_SPECIFIC（点击空白 | Escape | 显式解除）
+        - XY.ChartInspector.Interaction
+            - Value = Reference XYUI-8 8.16（统一控制交互规则）
+        - XY.ChartInspector.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止 Tooltip 跟随鼠标大幅跳动 / 巨大 Tooltip 遮挡曲线 / 锁定后仍随指针乱跑 / 每个 Chart 实现不同锁定逻辑
+        - 禁止移动端必须 Hover 才能使用 / Tooltip 塞入完整日志 / PointerMove 全量扫描
+
+- 8.16 · Visualization Interaction / 可视化交互
+    - 控件定位
+        - 类型
+            - Interaction Contract / 交互合同层
+        - 层级
+            - 可视化层（NEW；统一定义 XYUI 数据可视化组件的交互合同）
+        - 主要用途
+            - 统一管理 Zoom、Pan、Lock、Compare、Range Select、Follow Live 等行为；同时覆盖桌面鼠标、键盘和移动触控；避免不同图表各自发明一套操作逻辑
+        - 与 XYUI-5 边界：Zoom/Pan 视图变换机制 = REF XYUI-5 ViewportContainer（5.16，不改 Logical Position）；本项拥有交互合同（手势/状态机/FollowLive/缩放限制/设备适配）
+    - Ownership
+        - Inherits：XYUI-5 ViewportContainer（视图变换机制）；XYUI-4（框选视觉）
+        - Owns：核心交互语义（Inspect/Lock/Unlock/Compare/Pan/Zoom/Range Select/Fit/Follow Live）；交互状态机（Idle/Hover/Locked/Comparing/RangeSelecting/Panning/Zooming/FollowingLive）；键盘合同；移动端合同；交互优先级
+        - Must Not Redefine：视图变换机制（REF 5.16）/ 框选视觉（REF XYUI-4）/ 危险操作确认（可视化浏览默认可立即执行；不可逆数据操作不属于本项）
+    - 最终方案（用户已定合同）
+        - 方案1 Direct Manipulation + 方案2 Compact Interaction Bar + 方案4 Responsive Interaction 为主；方案3 Contextual Interaction 作为低频辅助；三种主方案共同组成同一套交互体系
+    - 主原则一：Direct Manipulation
+        - 能直接在图上操作就不要求先切工具模式；桌面默认 Pointer Hover=检查数据、Click=锁定、Drag=Pan、Wheel=Zoom、Range Drag=区间选择；操作路径短
+    - 主原则二：Compact Interaction Bar
+        - 真正高频的模式和状态始终保持一层直达：Live / Lock / Compare / Range / Fit；更多低频动作收入 More；按钮紧凑、不挤压 Plot、不做大型 Chart Toolbar
+    - 主原则三：Responsive Interaction
+        - 操作语义一致、输入方式按设备变化；桌面 Hover/Wheel/Drag/Click/Keyboard；移动 Single Finger Pan / Two Finger Zoom / Long Press / Bottom Action Bar
+        - 移动端不能依赖 Hover；触控目标适当放大；不能因为适配手机重新发明一套功能名称
+    - 辅助原则：Contextual Interaction
+        - 低频操作与对象相关操作（查看日志/查看对象/打开分布/局部分析）；不能拿上下文菜单替代高频操作、不能人为增加操作步骤
+    - 核心交互语义
+        - Inspect：检查当前位置数据（桌面 Hover / 移动拖动 Crosshair；输出 Chart Inspector + Tooltip + 当前值）
+        - Lock：固定当前时间或数据点（桌面 Click 或快捷键 L / 移动 Tap 或 Long Press；锁定后 Crosshair/Inspector 保留 + Metric/Timeline/Log 同步）
+        - Unlock：解除锁定；Compare：建立在 Lock 之上，追加第二个比较点或对象，输出 A/B/Delta，退出恢复单点 Locked
+        - Pan：平移视图（桌面拖动画布或 Space+Drag / 移动单指拖动；不得和数据点编辑冲突）
+        - Zoom：缩放（桌面 Wheel/Trackpad / 移动 Pinch；缩放中心优先指针或双指中心位置；避免无限缩放）
+        - Range Select：选择数据区间（聚焦时间段/统计/Compare/Export；桌面拖拽范围 / 移动通过 Range 模式后拖动；选区轻量、不大面积遮挡数据）
+        - Fit：恢复适合当前数据范围的视图（高频恢复操作，必须一层直达）
+        - Follow Live：实时模式自动跟随最新数据；用户主动 Pan/Zoom 自动暂停；一键恢复；状态必须明确
+    - 交互优先级 / 状态 / 键盘
+        - 优先级：Inspect（默认基础态）→ Lock（高优先）→ Compare（建立在 Lock 之上）→ Range（明确进入范围操作后）→ Context Actions（低优先）
+        - 状态：Idle / Hover / Locked / Comparing / RangeSelecting / Panning / Zooming / FollowingLive
+        - 键盘：Escape 取消当前操作/解除临时状态；L 可选 Lock；C 可选 Compare；F 可选 Fit；Space 可选临时 Pan；快捷键是加速器不能成为唯一操作方式
+    - 移动端 / 响应式
+        - 必须支持竖屏与横屏；小屏优先保留 Plot；高频操作使用底部紧凑动作条；Inspector 信息较多时转到底部；双指负责 Zoom；核心行为不能依赖 Hover
+        - Desktop = Header Interaction Bar + Floating/Edge Inspector；Tablet = 紧凑 Header + 必要时 Bottom Inspector；Mobile Portrait = Bottom Action Bar + Bottom Inspector；Mobile Landscape = 尽量接近桌面布局
+    - 性能 / 视觉反馈 / 安全
+        - PointerMove 不进行全量数据扫描；Zoom/Pan 不触发无关区域重新计算；大数据按当前 Viewport 降采样；Crosshair 只检查当前可见 Series；交互更新尽量局部重绘
+        - Hover 轻 / Locked 明显 / Comparing 明确显示 A/B / Range 选区轻量填充 / Live 有明确状态 / Disabled 说明原因
+        - 可视化浏览操作默认可立即执行；不可逆数据操作不属于 Visualization Interaction；危险操作交给对应确认机制处理
+    - Canonical Token
+        - XY.VizInteraction.Mode
+            - Type = COMPONENT_SPECIFIC（inspect | locked | compare | range | pan）
+        - XY.VizInteraction.DeviceMode
+            - Type = COMPONENT_SPECIFIC（desktop | tablet | mobilePortrait | mobileLandscape）
+        - XY.VizInteraction.State
+            - Type = COMPONENT_SPECIFIC（Idle | Hover | Locked | Comparing | RangeSelecting | Panning | Zooming | FollowingLive）
+        - XY.VizInteraction.Bar
+            - Type = COMPONENT_SPECIFIC（Live | Lock | Compare | Range | Fit 一层直达；低频入 More）
+        - XY.VizInteraction.Viewport
+            - Value = Reference XYUI-5 ViewportContainer（视图变换机制；缩放中心指针/双指中心；避免无限缩放）
+        - XY.VizInteraction.Touch
+            - Type = COMPONENT_SPECIFIC（单指 Pan / 双指 Zoom / Tap 或 Long Press 锁定 / 底部动作条；禁依赖 Hover）
+        - XY.VizInteraction.RangeVisual
+            - Value = Reference XYUI-4（选区轻量填充）
+        - XY.VizInteraction.Keyboard
+            - Type = COMPONENT_SPECIFIC（Escape/L/C/F/Space；加速器非唯一方式）
+        - XY.VizInteraction.Contextual
+            - Type = COMPONENT_SPECIFIC（低频辅助；不得替代高频操作）
+        - XY.VizInteraction.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止每个 Chart 使用不同手势 / 必须先进入工具模式才能做所有操作 / 常用操作藏在二级菜单 / 移动端照搬 Hover
+        - 禁止按钮数量过多形成复杂 Toolbar / Pan 与 Select 语义模糊 / 没有明确 Locked/Live 状态 / 另造视图变换机制（REF 5.16）

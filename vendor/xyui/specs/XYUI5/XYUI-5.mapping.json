@@ -1,0 +1,926 @@
+{
+  "mapping_version": "0.1.0",
+  "phase": "XYUI-PILOT-R5-FAST-CLOSE",
+  "scope": "5.01~5.20 FULL",
+  "source": {
+    "path": "xyui/source/XYUI5/XYUI-5.md",
+    "bytes": 252543,
+    "sha256": "45734e3f4d305e173983f09d6348405d81ec5c97ff8cabe68bb77c641434c523",
+    "note": "trailing whitespace stripped (18 lines); original SHA 57c1ca7d… recorded in commit message"
+  },
+  "canonical_basis": {
+    "foundation_registry": "xyui/registry/foundation/foundation-registry.json (VALIDATED, AMEND-A/B)",
+    "token_architecture": "xyui/tokens/architecture/token-canonical-map.json (A3-R2)"
+  },
+  "global_rules_applied": [
+    "Layout Skeleton = Foundation 0.16（XY.Layout.* / XY.Resize.Left/Right/Bottom.Default；Center=FillRemaining；CanvasPriority）",
+    "Panel = Foundation 0.17（Structure=Semantic；Section.CardNesting=Forbidden；Padding/RowGap/SectionGap）",
+    "Spacing = XY.Space.1~12 唯一真值；原稿 XY.Spacing.* / None-XS-S-M-L-XL 为旧命名收敛（档位映射由 Density Context 决定）",
+    "Density = XY.Density.*（Auto|Compact|Comfortable；MixedMode Forbidden）；容器只消费",
+    "Scroll = XY.Scrollbar.* + XY.Scroll.*（HoverReveal；PanelIsolation；LayoutShift Forbidden）",
+    "Resize/Splitter = XY.Resize.*（Splitter.Visual 1 DIP / HitTarget 8 DIP / Snap / DoubleClick RestoreDefault）",
+    "Overlay/Z = Foundation Host Hierarchy + XY.ZIndex.Mode=ContextStack（DirectValue/MagicNumber Forbidden）",
+    "Drag = XY.Drag.*（Entry=Handle|DirectTarget，AMEND-B）；视觉 REF XYUI-4",
+    "Navigation = XYUI-3（Tab/DockTabs/WorkspaceSwitcher）；Selection/Focus = XYUI-4；Text/Controls = XYUI-1/2",
+    "布局目标 = Information-efficient / Content-first / Compact where useful（有效留白，非空旷留白）",
+    "所有组件 Background/Border/Shadow = None（布局原语不可见）；Unit = DIP via XYUI-0"
+  ],
+  "components": [
+    {
+      "component_id": "XYUI-5-5.01",
+      "name": "Stack",
+      "title": "Stack / 堆叠布局",
+      "ref_count": 7,
+      "refs": [
+        {
+          "property": "Direction",
+          "value": "Vertical | Horizontal",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Gap",
+          "value": "XY.Space.*（Foundation Spacing；原稿 None/XS/S/M/L/XL 档位映射由 Density Context 决定）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Align / Distribution",
+          "value": "Start | Center | End | Stretch / SpaceBetween（组件枚举）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Child SizeMode",
+          "value": "Auto | Fill",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Background / Border / Shadow",
+          "value": "None（Stack 本身不可见）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Wrap / Scroll",
+          "value": "False（归 5.03 Wrap / 5.05 ScrollArea）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-5-5.02",
+      "name": "Grid",
+      "title": "Grid / 网格布局",
+      "ref_count": 9,
+      "refs": [
+        {
+          "property": "Rows / Columns / Track SizeMode",
+          "value": "Auto | Fixed | Fill | MinMax",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "RowGap / ColumnGap",
+          "value": "XY.Space.*（Foundation Spacing）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Cell Position / Span",
+          "value": "Row / Column / RowSpan / ColumnSpan（默认 1）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Cell Alignment",
+          "value": "Start | Center | End | Stretch",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "DataGrid 边界",
+          "value": "XYUI-6 6-03 Data Grid（正式数据组件；本项不重新实现）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Inspector 边界",
+          "value": "Inspector 业务结构（不重新定义 Label/Field Style）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Breakpoint",
+          "value": "归 5.11 AdaptiveLayout",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Background / Border / Shadow",
+          "value": "None",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-5-5.03",
+      "name": "Wrap",
+      "title": "Wrap / 流式换行布局",
+      "ref_count": 7,
+      "refs": [
+        {
+          "property": "Direction",
+          "value": "Horizontal Flow",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "ItemGap / LineGap",
+          "value": "XY.Space.*（Foundation Spacing）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "LineAlignment / ItemGrow",
+          "value": "Start / False",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Scroll",
+          "value": "False（归 5.05）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "ChildConstraint",
+          "value": "Inherited（不重新定义 Child Min/Max；REF XY.HitTarget.*）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background / Border",
+          "value": "None",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-5-5.04",
+      "name": "Dock",
+      "title": "Dock / 停靠布局",
+      "ref_count": 9,
+      "refs": [
+        {
+          "property": "Zone",
+          "value": "Top | Bottom | Left | Right | Center",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Center SizeMode",
+          "value": "Fill（Protected Center）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Group.TabSystem",
+          "value": "XYUI-3 Tab / DockTabs",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "DragContract",
+          "value": "XY.Drag.*（Foundation）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "DragFeedback / DropFeedback",
+          "value": "XYUI-4 DragFeedback / DropIndicator",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "SplitSystem",
+          "value": "XYUI-5 SplitPane",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "ResizeSystem",
+          "value": "XY.Resize.*（Foundation Splitter）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Persistence",
+          "value": "Required for Reconfigurable Mode（REF 5.13）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Background / Border",
+          "value": "None",
+          "kind": "COMPONENT_SPECIFIC"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-5-5.05",
+      "name": "ScrollArea",
+      "title": "ScrollArea / 滚动区域",
+      "ref_count": 9,
+      "refs": [
+        {
+          "property": "Axis",
+          "value": "Vertical | Horizontal | Both | None",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "PositionPolicy",
+          "value": "Preserve | Reset | FollowEnd | AnchorItem",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "NestedPolicy / Handoff",
+          "value": "InnerFirstThenParent / AtBoundary",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Scrollbar",
+          "value": "XY.Scrollbar.*（Foundation）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "LayoutShift",
+          "value": "XY.Scroll.LayoutShift（Forbidden）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Loading / Empty 转移",
+          "value": "4.14 LoadingIndicator / 4.20 EmptyState",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Reveal",
+          "value": "Selection / Focus Reveal（REF XYUI-4）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Background / Border",
+          "value": "None",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-5-5.06",
+      "name": "SplitPane",
+      "title": "SplitPane / 分栏面板",
+      "ref_count": 8,
+      "refs": [
+        {
+          "property": "Orientation",
+          "value": "Horizontal | Vertical",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "SizeMode",
+          "value": "Fixed | Fill | Ratio",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Splitter",
+          "value": "XY.Resize.Splitter.*（Foundation）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Snap / DoubleClick",
+          "value": "XY.Resize.Snap / RestoreDefault",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "PrimaryPane / ConflictResolution",
+          "value": "ProtectPrimaryThenAdaptive",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Persistence",
+          "value": "Required when user-adjustable（REF 5.13）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Background / Border",
+          "value": "None",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-5-5.07",
+      "name": "OverlayLayout",
+      "title": "OverlayLayout / 叠层布局",
+      "ref_count": 9,
+      "refs": [
+        {
+          "property": "Placement / HitTest",
+          "value": "Fill | TopStart … BottomEnd；Auto | Capture | PassThrough",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Inset",
+          "value": "XY.Space.*（Foundation Spacing）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Plane",
+          "value": "Base | Decoration | Selection | Interaction | Feedback | Transient",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Host 边界",
+          "value": "单一 Foundation Host 内部；CrossHostOverride = Forbidden（附件 RE-SCOPE）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Z Order",
+          "value": "XY.ZIndex.Mode（ContextStack；DirectValue/MagicNumber Forbidden）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Selection / Drag / Drop 视觉",
+          "value": "XYUI-4（不重新定义）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Tooltip",
+          "value": "Foundation TooltipHost（不进入 Local Plane）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background / Border",
+          "value": "None",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-5-5.08",
+      "name": "AspectContainer",
+      "title": "AspectContainer / 比例容器",
+      "ref_count": 7,
+      "refs": [
+        {
+          "property": "Ratio / Driver / Fit",
+          "value": "Positive Number；WidthDriven | HeightDriven | Auto；Contain | Cover",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Alignment",
+          "value": "XYUI-0 Alignment（Foundation）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Min / Max",
+          "value": "Inherited Constraint",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Stretch",
+          "value": "Forbidden by Default",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Skeleton 集成",
+          "value": "4.18 Skeleton 同比例占位",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Background / Border",
+          "value": "None",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-5-5.09",
+      "name": "AnchorLayout",
+      "title": "AnchorLayout / 锚定布局",
+      "ref_count": 7,
+      "refs": [
+        {
+          "property": "Edge Constraint",
+          "value": "Left | Right | Top | Bottom（Optional）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Reference",
+          "value": "HostBounds | SafeArea | ContentBounds",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Proportional Anchor",
+          "value": "X/Y 0–1 + OffsetX/OffsetY",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Resolution",
+          "value": "Deterministic（Over-Constraint 禁止）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Constraint / Alignment",
+          "value": "XYUI-0 Foundation",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Background / Border",
+          "value": "None",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-5-5.10",
+      "name": "StickyRegion",
+      "title": "StickyRegion / 滚动吸附区域",
+      "ref_count": 6,
+      "refs": [
+        {
+          "property": "Edge / Mode",
+          "value": "Top | Bottom；Normal | Stuck | PushOff | Released",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "PushOff / ReleaseBoundary",
+          "value": "SameLevel / ScopeEnd",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "ScrollHost",
+          "value": "XYUI-5 ScrollArea",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Visual",
+          "value": "Inherited（无独立 StickyHeader 视觉体系）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Selection / Focus",
+          "value": "状态变化不清除（REF XYUI-4）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-5-5.11",
+      "name": "AdaptiveLayout",
+      "title": "AdaptiveLayout / 自适应布局",
+      "ref_count": 7,
+      "refs": [
+        {
+          "property": "Context / Trigger",
+          "value": "ContainerBounds；Container + Constraint",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Variants / FallbackOrder",
+          "value": "Named Variant[]；Ordered；Hysteresis",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Density",
+          "value": "Not Owned（XY.Density.*）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Variant 内容",
+          "value": "5.01~5.10 布局原语组合",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "State Preservation",
+          "value": "Selection 不清除（REF XYUI-4）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Background / Border",
+          "value": "None",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-5-5.12",
+      "name": "WorkspaceLayout",
+      "title": "WorkspaceLayout / 工作区布局",
+      "ref_count": 6,
+      "refs": [
+        {
+          "property": "Role",
+          "value": "GlobalCommand | PrimaryNavigation | PrimaryWork | Inspector | Utility | Status | Transient",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "WorkspaceSwitcher 边界",
+          "value": "XYUI-3 WorkspaceSwitcher（切换 UI 不重复）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Workspace / Mode / AdaptiveVariant",
+          "value": "三概念分离（附件 RE-SCOPE）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Dock / Split / Adaptive",
+          "value": "XYUI-5 Dock / SplitPane / AdaptiveLayout",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Persistence",
+          "value": "Required for Customizable Workspace（REF 5.13）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-5-5.13",
+      "name": "LayoutPersistence",
+      "title": "LayoutPersistence / 布局持久化",
+      "ref_count": 5,
+      "refs": [
+        {
+          "property": "Identity",
+          "value": "Stable String ID（禁 Child Index / 显示文本）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Snapshot",
+          "value": "SchemaVersion | WorkspaceMode | DockTree | SplitTree | PanelReferences | SizeState",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Validate / Repair / Migrate",
+          "value": "Required / Required / Versioned",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Fallback",
+          "value": "DefaultLayout",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Layout 与业务数据",
+          "value": "分离（不混存 Project Data）",
+          "kind": "COMPONENT_SPECIFIC"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-5-5.14",
+      "name": "VirtualizedLayout",
+      "title": "VirtualizedLayout / 虚拟化布局",
+      "ref_count": 7,
+      "refs": [
+        {
+          "property": "Mode / Realization / Recycling",
+          "value": "Hierarchical | Linear；Viewport + Overscan；Enabled",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "ItemSize / SizeCache",
+          "value": "Fixed | Variable；StableID → Size",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "ScrollHost",
+          "value": "XYUI-5 ScrollArea",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "TreeNavigation",
+          "value": "XYUI-3（不重新定义）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Selection / Expanded State",
+          "value": "External Stable State（REF XYUI-4）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Background / Border",
+          "value": "None",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-5-5.15",
+      "name": "CanvasLayout",
+      "title": "CanvasLayout / 自由坐标布局",
+      "ref_count": 8,
+      "refs": [
+        {
+          "property": "Origin / Axis",
+          "value": "TopStart | Center | Custom；Declared",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Position / VisualTransform",
+          "value": "Committed / Transient",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Extent",
+          "value": "Bounded | Unbounded",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Selection / Gizmo",
+          "value": "XYUI-4（不重定义）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Overlay Z System",
+          "value": "5.07 OverlayLayout",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Pan / Zoom",
+          "value": "5.16 ViewportContainer（不拥有）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Background / Border",
+          "value": "None",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP by Default",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-5-5.16",
+      "name": "ViewportContainer",
+      "title": "ViewportContainer / 视口容器",
+      "ref_count": 7,
+      "refs": [
+        {
+          "property": "View State",
+          "value": "PanX | PanY | Zoom",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "ZoomAnchor / Zoom Range",
+          "value": "Pointer by Default；Min/Max/Default Required",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Commands",
+          "value": "FitAll | FitSelection | FrameItem | ResetView | ActualSize",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Coordinate Conversion",
+          "value": "LogicalToView / ViewToLogical（Required）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Canvas / Overlay",
+          "value": "XYUI-5 CanvasLayout / OverlayLayout Compatible",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Canvas Wheel",
+          "value": "XY.Scroll.Canvas（Independent）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP View Space",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-5-5.17",
+      "name": "PortalHost",
+      "title": "PortalHost / 跨层承载容器",
+      "ref_count": 8,
+      "refs": [
+        {
+          "property": "VisualHost",
+          "value": "XY.Overlay.*（Foundation Host：OverlayHost | DragHost | ModalHost | TooltipHost）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "AnchorBounds / Collision",
+          "value": "Source Bounds；Flip | Shift | ComponentFallback",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Scope",
+          "value": "InheritedFromFoundationHost（附件 RE-SCOPE）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "CrossHostOverride",
+          "value": "Forbidden",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Lifetime",
+          "value": "Attached to Source",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "视觉",
+          "value": "Menu / Tooltip / Dialog REF XYUI-1/2/3（不重新定义）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Background / Border",
+          "value": "None",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-5-5.18",
+      "name": "MasonryLayout",
+      "title": "MasonryLayout / 瀑布流布局",
+      "ref_count": 7,
+      "refs": [
+        {
+          "property": "LogicalOrder / Packing",
+          "value": "Stable；ShortestColumn（Tie Break 确定）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "ColumnMode / ColumnCount",
+          "value": "Adaptive；Resolved from Container",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "ColumnGap / RowGap",
+          "value": "XY.Space.*（Foundation Spacing）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Virtualization",
+          "value": "XYUI-5 VirtualizedLayout Compatible",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Adaptive",
+          "value": "不建立第二套 Breakpoint（REF 5.11）",
+          "kind": "NAMESPACE_REF"
+        },
+        {
+          "property": "Background / Border",
+          "value": "None",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-5-5.19",
+      "name": "LayoutDiagnostics",
+      "title": "LayoutDiagnostics / 布局诊断",
+      "ref_count": 6,
+      "refs": [
+        {
+          "property": "Enabled",
+          "value": "Development Only",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Trace",
+          "value": "Constraint / Adaptive / Clip / Ownership（Requested|Resolved|Owner|Source）",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Telemetry",
+          "value": "Item Counts | Realized Counts | Overscan",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "HitTest",
+          "value": "PassThrough by Default",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Production",
+          "value": "禁止进入正式 Production Visual Language",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    },
+    {
+      "component_id": "XYUI-5-5.20",
+      "name": "LayoutCompositionRules",
+      "title": "LayoutCompositionRules / 布局组合规则",
+      "ref_count": 8,
+      "refs": [
+        {
+          "property": "Selection",
+          "value": "Use Smallest Semantic Primitive",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "GeometryOwner",
+          "value": "Single Primary Owner per Dimension",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "SpacingOwner",
+          "value": "Explicit（组件 Spacing Token 优先，否则 XY.Space.*）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Panel Spacing",
+          "value": "XY.Panel.Padding / Field.RowGap / SectionGap（附件 RE-SCOPE）",
+          "kind": "CANONICAL_REF"
+        },
+        {
+          "property": "Wrapper / Nesting",
+          "value": "Requires Independent Responsibility；Responsibility Driven",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Performance",
+          "value": "Avoid Redundant Measure / Arrange",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "AI / Agent Rule",
+          "value": "禁止创造平行第二套规则",
+          "kind": "COMPONENT_SPECIFIC"
+        },
+        {
+          "property": "Unit",
+          "value": "DIP via XYUI-0",
+          "kind": "CANONICAL_REF"
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

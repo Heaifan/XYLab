@@ -1,0 +1,27 @@
+{
+ "gaps_version": "0.1.0",
+ "phase": "XYUI-PILOT-R2",
+ "gaps": [
+  {
+   "gap_id": "XYUI2-GAP-001",
+   "type": "MISSING_TOKEN",
+   "scope": "XY.Size.Switch 复合 token 的子属性访问（Width/Height）",
+   "detail": "XYUI-2 08·Switch 引用 XY.Size.Switch.Width/Height；Foundation 0.8 只有复合 token XY.Size.Switch=34x18 DIP。已映射到复合 token；子属性拆分待 A3 定义",
+   "blocking": false
+  },
+  {
+   "gap_id": "XYUI2-GAP-002",
+   "type": "REQUIRES_DECISION",
+   "scope": "XY.TextArea.MaxHeight = SceneToken",
+   "detail": "TextArea 最大高度依赖场景/视口上下文；Foundation 未定义 SceneToken；不得猜测具体值",
+   "blocking": false
+  },
+  {
+   "gap_id": "XYUI2-GAP-003",
+   "type": "REQUIRES_DECISION",
+   "scope": "XY.BoolProperty.InspectorColumn = SharedPropertyColumnRule",
+   "detail": "Inspector 统一 Property 列宽规则未在 XYUI-0 Foundation 定义；BoolProperty/NumberProperty 等依赖此规则；待 Foundation 补充",
+   "blocking": false
+  }
+ ]
+}

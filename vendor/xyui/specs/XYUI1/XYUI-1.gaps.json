@@ -1,0 +1,13 @@
+{
+ "gaps_version": "0.1.0",
+ "phase": "XYUI-PILOT-R1",
+ "gaps": [
+  {
+   "gap_id": "XYUI1-GAP-001",
+   "type": "MISSING_TOKEN",
+   "scope": "Icon glyph registry",
+   "detail": "0.15 Icon Foundation 未定义 glyph 注册表；组件级 glyph 名（XY.Icon.Copy / InfoCircle / ErrorCircle / WarningTriangle）暂保留为 COMPONENT_SPECIFIC，待 Foundation 补充 glyph 体系",
+   "blocking": false
+  }
+ ]
+}

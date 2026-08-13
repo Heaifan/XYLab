@@ -1,0 +1,14 @@
+{
+  "phase": "XYUI-PILOT-R3",
+  "gap_count": 1,
+  "gaps": [
+    {
+      "gap_id": "XYUI3-GAP-001",
+      "type": "MISSING_TOKEN",
+      "item": "COMPONENT_SPECIFIC_CONTRAST_FOREGROUND",
+      "detail": "Source 中少量强调底色上的高对比前景语义（NavigationRail Tooltip Text / CommandPalette Input / StepNode.Completed IconColor）。XYUI-0 当前没有独立 OnAccent / ContrastForeground Semantic Token。本版不伪造 Canonical Token，由后续 Token Source 阶段登记并裁决。",
+      "occurrences": 5,
+      "blocking": false
+    }
+  ]
+}

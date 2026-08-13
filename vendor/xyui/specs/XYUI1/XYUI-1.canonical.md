@@ -1,0 +1,1044 @@
+# XYUI-1 · Text & Information｜文本与信息（Canonical）
+
+> XYUI-PILOT R1 产物。基于 `xyui/source/XYUI1/XYUI-1.md`（SHA-256: 9709a4fde7ec0e22…）reconciliation。
+> 上位规则：A2 Foundation Registry（VALIDATED）+ A3-R2 Canonical Token Architecture。
+> 本文件中的 `XY.*` 引用全部为 Canonical Token 引用；旧命名已按 A3-R2 裁定映射（见 XYUI-1.mapping.json）。
+> 组件职责/结构/交互/变体 = 已定稿，保留原样；Foundation 视觉值 = 引用 XYUI-0，无第二套真值。
+
+
+- 整理依据
+    - Foundation Source
+        - XYUI-0.md
+    - 原始设计来源
+        - XYUI-1.md
+    - 整理原则
+        - XYUI-0 作为 Foundation 规范优先级高于早期 XYUI-1 中重复定义的基础参数
+        - 保留 XYUI-1 已定稿的组件职责、语义和核心交互
+        - 字体、字号、字重、行高、颜色、Surface、Border、Radius、Icon、Tooltip 等基础属性统一引用 XYUI-0 Token
+        - 删除或替换与 XYUI-0 冲突的硬编码颜色、字体和尺寸
+        - 组件独有参数保留为组件 Token
+        - 禁止业务侧再次硬编码基础视觉值
+        - Light / Dark Theme 统一由 XYUI-0 语义 Token 映射
+        - Accessibility、Localization、DPI、Focus、Hit Target 等默认继承 XYUI-0
+
+- 01 · Text｜普通文本
+    - 用途
+        - 表达普通正文与非字段名信息
+        - 作为 XYUI 文本信息体系的默认正文样式
+    - 使用场景
+        - 普通说明
+        - 普通内容
+        - 列表正文
+        - 面板正文
+        - 属性内容中的非字段名文本
+    - 方案名称
+        - Foundation Body Text
+    - 设计特征
+        - 使用 XYUI Foundation 的 Body 字号与行高
+        - 保持长时间阅读可读性
+        - 默认使用主文字色
+        - 不通过局部硬编码制造额外文字层级
+    - UI代码
+        - XY.Text.Default.FontFamily
+            - Value = XY.Font.UI
+        - XY.Text.Default.FontSize
+            - Value = XY.FontSize.Body
+        - XY.Text.Default.FontWeight
+            - Value = XY.FontWeight.Regular
+        - XY.Text.Default.LineHeight
+            - Value = XY.LineHeight.Body
+        - XY.Text.Default.LetterSpacing
+            - Value = XY.LetterSpacing.Body
+        - XY.Text.Default.Foreground
+            - Value = XY.Text.Primary
+
+- 02 · Label｜字段名称
+    - 用途
+        - 表达字段、属性与表单项目名称
+        - 与字段值形成稳定语义层级
+    - 使用场景
+        - Inspector
+        - 表单
+        - 属性编辑器
+        - 参数面板
+    - 方案名称
+        - Foundation Field Label
+    - 设计特征
+        - 字段标签比普通正文具有更明确的层级
+        - 使用 Foundation Label 字号
+        - 使用 Medium 字重，不以过粗字重制造视觉噪音
+        - 默认左对齐
+    - UI代码
+        - XY.Label.Default.FontFamily
+            - Value = XY.Font.UI
+        - XY.Label.Default.FontSize
+            - Value = XY.FontSize.Label
+        - XY.Label.Default.FontWeight
+            - Value = XY.FontWeight.Medium
+        - XY.Label.Default.LineHeight
+            - Value = XY.LineHeight.Label
+        - XY.Label.Default.LetterSpacing
+            - Value = XY.LetterSpacing.Label
+        - XY.Label.Default.Foreground
+            - Value = XY.Text.Primary
+        - XY.Label.Default.Alignment
+            - Value = XY.Alignment.Label
+
+- 03 · Caption｜辅助信息
+    - 用途
+        - 表达次级说明、补充信息与低优先级元数据
+    - 使用场景
+        - 次级说明
+        - 面板描述
+        - 字段附加解释
+        - 时间
+        - 统计摘要
+        - 附属信息
+        - 元数据
+    - 方案名称
+        - Soft Secondary Caption
+    - 设计特征
+        - 使用 Foundation Caption 尺寸
+        - 视觉优先级明显低于正文
+        - 保持足够可读性，不使用过浅灰色
+    - UI代码
+        - XY.Caption.Default.FontFamily
+            - Value = XY.Font.UI
+        - XY.Caption.Default.FontSize
+            - Value = XY.FontSize.Caption
+        - XY.Caption.Default.FontWeight
+            - Value = XY.FontWeight.Regular
+        - XY.Caption.Default.LineHeight
+            - Value = XY.LineHeight.Caption
+        - XY.Caption.Default.Foreground
+            - Value = XY.Text.Secondary
+
+- 04 · Heading｜标题
+    - 用途
+        - 表达页面级或 Panel 级主标题
+        - 不承担 Inspector Section 小分组标题职责
+    - 使用场景
+        - 页面标题
+        - Panel 标题
+        - 主编辑区域标题
+    - 方案名称
+        - Foundation Hierarchical Heading
+    - 设计特征
+        - Heading 按语义分为 PanelTitle 与 PageTitle
+        - 禁止使用一个固定字号覆盖所有主标题层级
+        - 标题保持默认字距
+    - 变体
+        - PanelTitle
+            - 用于 Panel、工具区域与次级主标题
+        - PageTitle
+            - 用于页面级或最高层级标题
+    - UI代码
+        - XY.Heading.PanelTitle.FontFamily
+            - Value = XY.Font.UI
+        - XY.Heading.PanelTitle.FontSize
+            - Value = XY.FontSize.PanelTitle
+        - XY.Heading.PanelTitle.FontWeight
+            - Value = XY.FontWeight.Semibold
+        - XY.Heading.PanelTitle.LineHeight
+            - Value = XY.LineHeight.PanelTitle
+        - XY.Heading.PanelTitle.Foreground
+            - Value = XY.Text.Primary
+        - XY.Heading.PageTitle.FontFamily
+            - Value = XY.Font.UI
+        - XY.Heading.PageTitle.FontSize
+            - Value = XY.FontSize.PageTitle
+        - XY.Heading.PageTitle.FontWeight
+            - Value = XY.FontWeight.Bold
+        - XY.Heading.PageTitle.LineHeight
+            - Value = XY.LineHeight.PageTitle
+        - XY.Heading.PageTitle.Foreground
+            - Value = XY.Text.Primary
+        - XY.Heading.LetterSpacing
+            - Value = XY.LetterSpacing.Title
+
+- 05 · SectionTitle｜区块标题
+    - 用途
+        - 在属性面板、Inspector 与 Panel 内划分相关字段组
+    - 使用场景
+        - Inspector Section
+        - 属性分组
+        - Panel 内容分组
+    - 方案名称
+        - Semantic Section Header
+    - 设计特征
+        - 继承 Foundation Section 字号与字重
+        - Section 采用“标题 + Divider + 内容”结构
+        - 不再使用独立卡片式 Header 背景
+        - 不再使用装饰性 Left Mark 作为默认结构
+        - Section 之间减少无意义留白
+        - Divider 使用 Foundation Section Divider
+    - UI代码
+        - XY.SectionTitle.Default.FontFamily
+            - Value = XY.Font.UI
+        - XY.SectionTitle.Default.FontSize
+            - Value = XY.FontSize.Section
+        - XY.SectionTitle.Default.FontWeight
+            - Value = XY.FontWeight.Semibold
+        - XY.SectionTitle.Default.LineHeight
+            - Value = XY.LineHeight.Section
+        - XY.SectionTitle.Default.Foreground
+            - Value = XY.Text.Primary
+        - XY.SectionTitle.Default.Background
+            - Value = None
+        - XY.SectionTitle.Default.Border
+            - Value = None
+        - XY.SectionTitle.Default.Divider
+            - Value = XY.Divider.Section
+        - XY.SectionTitle.Default.CardNesting
+            - Value = Forbidden
+        - XY.SectionTitle.Default.SectionGap
+            - Value = XY.Panel.SectionGap
+
+- 06 · Link｜超链接
+    - 用途
+        - 跳转到页面、对象、文件、文档、路径或外部地址
+        - 不承担普通命令按钮职责
+    - 使用场景
+        - 文档链接
+        - 文件定位
+        - 对象跳转
+        - 页面导航
+        - 外部地址
+    - 方案名称
+        - Semantic Link
+    - 设计特征
+        - 使用 Foundation Link 语义色
+        - 默认保持正文尺寸
+        - Hover 通过强调色增强与下划线共同反馈
+        - Disabled 使用统一 Disabled 文字色
+    - UI代码
+        - XY.Link.Default.FontFamily
+            - Value = XY.Font.UI
+        - XY.Link.Default.FontSize
+            - Value = XY.FontSize.Body
+        - XY.Link.Default.FontWeight
+            - Value = XY.FontWeight.Medium
+        - XY.Link.Default.LineHeight
+            - Value = XY.LineHeight.Body
+        - XY.Link.Default.Foreground
+            - Value = XY.Text.Link
+        - XY.Link.Hover.Foreground
+            - Value = XY.Accent.Strong
+        - XY.Link.Hover.Decoration
+            - Value = Underline
+        - XY.Link.Disabled.Foreground
+            - Value = XY.Text.Disabled
+
+- 07 · CodeText｜代码 / ID
+    - 用途
+        - 表达具有明确技术语义的只读代码型文本
+    - 使用场景
+        - 资源路径
+        - 内部 ID
+        - 文件名
+        - Manifest Key
+        - Git Hash
+        - 技术标识
+    - 方案名称
+        - Compact Technical Code
+    - 设计特征
+        - 技术文本统一使用 Foundation Mono 字体
+        - ID / Key 默认作为次级信息
+        - 可使用轻量技术 Surface 强化代码语义
+        - `</>` 标记仅作为语义识别，不承担装饰职责
+    - UI代码
+        - XY.CodeText.Default.FontFamily
+            - Value = XY.Font.Mono
+        - XY.CodeText.Default.FontSize
+            - Value = XY.FontSize.Mono
+        - XY.CodeText.Default.FontWeight
+            - Value = XY.FontWeight.Regular
+        - XY.CodeText.Default.LineHeight
+            - Value = XY.LineHeight.Mono
+        - XY.CodeText.Default.LetterSpacing
+            - Value = XY.LetterSpacing.Mono
+        - XY.CodeText.Default.Foreground
+            - Value = XY.Text.Tertiary
+        - XY.CodeText.Default.Background
+            - Value = XY.Surface.PanelAlt
+        - XY.CodeText.Default.MinHeight
+            - Value = XY.Size.Control.M
+        - XY.CodeText.Default.Radius
+            - Value = XY.Radius.Control
+        - XY.CodeText.Default.Border
+            - Value = None
+        - XY.CodeText.CodeMark
+            - Value = </ >
+        - XY.CodeText.CodeMark.Size
+            - Value = 8 DIP
+        - XY.CodeText.CodeMark.Foreground
+            - Value = XY.Text.Tertiary
+        - XY.CodeText.CodeMark.Alignment
+            - Value = RightBottom
+
+- 08 · MonoText｜等宽数据
+    - 用途
+        - 表达需要稳定字符宽度与快速纵向比较的技术数据
+    - 使用场景
+        - 坐标
+        - 性能数值
+        - 时间
+        - 计时
+        - 十六进制值
+        - 调试数据
+        - 参数数值
+    - 方案名称
+        - Foundation Mono Data
+    - 设计特征
+        - 统一使用 Source Code Pro 语义字体 Token
+        - 不添加额外背景、边框和装饰
+        - 数据优先保持稳定字符宽度
+    - UI代码
+        - XY.MonoText.Default.FontFamily
+            - Value = XY.Font.Mono
+        - XY.MonoText.Default.FontSize
+            - Value = XY.FontSize.Mono
+        - XY.MonoText.Default.FontWeight
+            - Value = XY.FontWeight.Regular
+        - XY.MonoText.Default.LineHeight
+            - Value = XY.LineHeight.Mono
+        - XY.MonoText.Default.LetterSpacing
+            - Value = XY.LetterSpacing.Mono
+        - XY.MonoText.Default.Foreground
+            - Value = XY.Text.Secondary
+        - XY.MonoText.Default.Background
+            - Value = None
+        - XY.MonoText.Default.Border
+            - Value = None
+        - XY.MonoText.Default.Decoration
+            - Value = None
+
+- 09 · Badge｜标签
+    - 用途
+        - 表达分类、类型、数量和简短属性标识
+        - 不承担状态语义
+    - 使用场景
+        - 类型标签
+        - 分类标签
+        - 数量标签
+        - 简短属性标识
+    - 方案名称
+        - Semantic Compact Badge
+    - 设计特征
+        - Badge 与 StatusBadge 严格分离
+        - 使用 Foundation Full Radius
+        - 避免装饰性异形轮廓
+        - 默认采用低存在感 Surface
+        - Accent 变体可使用 Accent Soft，但不得用于普通信息滥强调
+    - 变体
+        - Neutral
+            - 默认分类标签
+        - Accent
+            - 需要轻量强调的标签
+    - UI代码
+        - XY.Badge.Default.FontFamily
+            - Value = XY.Font.UI
+        - XY.Badge.Default.FontSize
+            - Value = XY.FontSize.Caption
+        - XY.Badge.Default.FontWeight
+            - Value = XY.FontWeight.Medium
+        - XY.Badge.Default.Foreground
+            - Value = XY.Text.Secondary
+        - XY.Badge.Default.Background
+            - Value = XY.Surface.PanelAlt
+        - XY.Badge.Default.Height
+            - Value = XY.Size.Control.XS
+        - XY.Badge.Default.Radius
+            - Value = XY.Radius.Badge
+        - XY.Badge.Default.Border
+            - Value = None
+        - XY.Badge.Default.TextAlignment
+            - Value = Center
+        - XY.Badge.Accent.Foreground
+            - Value = XY.Accent.Default
+        - XY.Badge.Accent.Background
+            - Value = XY.Tag.Accent
+
+- 10 · StatusBadge｜状态标签
+    - 用途
+        - 表达对象当前状态
+        - 通过状态圆点与状态文字共同传达状态
+    - 使用场景
+        - 已保存
+        - 警告
+        - 错误
+        - 未同步
+        - 离线
+        - 构建状态
+        - 数据状态
+    - 方案名称
+        - Status Dot + Text
+    - 设计特征
+        - 状态必须至少使用颜色 + 文字两种通道
+        - 状态圆点只作为辅助，不替代文字
+        - Success / Warning / Error / Info 直接引用 Foundation Semantic Color
+        - Neutral 使用普通次级文字层级
+    - UI代码
+        - XY.StatusBadge.Default.FontFamily
+            - Value = XY.Font.UI
+        - XY.StatusBadge.Default.FontSize
+            - Value = XY.FontSize.Caption
+        - XY.StatusBadge.Default.FontWeight
+            - Value = XY.FontWeight.Medium
+        - XY.StatusBadge.Default.DotSize
+            - Value = 8 DIP
+        - XY.StatusBadge.Default.DotShape
+            - Value = Circle
+        - XY.StatusBadge.Default.Background
+            - Value = None
+        - XY.StatusBadge.Default.Border
+            - Value = None
+        - XY.StatusBadge.Success.Foreground
+            - Value = XY.Semantic.Success.Text
+        - XY.StatusBadge.Success.Dot
+            - Value = XY.Semantic.Success.Text
+        - XY.StatusBadge.Warning.Foreground
+            - Value = XY.Semantic.Warning.Text
+        - XY.StatusBadge.Warning.Dot
+            - Value = XY.Semantic.Warning.Text
+        - XY.StatusBadge.Error.Foreground
+            - Value = XY.Semantic.Error.Text
+        - XY.StatusBadge.Error.Dot
+            - Value = XY.Semantic.Error.Text
+        - XY.StatusBadge.Info.Foreground
+            - Value = XY.Semantic.Info.Text
+        - XY.StatusBadge.Info.Dot
+            - Value = XY.Semantic.Info.Text
+        - XY.StatusBadge.Neutral.Foreground
+            - Value = XY.Text.Secondary
+        - XY.StatusBadge.AccessibleState
+            - Value = Required
+
+- 11 · StatusDot｜状态圆点
+    - 用途
+        - 作为高频状态的紧凑视觉指示
+        - 作为 StatusBadge 的基础子控件
+    - 使用场景
+        - 数据集
+        - 图层
+        - 状态栏
+        - Git
+        - 渲染设备
+        - Agent
+        - 网络
+    - 方案名称
+        - Semantic Status Dot
+    - 设计特征
+        - Dot 使用语义色
+        - 对重要状态禁止仅靠 Dot 颜色表达
+        - 单独出现时必须提供 Accessible Name / State
+    - UI代码
+        - XY.StatusDot.Default.Diameter
+            - Value = 8 DIP
+        - XY.StatusDot.Default.Shape
+            - Value = Circle
+        - XY.StatusDot.Success.Color
+            - Value = XY.Semantic.Success.Text
+        - XY.StatusDot.Info.Color
+            - Value = XY.Semantic.Info.Text
+        - XY.StatusDot.Warning.Color
+            - Value = XY.Semantic.Warning.Text
+        - XY.StatusDot.Error.Color
+            - Value = XY.Semantic.Error.Text
+        - XY.StatusDot.Neutral.Color
+            - Value = XY.Text.Tertiary
+        - XY.StatusDot.Default.Border
+            - Value = None
+        - XY.StatusDot.Default.Shadow
+            - Value = None
+        - XY.StatusDot.AccessibleName
+            - Value = Required
+        - XY.StatusDot.AccessibleState
+            - Value = Required
+
+- 12 · Icon｜图标
+    - 用途
+        - 为工具、对象、状态与操作提供基础图形语义
+    - 使用场景
+        - Toolbar
+        - Tree
+        - List
+        - Inspector
+        - 状态栏
+        - 编辑器操作入口
+    - 方案名称
+        - Semantic Hybrid Icon
+    - 设计特征
+        - 完全继承 XYUI-0 Icon Foundation
+        - 默认使用 Outline
+        - Active / Selected 可使用 Outline + LocalFill
+        - 图标尺寸只使用 Foundation 正式尺寸
+        - 默认 Stroke = 1.5 DIP
+        - Round Cap / Round Join
+        - 禁止 Emoji 或字体字符冒充正式图标
+        - 禁止业务侧随意硬编码颜色和尺寸
+    - UI代码
+        - XY.Icon.Default.Style
+            - Value = XY.Icon.Style.Default
+        - XY.Icon.Default.Size
+            - Value = XY.Icon.Size.M
+        - XY.Icon.Default.StrokeWidth
+            - Value = XY.Icon.Stroke
+        - XY.Icon.Default.LineCap
+            - Value = XY.Icon.LineCap
+        - XY.Icon.Default.LineJoin
+            - Value = XY.Icon.LineJoin
+        - XY.Icon.Default.Foreground
+            - Value = XY.Text.Secondary
+        - XY.Icon.Small.Size
+            - Value = XY.Icon.Size.S
+        - XY.Icon.Medium.Size
+            - Value = XY.Icon.Size.M
+        - XY.Icon.Large.Size
+            - Value = XY.Icon.Size.L
+        - XY.Icon.Active.Style
+            - Value = XY.Icon.Style.Active
+        - XY.Icon.Active.Foreground
+            - Value = XY.Accent.Strong
+        - XY.Icon.Disabled.Foreground
+            - Value = XY.Text.Disabled
+
+- 13 · IconLabel｜图标 + 文字
+    - 用途
+        - 表达“图标 + 文本”的信息组合
+        - 本身不代表按钮
+    - 使用场景
+        - Tree 节点
+        - 面板名称
+        - 分类入口
+        - 菜单信息
+        - 资源类型说明
+    - 方案名称
+        - Compact Semantic Inline
+    - 设计特征
+        - 图标与文字必须基于共同中心轴对齐
+        - 禁止通过 Margin 手工推位置
+        - 默认使用 Small Icon + Body Text
+        - 图标与文字间距使用 Foundation Spacing
+    - UI代码
+        - XY.IconLabel.Default.IconSize
+            - Value = XY.Icon.Size.S
+        - XY.IconLabel.Default.IconStrokeWidth
+            - Value = XY.Icon.Stroke
+        - XY.IconLabel.Default.IconForeground
+            - Value = XY.Text.Secondary
+        - XY.IconLabel.Default.FontFamily
+            - Value = XY.Font.UI
+        - XY.IconLabel.Default.FontSize
+            - Value = XY.FontSize.Body
+        - XY.IconLabel.Default.FontWeight
+            - Value = XY.FontWeight.Regular
+        - XY.IconLabel.Default.Foreground
+            - Value = XY.Text.Primary
+        - XY.IconLabel.Default.Gap
+            - Value = XY.Space.1
+        - XY.IconLabel.Default.VerticalAlignment
+            - Value = Center
+        - XY.IconLabel.Default.Background
+            - Value = None
+        - XY.IconLabel.Default.Border
+            - Value = None
+
+- 14 · Separator｜分割线
+    - 用途
+        - 在内容、工具栏与面板之间建立轻量视觉边界
+        - 不承担完整边框或标题职责
+    - 使用场景
+        - Panel
+        - Menu
+        - Toolbar
+        - 内容区域
+        - Inspector Section
+        - Tree / List
+    - 方案名称
+        - Semantic Divider Wrapper
+    - 设计特征
+        - Separator 不再建立独立颜色体系
+        - 统一映射 XYUI-0 Divider 规则
+        - 大结构使用全幅 Divider
+        - Section / List Row 使用内容对齐内缩 Divider
+    - 变体
+        - Header
+        - Panel
+        - Section
+        - ListRow
+        - VerticalSplit
+    - UI代码
+        - XY.Separator.Default.Color
+            - Value = XY.Divider.Default
+        - XY.Separator.Default.Thickness
+            - Value = XY.Border.Width.Default
+        - XY.Separator.Header.Layout
+            - Value = XY.Divider.Header
+        - XY.Separator.Panel.Layout
+            - Value = XY.Divider.Panel
+        - XY.Separator.Section.Layout
+            - Value = XY.Divider.Section
+        - XY.Separator.ListRow.Layout
+            - Value = XY.Divider.ListRow
+        - XY.Separator.VerticalSplit.Layout
+            - Value = XY.Divider.VerticalSplit
+        - XY.Separator.Default.Shadow
+            - Value = None
+
+- 15 · HelpText｜帮助说明
+    - 用途
+        - 解释功能用途、操作方法、字段含义与使用注意事项
+        - 与普通 Caption 区分，强调“帮助用户理解怎么用”
+    - 使用场景
+        - Inspector 字段帮助
+        - 设置说明
+        - 操作提示
+        - 功能解释
+    - 方案名称
+        - Inline Help Mark
+    - 设计特征
+        - 文本使用 Caption 层级
+        - 标记使用 Info 语义
+        - 不采用独立大面积背景
+        - 长帮助内容应转入 Help / Inspector，而不是继续堆叠行内说明
+    - UI代码
+        - XY.HelpText.Default.FontFamily
+            - Value = XY.Font.UI
+        - XY.HelpText.Default.FontSize
+            - Value = XY.FontSize.Caption
+        - XY.HelpText.Default.FontWeight
+            - Value = XY.FontWeight.Regular
+        - XY.HelpText.Default.LineHeight
+            - Value = XY.LineHeight.Caption
+        - XY.HelpText.Default.Foreground
+            - Value = XY.Text.Secondary
+        - XY.HelpText.Mark.Icon
+            - Value = InfoCircle
+        - XY.HelpText.Mark.Size
+            - Value = XY.Icon.Size.S
+        - XY.HelpText.Mark.StrokeWidth
+            - Value = XY.Icon.Stroke
+        - XY.HelpText.Mark.Foreground
+            - Value = XY.Semantic.Info.Text
+        - XY.HelpText.Default.Background
+            - Value = None
+        - XY.HelpText.Default.Border
+            - Value = None
+
+- 16 · ErrorText｜错误说明
+    - 用途
+        - 表达字段校验失败、读取失败、冲突与无效状态
+    - 使用场景
+        - 字段校验失败
+        - 路径无效
+        - 文件读取失败
+        - ID 冲突
+        - 数据无效
+    - 方案名称
+        - Semantic Inline Error
+    - 设计特征
+        - Error 必须包含文字原因
+        - 采用错误文字 + 错误图标双通道表达
+        - 不使用大面积高饱和红色背景
+        - 文案优先包含“动作 + 失败原因”，必要时提供下一步
+    - UI代码
+        - XY.ErrorText.Default.FontFamily
+            - Value = XY.Font.UI
+        - XY.ErrorText.Default.FontSize
+            - Value = XY.FontSize.Caption
+        - XY.ErrorText.Default.FontWeight
+            - Value = XY.FontWeight.Medium
+        - XY.ErrorText.Default.LineHeight
+            - Value = XY.LineHeight.Caption
+        - XY.ErrorText.Default.Foreground
+            - Value = XY.Semantic.Error.Text
+        - XY.ErrorText.Mark.Icon
+            - Value = ErrorCircle
+        - XY.ErrorText.Mark.Size
+            - Value = XY.Icon.Size.S
+        - XY.ErrorText.Mark.StrokeWidth
+            - Value = XY.Icon.Stroke
+        - XY.ErrorText.Mark.Foreground
+            - Value = XY.Semantic.Error.Text
+        - XY.ErrorText.Default.Background
+            - Value = None
+        - XY.ErrorText.Default.Border
+            - Value = None
+        - XY.ErrorText.TextStyle
+            - Value = XY.Text.Error
+        - XY.ErrorText.AccessibleText
+            - Value = Required
+
+- 17 · WarningText｜警告说明
+    - 用途
+        - 表达需要提醒但尚未达到错误级别的风险与注意事项
+    - 使用场景
+        - 未保存风险
+        - 实验功能
+        - 潜在影响
+        - 外部资源
+        - 非阻塞异常
+    - 方案名称
+        - Semantic Inline Warning
+    - 设计特征
+        - 使用 Warning 文字 + 图标双通道表达
+        - 不使用大面积黄色背景
+        - Warning 与 Locked 使用不同语义 Token
+    - UI代码
+        - XY.WarningText.Default.FontFamily
+            - Value = XY.Font.UI
+        - XY.WarningText.Default.FontSize
+            - Value = XY.FontSize.Caption
+        - XY.WarningText.Default.FontWeight
+            - Value = XY.FontWeight.Medium
+        - XY.WarningText.Default.LineHeight
+            - Value = XY.LineHeight.Caption
+        - XY.WarningText.Default.Foreground
+            - Value = XY.Semantic.Warning.Text
+        - XY.WarningText.Mark.Icon
+            - Value = WarningTriangle
+        - XY.WarningText.Mark.Size
+            - Value = XY.Icon.Size.S
+        - XY.WarningText.Mark.StrokeWidth
+            - Value = XY.Icon.Stroke
+        - XY.WarningText.Mark.Foreground
+            - Value = XY.Semantic.Warning.Text
+        - XY.WarningText.Default.Background
+            - Value = None
+        - XY.WarningText.Default.Border
+            - Value = None
+        - XY.WarningText.AccessibleText
+            - Value = Required
+
+- 18 · ShortcutHint｜快捷键提示
+    - 用途
+        - 紧凑显示单键或组合快捷键
+    - 使用场景
+        - Menu
+        - Tooltip
+        - 命令面板
+        - 操作说明
+    - 方案名称
+        - Compact Semantic Keycap
+    - 设计特征
+        - 使用 Foundation Mono 字体
+        - 字号不得低于 Foundation Caption 底线
+        - 多键组合使用独立 Keycap
+        - Keycap 只承担快捷键语义，不作为普通 Badge 使用
+    - UI代码
+        - XY.ShortcutHint.Default.FontFamily
+            - Value = XY.Font.Mono
+        - XY.ShortcutHint.Default.FontSize
+            - Value = XY.FontSize.Caption
+        - XY.ShortcutHint.Default.FontWeight
+            - Value = XY.FontWeight.Medium
+        - XY.ShortcutHint.Default.Foreground
+            - Value = XY.Text.Secondary
+        - XY.ShortcutHint.Default.Height
+            - Value = XY.Size.Control.XS
+        - XY.ShortcutHint.Default.Background
+            - Value = XY.Surface.PanelAlt
+        - XY.ShortcutHint.Default.BorderColor
+            - Value = XY.Border.Color.Subtle
+        - XY.ShortcutHint.Default.BorderThickness
+            - Value = XY.Border.Width.Default
+        - XY.ShortcutHint.Default.Radius
+            - Value = XY.Radius.Control
+        - XY.ShortcutHint.CombinationMode
+            - Value = SeparateKeycaps
+        - XY.ShortcutHint.Separator
+            - Value = +
+        - XY.ShortcutHint.Default.Shadow
+            - Value = None
+
+- 19 · Tooltip｜悬浮提示
+    - 用途
+        - 在 Hover 时解释图标、字段、资源、属性与编辑器功能
+        - 属于临时信息浮层
+        - 不承担普通可点击操作
+    - 使用场景
+        - Toolbar Tool
+        - Icon Button
+        - 缩写字段
+        - 被截断文本
+        - 快捷键提示
+        - 简短状态说明
+    - 方案名称
+        - Adaptive Content Tooltip
+    - 设计特征
+        - 完全继承 XYUI-0 Tooltip 交互合同
+        - 短内容优先单行
+        - 长内容允许 Wrap 或双层结构
+        - 最大宽度 280 DIP
+        - 首次 Hover 延迟 400 ms
+        - 靠近 Viewport 边缘自动翻转
+        - 不抢 Pointer、不阻塞当前操作
+        - 超长说明转入 Help / Inspector
+        - Tooltip 使用 Overlay Surface + Tooltip Shadow
+    - UI代码
+        - XY.Tooltip.Default.ContentMode
+            - Value = Adaptive
+        - XY.Tooltip.Default.ShortContent
+            - Value = SingleLine
+        - XY.Tooltip.Default.LongContent
+            - Value = WrapOrTwoLevel
+        - XY.Tooltip.Default.MaxWidth
+            - Value = 280 DIP
+        - XY.Tooltip.Default.ShowDelay
+            - Value = 400 ms
+        - XY.Tooltip.Default.Background
+            - Value = XY.Surface.Overlay
+        - XY.Tooltip.Default.Radius
+            - Value = XY.Radius.Popup
+        - XY.Tooltip.Default.Shadow
+            - Value = XY.Shadow.Tooltip
+        - XY.Tooltip.Default.FontFamily
+            - Value = XY.Font.UI
+        - XY.Tooltip.Default.FontSize
+            - Value = XY.FontSize.Caption
+        - XY.Tooltip.Default.FontWeight
+            - Value = XY.FontWeight.Regular
+        - XY.Tooltip.Default.LineHeight
+            - Value = XY.LineHeight.Caption
+        - XY.Tooltip.Default.Foreground
+            - Value = XY.Text.Secondary
+        - XY.Tooltip.Title.FontSize
+            - Value = XY.FontSize.Auxiliary
+        - XY.Tooltip.Title.FontWeight
+            - Value = XY.FontWeight.Medium
+        - XY.Tooltip.Title.LineHeight
+            - Value = XY.LineHeight.Auxiliary
+        - XY.Tooltip.Title.Foreground
+            - Value = XY.Text.Primary
+        - XY.Tooltip.Default.ViewportAvoidance
+            - Value = Enabled
+        - XY.Tooltip.Default.AutoFlip
+            - Value = Enabled
+        - XY.Tooltip.Default.PointerCapture
+            - Value = Forbidden
+        - XY.Tooltip.Default.InteractiveContent
+            - Value = Forbidden
+        - XY.Tooltip.Default.LongHelp
+            - Value = HelpOrInspector
+
+- 20 · RichText｜富文本
+    - 用途
+        - 在同一段文本中建立普通内容、重点内容、等宽数据与链接的轻量层级
+        - 不承担 Warning / Error / Status 等状态语义
+    - 使用场景
+        - 说明文字
+        - 带技术值的正文
+        - 带链接的帮助文本
+        - 混合普通文字与重点文字的描述
+    - 方案名称
+        - Semantic Rich Text
+    - 设计特征
+        - 默认正文继承 Body Text
+        - Strong 只改变字重，不引入新颜色体系
+        - Mono 统一使用 Foundation Mono
+        - Link 统一使用 Foundation Link
+        - 同一段普通 RichText 不超过两种非状态语义强调层级
+        - Status Color 禁止直接混入普通 RichText
+    - UI代码
+        - XY.RichText.Default.FontFamily
+            - Value = XY.Font.UI
+        - XY.RichText.Default.FontSize
+            - Value = XY.FontSize.Body
+        - XY.RichText.Default.FontWeight
+            - Value = XY.FontWeight.Regular
+        - XY.RichText.Default.LineHeight
+            - Value = XY.LineHeight.Body
+        - XY.RichText.Default.Foreground
+            - Value = XY.Text.Primary
+        - XY.RichText.Strong.FontWeight
+            - Value = XY.FontWeight.Semibold
+        - XY.RichText.Strong.Foreground
+            - Value = Inherit
+        - XY.RichText.Mono.FontFamily
+            - Value = XY.Font.Mono
+        - XY.RichText.Mono.FontSize
+            - Value = XY.FontSize.Mono
+        - XY.RichText.Mono.LineHeight
+            - Value = XY.LineHeight.Mono
+        - XY.RichText.Mono.Foreground
+            - Value = XY.Text.Secondary
+        - XY.RichText.Link.Foreground
+            - Value = XY.Text.Link
+        - XY.RichText.Link.FontWeight
+            - Value = XY.FontWeight.Medium
+        - XY.RichText.MaxSemanticColors
+            - Value = 2
+        - XY.RichText.StatusColors
+            - Value = Forbidden
+
+- 21 · SelectableText｜可选择文本
+    - 用途
+        - 显示只读但允许选择与复制的信息
+    - 使用场景
+        - UUID
+        - 路径
+        - 资源 ID
+        - Git Hash
+        - 坐标
+        - 文件名
+        - 定位字符串
+    - 方案名称
+        - Copy on Demand
+    - 设计特征
+        - 保持只读，不伪装成输入框
+        - 技术标识默认使用 Mono 变体
+        - Hover 时可出现复制图标
+        - Copy Glyph 使用正式 Icon Token
+        - Selection 使用 Selected Surface
+    - 变体
+        - Default
+            - 普通可选择文本
+        - Technical
+            - ID / Path / Hash / 坐标等技术文本
+    - UI代码
+        - XY.SelectableText.Default.TextStyle
+            - Value = XY.Text.Default
+        - XY.SelectableText.Technical.TextStyle
+            - Value = XY.MonoText.Default
+        - XY.SelectableText.Default.IsReadOnly
+            - Value = True
+        - XY.SelectableText.Default.IsSelectable
+            - Value = True
+        - XY.SelectableText.Default.CopyShortcut
+            - Value = Ctrl+C
+        - XY.SelectableText.Hover.CopyIcon
+            - Value = XY.Icon.Copy
+        - XY.SelectableText.Hover.CopyIconSize
+            - Value = XY.Icon.Size.S
+        - XY.SelectableText.Hover.CopyIconForeground
+            - Value = XY.Text.Secondary
+        - XY.SelectableText.Default.Background
+            - Value = None
+        - XY.SelectableText.Default.Border
+            - Value = None
+        - XY.SelectableText.Selection.Background
+            - Value = XY.Surface.Selected
+        - XY.SelectableText.Selection.Foreground
+            - Value = XY.Text.Primary
+
+- 22 · EmptyText｜空状态文本
+    - 用途
+        - 在局部区域为空时表达“当前没有内容”
+        - 不承担完整 EmptyState 页面职责
+    - 使用场景
+        - 数据集
+        - 图层
+        - 资源列表
+        - Inspector
+        - 局部列表
+    - 方案名称
+        - Quiet Empty Text
+    - 设计特征
+        - 使用 Caption 层级
+        - 保持低视觉优先级
+        - 删除默认装饰线，避免 Decoration First
+        - 只表达真实空状态，不承担错误或加载状态
+    - UI代码
+        - XY.EmptyText.Default.TextStyle
+            - Value = XY.Caption.Default
+        - XY.EmptyText.Default.Foreground
+            - Value = XY.Text.Tertiary
+        - XY.EmptyText.Default.Background
+            - Value = None
+        - XY.EmptyText.Default.Border
+            - Value = None
+        - XY.EmptyText.Default.Decoration
+            - Value = None
+        - XY.EmptyText.Default.TextAlignment
+            - Value = Center
+
+- 23 · SearchHighlight｜搜索高亮
+    - 用途
+        - 在搜索、过滤与定位结果中标记当前命中的文本片段
+    - 使用场景
+        - List
+        - Tree
+        - 资源浏览器
+        - 搜索结果
+        - 过滤结果
+    - 方案名称
+        - Semantic Match Highlight
+    - 设计特征
+        - 高亮直接作用于命中文本，而不是额外添加装饰性角标
+        - 使用 Accent Soft 提供低饱和背景
+        - 文字保持主文字色
+        - 允许使用 Medium 字重提高命中辨识
+        - 不使用 Warning / Error / Success 等状态色
+    - UI代码
+        - XY.SearchHighlight.Default.TextStyle
+            - Value = Inherit
+        - XY.SearchHighlight.Match.FontWeight
+            - Value = XY.FontWeight.Medium
+        - XY.SearchHighlight.Match.Foreground
+            - Value = XY.Text.Primary
+        - XY.SearchHighlight.Match.Background
+            - Value = XY.Accent.Soft
+        - XY.SearchHighlight.Match.Border
+            - Value = None
+        - XY.SearchHighlight.StatusColors
+            - Value = Forbidden
+
+- 24 · TruncatedText｜截断文本
+    - 用途
+        - 在宽度不足时安全显示长名称、路径与标识符
+    - 使用场景
+        - 标题
+        - 名称
+        - 路径
+        - 资源 ID
+        - 文件名
+        - Hash
+        - 定位字符串
+    - 方案名称
+        - Semantic Ellipsis
+    - 设计特征
+        - 普通名称 / 标题 / 标签使用末尾省略
+        - Path / 文件名 / 资源 ID / Hash / 长标识串使用中间省略
+        - 技术标识使用 Mono Text
+        - 完整值由 Tooltip 或 Inspector 提供
+        - Tooltip 行为继承 XYUI-0 Tooltip 规范
+    - UI代码
+        - XY.TruncatedText.Default.TextStyle
+            - Value = Inherit
+        - XY.TruncatedText.Default.OverflowMode
+            - Value = EndEllipsis
+        - XY.TruncatedText.Default.Ellipsis
+            - Value = ...
+        - XY.TruncatedText.Default.Background
+            - Value = None
+        - XY.TruncatedText.Default.Border
+            - Value = None
+        - XY.TruncatedText.Identifier.TextStyle
+            - Value = XY.MonoText.Default
+        - XY.TruncatedText.Identifier.OverflowMode
+            - Value = MiddleEllipsis
+        - XY.TruncatedText.Identifier.Ellipsis
+            - Value = ...
+        - XY.TruncatedText.FullValue
+            - Value = TooltipOrInspector
+
+- 全局继承规则
+    - Accessibility
+        - 继承 XYUI-0 · 0.31
+        - 高频可交互信息必须具备 Role / Name / State
+        - Error / Warning / Status 不得仅靠颜色表达
+    - DPI
+        - 继承 XYUI-0 · 0.32
+        - 所有几何尺寸使用 DIP
+        - 禁止业务侧物理像素硬编码
+    - Localization
+        - 继承 XYUI-0 · 0.30 / 0.32
+        - Display Name 优先本地化
+        - Technical ID 作为次级信息
+        - 长文本允许 Expand / Ellipsis / Wrap
+    - Foundation Override
+        - XYUI-1 不重新定义 Foundation Color / Font / Radius / Border / Surface / Motion
+        - 所有基础视觉属性必须引用 XYUI-0 Token
+        - 组件独有参数必须以组件 Token 命名后再使用
+        - 未经批准禁止业务组件绕过 Foundation Token

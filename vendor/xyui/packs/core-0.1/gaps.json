@@ -1,0 +1,109 @@
+{
+  "phase": "XYUI-PILOT",
+  "status": "READY_FOR_XYLAB_PILOT",
+  "total": 12,
+  "by_spec": {
+    "XYUI1": [
+      {
+        "gap_id": "XYUI1-GAP-001",
+        "type": "MISSING_TOKEN",
+        "scope": "Icon glyph registry",
+        "detail": "0.15 Icon Foundation 未定义 glyph 注册表；组件级 glyph 名（XY.Icon.Copy / InfoCircle / ErrorCircle / WarningTriangle）暂保留为 COMPONENT_SPECIFIC，待 Foundation 补充 glyph 体系",
+        "blocking": false
+      }
+    ],
+    "XYUI2": [
+      {
+        "gap_id": "XYUI2-GAP-001",
+        "type": "MISSING_TOKEN",
+        "scope": "XY.Size.Switch 复合 token 的子属性访问（Width/Height）",
+        "detail": "XYUI-2 08·Switch 引用 XY.Size.Switch.Width/Height；Foundation 0.8 只有复合 token XY.Size.Switch=34x18 DIP。已映射到复合 token；子属性拆分待 A3 定义",
+        "blocking": false
+      },
+      {
+        "gap_id": "XYUI2-GAP-002",
+        "type": "REQUIRES_DECISION",
+        "scope": "XY.TextArea.MaxHeight = SceneToken",
+        "detail": "TextArea 最大高度依赖场景/视口上下文；Foundation 未定义 SceneToken；不得猜测具体值",
+        "blocking": false
+      },
+      {
+        "gap_id": "XYUI2-GAP-003",
+        "type": "REQUIRES_DECISION",
+        "scope": "XY.BoolProperty.InspectorColumn = SharedPropertyColumnRule",
+        "detail": "Inspector 统一 Property 列宽规则未在 XYUI-0 Foundation 定义；BoolProperty/NumberProperty 等依赖此规则；待 Foundation 补充",
+        "blocking": false
+      }
+    ],
+    "XYUI3": [
+      {
+        "gap_id": "XYUI3-GAP-001",
+        "type": "MISSING_TOKEN",
+        "item": "COMPONENT_SPECIFIC_CONTRAST_FOREGROUND",
+        "detail": "Source 中少量强调底色上的高对比前景语义（NavigationRail Tooltip Text / CommandPalette Input / StepNode.Completed IconColor）。XYUI-0 当前没有独立 OnAccent / ContrastForeground Semantic Token。本版不伪造 Canonical Token，由后续 Token Source 阶段登记并裁决。",
+        "occurrences": 5,
+        "blocking": false
+      }
+    ],
+    "XYUI4": [
+      {
+        "gap_id": "XYUI4-GAP-001",
+        "type": "MISSING_TOKEN",
+        "scope": "CONTRAST_SEPARATION_FOREGROUND",
+        "detail": "4.09 SelectionOutline 的 Separation Stroke（浅色分离描边）。Foundation 无 Contrast/SeparationForeground Token；与 XYUI3-GAP-001 同家族；由后续 Token Source 阶段登记并裁决",
+        "blocking": false
+      },
+      {
+        "gap_id": "XYUI4-GAP-002",
+        "type": "MISSING_TOKEN",
+        "scope": "FOCUS_RING_OFFSET",
+        "detail": "4.04 Focus in Selection Context 的 Outer Ring Offset（原稿 2–3 DIP）。Foundation Focus 无 Offset Token",
+        "blocking": false
+      },
+      {
+        "gap_id": "XYUI4-GAP-003",
+        "type": "REQUIRES_DECISION",
+        "scope": "MARQUEE_LASSO_FILL_OPACITY",
+        "detail": "4.07/4.08 Marquee/Lasso 的极低透明 Accent Fill（原稿 0.05–0.12）。Foundation XY.Opacity.* 六档无对应低透明 Accent Fill 档位",
+        "blocking": false
+      },
+      {
+        "gap_id": "XYUI4-GAP-004",
+        "type": "MISSING_TOKEN",
+        "scope": "CONDITIONAL_DROP_SEMANTIC",
+        "detail": "4.12 DropIndicator 的 Conditional Drop（需要转换/引用/替换/确认的放置）无 Foundation 专用 Semantic Token",
+        "blocking": false
+      }
+    ],
+    "XYUI6": [
+      {
+        "gap_id": "XYUI6-GAP-001",
+        "type": "MISSING_TOKEN",
+        "item": "SORT_INDICATOR_SEMANTIC",
+        "detail": "排序方向指示符（↑↓ 作为 Secondary Direction Indicator 的语义与 glyph）无 Foundation 专用 Semantic Token；排序主表达强制为字段 + 方向语义文字；与 XYUI1-GAP-001（glyph registry）同家族；由后续 Token Source 阶段登记并裁决",
+        "occurrences": 4,
+        "blocking": false
+      }
+    ],
+    "XYUI7": [
+      {
+        "gap_id": "XYUI7-GAP-001",
+        "type": "MISSING_TOKEN",
+        "item": "WINDOW_CHROME_METRIC",
+        "detail": "Window chrome 尺寸档（标题栏高度、窗口边框宽度、Resize Handle 命中区尺寸）在 Foundation 均未定义。Source 要求「标题栏紧凑」「Resize Handle 保持清晰」「合理 Min Width/Height」，但 XYUI-0 无 window chrome 尺寸档。不伪造 Canonical 数值，由后续 Token Source 阶段登记并裁决；与 XYUI1-GAP-001（glyph registry）/XYUI3-GAP-001（ContrastForeground）同属视觉体系缺口家族",
+        "occurrences": 3,
+        "blocking": false
+      }
+    ],
+    "XYUI8": [
+      {
+        "gap_id": "XYUI8-GAP-001",
+        "type": "MISSING_TOKEN",
+        "item": "CHART_SERIES_PALETTE",
+        "detail": "多系列图表 Series 色板与 Heatmap 低→高顺序色阶在 Foundation 均未定义（无 categorical palette / quantitative ramp）。Source 要求「颜色必须有明确高低语义、浅低深高、需要图例说明」，但 XYUI-0 仅有单一 Accent/Semantic 状态色。不伪造 Canonical 色值，由后续 Token Source 阶段登记并裁决；与 XYUI1-GAP-001 同家族",
+        "occurrences": 2,
+        "blocking": false
+      }
+    ]
+  }
+}

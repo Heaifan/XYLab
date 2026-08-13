@@ -1,0 +1,5607 @@
+{
+  "registry_version": "0.1.0",
+  "items": [
+    {
+      "id": "XYUI.Foundation.DesignPrinciples",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.1",
+        "decision_id": "XYUI0-0.1",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.1@L18-19",
+          "XYUI0-0.1@L20-66",
+          "XYUI0-0.1@L67-84",
+          "XYUI0-0.1@L85-96"
+        ]
+      },
+      "category": "foundation-principle",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "POLICY",
+          "note": "治理规则：优先级/强制等级/禁止项"
+        },
+        {
+          "type": "ACCEPTANCE_RULE",
+          "note": "P8 工程映射要求"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "DesignPrinciples-R01",
+          "text": "核心原则 P1~P8（编辑任务优先/语义辨识优先/高信息密度/视觉克制/Canvas 优先/状态明确即时可预测/自适应离散稳定可恢复/工程可执行可验证）",
+          "evidence_refs": [
+            "XYUI0-0.1@L20-66"
+          ]
+        },
+        {
+          "rule_id": "DesignPrinciples-R02",
+          "text": "决策优先级 Priority.1~6 + 冲突规则（高优先级覆盖低优先级；禁为装饰牺牲正确性；禁为形式统一牺牲语义辨识；禁为紧凑牺牲热区）",
+          "evidence_refs": [
+            "XYUI0-0.1@L67-84"
+          ]
+        },
+        {
+          "rule_id": "DesignPrinciples-R03",
+          "text": "强制等级 MUST/SHOULD/MAY/FORBIDDEN",
+          "evidence_refs": [
+            "XYUI0-0.1@L85-96"
+          ]
+        },
+        {
+          "rule_id": "DesignPrinciples-R04",
+          "text": "禁止项 10 条（Cardification/DecorationFirst/ColorOnlyState/MagicNumber/RandomSpacing/SemanticAmbiguity/HiddenUsefulInfo/UnrecoverableLayout/DecorativeMotion/ArbitraryOverride）",
+          "evidence_refs": [
+            "XYUI0-0.1@L97-117"
+          ]
+        },
+        {
+          "rule_id": "DesignPrinciples-R05",
+          "text": "默认底线（Accessibility 默认能力/DPI 不破坏结构/Localization 不破坏布局）+ 工程落地五对象",
+          "evidence_refs": [
+            "XYUI0-0.1@L118-136"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Principle.Priority.1",
+          "value": "Correctness",
+          "evidence_refs": [
+            "XYUI0-0.1@L137-169"
+          ]
+        },
+        {
+          "token_id": "XY.Principle.Priority.2",
+          "value": "SemanticClarity",
+          "evidence_refs": [
+            "XYUI0-0.1@L137-169"
+          ]
+        },
+        {
+          "token_id": "XY.Principle.Priority.3",
+          "value": "EditingEfficiency",
+          "evidence_refs": [
+            "XYUI0-0.1@L137-169"
+          ]
+        },
+        {
+          "token_id": "XY.Principle.Priority.4",
+          "value": "InformationDensity",
+          "evidence_refs": [
+            "XYUI0-0.1@L137-169"
+          ]
+        },
+        {
+          "token_id": "XY.Principle.Priority.5",
+          "value": "VisualConsistency",
+          "evidence_refs": [
+            "XYUI0-0.1@L137-169"
+          ]
+        },
+        {
+          "token_id": "XY.Principle.Priority.6",
+          "value": "Decoration",
+          "evidence_refs": [
+            "XYUI0-0.1@L137-169"
+          ]
+        },
+        {
+          "token_id": "XY.Principle.CompactVisual",
+          "value": "Allowed",
+          "evidence_refs": [
+            "XYUI0-0.1@L137-169"
+          ]
+        },
+        {
+          "token_id": "XY.Principle.CompactHitTarget",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.1@L137-169"
+          ]
+        },
+        {
+          "token_id": "XY.Principle.CanvasPriority",
+          "value": "Required",
+          "evidence_refs": [
+            "XYUI0-0.1@L137-169"
+          ]
+        },
+        {
+          "token_id": "XY.Principle.SemanticAmbiguity",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.1@L137-169"
+          ]
+        },
+        {
+          "token_id": "XY.Principle.DecorativeMotion",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.1@L137-169"
+          ]
+        },
+        {
+          "token_id": "XY.Principle.Cardification",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.1@L137-169"
+          ]
+        },
+        {
+          "token_id": "XY.Principle.MagicNumber",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.1@L137-169"
+          ]
+        },
+        {
+          "token_id": "XY.Principle.Recoverability",
+          "value": "Required",
+          "evidence_refs": [
+            "XYUI0-0.1@L137-169"
+          ]
+        },
+        {
+          "token_id": "XY.Principle.EngineeringMapping",
+          "value": "Required",
+          "evidence_refs": [
+            "XYUI0-0.1@L137-169"
+          ]
+        },
+        {
+          "token_id": "XY.Principle.Acceptance",
+          "value": "Required",
+          "evidence_refs": [
+            "XYUI0-0.1@L137-169"
+          ]
+        }
+      ],
+      "relationships": [],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": [
+        {
+          "rule_id": "DesignPrinciples-R05-ACC",
+          "text": "默认底线（Accessibility 默认能力/DPI 不破坏结构/Localization 不破坏布局）+ 工程落地五对象",
+          "evidence_refs": [
+            "XYUI0-0.1@L118-136"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "XYUI.Foundation.Border",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.10",
+        "decision_id": "XYUI0-0.10",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.10@L1056-1057",
+          "XYUI0-0.10@L1058-1066",
+          "XYUI0-0.10@L1067-1094"
+        ]
+      },
+      "category": "foundation-border",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "边框宽度五项"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Border-R01",
+          "text": "结构特征：Container/Panel 不默认完整外框/Panel 之间依赖 Divider/Input Button Control 1 DIP 完整边框/关键结构 2 DIP Strong/Focus 独立 2 DIP Outline/Selected 独立 2 DIP/普通结构边框焦点态选中态不共用语义/颜色沿用 0.2-D 不重复定义",
+          "evidence_refs": [
+            "XYUI0-0.10@L1058-1066"
+          ]
+        },
+        {
+          "rule_id": "Border-R02",
+          "text": "UI代码：Width None/Default/Strong/Focus/Selected=0/1/2/2/2、Style=Solid、Container=0+UseDivider、Control=1+Solid、Strong=2+Solid、Focus=2+Solid、Selected=2+Solid",
+          "evidence_refs": [
+            "XYUI0-0.10@L1067-1094"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Border.Width.None",
+          "value": "0 DIP",
+          "evidence_refs": [
+            "XYUI0-0.10@L1067-1094"
+          ]
+        },
+        {
+          "token_id": "XY.Border.Width.Default",
+          "value": "1 DIP",
+          "evidence_refs": [
+            "XYUI0-0.10@L1067-1094"
+          ]
+        },
+        {
+          "token_id": "XY.Border.Width.Strong",
+          "value": "2 DIP",
+          "evidence_refs": [
+            "XYUI0-0.10@L1067-1094"
+          ]
+        },
+        {
+          "token_id": "XY.Border.Width.Focus",
+          "value": "2 DIP",
+          "evidence_refs": [
+            "XYUI0-0.10@L1067-1094"
+          ]
+        },
+        {
+          "token_id": "XY.Border.Width.Selected",
+          "value": "2 DIP",
+          "evidence_refs": [
+            "XYUI0-0.10@L1067-1094"
+          ]
+        },
+        {
+          "token_id": "XY.Border.Style.Default",
+          "value": "Solid",
+          "evidence_refs": [
+            "XYUI0-0.10@L1067-1094"
+          ]
+        },
+        {
+          "token_id": "XY.Border.Container",
+          "value": "0 DIP/UseDivider",
+          "evidence_refs": [
+            "XYUI0-0.10@L1067-1094"
+          ]
+        },
+        {
+          "token_id": "XY.Border.Control",
+          "value": "1 DIP/Solid",
+          "evidence_refs": [
+            "XYUI0-0.10@L1067-1094"
+          ]
+        },
+        {
+          "token_id": "XY.Border.Strong",
+          "value": "2 DIP/Solid",
+          "evidence_refs": [
+            "XYUI0-0.10@L1067-1094"
+          ]
+        },
+        {
+          "token_id": "XY.Border.Focus",
+          "value": "2 DIP/Solid",
+          "evidence_refs": [
+            "XYUI0-0.10@L1067-1094"
+          ]
+        },
+        {
+          "token_id": "XY.Border.Selected",
+          "value": "2 DIP/Solid",
+          "evidence_refs": [
+            "XYUI0-0.10@L1067-1094"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.Divider",
+          "status": "PROPOSED",
+          "note": "Border 宽度与 Divider 厚度沿用",
+          "evidence_refs": []
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Divider",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.11",
+        "decision_id": "XYUI0-0.11",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.11@L1102-1103",
+          "XYUI0-0.11@L1104-1113",
+          "XYUI0-0.11@L1114-1131"
+        ]
+      },
+      "category": "foundation-border",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "分割线五类"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Divider-R01",
+          "text": "结构特征：Header 全幅/Inspector Section 左右 16 DIP 内缩/Tree List Row 左右 16 DIP 内缩/垂直 Panel Split 全高/大结构完整分割小结构内容对齐/颜色沿用 0.2-D/厚度沿用 0.10",
+          "evidence_refs": [
+            "XYUI0-0.11@L1104-1113"
+          ]
+        },
+        {
+          "rule_id": "Divider-R02",
+          "text": "UI代码：Header=0/1、Panel=0/1、Section=16/16/1、ListRow=16/16/1、VerticalSplit=0/1",
+          "evidence_refs": [
+            "XYUI0-0.11@L1114-1131"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Divider.Header",
+          "value": "0/1 DIP",
+          "evidence_refs": [
+            "XYUI0-0.11@L1114-1131"
+          ]
+        },
+        {
+          "token_id": "XY.Divider.Panel",
+          "value": "0/1 DIP",
+          "evidence_refs": [
+            "XYUI0-0.11@L1114-1131"
+          ]
+        },
+        {
+          "token_id": "XY.Divider.Section",
+          "value": "16/16/1 DIP",
+          "evidence_refs": [
+            "XYUI0-0.11@L1114-1131"
+          ]
+        },
+        {
+          "token_id": "XY.Divider.ListRow",
+          "value": "16/16/1 DIP",
+          "evidence_refs": [
+            "XYUI0-0.11@L1114-1131"
+          ]
+        },
+        {
+          "token_id": "XY.Divider.VerticalSplit",
+          "value": "0/1 DIP",
+          "evidence_refs": [
+            "XYUI0-0.11@L1114-1131"
+          ]
+        }
+      ],
+      "relationships": [],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.SurfaceRole",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.12",
+        "decision_id": "XYUI0-0.12",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.12@L1142-1143",
+          "XYUI0-0.12@L1144-1154",
+          "XYUI0-0.12@L1155-1175"
+        ]
+      },
+      "category": "foundation-surface",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "COMPONENT_RULE",
+          "note": "SurfaceRole 消费层映射十项"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "SurfaceRole-R01",
+          "text": "结构特征：App 最底层/Navigation 与普通 Panel 用 Panel/Inspector 次级用 PanelAlt/Canvas 独立/Input 用 Input 或 Raised/Popup Tooltip Menu 用 Overlay/Selected 用 Selected/Raised 只表示真正更高交互层级/禁止把 Raised 当重要卡片背景滥用",
+          "evidence_refs": [
+            "XYUI0-0.12@L1144-1154"
+          ]
+        },
+        {
+          "rule_id": "SurfaceRole-R02",
+          "text": "UI代码：SurfaceRole 十项映射 + Raised.Policy=InteractiveLayerOnly",
+          "evidence_refs": [
+            "XYUI0-0.12@L1155-1175"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.SurfaceRole.App",
+          "value": "XY.Surface.App",
+          "evidence_refs": [
+            "XYUI0-0.12@L1155-1175"
+          ]
+        },
+        {
+          "token_id": "XY.SurfaceRole.Navigation",
+          "value": "XY.Surface.Panel",
+          "evidence_refs": [
+            "XYUI0-0.12@L1155-1175"
+          ]
+        },
+        {
+          "token_id": "XY.SurfaceRole.Panel",
+          "value": "XY.Surface.Panel",
+          "evidence_refs": [
+            "XYUI0-0.12@L1155-1175"
+          ]
+        },
+        {
+          "token_id": "XY.SurfaceRole.PanelSecondary",
+          "value": "XY.Surface.PanelAlt",
+          "evidence_refs": [
+            "XYUI0-0.12@L1155-1175"
+          ]
+        },
+        {
+          "token_id": "XY.SurfaceRole.Canvas",
+          "value": "XY.Surface.Canvas",
+          "evidence_refs": [
+            "XYUI0-0.12@L1155-1175"
+          ]
+        },
+        {
+          "token_id": "XY.SurfaceRole.Toolbar",
+          "value": "XY.Surface.Toolbar",
+          "evidence_refs": [
+            "XYUI0-0.12@L1155-1175"
+          ]
+        },
+        {
+          "token_id": "XY.SurfaceRole.Input",
+          "value": "XY.Surface.Input",
+          "evidence_refs": [
+            "XYUI0-0.12@L1155-1175"
+          ]
+        },
+        {
+          "token_id": "XY.SurfaceRole.Overlay",
+          "value": "XY.Surface.Overlay",
+          "evidence_refs": [
+            "XYUI0-0.12@L1155-1175"
+          ]
+        },
+        {
+          "token_id": "XY.SurfaceRole.Selected",
+          "value": "XY.Surface.Selected",
+          "evidence_refs": [
+            "XYUI0-0.12@L1155-1175"
+          ]
+        },
+        {
+          "token_id": "XY.SurfaceRole.Raised.Policy",
+          "value": "InteractiveLayerOnly",
+          "evidence_refs": [
+            "XYUI0-0.12@L1155-1175"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "maps_to",
+          "target": "XYUI.Foundation.ColorSystem.Surface",
+          "status": "CONFIRMED",
+          "note": "SurfaceRole（Consumption/Role Mapping 层）→ XY.Surface.*（Semantic 层）；组件实际消费路径：Panel → SurfaceRole.Panel → Surface.Panel",
+          "evidence_refs": [
+            "XYUI0-0.12@L1155-1175"
+          ]
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Shadow",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.13",
+        "decision_id": "XYUI0-0.13",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "SOURCE_FORMATTING_DEFECT",
+        "source_defect_ref": [
+          "XYUI-SFD-001"
+        ],
+        "evidence_refs": [
+          "XYUI0-0.13@L1183-1184",
+          "XYUI0-0.13@L1185-1193",
+          "XYUI0-0.13@L1194-1215"
+        ]
+      },
+      "category": "foundation-shadow",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "阴影五级"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Shadow-R01",
+          "text": "结构特征：普通 Panel/Button/Input 不使用阴影/Tooltip 轻阴影/Popup Menu 中轻阴影/Drag Preview 略强/阴影只表达 Z 轴脱离关系/不使用 Shadow 承担结构分区/结构层级由 Surface/Divider/Border 负责",
+          "evidence_refs": [
+            "XYUI0-0.13@L1185-1193"
+          ]
+        },
+        {
+          "rule_id": "Shadow-R02",
+          "text": "UI代码：None、Tooltip(0,3,10,0.12)、Popup(0,6,18,0.14)、DragPreview(0,6,18,0.14)、Panel=None、Control=None",
+          "evidence_refs": [
+            "XYUI0-0.13@L1194-1215"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Shadow.None",
+          "value": "None",
+          "evidence_refs": [
+            "XYUI0-0.13@L1194-1215"
+          ]
+        },
+        {
+          "token_id": "XY.Shadow.Tooltip",
+          "value": "0/3/10/0.12",
+          "evidence_refs": [
+            "XYUI0-0.13@L1194-1215"
+          ]
+        },
+        {
+          "token_id": "XY.Shadow.Popup",
+          "value": "0/6/18/0.14",
+          "evidence_refs": [
+            "XYUI0-0.13@L1194-1215"
+          ]
+        },
+        {
+          "token_id": "XY.Shadow.DragPreview",
+          "value": "0/6/18/0.14",
+          "evidence_refs": [
+            "XYUI0-0.13@L1194-1215"
+          ]
+        },
+        {
+          "token_id": "XY.Shadow.Panel",
+          "value": "None",
+          "evidence_refs": [
+            "XYUI0-0.13@L1194-1215"
+          ]
+        },
+        {
+          "token_id": "XY.Shadow.Control",
+          "value": "None",
+          "evidence_refs": [
+            "XYUI0-0.13@L1194-1215"
+          ]
+        }
+      ],
+      "relationships": [],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Opacity",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.14",
+        "decision_id": "XYUI0-0.14",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.14@L1224-1225",
+          "XYUI0-0.14@L1226-1233",
+          "XYUI0-0.14@L1234-1246"
+        ]
+      },
+      "category": "foundation-opacity",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "透明度六档"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Opacity-R01",
+          "text": "结构特征：普通控件优先实色 Token/透明度服务弱化遮罩临时状态/Disabled 明显弱化仍可辨认/Drag Ghost 足够可见/Modal Backdrop 较轻遮罩/Hidden 轻微残影/Hover Selected Error 不依赖透明度表达",
+          "evidence_refs": [
+            "XYUI0-0.14@L1226-1233"
+          ]
+        },
+        {
+          "rule_id": "Opacity-R02",
+          "text": "UI代码六档：Subtle=0.72/Disabled=0.48/DragGhost=0.68/Backdrop=0.28/Hidden=0.18/Overlay=0.92",
+          "evidence_refs": [
+            "XYUI0-0.14@L1234-1246"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Opacity.Subtle",
+          "value": "0.72",
+          "evidence_refs": [
+            "XYUI0-0.14@L1234-1246"
+          ]
+        },
+        {
+          "token_id": "XY.Opacity.Disabled",
+          "value": "0.48",
+          "evidence_refs": [
+            "XYUI0-0.14@L1234-1246"
+          ]
+        },
+        {
+          "token_id": "XY.Opacity.DragGhost",
+          "value": "0.68",
+          "evidence_refs": [
+            "XYUI0-0.14@L1234-1246"
+          ]
+        },
+        {
+          "token_id": "XY.Opacity.Backdrop",
+          "value": "0.28",
+          "evidence_refs": [
+            "XYUI0-0.14@L1234-1246"
+          ]
+        },
+        {
+          "token_id": "XY.Opacity.Hidden",
+          "value": "0.18",
+          "evidence_refs": [
+            "XYUI0-0.14@L1234-1246"
+          ]
+        },
+        {
+          "token_id": "XY.Opacity.Overlay",
+          "value": "0.92",
+          "evidence_refs": [
+            "XYUI0-0.14@L1234-1246"
+          ]
+        }
+      ],
+      "relationships": [],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Icon",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.15",
+        "decision_id": "XYUI0-0.15",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.15@L1256-1257",
+          "XYUI0-0.15@L1258-1267",
+          "XYUI0-0.15@L1268-1289"
+        ]
+      },
+      "category": "foundation-icon",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "图标样式/描边/尺寸"
+        },
+        {
+          "type": "STATE",
+          "note": "Active/Disabled 图标状态色"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Icon-R01",
+          "text": "结构特征：默认 Outline 为主/Active Selected 允许局部填充/Active 用 Accent 色/普通轻量/Disabled 弱化色/尺寸沿用 0.8（14/16/20）/默认 Stroke 1.5 DIP/Round Cap Round Join",
+          "evidence_refs": [
+            "XYUI0-0.15@L1258-1267"
+          ]
+        },
+        {
+          "rule_id": "Icon-R02",
+          "text": "UI代码：Style.Default=Outline、Style.Active=Outline+LocalFill、Stroke=1.5、LineCap/Join=Round、Size S/M/L=14/16/20、State.Active=Accent.Strong+LocalFill、State.Disabled=Text.Disabled",
+          "evidence_refs": [
+            "XYUI0-0.15@L1268-1289"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Icon.Style.Default",
+          "value": "Outline",
+          "evidence_refs": [
+            "XYUI0-0.15@L1268-1289"
+          ]
+        },
+        {
+          "token_id": "XY.Icon.Style.Active",
+          "value": "Outline+LocalFill",
+          "evidence_refs": [
+            "XYUI0-0.15@L1268-1289"
+          ]
+        },
+        {
+          "token_id": "XY.Icon.Stroke",
+          "value": "1.5 DIP",
+          "evidence_refs": [
+            "XYUI0-0.15@L1268-1289"
+          ]
+        },
+        {
+          "token_id": "XY.Icon.LineCap",
+          "value": "Round",
+          "evidence_refs": [
+            "XYUI0-0.15@L1268-1289"
+          ]
+        },
+        {
+          "token_id": "XY.Icon.LineJoin",
+          "value": "Round",
+          "evidence_refs": [
+            "XYUI0-0.15@L1268-1289"
+          ]
+        },
+        {
+          "token_id": "XY.Icon.Size.S",
+          "value": "14 DIP",
+          "evidence_refs": [
+            "XYUI0-0.15@L1268-1289"
+          ]
+        },
+        {
+          "token_id": "XY.Icon.Size.M",
+          "value": "16 DIP",
+          "evidence_refs": [
+            "XYUI0-0.15@L1268-1289"
+          ]
+        },
+        {
+          "token_id": "XY.Icon.Size.L",
+          "value": "20 DIP",
+          "evidence_refs": [
+            "XYUI0-0.15@L1268-1289"
+          ]
+        },
+        {
+          "token_id": "XY.Icon.State.Active",
+          "value": "XY.Accent.Strong",
+          "evidence_refs": [
+            "XYUI0-0.15@L1268-1289"
+          ]
+        },
+        {
+          "token_id": "XY.Icon.State.Disabled",
+          "value": "XY.Text.Disabled",
+          "evidence_refs": [
+            "XYUI0-0.15@L1268-1289"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.Sizing",
+          "status": "PROPOSED",
+          "note": "Icon 尺寸沿用 Sizing（14/16/20）",
+          "evidence_refs": []
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Layout",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.16",
+        "decision_id": "XYUI0-0.16",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.16@L1298-1299",
+          "XYUI0-0.16@L1300-1310",
+          "XYUI0-0.16@L1311-1333"
+        ]
+      },
+      "category": "foundation-layout",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "布局四区默认尺寸"
+        },
+        {
+          "type": "COMPONENT_RULE",
+          "note": "Canvas 优先 + 可折叠 + 专注模式"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Layout-R01",
+          "text": "结构特征：默认 Left/Canvas/Right/Bottom 四区/中央 Canvas 优先/左导航较窄/右 Inspector 基础可用宽度/Bottom 日志区压缩/三区均可独立隐藏/Canvas 专注模式（不改变结构只临时收起辅助区）/不在本阶段引入自由 Docking",
+          "evidence_refs": [
+            "XYUI0-0.16@L1300-1310"
+          ]
+        },
+        {
+          "rule_id": "Layout-R02",
+          "text": "UI代码：Top.Height=32、Left.DefaultWidth=180、Right.DefaultWidth=250、Bottom.DefaultHeight=100、Center=FillRemaining、Collapsible=True×3、FocusMode=CanvasPriority、Hide Left/Right/Bottom=Allowed",
+          "evidence_refs": [
+            "XYUI0-0.16@L1311-1333"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Layout.Top.Height",
+          "value": "32 DIP",
+          "evidence_refs": [
+            "XYUI0-0.16@L1311-1333"
+          ]
+        },
+        {
+          "token_id": "XY.Layout.Left.DefaultWidth",
+          "value": "180 DIP",
+          "evidence_refs": [
+            "XYUI0-0.16@L1311-1333"
+          ]
+        },
+        {
+          "token_id": "XY.Layout.Right.DefaultWidth",
+          "value": "250 DIP",
+          "evidence_refs": [
+            "XYUI0-0.16@L1311-1333"
+          ]
+        },
+        {
+          "token_id": "XY.Layout.Bottom.DefaultHeight",
+          "value": "100 DIP",
+          "evidence_refs": [
+            "XYUI0-0.16@L1311-1333"
+          ]
+        },
+        {
+          "token_id": "XY.Layout.Center",
+          "value": "FillRemaining",
+          "evidence_refs": [
+            "XYUI0-0.16@L1311-1333"
+          ]
+        },
+        {
+          "token_id": "XY.Layout.Left.Collapsible",
+          "value": "True",
+          "evidence_refs": [
+            "XYUI0-0.16@L1311-1333"
+          ]
+        },
+        {
+          "token_id": "XY.Layout.Right.Collapsible",
+          "value": "True",
+          "evidence_refs": [
+            "XYUI0-0.16@L1311-1333"
+          ]
+        },
+        {
+          "token_id": "XY.Layout.Bottom.Collapsible",
+          "value": "True",
+          "evidence_refs": [
+            "XYUI0-0.16@L1311-1333"
+          ]
+        },
+        {
+          "token_id": "XY.Layout.FocusMode",
+          "value": "CanvasPriority",
+          "evidence_refs": [
+            "XYUI0-0.16@L1311-1333"
+          ]
+        },
+        {
+          "token_id": "XY.Layout.FocusMode.Hide",
+          "value": "Left/Right/Bottom Allowed",
+          "evidence_refs": [
+            "XYUI0-0.16@L1311-1333"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.ResizeSplitter",
+          "status": "PROPOSED",
+          "note": "Layout 默认尺寸被 Resize 引用（180/250/100）",
+          "evidence_refs": []
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Panel",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.17",
+        "decision_id": "XYUI0-0.17",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.17@L1343-1344",
+          "XYUI0-0.17@L1345-1375",
+          "XYUI0-0.17@L1376-1380",
+          "XYUI0-0.17@L1381-1409"
+        ]
+      },
+      "category": "foundation-panel",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "COMPONENT_RULE",
+          "note": "Panel 五部件组合与 Section/Footer 规则"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Panel-R01",
+          "text": "结构特征：Panel 不采用固定结构/五种结构部件 Header Toolbar Content Section Footer/不同 Panel 按职责组合（Navigation=Header+Content；Inspector=Header+Content+Section+Footer 可选；Dataset/Layer/Tool=Header+Toolbar+Content；显式确认面板=Header+Content+Section 可选+Footer）/Header 默认保留/Toolbar 仅高频操作/Content 始终主区/Section=标题+Divider+内容/禁止 Section 套 Card/Section 之间尽量减少无意义空白/Section 内有效信息填满/Footer 非强制/Footer 操作按钮组居中/标题与辅助 ID 优先并列显示",
+          "evidence_refs": [
+            "XYUI0-0.17@L1345-1375"
+          ]
+        },
+        {
+          "rule_id": "Panel-R02",
+          "text": "示例：道路 road-ffcb76；避免标题一行 ID 再占一行；高密度布局；普通 Inspector 不默认要求显式保存",
+          "evidence_refs": [
+            "XYUI0-0.17@L1376-1380"
+          ]
+        },
+        {
+          "rule_id": "Panel-R03",
+          "text": "UI代码：Structure=Semantic、Header=Visible、Toolbar=Optional、Content=FillRemaining、Section=Title+Divider+Content、Section.CardNesting=Forbidden、Section.Density=Compact、Section.EmptySpace=Minimize、Footer=Optional、Footer.Alignment=Center、TitleMeta.Layout=Inline、Padding=8、Field.RowGap=4、SectionGap=8",
+          "evidence_refs": [
+            "XYUI0-0.17@L1381-1409"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Panel.Structure",
+          "value": "Semantic",
+          "evidence_refs": [
+            "XYUI0-0.17@L1381-1409"
+          ]
+        },
+        {
+          "token_id": "XY.Panel.Header",
+          "value": "Visible",
+          "evidence_refs": [
+            "XYUI0-0.17@L1381-1409"
+          ]
+        },
+        {
+          "token_id": "XY.Panel.Toolbar",
+          "value": "Optional",
+          "evidence_refs": [
+            "XYUI0-0.17@L1381-1409"
+          ]
+        },
+        {
+          "token_id": "XY.Panel.Content",
+          "value": "FillRemaining",
+          "evidence_refs": [
+            "XYUI0-0.17@L1381-1409"
+          ]
+        },
+        {
+          "token_id": "XY.Panel.Section",
+          "value": "Title+Divider+Content",
+          "evidence_refs": [
+            "XYUI0-0.17@L1381-1409"
+          ]
+        },
+        {
+          "token_id": "XY.Panel.Section.CardNesting",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.17@L1381-1409"
+          ]
+        },
+        {
+          "token_id": "XY.Panel.Section.Density",
+          "value": "Compact",
+          "evidence_refs": [
+            "XYUI0-0.17@L1381-1409"
+          ]
+        },
+        {
+          "token_id": "XY.Panel.Section.EmptySpace",
+          "value": "Minimize",
+          "evidence_refs": [
+            "XYUI0-0.17@L1381-1409"
+          ]
+        },
+        {
+          "token_id": "XY.Panel.Footer",
+          "value": "Optional",
+          "evidence_refs": [
+            "XYUI0-0.17@L1381-1409"
+          ]
+        },
+        {
+          "token_id": "XY.Panel.Footer.Alignment",
+          "value": "Center",
+          "evidence_refs": [
+            "XYUI0-0.17@L1381-1409"
+          ]
+        },
+        {
+          "token_id": "XY.Panel.TitleMeta.Layout",
+          "value": "Inline",
+          "evidence_refs": [
+            "XYUI0-0.17@L1381-1409"
+          ]
+        },
+        {
+          "token_id": "XY.Panel.Padding",
+          "value": "8 DIP",
+          "evidence_refs": [
+            "XYUI0-0.17@L1381-1409"
+          ]
+        },
+        {
+          "token_id": "XY.Panel.Field.RowGap",
+          "value": "4 DIP",
+          "evidence_refs": [
+            "XYUI0-0.17@L1381-1409"
+          ]
+        },
+        {
+          "token_id": "XY.Panel.SectionGap",
+          "value": "8 DIP",
+          "evidence_refs": [
+            "XYUI0-0.17@L1381-1409"
+          ]
+        }
+      ],
+      "relationships": [],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Alignment",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.18",
+        "decision_id": "XYUI0-0.18",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.18@L1422-1423",
+          "XYUI0-0.18@L1424-1433",
+          "XYUI0-0.18@L1434-1438",
+          "XYUI0-0.18@L1439-1459"
+        ]
+      },
+      "category": "foundation-alignment",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "COMPONENT_RULE",
+          "note": "统一左对齐规则"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Alignment-R01",
+          "text": "结构特征：Label/Value/数字/ID/Path/状态文字默认左对齐/不因数值类型自动右对齐/稳定左侧阅读基线/标题与辅助 ID 可同行",
+          "evidence_refs": [
+            "XYUI0-0.18@L1424-1433"
+          ]
+        },
+        {
+          "rule_id": "Alignment-R02",
+          "text": "示例：道路 road-ffcb76；Footer 为特殊操作区，按钮组居中不受正文左对齐影响",
+          "evidence_refs": [
+            "XYUI0-0.18@L1434-1438"
+          ]
+        },
+        {
+          "rule_id": "Alignment-R03",
+          "text": "UI代码：Text/Label/Value/Number/ID/Path/Status/SectionContent=Left、TitleMeta=InlineLeft、FooterActions=Center",
+          "evidence_refs": [
+            "XYUI0-0.18@L1439-1459"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Alignment.Text",
+          "value": "Left",
+          "evidence_refs": [
+            "XYUI0-0.18@L1439-1459"
+          ]
+        },
+        {
+          "token_id": "XY.Alignment.Label",
+          "value": "Left",
+          "evidence_refs": [
+            "XYUI0-0.18@L1439-1459"
+          ]
+        },
+        {
+          "token_id": "XY.Alignment.Value",
+          "value": "Left",
+          "evidence_refs": [
+            "XYUI0-0.18@L1439-1459"
+          ]
+        },
+        {
+          "token_id": "XY.Alignment.Number",
+          "value": "Left",
+          "evidence_refs": [
+            "XYUI0-0.18@L1439-1459"
+          ]
+        },
+        {
+          "token_id": "XY.Alignment.ID",
+          "value": "Left",
+          "evidence_refs": [
+            "XYUI0-0.18@L1439-1459"
+          ]
+        },
+        {
+          "token_id": "XY.Alignment.Path",
+          "value": "Left",
+          "evidence_refs": [
+            "XYUI0-0.18@L1439-1459"
+          ]
+        },
+        {
+          "token_id": "XY.Alignment.Status",
+          "value": "Left",
+          "evidence_refs": [
+            "XYUI0-0.18@L1439-1459"
+          ]
+        },
+        {
+          "token_id": "XY.Alignment.SectionContent",
+          "value": "Left",
+          "evidence_refs": [
+            "XYUI0-0.18@L1439-1459"
+          ]
+        },
+        {
+          "token_id": "XY.Alignment.TitleMeta",
+          "value": "InlineLeft",
+          "evidence_refs": [
+            "XYUI0-0.18@L1439-1459"
+          ]
+        },
+        {
+          "token_id": "XY.Alignment.FooterActions",
+          "value": "Center",
+          "evidence_refs": [
+            "XYUI0-0.18@L1439-1459"
+          ]
+        }
+      ],
+      "relationships": [],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Density",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.19",
+        "decision_id": "XYUI0-0.19",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.19@L1470-1471",
+          "XYUI0-0.19@L1472-1490",
+          "XYUI0-0.19@L1491-1502",
+          "XYUI0-0.19@L1503-1536"
+        ]
+      },
+      "category": "foundation-density",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "Compact/Comfortable 两档参数"
+        },
+        {
+          "type": "INTERACTION_CONTRACT",
+          "note": "Auto 全局离散切换/手动锁定/迟滞"
+        },
+        {
+          "type": "STATE",
+          "note": "密度模式三态"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Density-R01",
+          "text": "结构特征：两套完整密度 Compact/Comfortable/默认 Auto/Auto 按可用空间整组切换/禁同一界面混用/可手动锁定任一档/锁定后禁 Auto 切换/离散 Token 禁连续缩放/切换只改尺寸间距不改颜色字体家族语义结构功能/Auto 切换必须迟滞避免闪切",
+          "evidence_refs": [
+            "XYUI0-0.19@L1472-1490"
+          ]
+        },
+        {
+          "rule_id": "Density-R02",
+          "text": "两档参数：Compact=TreeRow 28/Toolbar 30/Input 32/BaseGap 4/SectionGap 8；Comfortable=32/34/36/8/16",
+          "evidence_refs": [
+            "XYUI0-0.19@L1491-1502"
+          ]
+        },
+        {
+          "rule_id": "Density-R03",
+          "text": "UI代码：Mode=Auto(Allowed Auto|Compact|Comfortable)、Auto.Strategy=GlobalDiscreteSwitch、Auto.Scope=WholeUI、Auto.Hysteresis=Required、Compact/Comfortable 五参数、ManualLock=Supported、MixedMode=Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.19@L1503-1536"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Density.Mode",
+          "value": "Auto|Compact|Comfortable",
+          "evidence_refs": [
+            "XYUI0-0.19@L1503-1536"
+          ]
+        },
+        {
+          "token_id": "XY.Density.Auto",
+          "value": "GlobalDiscreteSwitch",
+          "evidence_refs": [
+            "XYUI0-0.19@L1503-1536"
+          ]
+        },
+        {
+          "token_id": "XY.Density.Auto.Scope",
+          "value": "WholeUI",
+          "evidence_refs": [
+            "XYUI0-0.19@L1503-1536"
+          ]
+        },
+        {
+          "token_id": "XY.Density.Auto.Hysteresis",
+          "value": "Required",
+          "evidence_refs": [
+            "XYUI0-0.19@L1503-1536"
+          ]
+        },
+        {
+          "token_id": "XY.Density.Compact.TreeRow",
+          "value": "28 DIP",
+          "evidence_refs": [
+            "XYUI0-0.19@L1503-1536"
+          ],
+          "relation": "maps_to",
+          "relation_target": "XY.Size.TreeRow"
+        },
+        {
+          "token_id": "XY.Density.Compact.Toolbar",
+          "value": "30 DIP",
+          "evidence_refs": [
+            "XYUI0-0.19@L1503-1536"
+          ],
+          "relation": "maps_to",
+          "relation_target": "XY.Size.Toolbar"
+        },
+        {
+          "token_id": "XY.Density.Compact.Input",
+          "value": "32 DIP",
+          "evidence_refs": [
+            "XYUI0-0.19@L1503-1536"
+          ],
+          "relation": "maps_to",
+          "relation_target": "XY.Size.Input"
+        },
+        {
+          "token_id": "XY.Density.Compact.Gap",
+          "value": "4 DIP",
+          "evidence_refs": [
+            "XYUI0-0.19@L1503-1536"
+          ]
+        },
+        {
+          "token_id": "XY.Density.Compact.SectionGap",
+          "value": "8 DIP",
+          "evidence_refs": [
+            "XYUI0-0.19@L1503-1536"
+          ]
+        },
+        {
+          "token_id": "XY.Density.Comfortable.TreeRow",
+          "value": "32 DIP",
+          "evidence_refs": [
+            "XYUI0-0.19@L1503-1536"
+          ],
+          "relation": "overrides",
+          "relation_target": "XY.Size.TreeRow"
+        },
+        {
+          "token_id": "XY.Density.Comfortable.Toolbar",
+          "value": "34 DIP",
+          "evidence_refs": [
+            "XYUI0-0.19@L1503-1536"
+          ],
+          "relation": "overrides",
+          "relation_target": "XY.Size.Toolbar"
+        },
+        {
+          "token_id": "XY.Density.Comfortable.Input",
+          "value": "36 DIP",
+          "evidence_refs": [
+            "XYUI0-0.19@L1503-1536"
+          ],
+          "relation": "overrides",
+          "relation_target": "XY.Size.Input"
+        },
+        {
+          "token_id": "XY.Density.Comfortable.Gap",
+          "value": "8 DIP",
+          "evidence_refs": [
+            "XYUI0-0.19@L1503-1536"
+          ]
+        },
+        {
+          "token_id": "XY.Density.Comfortable.SectionGap",
+          "value": "16 DIP",
+          "evidence_refs": [
+            "XYUI0-0.19@L1503-1536"
+          ]
+        },
+        {
+          "token_id": "XY.Density.ManualLock",
+          "value": "Supported",
+          "evidence_refs": [
+            "XYUI0-0.19@L1503-1536"
+          ]
+        },
+        {
+          "token_id": "XY.Density.MixedMode",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.19@L1503-1536"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.Sizing",
+          "status": "CONFIRMED",
+          "note": "Density 与 Sizing 的架构关系：XY.Size.* 为 Base Sizing Token；Compact 档 maps_to Base；Comfortable 档为 override 语义。防双真值漂移。",
+          "evidence_refs": [
+            "XYUI0-0.8@L959-1000",
+            "XYUI0-0.19@L1491-1536"
+          ]
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": [
+          {
+            "parameter": "XY.Density.Auto.EnterThreshold",
+            "status": "IMPLEMENTATION_TUNING_REQUIRED",
+            "note": "进入阈值；进入代码前必须 Token/Config 冻结，禁止 C# 魔法数",
+            "evidence_refs": [
+              "XYUI0-0.19@L1489-1490"
+            ]
+          },
+          {
+            "parameter": "XY.Density.Auto.ExitThreshold",
+            "status": "IMPLEMENTATION_TUNING_REQUIRED",
+            "note": "退出阈值（迟滞）；同上",
+            "evidence_refs": [
+              "XYUI0-0.19@L1489-1490"
+            ]
+          }
+        ]
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.ColorSystem",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.2",
+        "decision_id": "XYUI0-0.2",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.2@L170"
+        ]
+      },
+      "category": "foundation-color",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "POLICY",
+          "note": "色彩体系总纲：所有 XYUI 控件颜色从本体系派生"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "ColorSystem-R01",
+          "text": "总节，含 9 子节：0.2-A 核心色彩方向 / B 文字颜色层级 / C 背景层级 / D 边框与分割线 / E 强调色层级 / F 交互状态色 / G 语义色 / H 禁用只读锁定 / I 编辑器专用颜色",
+          "evidence_refs": [
+            "XYUI0-0.2@L170"
+          ]
+        }
+      ],
+      "tokens": [],
+      "relationships": [],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.ColorSystem.CorePalette",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.2-A",
+        "decision_id": "XYUI0-0.2-A",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.2-A@L180",
+          "XYUI0-0.2-A@L182-193",
+          "XYUI0-0.2-A@L194-238"
+        ]
+      },
+      "category": "foundation-color",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "12 组核心色彩母版"
+        },
+        {
+          "type": "POLICY",
+          "note": "禁止控件直接硬编码独立颜色"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "CorePalette-R01",
+          "text": "结构特征：冷灰基础+湖蓝 Accent、浅色高明度冷灰白、深色深蓝灰非纯黑、主色低饱和、状态色低饱和绿/金褐/红、Light/Dark 同一套语义 Token、禁控件硬编码颜色",
+          "evidence_refs": [
+            "XYUI0-0.2-A@L182-193"
+          ]
+        },
+        {
+          "rule_id": "CorePalette-R02",
+          "text": "UI代码 12 组双主题色：App/Panel/Raised/Border/Text.Primary/Text.Secondary/Accent/Hover/Selected/Success/Warning/Error",
+          "evidence_refs": [
+            "XYUI0-0.2-A@L194-238"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Color.App",
+          "value": "#F1F4F6/#171E24",
+          "evidence_refs": [
+            "XYUI0-0.2-A@L194-238"
+          ]
+        },
+        {
+          "token_id": "XY.Color.Panel",
+          "value": "#F7F9FA/#1F2931",
+          "evidence_refs": [
+            "XYUI0-0.2-A@L194-238"
+          ]
+        },
+        {
+          "token_id": "XY.Color.Raised",
+          "value": "#FFFFFF/#26333D",
+          "evidence_refs": [
+            "XYUI0-0.2-A@L194-238"
+          ]
+        },
+        {
+          "token_id": "XY.Color.Border",
+          "value": "#CFD8DE/#3D4C57",
+          "evidence_refs": [
+            "XYUI0-0.2-A@L194-238"
+          ]
+        },
+        {
+          "token_id": "XY.Text.Primary",
+          "value": "#2B3A44/#DEE6EA",
+          "evidence_refs": [
+            "XYUI0-0.2-A@L194-238"
+          ]
+        },
+        {
+          "token_id": "XY.Text.Secondary",
+          "value": "#647681/#B3BFC6",
+          "evidence_refs": [
+            "XYUI0-0.2-A@L194-238"
+          ]
+        },
+        {
+          "token_id": "XY.Color.Accent",
+          "value": "#3E6F9B/#78A5C9",
+          "evidence_refs": [
+            "XYUI0-0.2-A@L194-238"
+          ]
+        },
+        {
+          "token_id": "XY.Color.Hover",
+          "value": "#E6EEF4/#2C3B47",
+          "evidence_refs": [
+            "XYUI0-0.2-A@L194-238"
+          ]
+        },
+        {
+          "token_id": "XY.Color.Selected",
+          "value": "#D8E7F2/#35536A",
+          "evidence_refs": [
+            "XYUI0-0.2-A@L194-238"
+          ]
+        },
+        {
+          "token_id": "XY.Color.Success",
+          "value": "#4E7B66/#76A58A",
+          "evidence_refs": [
+            "XYUI0-0.2-A@L194-238"
+          ]
+        },
+        {
+          "token_id": "XY.Color.Warning",
+          "value": "#A57634/#D0A05C",
+          "evidence_refs": [
+            "XYUI0-0.2-A@L194-238"
+          ]
+        },
+        {
+          "token_id": "XY.Color.Error",
+          "value": "#B34F58/#D4767D",
+          "evidence_refs": [
+            "XYUI0-0.2-A@L194-238"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "child_of",
+          "target": "XYUI.Foundation.ColorSystem",
+          "status": "CONFIRMED",
+          "note": "0.2 子节 1/9（0.2-A）",
+          "evidence_refs": [
+            "XYUI0-0.2-A@L171-238"
+          ]
+        },
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.ColorSystem.Surface",
+          "status": "CONFIRMED",
+          "note": "Base Palette 层（0.2-A CorePalette）→ Semantic Surface 层（0.2-C）；TOKEN_LAYER_OVERLAP 分层共存，保留 XYUI-TLO-001 / XYUI-TLO-002 provenance",
+          "evidence_refs": [
+            "XYUI0-0.2-A@L194-238",
+            "XYUI0-0.2-C@L305-339"
+          ]
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.ColorSystem.TextColor",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.2-B",
+        "decision_id": "XYUI0-0.2-B",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.2-B@L247",
+          "XYUI0-0.2-B@L249-255",
+          "XYUI0-0.2-B@L256-281"
+        ]
+      },
+      "category": "foundation-color",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "文字颜色六档层级"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "TextColor-R01",
+          "text": "结构特征：Primary 正文清晰/Secondary 弱于正文可读/Tertiary 用于 ID 元数据/Placeholder 再弱化/Disabled 最低/Link 低饱和湖蓝/层级差异柔和避免脏乱感",
+          "evidence_refs": [
+            "XYUI0-0.2-B@L249-255"
+          ]
+        },
+        {
+          "rule_id": "TextColor-R02",
+          "text": "UI代码六档双主题：Primary/Secondary/Tertiary/Placeholder/Disabled/Link",
+          "evidence_refs": [
+            "XYUI0-0.2-B@L256-281"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Text.Primary",
+          "value": "#2B3A44/#DEE6EA",
+          "evidence_refs": [
+            "XYUI0-0.2-B@L256-281"
+          ]
+        },
+        {
+          "token_id": "XY.Text.Secondary",
+          "value": "#647681/#B3BFC6",
+          "evidence_refs": [
+            "XYUI0-0.2-B@L256-281"
+          ]
+        },
+        {
+          "token_id": "XY.Text.Tertiary",
+          "value": "#7A8B95/#99A7B0",
+          "evidence_refs": [
+            "XYUI0-0.2-B@L256-281"
+          ]
+        },
+        {
+          "token_id": "XY.Text.Placeholder",
+          "value": "#909DA5/#82919B",
+          "evidence_refs": [
+            "XYUI0-0.2-B@L256-281"
+          ]
+        },
+        {
+          "token_id": "XY.Text.Disabled",
+          "value": "#A8B2B8/#697983",
+          "evidence_refs": [
+            "XYUI0-0.2-B@L256-281"
+          ]
+        },
+        {
+          "token_id": "XY.Text.Link",
+          "value": "#4A789E/#82A9C5",
+          "evidence_refs": [
+            "XYUI0-0.2-B@L256-281"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "child_of",
+          "target": "XYUI.Foundation.ColorSystem",
+          "status": "CONFIRMED",
+          "note": "0.2 子节 2/9（0.2-B）",
+          "evidence_refs": [
+            "XYUI0-0.2-B@L239-281"
+          ]
+        },
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.ColorSystem.Accent",
+          "status": "PROPOSED",
+          "note": "TextColor.Link 与 Accent 同值（#4A789E）",
+          "evidence_refs": []
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.ColorSystem.Surface",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.2-C",
+        "decision_id": "XYUI0-0.2-C",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.2-C@L290",
+          "XYUI0-0.2-C@L292-304",
+          "XYUI0-0.2-C@L305-339"
+        ]
+      },
+      "category": "foundation-color",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "Surface 十档背景层级"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Surface-R01",
+          "text": "结构特征：App 最低/Panel 普通工具区/PanelAlt 轻微抬升/Raised 输入框与属性块/Overlay 浮层/Canvas 与工具面板明显区分/明度逐层抬升/不依赖阴影/禁面板自建无语义背景色",
+          "evidence_refs": [
+            "XYUI0-0.2-C@L292-304"
+          ]
+        },
+        {
+          "rule_id": "Surface-R02",
+          "text": "UI代码十档双主题：App/Panel/PanelAlt/Raised/Canvas/Toolbar/Input/Overlay/Selected/BorderReference",
+          "evidence_refs": [
+            "XYUI0-0.2-C@L305-339"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Surface.App",
+          "value": "#EEF2F5/#151C22",
+          "evidence_refs": [
+            "XYUI0-0.2-C@L305-339"
+          ]
+        },
+        {
+          "token_id": "XY.Surface.Panel",
+          "value": "#F5F8FA/#1C252C",
+          "evidence_refs": [
+            "XYUI0-0.2-C@L305-339"
+          ]
+        },
+        {
+          "token_id": "XY.Surface.PanelAlt",
+          "value": "#F9FBFC/#222E36",
+          "evidence_refs": [
+            "XYUI0-0.2-C@L305-339"
+          ]
+        },
+        {
+          "token_id": "XY.Surface.Raised",
+          "value": "#FFFFFF/#2A3842",
+          "evidence_refs": [
+            "XYUI0-0.2-C@L305-339"
+          ]
+        },
+        {
+          "token_id": "XY.Surface.Canvas",
+          "value": "#E6ECEF/#182128",
+          "evidence_refs": [
+            "XYUI0-0.2-C@L305-339"
+          ]
+        },
+        {
+          "token_id": "XY.Surface.Toolbar",
+          "value": "#F9FBFC/#222E36",
+          "evidence_refs": [
+            "XYUI0-0.2-C@L305-339"
+          ]
+        },
+        {
+          "token_id": "XY.Surface.Input",
+          "value": "#FFFFFF/#2A3842",
+          "evidence_refs": [
+            "XYUI0-0.2-C@L305-339"
+          ]
+        },
+        {
+          "token_id": "XY.Surface.Overlay",
+          "value": "#FFFFFF/#31424D",
+          "evidence_refs": [
+            "XYUI0-0.2-C@L305-339"
+          ]
+        },
+        {
+          "token_id": "XY.Surface.Selected",
+          "value": "#D8E7F2/#35536A",
+          "evidence_refs": [
+            "XYUI0-0.2-C@L305-339"
+          ]
+        },
+        {
+          "token_id": "XY.Surface.BorderReference",
+          "value": "#C9D3DA/#40515C",
+          "evidence_refs": [
+            "XYUI0-0.2-C@L305-339"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "child_of",
+          "target": "XYUI.Foundation.ColorSystem",
+          "status": "CONFIRMED",
+          "note": "0.2 子节 3/9（0.2-C）",
+          "evidence_refs": [
+            "XYUI0-0.2-C@L282-339"
+          ]
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.ColorSystem.BorderDivider",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.2-D",
+        "decision_id": "XYUI0-0.2-D",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.2-D@L348",
+          "XYUI0-0.2-D@L350-358",
+          "XYUI0-0.2-D@L359-381"
+        ]
+      },
+      "category": "foundation-color",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "边框与分割线六档色值"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "BorderDivider-R01",
+          "text": "结构特征：普通边框清晰/Strong 强于 Default/Selected 边界独立/Focus Ring 与 Selected 分离/Section 分割线清楚不喧宾夺主/输入区面板区画布区边界明确",
+          "evidence_refs": [
+            "XYUI0-0.2-D@L350-358"
+          ]
+        },
+        {
+          "rule_id": "BorderDivider-R02",
+          "text": "UI代码六档双主题：Subtle/Default/Strong/Divider.Default/Focus/Selected",
+          "evidence_refs": [
+            "XYUI0-0.2-D@L359-381"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Border.Subtle",
+          "value": "#D7E0E6/#303C45",
+          "evidence_refs": [
+            "XYUI0-0.2-D@L359-381"
+          ]
+        },
+        {
+          "token_id": "XY.Border.Default",
+          "value": "#BFCBD3/#465966",
+          "evidence_refs": [
+            "XYUI0-0.2-D@L359-381"
+          ]
+        },
+        {
+          "token_id": "XY.Border.Strong",
+          "value": "#95A7B3/#687B88",
+          "evidence_refs": [
+            "XYUI0-0.2-D@L359-381"
+          ]
+        },
+        {
+          "token_id": "XY.Divider.Default",
+          "value": "#CAD5DC/#3A4852",
+          "evidence_refs": [
+            "XYUI0-0.2-D@L359-381"
+          ]
+        },
+        {
+          "token_id": "XY.Border.Focus",
+          "value": "#5C8FB4/#699CC0",
+          "evidence_refs": [
+            "XYUI0-0.2-D@L359-381"
+          ]
+        },
+        {
+          "token_id": "XY.Border.Selected",
+          "value": "#3E78A4/#80B1D5",
+          "evidence_refs": [
+            "XYUI0-0.2-D@L359-381"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "child_of",
+          "target": "XYUI.Foundation.ColorSystem",
+          "status": "CONFIRMED",
+          "note": "0.2 子节 4/9（0.2-D）",
+          "evidence_refs": [
+            "XYUI0-0.2-D@L340-381"
+          ]
+        },
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.Border",
+          "status": "PROPOSED",
+          "note": "Border 色值层与宽度层引用",
+          "evidence_refs": []
+        },
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.Divider",
+          "status": "PROPOSED",
+          "note": "Border 色值层与 Divider 引用",
+          "evidence_refs": []
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.ColorSystem.Accent",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.2-E",
+        "decision_id": "XYUI0-0.2-E",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.2-E@L390",
+          "XYUI0-0.2-E@L392-402",
+          "XYUI0-0.2-E@L403-427"
+        ]
+      },
+      "category": "foundation-color",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "Accent 三级强调色"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Accent-R01",
+          "text": "结构特征：Accent 默认强调/AccentSoft 浅色选中与标签背景/AccentStrong 主按钮与当前工具/Link 与 Accent 一致/避免大面积蓝色/强调层级 Soft/Default/Strong 三级以内",
+          "evidence_refs": [
+            "XYUI0-0.2-E@L392-402"
+          ]
+        },
+        {
+          "rule_id": "Accent-R02",
+          "text": "UI代码七项双主题：Default/Soft/Strong/Link/Tool.Active/Button.Primary/Tag.Accent",
+          "evidence_refs": [
+            "XYUI0-0.2-E@L403-427"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Accent.Default",
+          "value": "#4A789E/#82A9C5",
+          "evidence_refs": [
+            "XYUI0-0.2-E@L403-427"
+          ]
+        },
+        {
+          "token_id": "XY.Accent.Soft",
+          "value": "#D8E7F2/#35536A",
+          "evidence_refs": [
+            "XYUI0-0.2-E@L403-427"
+          ]
+        },
+        {
+          "token_id": "XY.Accent.Strong",
+          "value": "#356C99/#7FB0D5",
+          "evidence_refs": [
+            "XYUI0-0.2-E@L403-427"
+          ]
+        },
+        {
+          "token_id": "XY.Text.Link",
+          "value": "#4A789E/#82A9C5",
+          "evidence_refs": [
+            "XYUI0-0.2-E@L403-427"
+          ]
+        },
+        {
+          "token_id": "XY.Tool.Active",
+          "value": "#356C99/#7FB0D5",
+          "evidence_refs": [
+            "XYUI0-0.2-E@L403-427"
+          ]
+        },
+        {
+          "token_id": "XY.Button.Primary",
+          "value": "#356C99/#7FB0D5",
+          "evidence_refs": [
+            "XYUI0-0.2-E@L403-427"
+          ]
+        },
+        {
+          "token_id": "XY.Tag.Accent",
+          "value": "#D8E7F2/#35536A",
+          "evidence_refs": [
+            "XYUI0-0.2-E@L403-427"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "child_of",
+          "target": "XYUI.Foundation.ColorSystem",
+          "status": "CONFIRMED",
+          "note": "0.2 子节 5/9（0.2-E）",
+          "evidence_refs": [
+            "XYUI0-0.2-E@L382-427"
+          ]
+        },
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.ColorSystem.InteractionStateColor",
+          "status": "PROPOSED",
+          "note": "AccentSoft 与 Selected 同值（#D8E7F2）",
+          "evidence_refs": []
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.ColorSystem.InteractionStateColor",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.2-F",
+        "decision_id": "XYUI0-0.2-F",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.2-F@L436",
+          "XYUI0-0.2-F@L438-450",
+          "XYUI0-0.2-F@L451-479"
+        ]
+      },
+      "category": "foundation-color",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "交互状态八项色值"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "InteractionStateColor-R01",
+          "text": "结构特征：普通交互蓝灰系/Hover 与 Pressed 连续层级/Selected 明显区别于 Hover/Active 当前工具/Focus 独立边界色不与 Selected 混用/Dragging 独立中性过渡色/Drop Target 与 Snap Candidate 青绿色/顶点编辑 Default/Hover/Selected/Snap 一眼区分",
+          "evidence_refs": [
+            "XYUI0-0.2-F@L438-450"
+          ]
+        },
+        {
+          "rule_id": "InteractionStateColor-R02",
+          "text": "UI代码八项双主题：Hover/Pressed/Selected/Active/Focus/Dragging/DropTarget.Background/DropTarget.Border",
+          "evidence_refs": [
+            "XYUI0-0.2-F@L451-479"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.State.Hover",
+          "value": "#E7EDF2/#2B3944",
+          "evidence_refs": [
+            "XYUI0-0.2-F@L451-479"
+          ]
+        },
+        {
+          "token_id": "XY.State.Pressed",
+          "value": "#D7E2EA/#344751",
+          "evidence_refs": [
+            "XYUI0-0.2-F@L451-479"
+          ]
+        },
+        {
+          "token_id": "XY.State.Selected",
+          "value": "#D8E7F2/#35536A",
+          "evidence_refs": [
+            "XYUI0-0.2-F@L451-479"
+          ]
+        },
+        {
+          "token_id": "XY.State.Active",
+          "value": "#D0E1ED/#36566B",
+          "evidence_refs": [
+            "XYUI0-0.2-F@L451-479"
+          ]
+        },
+        {
+          "token_id": "XY.State.Focus",
+          "value": "#5C8FB4/#699CC0",
+          "evidence_refs": [
+            "XYUI0-0.2-F@L451-479"
+          ]
+        },
+        {
+          "token_id": "XY.State.Dragging",
+          "value": "#E5E9EC/#303B43",
+          "evidence_refs": [
+            "XYUI0-0.2-F@L451-479"
+          ]
+        },
+        {
+          "token_id": "XY.State.DropTarget.Background",
+          "value": "#D5ECE5/#2B4C42",
+          "evidence_refs": [
+            "XYUI0-0.2-F@L451-479"
+          ]
+        },
+        {
+          "token_id": "XY.State.DropTarget.Border",
+          "value": "#3F8B78/#79B39F",
+          "evidence_refs": [
+            "XYUI0-0.2-F@L451-479"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "child_of",
+          "target": "XYUI.Foundation.ColorSystem",
+          "status": "CONFIRMED",
+          "note": "0.2 子节 6/9（0.2-F）",
+          "evidence_refs": [
+            "XYUI0-0.2-F@L428-479"
+          ]
+        },
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.InteractionState",
+          "status": "PROPOSED",
+          "note": "状态色层与状态规则层引用",
+          "evidence_refs": []
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.ColorSystem.SemanticColor",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.2-G",
+        "decision_id": "XYUI0-0.2-G",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.2-G@L488",
+          "XYUI0-0.2-G@L490-501",
+          "XYUI0-0.2-G@L502-548"
+        ]
+      },
+      "category": "foundation-color",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "语义色四类三态"
+        },
+        {
+          "type": "ACCEPTANCE_RULE",
+          "note": "禁止只靠颜色表达重要错误"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "SemanticColor-R01",
+          "text": "结构特征：Success 低饱和绿/Warning 金褐/Error 克制红/Info 冷蓝/每类含 Text/Border/Background/文字承担主要辨识/背景轻量提示/Error 避免荧光红/禁止只靠颜色表达重要错误（需结合图标或文字）",
+          "evidence_refs": [
+            "XYUI0-0.2-G@L490-501"
+          ]
+        },
+        {
+          "rule_id": "SemanticColor-R02",
+          "text": "UI代码四类 × Text/Border/Background × 双主题",
+          "evidence_refs": [
+            "XYUI0-0.2-G@L502-548"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Semantic.Success.Text",
+          "value": "#4E7B66/#76A58A",
+          "evidence_refs": [
+            "XYUI0-0.2-G@L502-548"
+          ]
+        },
+        {
+          "token_id": "XY.Semantic.Success.Border",
+          "value": "#80A58E/#5E856E",
+          "evidence_refs": [
+            "XYUI0-0.2-G@L502-548"
+          ]
+        },
+        {
+          "token_id": "XY.Semantic.Success.Background",
+          "value": "#E1EEE6/#263A2E",
+          "evidence_refs": [
+            "XYUI0-0.2-G@L502-548"
+          ]
+        },
+        {
+          "token_id": "XY.Semantic.Warning.Text",
+          "value": "#A57634/#D0A05C",
+          "evidence_refs": [
+            "XYUI0-0.2-G@L502-548"
+          ]
+        },
+        {
+          "token_id": "XY.Semantic.Warning.Border",
+          "value": "#C09B62/#8D6D45",
+          "evidence_refs": [
+            "XYUI0-0.2-G@L502-548"
+          ]
+        },
+        {
+          "token_id": "XY.Semantic.Warning.Background",
+          "value": "#F5ECDB/#3D3021",
+          "evidence_refs": [
+            "XYUI0-0.2-G@L502-548"
+          ]
+        },
+        {
+          "token_id": "XY.Semantic.Error.Text",
+          "value": "#B34F58/#D4767D",
+          "evidence_refs": [
+            "XYUI0-0.2-G@L502-548"
+          ]
+        },
+        {
+          "token_id": "XY.Semantic.Error.Border",
+          "value": "#CA8087/#92555B",
+          "evidence_refs": [
+            "XYUI0-0.2-G@L502-548"
+          ]
+        },
+        {
+          "token_id": "XY.Semantic.Error.Background",
+          "value": "#F8E4E6/#42282C",
+          "evidence_refs": [
+            "XYUI0-0.2-G@L502-548"
+          ]
+        },
+        {
+          "token_id": "XY.Semantic.Info.Text",
+          "value": "#4C7597/#82AAC8",
+          "evidence_refs": [
+            "XYUI0-0.2-G@L502-548"
+          ]
+        },
+        {
+          "token_id": "XY.Semantic.Info.Border",
+          "value": "#82A4BC/#5F7D93",
+          "evidence_refs": [
+            "XYUI0-0.2-G@L502-548"
+          ]
+        },
+        {
+          "token_id": "XY.Semantic.Info.Background",
+          "value": "#E3EEF5/#273946",
+          "evidence_refs": [
+            "XYUI0-0.2-G@L502-548"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "child_of",
+          "target": "XYUI.Foundation.ColorSystem",
+          "status": "CONFIRMED",
+          "note": "0.2 子节 7/9（0.2-G）",
+          "evidence_refs": [
+            "XYUI0-0.2-G@L480-548"
+          ]
+        },
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.ColorSystem.CorePalette",
+          "status": "PROPOSED",
+          "note": "Semantic 色 Text 值与 CorePalette 同值",
+          "evidence_refs": []
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": [
+        {
+          "rule_id": "SemanticColor-R02-ACC",
+          "text": "UI代码四类 × Text/Border/Background × 双主题",
+          "evidence_refs": [
+            "XYUI0-0.2-G@L502-548"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "XYUI.Foundation.ColorSystem.DisabledReadOnlyLocked",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.2-H",
+        "decision_id": "XYUI0-0.2-H",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.2-H@L557",
+          "XYUI0-0.2-H@L559-566",
+          "XYUI0-0.2-H@L567-598"
+        ]
+      },
+      "category": "foundation-color",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "禁用/只读/锁定三类三态"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "DisabledReadOnlyLocked-R01",
+          "text": "结构特征：Disabled 明显弱化/ReadOnly 保持正常可读性不做坏掉灰色/Locked 独立暖金褐明显区别于前两者/锁定同时配合锁图标或状态文字/Locked 暖色不等于 Warning（不调用 Warning Token）",
+          "evidence_refs": [
+            "XYUI0-0.2-H@L559-566"
+          ]
+        },
+        {
+          "rule_id": "DisabledReadOnlyLocked-R02",
+          "text": "UI代码三类 × Background/Text/Border × 双主题",
+          "evidence_refs": [
+            "XYUI0-0.2-H@L567-598"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.State.Disabled.Background",
+          "value": "#F0F2F3/#20282E",
+          "evidence_refs": [
+            "XYUI0-0.2-H@L567-598"
+          ]
+        },
+        {
+          "token_id": "XY.State.Disabled.Text",
+          "value": "#A8B2B8/#697983",
+          "evidence_refs": [
+            "XYUI0-0.2-H@L567-598"
+          ]
+        },
+        {
+          "token_id": "XY.State.Disabled.Border",
+          "value": "#D8DEE2/#354149",
+          "evidence_refs": [
+            "XYUI0-0.2-H@L567-598"
+          ]
+        },
+        {
+          "token_id": "XY.State.ReadOnly.Background",
+          "value": "#F7F9FA/#263139",
+          "evidence_refs": [
+            "XYUI0-0.2-H@L567-598"
+          ]
+        },
+        {
+          "token_id": "XY.State.ReadOnly.Text",
+          "value": "#647681/#B3BFC6",
+          "evidence_refs": [
+            "XYUI0-0.2-H@L567-598"
+          ]
+        },
+        {
+          "token_id": "XY.State.ReadOnly.Border",
+          "value": "#C5CFD6/#465660",
+          "evidence_refs": [
+            "XYUI0-0.2-H@L567-598"
+          ]
+        },
+        {
+          "token_id": "XY.State.Locked.Background",
+          "value": "#F3EEE5/#383126",
+          "evidence_refs": [
+            "XYUI0-0.2-H@L567-598"
+          ]
+        },
+        {
+          "token_id": "XY.State.Locked.Text",
+          "value": "#8A6A38/#D0AD72",
+          "evidence_refs": [
+            "XYUI0-0.2-H@L567-598"
+          ]
+        },
+        {
+          "token_id": "XY.State.Locked.Border",
+          "value": "#BCA378/#856F4E",
+          "evidence_refs": [
+            "XYUI0-0.2-H@L567-598"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "child_of",
+          "target": "XYUI.Foundation.ColorSystem",
+          "status": "CONFIRMED",
+          "note": "0.2 子节 8/9（0.2-H）",
+          "evidence_refs": [
+            "XYUI0-0.2-H@L549-598"
+          ]
+        },
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.InteractionState",
+          "status": "PROPOSED",
+          "note": "Locked/Disabled 状态色与状态规则引用",
+          "evidence_refs": []
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.ColorSystem.EditorColor",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.2-I",
+        "decision_id": "XYUI0-0.2-I",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.2-I@L607",
+          "XYUI0-0.2-I@L609-617",
+          "XYUI0-0.2-I@L618-677"
+        ]
+      },
+      "category": "foundation-color",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "编辑器专用十六项色值"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "EditorColor-R01",
+          "text": "结构特征：Selection 蓝色体系/普通顶点暖色边界/Anchor 暖橙/Handle 低饱和暖褐/Snap Candidate 青绿/Dirty 金褐/Grid 低存在感/XYZ 轴红绿蓝降低饱和度/Selection/Vertex/Snap 三类互不混淆",
+          "evidence_refs": [
+            "XYUI0-0.2-I@L609-617"
+          ]
+        },
+        {
+          "rule_id": "EditorColor-R02",
+          "text": "UI代码十六项双主题：Grid.Minor/Major、Guide、Selection、MultiSelection、BoundingBox、Vertex.Fill/Border、Anchor、Handle、Snap、Dirty、Hidden、Axis.X/Y/Z",
+          "evidence_refs": [
+            "XYUI0-0.2-I@L618-677"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Editor.Grid.Minor",
+          "value": "#D9E1E5/#26343C",
+          "evidence_refs": [
+            "XYUI0-0.2-I@L618-677"
+          ]
+        },
+        {
+          "token_id": "XY.Editor.Grid.Major",
+          "value": "#BECBD2/#3B4B55",
+          "evidence_refs": [
+            "XYUI0-0.2-I@L618-677"
+          ]
+        },
+        {
+          "token_id": "XY.Editor.Guide",
+          "value": "#8EA5B2/#708894",
+          "evidence_refs": [
+            "XYUI0-0.2-I@L618-677"
+          ]
+        },
+        {
+          "token_id": "XY.Editor.Selection",
+          "value": "#3979A7/#81B1D3",
+          "evidence_refs": [
+            "XYUI0-0.2-I@L618-677"
+          ]
+        },
+        {
+          "token_id": "XY.Editor.MultiSelection",
+          "value": "#6A8EA8/#7596AC",
+          "evidence_refs": [
+            "XYUI0-0.2-I@L618-677"
+          ]
+        },
+        {
+          "token_id": "XY.Editor.BoundingBox",
+          "value": "#5C8097/#7899AE",
+          "evidence_refs": [
+            "XYUI0-0.2-I@L618-677"
+          ]
+        },
+        {
+          "token_id": "XY.Editor.Vertex.Fill",
+          "value": "#FFF7F0/#3A302B",
+          "evidence_refs": [
+            "XYUI0-0.2-I@L618-677"
+          ]
+        },
+        {
+          "token_id": "XY.Editor.Vertex.Border",
+          "value": "#B36A4B/#D18B6C",
+          "evidence_refs": [
+            "XYUI0-0.2-I@L618-677"
+          ]
+        },
+        {
+          "token_id": "XY.Editor.Anchor",
+          "value": "#D66A3D/#E58963",
+          "evidence_refs": [
+            "XYUI0-0.2-I@L618-677"
+          ]
+        },
+        {
+          "token_id": "XY.Editor.Handle",
+          "value": "#B78568/#C49C85",
+          "evidence_refs": [
+            "XYUI0-0.2-I@L618-677"
+          ]
+        },
+        {
+          "token_id": "XY.Editor.Snap",
+          "value": "#348873/#77B39F",
+          "evidence_refs": [
+            "XYUI0-0.2-I@L618-677"
+          ]
+        },
+        {
+          "token_id": "XY.Editor.Dirty",
+          "value": "#A57634/#D0A05C",
+          "evidence_refs": [
+            "XYUI0-0.2-I@L618-677"
+          ]
+        },
+        {
+          "token_id": "XY.Editor.Hidden",
+          "value": "#9DA8AE/#687780",
+          "evidence_refs": [
+            "XYUI0-0.2-I@L618-677"
+          ]
+        },
+        {
+          "token_id": "XY.Editor.Axis.X",
+          "value": "#BE6262/#D17B7B",
+          "evidence_refs": [
+            "XYUI0-0.2-I@L618-677"
+          ]
+        },
+        {
+          "token_id": "XY.Editor.Axis.Y",
+          "value": "#67966E/#82B089",
+          "evidence_refs": [
+            "XYUI0-0.2-I@L618-677"
+          ]
+        },
+        {
+          "token_id": "XY.Editor.Axis.Z",
+          "value": "#557DB0/#7F9FC9",
+          "evidence_refs": [
+            "XYUI0-0.2-I@L618-677"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "child_of",
+          "target": "XYUI.Foundation.ColorSystem",
+          "status": "CONFIRMED",
+          "note": "0.2 子节 9/9（0.2-I）",
+          "evidence_refs": [
+            "XYUI0-0.2-I@L599-677"
+          ]
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.InteractionState",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.20",
+        "decision_id": "XYUI0-0.20",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.20@L1549-1550",
+          "XYUI0-0.20@L1551-1563",
+          "XYUI0-0.20@L1564-1584"
+        ]
+      },
+      "category": "foundation-interaction",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "STATE",
+          "note": "单状态覆盖与优先级链"
+        },
+        {
+          "type": "INTERACTION_CONTRACT",
+          "note": "状态切换不得改尺寸/不得布局跳动"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "InteractionState-R01",
+          "text": "结构特征：同一视觉通道（Visual Channel）同一时刻只有一个 Primary Owner/允许不同状态占用不同视觉通道合法组合（Selected=主体 Fill+主 Accent+持久选中边界；Hover=瞬时 Overlay/Edge；Focus=独立 Focus Ring；Dragging=Ghost/Drag 指示）/Hover 可以叠加绘制在 Selected 之上，但不得夺取 Selected 的主体视觉通道/Render/Composition Priority：Hover 高于 Selected；Visual Salience/Semantic Ownership：Selected 高于 Hover/禁多个状态争夺同一 Primary Channel 产生不可预测叠色/Disabled 最高/Pressed 优先于 Hover/Hover 优先于普通 Selected 表现（渲染顺序）/Dragging 与 DropTarget 独立状态/Focus 不在本项处理（0.21 单独定义）/状态切换不得改变控件尺寸不得布局跳动/状态颜色沿用 0.2-F（Amendment A 解释修订：Single=每视觉通道单一 Primary Owner；批准 2026-08-13）",
+          "evidence_refs": [
+            "XYUI0-0.20@L1551-1563"
+          ]
+        },
+        {
+          "rule_id": "InteractionState-R02",
+          "text": "UI代码：ComposeMode=Single（Amendment A 解释：Single=每视觉通道单一 Primary Owner，非“整个控件一次只表现一个状态”）、Layering=Forbidden（解释：禁止多个状态争夺同一 Primary Channel 产生不可预测叠色；不禁 Selected+Hover+Focus 跨通道合法组合）、Disabled.Priority=Highest、Pressed.Priority=AboveHover、Hover.Priority=AboveSelected（渲染顺序；视觉显著性 Selected>Hover）、Selected=PersistentBaseState、Dragging/DropTarget=Independent、ResizeOnChange=Forbidden、ColorSource=XY.State.*",
+          "evidence_refs": [
+            "XYUI0-0.20@L1564-1584"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.State.ComposeMode",
+          "value": "Single",
+          "evidence_refs": [
+            "XYUI0-0.20@L1564-1584"
+          ]
+        },
+        {
+          "token_id": "XY.State.Layering",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.20@L1564-1584"
+          ]
+        },
+        {
+          "token_id": "XY.State.Disabled.Priority",
+          "value": "Highest",
+          "evidence_refs": [
+            "XYUI0-0.20@L1564-1584"
+          ]
+        },
+        {
+          "token_id": "XY.State.Pressed.Priority",
+          "value": "AboveHover",
+          "evidence_refs": [
+            "XYUI0-0.20@L1564-1584"
+          ]
+        },
+        {
+          "token_id": "XY.State.Hover.Priority",
+          "value": "AboveSelected",
+          "evidence_refs": [
+            "XYUI0-0.20@L1564-1584"
+          ]
+        },
+        {
+          "token_id": "XY.State.Selected",
+          "value": "PersistentBaseState",
+          "evidence_refs": [
+            "XYUI0-0.20@L1564-1584"
+          ]
+        },
+        {
+          "token_id": "XY.State.Dragging",
+          "value": "Independent",
+          "evidence_refs": [
+            "XYUI0-0.20@L1564-1584"
+          ]
+        },
+        {
+          "token_id": "XY.State.DropTarget",
+          "value": "Independent",
+          "evidence_refs": [
+            "XYUI0-0.20@L1564-1584"
+          ]
+        },
+        {
+          "token_id": "XY.State.ResizeOnChange",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.20@L1564-1584"
+          ]
+        },
+        {
+          "token_id": "XY.State.ColorSource",
+          "value": "XY.State.*",
+          "evidence_refs": [
+            "XYUI0-0.20@L1564-1584"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.Focus",
+          "status": "CONFIRMED",
+          "note": "InteractionState 与 Focus 保持独立 Foundation；Focus Outline 不参与 0.20 背景状态覆盖链（原文 L1559-1560 明确），不得 child_of",
+          "evidence_refs": [
+            "XYUI0-0.20@L1559-1560",
+            "XYUI0-0.21@L1603"
+          ]
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Focus",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.21",
+        "decision_id": "XYUI0-0.21",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.21@L1596-1597",
+          "XYUI0-0.21@L1598-1611",
+          "XYUI0-0.21@L1612-1632"
+        ]
+      },
+      "category": "foundation-focus",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "STATE",
+          "note": "键盘/鼠标 Focus 差异"
+        },
+        {
+          "type": "INTERACTION_CONTRACT",
+          "note": "Focus 不参与 0.20 状态覆盖"
+        },
+        {
+          "type": "ACCEPTANCE_RULE",
+          "note": "Focus 不得改变控件尺寸与布局"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Focus-R01",
+          "text": "结构特征：键盘导航明确显示 Focus/鼠标点击普通控件后默认不持续显示 Focus Ring/减少蓝色焦点框/普通控件独立 Focus Outline/Focus Outline 不参与 0.20 背景状态覆盖/Canvas Panel 支持区域级 Focus/当前拥有快捷键输入权的编辑区域必须可识别/Canvas Focus 显示整个区域边界/Focus 不改变尺寸不推动布局/Focus 颜色沿用 XY.Border.Focus",
+          "evidence_refs": [
+            "XYUI0-0.21@L1598-1611"
+          ]
+        },
+        {
+          "rule_id": "Focus-R02",
+          "text": "UI代码：DisplayMode=FocusVisible、Keyboard=Visible、Mouse.PersistentRing=False、Control.OutlineWidth=2、Control.OutlineColor=XY.Border.Focus、Control.Resize=Forbidden、EditorArea=Supported、Canvas=AreaOutline、Panel=AreaFocus、ShortcutScope=FocusedArea",
+          "evidence_refs": [
+            "XYUI0-0.21@L1612-1632"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Focus.DisplayMode",
+          "value": "FocusVisible",
+          "evidence_refs": [
+            "XYUI0-0.21@L1612-1632"
+          ]
+        },
+        {
+          "token_id": "XY.Focus.Keyboard",
+          "value": "Visible",
+          "evidence_refs": [
+            "XYUI0-0.21@L1612-1632"
+          ]
+        },
+        {
+          "token_id": "XY.Focus.Mouse.PersistentRing",
+          "value": "False",
+          "evidence_refs": [
+            "XYUI0-0.21@L1612-1632"
+          ]
+        },
+        {
+          "token_id": "XY.Focus.Control.OutlineWidth",
+          "value": "2 DIP",
+          "evidence_refs": [
+            "XYUI0-0.21@L1612-1632"
+          ]
+        },
+        {
+          "token_id": "XY.Focus.Control.OutlineColor",
+          "value": "XY.Border.Focus",
+          "evidence_refs": [
+            "XYUI0-0.21@L1612-1632"
+          ]
+        },
+        {
+          "token_id": "XY.Focus.Control.Resize",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.21@L1612-1632"
+          ]
+        },
+        {
+          "token_id": "XY.Focus.EditorArea",
+          "value": "Supported",
+          "evidence_refs": [
+            "XYUI0-0.21@L1612-1632"
+          ]
+        },
+        {
+          "token_id": "XY.Focus.Canvas",
+          "value": "AreaOutline",
+          "evidence_refs": [
+            "XYUI0-0.21@L1612-1632"
+          ]
+        },
+        {
+          "token_id": "XY.Focus.Panel",
+          "value": "AreaFocus",
+          "evidence_refs": [
+            "XYUI0-0.21@L1612-1632"
+          ]
+        },
+        {
+          "token_id": "XY.Focus.ShortcutScope",
+          "value": "FocusedArea",
+          "evidence_refs": [
+            "XYUI0-0.21@L1612-1632"
+          ]
+        }
+      ],
+      "relationships": [],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": [
+        {
+          "rule_id": "Focus-R02-ACC",
+          "text": "UI代码：DisplayMode=FocusVisible、Keyboard=Visible、Mouse.PersistentRing=False、Control.OutlineWidth=2、Control.OutlineColor=XY.Border.Focus、Control.Resize=Forbidden、EditorArea=Supported、Canvas=AreaOutline、Panel=AreaFocus、ShortcutScope=FocusedArea",
+          "evidence_refs": [
+            "XYUI0-0.21@L1612-1632"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "XYUI.Foundation.HitTarget",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.22",
+        "decision_id": "XYUI0-0.22",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.22@L1643-1644",
+          "XYUI0-0.22@L1645-1656",
+          "XYUI0-0.22@L1657-1679"
+        ]
+      },
+      "category": "foundation-hit-target",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "热区尺寸九项"
+        },
+        {
+          "type": "INTERACTION_CONTRACT",
+          "note": "视觉尺寸与热区分离"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "HitTarget-R01",
+          "text": "结构特征：视觉尺寸与 Hit Target 分离/小控件允许更大隐形热区/扩大热区不改变视觉尺寸/Icon 扩展热区/Tree List 默认整行可点击/Vertex Anchor 独立扩大热区/Splitter 视觉极细但抓取区更宽/Drag Handle 扩大/不同交互对象按语义用不同热区/禁止所有小目标机械使用同一热区",
+          "evidence_refs": [
+            "XYUI0-0.22@L1645-1656"
+          ]
+        },
+        {
+          "rule_id": "HitTarget-R02",
+          "text": "UI代码：Mode=Semantic、VisualSizeIndependent=True、Icon.Min=28、TreeRow/ListRow=FullRow、Vertex/Anchor=20、Splitter=8、DragHandle=24、ResizeHandle=SemanticExpanded、ChangeVisualSize=Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.22@L1657-1679"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.HitTarget.Mode",
+          "value": "Semantic",
+          "evidence_refs": [
+            "XYUI0-0.22@L1657-1679"
+          ]
+        },
+        {
+          "token_id": "XY.HitTarget.VisualSizeIndependent",
+          "value": "True",
+          "evidence_refs": [
+            "XYUI0-0.22@L1657-1679"
+          ]
+        },
+        {
+          "token_id": "XY.HitTarget.Icon.Min",
+          "value": "28 DIP",
+          "evidence_refs": [
+            "XYUI0-0.22@L1657-1679"
+          ]
+        },
+        {
+          "token_id": "XY.HitTarget.TreeRow",
+          "value": "FullRow",
+          "evidence_refs": [
+            "XYUI0-0.22@L1657-1679"
+          ]
+        },
+        {
+          "token_id": "XY.HitTarget.ListRow",
+          "value": "FullRow",
+          "evidence_refs": [
+            "XYUI0-0.22@L1657-1679"
+          ]
+        },
+        {
+          "token_id": "XY.HitTarget.Vertex",
+          "value": "20 DIP",
+          "evidence_refs": [
+            "XYUI0-0.22@L1657-1679"
+          ]
+        },
+        {
+          "token_id": "XY.HitTarget.Anchor",
+          "value": "20 DIP",
+          "evidence_refs": [
+            "XYUI0-0.22@L1657-1679"
+          ]
+        },
+        {
+          "token_id": "XY.HitTarget.Splitter",
+          "value": "8 DIP",
+          "evidence_refs": [
+            "XYUI0-0.22@L1657-1679"
+          ]
+        },
+        {
+          "token_id": "XY.HitTarget.DragHandle",
+          "value": "24 DIP",
+          "evidence_refs": [
+            "XYUI0-0.22@L1657-1679"
+          ]
+        },
+        {
+          "token_id": "XY.HitTarget.ResizeHandle",
+          "value": "SemanticExpanded",
+          "evidence_refs": [
+            "XYUI0-0.22@L1657-1679"
+          ]
+        },
+        {
+          "token_id": "XY.HitTarget.ChangeVisualSize",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.22@L1657-1679"
+          ]
+        }
+      ],
+      "relationships": [],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Motion",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.23",
+        "decision_id": "XYUI0-0.23",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.23@L1691-1692",
+          "XYUI0-0.23@L1693-1709",
+          "XYUI0-0.23@L1710-1736"
+        ]
+      },
+      "category": "foundation-motion",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "动效时长四档"
+        },
+        {
+          "type": "INTERACTION_CONTRACT",
+          "note": "职责映射与禁掩盖延迟"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Motion-R01",
+          "text": "结构特征：不使用装饰性动画/不允许动画拖慢编辑操作/不同交互职责不同 Motion Token/Hover Pressed=Fast/Popup Tooltip=Normal/Section Panel Collapse=Slow/Dragging Snap=Instant/Dragging 实时跟手/Snap 即时反馈/Motion 不允许改变最终布局结果/禁止用动画掩盖响应延迟/高频编辑操作优先响应速度",
+          "evidence_refs": [
+            "XYUI0-0.23@L1693-1709"
+          ]
+        },
+        {
+          "rule_id": "Motion-R02",
+          "text": "UI代码：Instant=0ms、Fast=80ms、Normal=140ms、Slow=220ms + Hover/Pressed→Fast、Popup/Tooltip→Normal、SectionCollapse/PanelCollapse→Slow、Dragging/Snap→Instant、MaskLatency=Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.23@L1710-1736"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Motion.Instant",
+          "value": "0 ms",
+          "evidence_refs": [
+            "XYUI0-0.23@L1710-1736"
+          ]
+        },
+        {
+          "token_id": "XY.Motion.Fast",
+          "value": "80 ms",
+          "evidence_refs": [
+            "XYUI0-0.23@L1710-1736"
+          ]
+        },
+        {
+          "token_id": "XY.Motion.Normal",
+          "value": "140 ms",
+          "evidence_refs": [
+            "XYUI0-0.23@L1710-1736"
+          ]
+        },
+        {
+          "token_id": "XY.Motion.Slow",
+          "value": "220 ms",
+          "evidence_refs": [
+            "XYUI0-0.23@L1710-1736"
+          ]
+        },
+        {
+          "token_id": "XY.Motion.Hover",
+          "value": "Fast",
+          "evidence_refs": [
+            "XYUI0-0.23@L1710-1736"
+          ]
+        },
+        {
+          "token_id": "XY.Motion.Pressed",
+          "value": "Fast",
+          "evidence_refs": [
+            "XYUI0-0.23@L1710-1736"
+          ]
+        },
+        {
+          "token_id": "XY.Motion.Popup",
+          "value": "Normal",
+          "evidence_refs": [
+            "XYUI0-0.23@L1710-1736"
+          ]
+        },
+        {
+          "token_id": "XY.Motion.Tooltip",
+          "value": "Normal",
+          "evidence_refs": [
+            "XYUI0-0.23@L1710-1736"
+          ]
+        },
+        {
+          "token_id": "XY.Motion.SectionCollapse",
+          "value": "Slow",
+          "evidence_refs": [
+            "XYUI0-0.23@L1710-1736"
+          ]
+        },
+        {
+          "token_id": "XY.Motion.PanelCollapse",
+          "value": "Slow",
+          "evidence_refs": [
+            "XYUI0-0.23@L1710-1736"
+          ]
+        },
+        {
+          "token_id": "XY.Motion.Dragging",
+          "value": "Instant",
+          "evidence_refs": [
+            "XYUI0-0.23@L1710-1736"
+          ]
+        },
+        {
+          "token_id": "XY.Motion.Snap",
+          "value": "Instant",
+          "evidence_refs": [
+            "XYUI0-0.23@L1710-1736"
+          ]
+        },
+        {
+          "token_id": "XY.Motion.MaskLatency",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.23@L1710-1736"
+          ]
+        }
+      ],
+      "relationships": [],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.ZIndex",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.24",
+        "decision_id": "XYUI0-0.24",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "SOURCE_FORMATTING_DEFECT",
+        "source_defect_ref": [
+          "XYUI-SFD-003"
+        ],
+        "evidence_refs": [
+          "XYUI0-0.24@L1747-1748",
+          "XYUI0-0.24@L1749-1769",
+          "XYUI0-0.24@L1770-1778",
+          "XYUI0-0.24@L1779-1801"
+        ]
+      },
+      "category": "foundation-zindex",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "COMPONENT_RULE",
+          "note": "五 Host 体系与边界规则"
+        },
+        {
+          "type": "POLICY",
+          "note": "禁魔法 ZIndex/禁跨 Host 覆盖"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "ZIndex-R01",
+          "text": "结构特征：普通组件原则上不直接填写具体 ZIndex/浮层统一由专用 Host 管理/避免 999 9999 魔法数字/Host 体系：Content→Overlay Host（Dropdown Popup Canvas Overlay 临时浮层）→Drag Host（Preview Ghost）→Modal Host（Modal+Backdrop 必须覆盖普通编辑工作区）→Tooltip Host",
+          "evidence_refs": [
+            "XYUI0-0.24@L1749-1769"
+          ]
+        },
+        {
+          "rule_id": "ZIndex-R02",
+          "text": "临时说明：Tooltip 位于普通应用浮层体系最高层/各 Host 内部允许局部排序/局部排序不得跨越 Host 语义边界/普通业务组件不得绕过 Host 强行提高 ZIndex/Tooltip Modal Drag 必须进入正式 Host/Z-Index 只负责叠放顺序/Surface 由 0.12 管理/Shadow 由 0.13 管理",
+          "evidence_refs": [
+            "XYUI0-0.24@L1770-1778"
+          ]
+        },
+        {
+          "rule_id": "ZIndex-R03",
+          "text": "UI代码：Mode=ContextStack、DirectValue=Forbidden、ContentHost=BaseContent、OverlayHost=PopupAndOverlay、DragHost=DragPreview、ModalHost=Modal、TooltipHost=Tooltip+Priority Topmost、ModalHost.Above=Content|Overlay|Drag、CrossHostOverride=Forbidden、MagicNumber=Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.24@L1779-1801"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.ZIndex.Mode",
+          "value": "ContextStack",
+          "evidence_refs": [
+            "XYUI0-0.24@L1779-1801"
+          ]
+        },
+        {
+          "token_id": "XY.ZIndex.DirectValue",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.24@L1779-1801"
+          ]
+        },
+        {
+          "token_id": "XY.Overlay.ContentHost",
+          "value": "BaseContent",
+          "evidence_refs": [
+            "XYUI0-0.24@L1779-1801"
+          ]
+        },
+        {
+          "token_id": "XY.Overlay.OverlayHost",
+          "value": "PopupAndOverlay",
+          "evidence_refs": [
+            "XYUI0-0.24@L1779-1801"
+          ]
+        },
+        {
+          "token_id": "XY.Overlay.DragHost",
+          "value": "DragPreview",
+          "evidence_refs": [
+            "XYUI0-0.24@L1779-1801"
+          ]
+        },
+        {
+          "token_id": "XY.Overlay.ModalHost",
+          "value": "Modal",
+          "evidence_refs": [
+            "XYUI0-0.24@L1779-1801"
+          ]
+        },
+        {
+          "token_id": "XY.Overlay.TooltipHost",
+          "value": "Tooltip",
+          "evidence_refs": [
+            "XYUI0-0.24@L1792-1793"
+          ],
+          "note": "SFD-003 规范化：Role=Tooltip 归属 TooltipHost（Source 缩进异常，语义已裁定）"
+        },
+        {
+          "token_id": "XY.Overlay.TooltipHost.Priority",
+          "value": "Topmost",
+          "evidence_refs": [
+            "XYUI0-0.24@L1794-1795"
+          ]
+        },
+        {
+          "token_id": "XY.Overlay.ModalHost.Above",
+          "value": "Content|Overlay|Drag",
+          "evidence_refs": [
+            "XYUI0-0.24@L1779-1801"
+          ]
+        },
+        {
+          "token_id": "XY.Overlay.CrossHostOverride",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.24@L1779-1801"
+          ]
+        },
+        {
+          "token_id": "XY.ZIndex.MagicNumber",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.24@L1779-1801"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.SurfaceRole",
+          "status": "PROPOSED",
+          "note": "Z-Index 引用 Surface 规则",
+          "evidence_refs": []
+        },
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.Shadow",
+          "status": "PROPOSED",
+          "note": "Z-Index 引用 Shadow 规则",
+          "evidence_refs": []
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Scroll",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.25",
+        "decision_id": "XYUI0-0.25",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.25@L1811-1812",
+          "XYUI0-0.25@L1813-1823",
+          "XYUI0-0.25@L1824-1844"
+        ]
+      },
+      "category": "foundation-scroll",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "INTERACTION_CONTRACT",
+          "note": "Hover-Reveal 滚动行为"
+        },
+        {
+          "type": "TOKEN",
+          "note": "滚动条宽度"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Scroll-R01",
+          "text": "结构特征：Scrollbar 平时弱化/Track 默认隐藏/鼠标进入或滚动时增强/停止离开后重新弱化/Tree Inspector Log 各自独立滚动/Popup 内滚动优先自己消费/Canvas Wheel 不走普通 Scroll/视觉宽度沿用 0.8/不因隐藏 Track 改变布局宽度",
+          "evidence_refs": [
+            "XYUI0-0.25@L1813-1823"
+          ]
+        },
+        {
+          "rule_id": "Scroll-R02",
+          "text": "UI代码：DisplayMode=HoverReveal、Track=Hidden、Thumb=Subtle、Hover/Scrolling=Emphasized、Width=10、PanelIsolation=True、PopupPriority=LocalFirst、Canvas=Independent、LayoutShift=Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.25@L1824-1844"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Scrollbar.DisplayMode",
+          "value": "HoverReveal",
+          "evidence_refs": [
+            "XYUI0-0.25@L1824-1844"
+          ]
+        },
+        {
+          "token_id": "XY.Scrollbar.Track",
+          "value": "Hidden",
+          "evidence_refs": [
+            "XYUI0-0.25@L1824-1844"
+          ]
+        },
+        {
+          "token_id": "XY.Scrollbar.Thumb",
+          "value": "Subtle",
+          "evidence_refs": [
+            "XYUI0-0.25@L1824-1844"
+          ]
+        },
+        {
+          "token_id": "XY.Scrollbar.Hover",
+          "value": "Emphasized",
+          "evidence_refs": [
+            "XYUI0-0.25@L1824-1844"
+          ]
+        },
+        {
+          "token_id": "XY.Scrollbar.Scrolling",
+          "value": "Emphasized",
+          "evidence_refs": [
+            "XYUI0-0.25@L1824-1844"
+          ]
+        },
+        {
+          "token_id": "XY.Scrollbar.Width",
+          "value": "10 DIP",
+          "evidence_refs": [
+            "XYUI0-0.25@L1824-1844"
+          ]
+        },
+        {
+          "token_id": "XY.Scroll.PanelIsolation",
+          "value": "True",
+          "evidence_refs": [
+            "XYUI0-0.25@L1824-1844"
+          ]
+        },
+        {
+          "token_id": "XY.Scroll.PopupPriority",
+          "value": "LocalFirst",
+          "evidence_refs": [
+            "XYUI0-0.25@L1824-1844"
+          ]
+        },
+        {
+          "token_id": "XY.Scroll.Canvas",
+          "value": "Independent",
+          "evidence_refs": [
+            "XYUI0-0.25@L1824-1844"
+          ]
+        },
+        {
+          "token_id": "XY.Scroll.LayoutShift",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.25@L1824-1844"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.Sizing",
+          "status": "PROPOSED",
+          "note": "Scrollbar 宽度沿用 Sizing 10 DIP",
+          "evidence_refs": []
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.DragDrop",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.26",
+        "decision_id": "XYUI0-0.26",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.26@L1853-1854",
+          "XYUI0-0.26@L1855-1871",
+          "XYUI0-0.26@L1872-1890"
+        ]
+      },
+      "category": "foundation-dnd",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "INTERACTION_CONTRACT",
+          "note": "拖拽阈值/入口/取消语义"
+        },
+        {
+          "type": "STATE",
+          "note": "Before/Into/After DropZone 状态"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "DragDrop-R01",
+          "text": "结构特征：Drag Entry 分两类——Handle（显式拖动控制柄：Resize Handle/Vertex Handle/Splitter Handle/Slider Thumb）与 DirectTarget（对象本体即合法操作目标：Canvas Object/Map Marker/Node/Card/Selected Geometry）/DirectTarget 仅在组件明确声明 DirectManipulation=Allowed 时成立，不等于 Anywhere Drag/普通文本区域负责点击选择编辑/Pointer Down 不立即进入 Drag/移动超过阈值才 Drag Start/默认阈值 6 DIP/Dragging 实时跟手/Drop Target 明确区分 Before Into After/非法目标立即拒绝/禁止拖入自身与自身子级/Esc 取消/Drop Cancel 无副作用/Drag Preview 不遮挡关键目标信息（Amendment B 入口扩展：Handle|DirectTarget；批准 2026-08-13）",
+          "evidence_refs": [
+            "XYUI0-0.26@L1855-1871"
+          ]
+        },
+        {
+          "rule_id": "DragDrop-R02",
+          "text": "UI代码：Entry=Handle|DirectTarget（DirectTarget 需组件声明 DirectManipulation=Allowed）、Threshold=6、Start=AfterThreshold、DropZone=Before|Into|After、InvalidTarget=ImmediateReject、CancelKey=Esc、CancelSideEffect=Forbidden、Preview=FollowPointer、Motion=Instant",
+          "evidence_refs": [
+            "XYUI0-0.26@L1872-1890"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Drag.Entry",
+          "value": "Handle|DirectTarget",
+          "evidence_refs": [
+            "XYUI0-0.26@L1872-1890"
+          ]
+        },
+        {
+          "token_id": "XY.Drag.Threshold",
+          "value": "6 DIP",
+          "evidence_refs": [
+            "XYUI0-0.26@L1872-1890"
+          ]
+        },
+        {
+          "token_id": "XY.Drag.Start",
+          "value": "AfterThreshold",
+          "evidence_refs": [
+            "XYUI0-0.26@L1872-1890"
+          ]
+        },
+        {
+          "token_id": "XY.Drag.DropZone",
+          "value": "Before|Into|After",
+          "evidence_refs": [
+            "XYUI0-0.26@L1872-1890"
+          ]
+        },
+        {
+          "token_id": "XY.Drag.InvalidTarget",
+          "value": "ImmediateReject",
+          "evidence_refs": [
+            "XYUI0-0.26@L1872-1890"
+          ]
+        },
+        {
+          "token_id": "XY.Drag.CancelKey",
+          "value": "Esc",
+          "evidence_refs": [
+            "XYUI0-0.26@L1872-1890"
+          ]
+        },
+        {
+          "token_id": "XY.Drag.CancelSideEffect",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.26@L1872-1890"
+          ]
+        },
+        {
+          "token_id": "XY.Drag.Preview",
+          "value": "FollowPointer",
+          "evidence_refs": [
+            "XYUI0-0.26@L1872-1890"
+          ]
+        },
+        {
+          "token_id": "XY.Drag.Motion",
+          "value": "Instant",
+          "evidence_refs": [
+            "XYUI0-0.26@L1872-1890"
+          ]
+        }
+      ],
+      "relationships": [],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.ResizeSplitter",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.27",
+        "decision_id": "XYUI0-0.27",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.27@L1898-1899",
+          "XYUI0-0.27@L1900-1920",
+          "XYUI0-0.27@L1921-1953"
+        ]
+      },
+      "category": "foundation-resize",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "INTERACTION_CONTRACT",
+          "note": "连续拖动/吸附/双击复位/折叠"
+        },
+        {
+          "type": "TOKEN",
+          "note": "三区默认尺寸"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "ResizeSplitter-R01",
+          "text": "结构特征：Left/Right/Bottom 独立尺寸约束/禁共用同一 Min Default Max/Splitter 连续拖动/靠近关键尺寸自动吸附（Compact/Default/Wide）/用户可停留其他合法尺寸/双击恢复 Default/支持折叠展开/折叠后 Canvas FillRemaining/展开恢复最近有效尺寸或 Default/Splitter Visual 极细/Hit Target 沿用 0.22 至少 8 DIP/禁误拖后难以恢复/0.16 已定默认布局尺寸保持不变（Left 180/Right 250/Bottom 100）",
+          "evidence_refs": [
+            "XYUI0-0.27@L1900-1920"
+          ]
+        },
+        {
+          "rule_id": "ResizeSplitter-R02",
+          "text": "UI代码：Mode=Semantic、Continuous=True、Snap=Enabled、SnapPoints=Compact|Default|Wide、DoubleClick=RestoreDefault、Left/Right/Bottom.Default=180/250/100、Range=Semantic×3、Collapse/Expand=Supported、Canvas=FillRemaining、Splitter.Visual=1、Splitter.HitTarget=8",
+          "evidence_refs": [
+            "XYUI0-0.27@L1921-1953"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Resize.Mode",
+          "value": "Semantic",
+          "evidence_refs": [
+            "XYUI0-0.27@L1921-1953"
+          ]
+        },
+        {
+          "token_id": "XY.Resize.Continuous",
+          "value": "True",
+          "evidence_refs": [
+            "XYUI0-0.27@L1921-1953"
+          ]
+        },
+        {
+          "token_id": "XY.Resize.Snap",
+          "value": "Enabled",
+          "evidence_refs": [
+            "XYUI0-0.27@L1921-1953"
+          ]
+        },
+        {
+          "token_id": "XY.Resize.SnapPoints",
+          "value": "Compact|Default|Wide",
+          "evidence_refs": [
+            "XYUI0-0.27@L1921-1953"
+          ]
+        },
+        {
+          "token_id": "XY.Resize.DoubleClick",
+          "value": "RestoreDefault",
+          "evidence_refs": [
+            "XYUI0-0.27@L1921-1953"
+          ]
+        },
+        {
+          "token_id": "XY.Resize.Left.Default",
+          "value": "180 DIP",
+          "evidence_refs": [
+            "XYUI0-0.27@L1921-1953"
+          ]
+        },
+        {
+          "token_id": "XY.Resize.Right.Default",
+          "value": "250 DIP",
+          "evidence_refs": [
+            "XYUI0-0.27@L1921-1953"
+          ]
+        },
+        {
+          "token_id": "XY.Resize.Bottom.Default",
+          "value": "100 DIP",
+          "evidence_refs": [
+            "XYUI0-0.27@L1921-1953"
+          ]
+        },
+        {
+          "token_id": "XY.Resize.Left.Range",
+          "value": "Semantic",
+          "evidence_refs": [
+            "XYUI0-0.27@L1921-1953"
+          ]
+        },
+        {
+          "token_id": "XY.Resize.Right.Range",
+          "value": "Semantic",
+          "evidence_refs": [
+            "XYUI0-0.27@L1921-1953"
+          ]
+        },
+        {
+          "token_id": "XY.Resize.Bottom.Range",
+          "value": "Semantic",
+          "evidence_refs": [
+            "XYUI0-0.27@L1921-1953"
+          ]
+        },
+        {
+          "token_id": "XY.Resize.Collapse",
+          "value": "Supported",
+          "evidence_refs": [
+            "XYUI0-0.27@L1921-1953"
+          ]
+        },
+        {
+          "token_id": "XY.Resize.Expand",
+          "value": "Supported",
+          "evidence_refs": [
+            "XYUI0-0.27@L1921-1953"
+          ]
+        },
+        {
+          "token_id": "XY.Resize.Canvas",
+          "value": "FillRemaining",
+          "evidence_refs": [
+            "XYUI0-0.27@L1921-1953"
+          ]
+        },
+        {
+          "token_id": "XY.Resize.Splitter.Visual",
+          "value": "1 DIP",
+          "evidence_refs": [
+            "XYUI0-0.27@L1921-1953"
+          ]
+        },
+        {
+          "token_id": "XY.Resize.Splitter.HitTarget",
+          "value": "8 DIP",
+          "evidence_refs": [
+            "XYUI0-0.27@L1921-1953"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.HitTarget",
+          "status": "PROPOSED",
+          "note": "Splitter Hit Target 沿用 0.22 ≥8 DIP",
+          "evidence_refs": []
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Cursor",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.28",
+        "decision_id": "XYUI0-0.28",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.28@L1966-1967",
+          "XYUI0-0.28@L1968-1983",
+          "XYUI0-0.28@L1984-2008"
+        ]
+      },
+      "category": "foundation-cursor",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "十二项 Cursor 语义映射"
+        },
+        {
+          "type": "STATE",
+          "note": "光标状态即时切换"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Cursor-R01",
+          "text": "结构特征：Cursor 预告下一次操作/标准输入沿用系统基础 Cursor/Select=Arrow/Text=IBeam/Resize=标准/Pan=Hand/Draw=Crosshair/Move=Move/Dragging 可进入拖拽状态/Copy 可显示/Forbidden 立即显示/Snap Candidate 瞬时语义/切换即时/同操作同 Cursor/禁无语义 Cursor",
+          "evidence_refs": [
+            "XYUI0-0.28@L1968-1983"
+          ]
+        },
+        {
+          "rule_id": "Cursor-R02",
+          "text": "UI代码：Select=Arrow、Text=IBeam、Pan=Hand、Draw=Crosshair、Move=Move、Resize.H=SizeWE、Resize.V=SizeNS、Dragging=Drag、Copy=Copy、Forbidden=Forbidden、SnapCandidate=Snap、SwitchDelay=0ms",
+          "evidence_refs": [
+            "XYUI0-0.28@L1984-2008"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Cursor.Select",
+          "value": "Arrow",
+          "evidence_refs": [
+            "XYUI0-0.28@L1984-2008"
+          ]
+        },
+        {
+          "token_id": "XY.Cursor.Text",
+          "value": "IBeam",
+          "evidence_refs": [
+            "XYUI0-0.28@L1984-2008"
+          ]
+        },
+        {
+          "token_id": "XY.Cursor.Pan",
+          "value": "Hand",
+          "evidence_refs": [
+            "XYUI0-0.28@L1984-2008"
+          ]
+        },
+        {
+          "token_id": "XY.Cursor.Draw",
+          "value": "Crosshair",
+          "evidence_refs": [
+            "XYUI0-0.28@L1984-2008"
+          ]
+        },
+        {
+          "token_id": "XY.Cursor.Move",
+          "value": "Move",
+          "evidence_refs": [
+            "XYUI0-0.28@L1984-2008"
+          ]
+        },
+        {
+          "token_id": "XY.Cursor.Resize.Horizontal",
+          "value": "SizeWE",
+          "evidence_refs": [
+            "XYUI0-0.28@L1984-2008"
+          ]
+        },
+        {
+          "token_id": "XY.Cursor.Resize.Vertical",
+          "value": "SizeNS",
+          "evidence_refs": [
+            "XYUI0-0.28@L1984-2008"
+          ]
+        },
+        {
+          "token_id": "XY.Cursor.Dragging",
+          "value": "Drag",
+          "evidence_refs": [
+            "XYUI0-0.28@L1984-2008"
+          ]
+        },
+        {
+          "token_id": "XY.Cursor.Copy",
+          "value": "Copy",
+          "evidence_refs": [
+            "XYUI0-0.28@L1984-2008"
+          ]
+        },
+        {
+          "token_id": "XY.Cursor.Forbidden",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.28@L1984-2008"
+          ]
+        },
+        {
+          "token_id": "XY.Cursor.SnapCandidate",
+          "value": "Snap",
+          "evidence_refs": [
+            "XYUI0-0.28@L1984-2008"
+          ]
+        },
+        {
+          "token_id": "XY.Cursor.SwitchDelay",
+          "value": "0 ms",
+          "evidence_refs": [
+            "XYUI0-0.28@L1984-2008"
+          ]
+        }
+      ],
+      "relationships": [],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Tooltip",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.29",
+        "decision_id": "XYUI0-0.29",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.29@L2017-2018",
+          "XYUI0-0.29@L2019-2033",
+          "XYUI0-0.29@L2034-2054"
+        ]
+      },
+      "category": "foundation-tooltip",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "Tooltip 参数六项"
+        },
+        {
+          "type": "INTERACTION_CONTRACT",
+          "note": "自适应方向/不抢指针/不阻塞"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Tooltip-R01",
+          "text": "结构特征：短内容单行/较长自动换行/较多允许双层结构/MaxWidth 受限默认 280 DIP/首次 Hover 延迟约 400ms/靠边缘自动调整方向（可左右上下翻转）优先避免超出 Viewport/Tooltip 不抢 Pointer 不阻塞操作/超长说明不得继续塞进 Tooltip（复杂帮助进 Help/Inspector）/紧凑 Padding 行距",
+          "evidence_refs": [
+            "XYUI0-0.29@L2019-2033"
+          ]
+        },
+        {
+          "rule_id": "Tooltip-R02",
+          "text": "UI代码：ContentMode=Adaptive、ShortContent=SingleLine、LongContent=WrapOrTwoLevel、MaxWidth=280、ShowDelay=400ms、ViewportAvoidance=Enabled、AutoFlip=Enabled、PointerCapture=Forbidden、InteractiveContent=Forbidden、LongHelp=HelpOrInspector",
+          "evidence_refs": [
+            "XYUI0-0.29@L2034-2054"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Tooltip.ContentMode",
+          "value": "Adaptive",
+          "evidence_refs": [
+            "XYUI0-0.29@L2034-2054"
+          ]
+        },
+        {
+          "token_id": "XY.Tooltip.ShortContent",
+          "value": "SingleLine",
+          "evidence_refs": [
+            "XYUI0-0.29@L2034-2054"
+          ]
+        },
+        {
+          "token_id": "XY.Tooltip.LongContent",
+          "value": "WrapOrTwoLevel",
+          "evidence_refs": [
+            "XYUI0-0.29@L2034-2054"
+          ]
+        },
+        {
+          "token_id": "XY.Tooltip.MaxWidth",
+          "value": "280 DIP",
+          "evidence_refs": [
+            "XYUI0-0.29@L2034-2054"
+          ]
+        },
+        {
+          "token_id": "XY.Tooltip.ShowDelay",
+          "value": "400 ms",
+          "evidence_refs": [
+            "XYUI0-0.29@L2034-2054"
+          ]
+        },
+        {
+          "token_id": "XY.Tooltip.ViewportAvoidance",
+          "value": "Enabled",
+          "evidence_refs": [
+            "XYUI0-0.29@L2034-2054"
+          ]
+        },
+        {
+          "token_id": "XY.Tooltip.AutoFlip",
+          "value": "Enabled",
+          "evidence_refs": [
+            "XYUI0-0.29@L2034-2054"
+          ]
+        },
+        {
+          "token_id": "XY.Tooltip.PointerCapture",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.29@L2034-2054"
+          ]
+        },
+        {
+          "token_id": "XY.Tooltip.InteractiveContent",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.29@L2034-2054"
+          ]
+        },
+        {
+          "token_id": "XY.Tooltip.LongHelp",
+          "value": "HelpOrInspector",
+          "evidence_refs": [
+            "XYUI0-0.29@L2034-2054"
+          ]
+        }
+      ],
+      "relationships": [],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Typography",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.3",
+        "decision_id": "XYUI0-0.3",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.3@L678"
+        ]
+      },
+      "category": "foundation-typography",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "POLICY",
+          "note": "字体体系总纲"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Typography-R01",
+          "text": "总节，含 3 子节：0.3-A Font Family / B Font Weight / C Font Size",
+          "evidence_refs": [
+            "XYUI0-0.3@L678"
+          ]
+        }
+      ],
+      "tokens": [],
+      "relationships": [],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Typography.FontFamily",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.3-A",
+        "decision_id": "XYUI0-0.3-A",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "SOURCE_FORMATTING_DEFECT",
+        "source_defect_ref": [
+          "XYUI-SFD-002"
+        ],
+        "evidence_refs": [
+          "XYUI0-0.3-A@L696-697",
+          "XYUI0-0.3-A@L698-705",
+          "XYUI0-0.3-A@L706-722"
+        ]
+      },
+      "category": "foundation-typography",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "字体家族与准入策略"
+        },
+        {
+          "type": "POLICY",
+          "note": "可商用准入 + 随包 License"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "FontFamily-R01",
+          "text": "结构特征：中文与普通 UI 统一思源黑体/英文普通界面随 UI Sans 用思源黑体西文字形/ID 路径坐标数值技术数据用 Source Code Pro/满足可商用字体准入/随包保留 License 与 Copyright/不允许控件自行指定其他字体",
+          "evidence_refs": [
+            "XYUI0-0.3-A@L698-705"
+          ]
+        },
+        {
+          "rule_id": "FontFamily-R02",
+          "text": "UI代码：UI=Source Han Sans SC、Default=UI、Mono=Source Code Pro、Technical=Mono、Fallback.CJK=Noto Sans CJK SC、Fallback.Mono=Noto Sans Mono、Policy.CommercialOnly=True、Policy.BundleLicense=Required",
+          "evidence_refs": [
+            "XYUI0-0.3-A@L706-722"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Font.UI",
+          "value": "Source Han Sans SC",
+          "evidence_refs": [
+            "XYUI0-0.3-A@L706-722"
+          ]
+        },
+        {
+          "token_id": "XY.Font.Default",
+          "value": "XY.Font.UI",
+          "evidence_refs": [
+            "XYUI0-0.3-A@L706-722"
+          ]
+        },
+        {
+          "token_id": "XY.Font.Mono",
+          "value": "Source Code Pro",
+          "evidence_refs": [
+            "XYUI0-0.3-A@L706-722"
+          ]
+        },
+        {
+          "token_id": "XY.Font.Technical",
+          "value": "XY.Font.Mono",
+          "evidence_refs": [
+            "XYUI0-0.3-A@L706-722"
+          ]
+        },
+        {
+          "token_id": "XY.Font.Fallback.CJK",
+          "value": "Noto Sans CJK SC",
+          "evidence_refs": [
+            "XYUI0-0.3-A@L706-722"
+          ]
+        },
+        {
+          "token_id": "XY.Font.Fallback.Mono",
+          "value": "Noto Sans Mono",
+          "evidence_refs": [
+            "XYUI0-0.3-A@L706-722"
+          ]
+        },
+        {
+          "token_id": "XY.Font.Policy.CommercialOnly",
+          "value": "True",
+          "evidence_refs": [
+            "XYUI0-0.3-A@L706-722"
+          ]
+        },
+        {
+          "token_id": "XY.Font.Policy.BundleLicense",
+          "value": "Required",
+          "evidence_refs": [
+            "XYUI0-0.3-A@L706-722"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "child_of",
+          "target": "XYUI.Foundation.Typography",
+          "status": "CONFIRMED",
+          "note": "0.3 子节 1/3（0.3-A）",
+          "evidence_refs": [
+            "XYUI0-0.3-A@L679-722"
+          ]
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Typography.FontWeight",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.3-B",
+        "decision_id": "XYUI0-0.3-B",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.3-B@L736-737",
+          "XYUI0-0.3-B@L738-744",
+          "XYUI0-0.3-B@L745-765"
+        ]
+      },
+      "category": "foundation-typography",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "字重四档"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "FontWeight-R01",
+          "text": "结构特征：400 正文与字段值/500 字段标签/600 Section Panel Button/700 仅页面级或最高标题/不依赖字号单独制造层级/避免大量 700 过重",
+          "evidence_refs": [
+            "XYUI0-0.3-B@L738-744"
+          ]
+        },
+        {
+          "rule_id": "FontWeight-R02",
+          "text": "UI代码：Regular=400/Medium=500/Semibold=600/Bold=700 + Body=400/Label=500/Section=600/PanelTitle=600/PageTitle=700/Button.Primary=600",
+          "evidence_refs": [
+            "XYUI0-0.3-B@L745-765"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.FontWeight.Regular",
+          "value": "400",
+          "evidence_refs": [
+            "XYUI0-0.3-B@L745-765"
+          ]
+        },
+        {
+          "token_id": "XY.FontWeight.Medium",
+          "value": "500",
+          "evidence_refs": [
+            "XYUI0-0.3-B@L745-765"
+          ]
+        },
+        {
+          "token_id": "XY.FontWeight.Semibold",
+          "value": "600",
+          "evidence_refs": [
+            "XYUI0-0.3-B@L745-765"
+          ]
+        },
+        {
+          "token_id": "XY.FontWeight.Bold",
+          "value": "700",
+          "evidence_refs": [
+            "XYUI0-0.3-B@L745-765"
+          ]
+        },
+        {
+          "token_id": "XY.Text.Body.FontWeight",
+          "value": "400",
+          "evidence_refs": [
+            "XYUI0-0.3-B@L745-765"
+          ]
+        },
+        {
+          "token_id": "XY.Text.Label.FontWeight",
+          "value": "500",
+          "evidence_refs": [
+            "XYUI0-0.3-B@L745-765"
+          ]
+        },
+        {
+          "token_id": "XY.Text.Section.FontWeight",
+          "value": "600",
+          "evidence_refs": [
+            "XYUI0-0.3-B@L745-765"
+          ]
+        },
+        {
+          "token_id": "XY.Text.PanelTitle.FontWeight",
+          "value": "600",
+          "evidence_refs": [
+            "XYUI0-0.3-B@L745-765"
+          ]
+        },
+        {
+          "token_id": "XY.Text.PageTitle.FontWeight",
+          "value": "700",
+          "evidence_refs": [
+            "XYUI0-0.3-B@L745-765"
+          ]
+        },
+        {
+          "token_id": "XY.Button.Primary.FontWeight",
+          "value": "600",
+          "evidence_refs": [
+            "XYUI0-0.3-B@L745-765"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "child_of",
+          "target": "XYUI.Foundation.Typography",
+          "status": "CONFIRMED",
+          "note": "0.3 子节 2/3（0.3-B）",
+          "evidence_refs": [
+            "XYUI0-0.3-B@L724-765"
+          ]
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Typography.FontSize",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.3-C",
+        "decision_id": "XYUI0-0.3-C",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.3-C@L777-778",
+          "XYUI0-0.3-C@L779-788",
+          "XYUI0-0.3-C@L789-805"
+        ]
+      },
+      "category": "foundation-typography",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "字号八档"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "FontSize-R01",
+          "text": "结构特征：正文 14 DIP/字段标签 15/Section 17/Panel 标题 20/页面标题 24/Caption 不低于 12/技术数据 13 等宽/优先长时间阅读舒适度/接受一定程度信息密度下降",
+          "evidence_refs": [
+            "XYUI0-0.3-C@L779-788"
+          ]
+        },
+        {
+          "rule_id": "FontSize-R02",
+          "text": "UI代码：Caption=12/Auxiliary=13/Body=14/Label=15/Section=17/PanelTitle=20/PageTitle=24/Mono=13",
+          "evidence_refs": [
+            "XYUI0-0.3-C@L789-805"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.FontSize.Caption",
+          "value": "12 DIP",
+          "evidence_refs": [
+            "XYUI0-0.3-C@L789-805"
+          ]
+        },
+        {
+          "token_id": "XY.FontSize.Auxiliary",
+          "value": "13 DIP",
+          "evidence_refs": [
+            "XYUI0-0.3-C@L789-805"
+          ]
+        },
+        {
+          "token_id": "XY.FontSize.Body",
+          "value": "14 DIP",
+          "evidence_refs": [
+            "XYUI0-0.3-C@L789-805"
+          ]
+        },
+        {
+          "token_id": "XY.FontSize.Label",
+          "value": "15 DIP",
+          "evidence_refs": [
+            "XYUI0-0.3-C@L789-805"
+          ]
+        },
+        {
+          "token_id": "XY.FontSize.Section",
+          "value": "17 DIP",
+          "evidence_refs": [
+            "XYUI0-0.3-C@L789-805"
+          ]
+        },
+        {
+          "token_id": "XY.FontSize.PanelTitle",
+          "value": "20 DIP",
+          "evidence_refs": [
+            "XYUI0-0.3-C@L789-805"
+          ]
+        },
+        {
+          "token_id": "XY.FontSize.PageTitle",
+          "value": "24 DIP",
+          "evidence_refs": [
+            "XYUI0-0.3-C@L789-805"
+          ]
+        },
+        {
+          "token_id": "XY.FontSize.Mono",
+          "value": "13 DIP",
+          "evidence_refs": [
+            "XYUI0-0.3-C@L789-805"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "child_of",
+          "target": "XYUI.Foundation.Typography",
+          "status": "CONFIRMED",
+          "note": "0.3 子节 3/3（0.3-C）",
+          "evidence_refs": [
+            "XYUI0-0.3-C@L767-805"
+          ]
+        },
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.LineHeight",
+          "status": "PROPOSED",
+          "note": "FontSize 与 LineHeight 配对使用",
+          "evidence_refs": []
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.TextNaming",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.30",
+        "decision_id": "XYUI0-0.30",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.30@L2066-2067",
+          "XYUI0-0.30@L2068-2091",
+          "XYUI0-0.30@L2092-2116"
+        ]
+      },
+      "category": "foundation-naming",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "POLICY",
+          "note": "双层命名与文本规范"
+        },
+        {
+          "type": "COMPONENT_RULE",
+          "note": "命令/状态/错误文本结构"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "TextNaming-R01",
+          "text": "结构特征：主界面优先中文 Display Name/技术 ID Key 次级/中文与 ID 允许同行/示例：道路主干线 road-ffcb76/禁把技术 Key 当主界面名称/上下文明确 Button 用短动作（删除 保存 重算）/歧义或危险操作写完整对象（删除道路 删除数据集）/Status 用结果态（已保存 已锁定 已隐藏）/Error 包含执行动作+失败原因+必要时下一步/长名称允许 Ellipsis/完整名称由 Tooltip/Inspector 提供",
+          "evidence_refs": [
+            "XYUI0-0.30@L2068-2091"
+          ]
+        },
+        {
+          "rule_id": "TextNaming-R02",
+          "text": "UI代码：Primary=DisplayName、DisplayLanguage=Localized、TechnicalId=Secondary、TitleIdLayout=Inline、Command.Default=ShortAction、Command.Ambiguous/Dangerous=Verb+Object、Status=ResultState、Error=Action+FailureReason、Error.NextStep=WhenUseful、LongName=Ellipsis、LongName.FullValue=TooltipOrInspector",
+          "evidence_refs": [
+            "XYUI0-0.30@L2092-2116"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Naming.Primary",
+          "value": "DisplayName",
+          "evidence_refs": [
+            "XYUI0-0.30@L2092-2116"
+          ]
+        },
+        {
+          "token_id": "XY.Naming.DisplayLanguage",
+          "value": "Localized",
+          "evidence_refs": [
+            "XYUI0-0.30@L2092-2116"
+          ]
+        },
+        {
+          "token_id": "XY.Naming.TechnicalId",
+          "value": "Secondary",
+          "evidence_refs": [
+            "XYUI0-0.30@L2092-2116"
+          ]
+        },
+        {
+          "token_id": "XY.Naming.TitleIdLayout",
+          "value": "Inline",
+          "evidence_refs": [
+            "XYUI0-0.30@L2092-2116"
+          ]
+        },
+        {
+          "token_id": "XY.Text.Command.Default",
+          "value": "ShortAction",
+          "evidence_refs": [
+            "XYUI0-0.30@L2092-2116"
+          ]
+        },
+        {
+          "token_id": "XY.Text.Command.Ambiguous",
+          "value": "Verb+Object",
+          "evidence_refs": [
+            "XYUI0-0.30@L2092-2116"
+          ]
+        },
+        {
+          "token_id": "XY.Text.Command.Dangerous",
+          "value": "Verb+Object",
+          "evidence_refs": [
+            "XYUI0-0.30@L2092-2116"
+          ]
+        },
+        {
+          "token_id": "XY.Text.Status",
+          "value": "ResultState",
+          "evidence_refs": [
+            "XYUI0-0.30@L2092-2116"
+          ]
+        },
+        {
+          "token_id": "XY.Text.Error",
+          "value": "Action+FailureReason",
+          "evidence_refs": [
+            "XYUI0-0.30@L2092-2116"
+          ]
+        },
+        {
+          "token_id": "XY.Text.Error.NextStep",
+          "value": "WhenUseful",
+          "evidence_refs": [
+            "XYUI0-0.30@L2092-2116"
+          ]
+        },
+        {
+          "token_id": "XY.Text.LongName",
+          "value": "Ellipsis",
+          "evidence_refs": [
+            "XYUI0-0.30@L2092-2116"
+          ]
+        },
+        {
+          "token_id": "XY.Text.LongName.FullValue",
+          "value": "TooltipOrInspector",
+          "evidence_refs": [
+            "XYUI0-0.30@L2092-2116"
+          ]
+        }
+      ],
+      "relationships": [],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Accessibility",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.31",
+        "decision_id": "XYUI0-0.31",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.31@L2128-2129",
+          "XYUI0-0.31@L2130-2148",
+          "XYUI0-0.31@L2149-2171"
+        ]
+      },
+      "category": "foundation-a11y",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "ACCEPTANCE_RULE",
+          "note": "键盘可达/双通道状态/错误文字"
+        },
+        {
+          "type": "POLICY",
+          "note": "禁 ColorOnlyState"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Accessibility-R01",
+          "text": "结构特征：高频功能必须键盘可达/Tab 顺序稳定可预测/Focus 视觉沿用 0.21/图标按钮必须具备 Accessible Name/控件暴露 Role Name State/Disabled Selected Focused 可被辅助技术识别/Error 必须包含文字原因/Warning Error Success 禁止只靠颜色表达/状态至少两种表达（颜色 图标 文字）/Hit Target 沿用 0.22/不额外创建可访问性专用大尺寸 UI/默认保持紧凑风格",
+          "evidence_refs": [
+            "XYUI0-0.31@L2130-2148"
+          ]
+        },
+        {
+          "rule_id": "Accessibility-R02",
+          "text": "UI代码：KeyboardReachable=Required、TabOrder=Predictable、IconButton.Name=Required、Role/Name/State=Required、ColorOnlyState=Forbidden、StateRedundancy.Minimum=2Channels、ErrorText=Required、Focus=XY.Focus.*、HitTarget=XY.HitTarget.*",
+          "evidence_refs": [
+            "XYUI0-0.31@L2149-2171"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Accessibility.KeyboardReachable",
+          "value": "Required",
+          "evidence_refs": [
+            "XYUI0-0.31@L2149-2171"
+          ]
+        },
+        {
+          "token_id": "XY.Accessibility.TabOrder",
+          "value": "Predictable",
+          "evidence_refs": [
+            "XYUI0-0.31@L2149-2171"
+          ]
+        },
+        {
+          "token_id": "XY.Accessibility.IconButton.Name",
+          "value": "Required",
+          "evidence_refs": [
+            "XYUI0-0.31@L2149-2171"
+          ]
+        },
+        {
+          "token_id": "XY.Accessibility.Role",
+          "value": "Required",
+          "evidence_refs": [
+            "XYUI0-0.31@L2149-2171"
+          ]
+        },
+        {
+          "token_id": "XY.Accessibility.Name",
+          "value": "Required",
+          "evidence_refs": [
+            "XYUI0-0.31@L2149-2171"
+          ]
+        },
+        {
+          "token_id": "XY.Accessibility.State",
+          "value": "Required",
+          "evidence_refs": [
+            "XYUI0-0.31@L2149-2171"
+          ]
+        },
+        {
+          "token_id": "XY.Accessibility.ColorOnlyState",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.31@L2149-2171"
+          ]
+        },
+        {
+          "token_id": "XY.Accessibility.StateRedundancy",
+          "value": "2 Channels",
+          "evidence_refs": [
+            "XYUI0-0.31@L2149-2171"
+          ]
+        },
+        {
+          "token_id": "XY.Accessibility.ErrorText",
+          "value": "Required",
+          "evidence_refs": [
+            "XYUI0-0.31@L2149-2171"
+          ]
+        },
+        {
+          "token_id": "XY.Accessibility.Focus",
+          "value": "XY.Focus.*",
+          "evidence_refs": [
+            "XYUI0-0.31@L2149-2171"
+          ]
+        },
+        {
+          "token_id": "XY.Accessibility.HitTarget",
+          "value": "XY.HitTarget.*",
+          "evidence_refs": [
+            "XYUI0-0.31@L2149-2171"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.Focus",
+          "status": "PROPOSED",
+          "note": "A11y Focus 视觉沿用 0.21",
+          "evidence_refs": []
+        },
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.HitTarget",
+          "status": "PROPOSED",
+          "note": "A11y Hit Target 沿用 0.22",
+          "evidence_refs": []
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": [
+        {
+          "rule_id": "Accessibility-R02-ACC",
+          "text": "UI代码：KeyboardReachable=Required、TabOrder=Predictable、IconButton.Name=Required、Role/Name/State=Required、ColorOnlyState=Forbidden、StateRedundancy.Minimum=2Channels、ErrorText=Required、Focus=XY.Focus.*、HitTarget=XY.HitTarget.*",
+          "evidence_refs": [
+            "XYUI0-0.31@L2149-2171"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "XYUI.Foundation.DpiLocalization",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.32",
+        "decision_id": "XYUI0-0.32",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.32@L2180-2181",
+          "XYUI0-0.32@L2182-2207",
+          "XYUI0-0.32@L2208-2236"
+        ]
+      },
+      "category": "foundation-dpi",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "POLICY",
+          "note": "DIP 唯一单位/禁物理像素"
+        },
+        {
+          "type": "ACCEPTANCE_RULE",
+          "note": "DPI 与 Density 完全解耦"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "DpiLocalization-R01",
+          "text": "结构特征：所有几何尺寸统一 DIP/禁业务 UI 依赖物理像素/支持 100/125/150/200%/跨显示器实时响应/不要求重启/DPI 变化不得改变语义结构/不得偷偷切换 Compact Comfortable/Density 与 DPI 完全分离（0.19 决定紧凑舒适布局，0.32 决定 DIP 到物理像素映射）/Icon 优先 Vector/避免 DPI 下模糊/Border Divider 注意像素对齐/文本布局不依赖固定中文字数/本地化变长允许合理扩展 Ellipsis 必要时 Wrap/不允许语言变长挤坏核心布局",
+          "evidence_refs": [
+            "XYUI0-0.32@L2182-2207"
+          ]
+        },
+        {
+          "rule_id": "DpiLocalization-R02",
+          "text": "UI代码：Unit=DIP、PhysicalPixelHardcode=Forbidden、PerMonitor=Enabled、LiveMonitorSwitch=Enabled、Scale.100/125/150/200=Supported、DensityCoupling=Forbidden、Icon=Vector、BorderPixelAlignment=Required、Localization.Layout=Elastic、Overflow=Expand|Ellipsis|Wrap、LayoutBreak=Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.32@L2208-2236"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.DPI.Unit",
+          "value": "DIP",
+          "evidence_refs": [
+            "XYUI0-0.32@L2208-2236"
+          ]
+        },
+        {
+          "token_id": "XY.DPI.PhysicalPixelHardcode",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.32@L2208-2236"
+          ]
+        },
+        {
+          "token_id": "XY.DPI.PerMonitor",
+          "value": "Enabled",
+          "evidence_refs": [
+            "XYUI0-0.32@L2208-2236"
+          ]
+        },
+        {
+          "token_id": "XY.DPI.LiveMonitorSwitch",
+          "value": "Enabled",
+          "evidence_refs": [
+            "XYUI0-0.32@L2208-2236"
+          ]
+        },
+        {
+          "token_id": "XY.DPI.Scale.100",
+          "value": "Supported",
+          "evidence_refs": [
+            "XYUI0-0.32@L2208-2236"
+          ]
+        },
+        {
+          "token_id": "XY.DPI.Scale.125",
+          "value": "Supported",
+          "evidence_refs": [
+            "XYUI0-0.32@L2208-2236"
+          ]
+        },
+        {
+          "token_id": "XY.DPI.Scale.150",
+          "value": "Supported",
+          "evidence_refs": [
+            "XYUI0-0.32@L2208-2236"
+          ]
+        },
+        {
+          "token_id": "XY.DPI.Scale.200",
+          "value": "Supported",
+          "evidence_refs": [
+            "XYUI0-0.32@L2208-2236"
+          ]
+        },
+        {
+          "token_id": "XY.DPI.DensityCoupling",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.32@L2208-2236"
+          ]
+        },
+        {
+          "token_id": "XY.DPI.Icon",
+          "value": "Vector",
+          "evidence_refs": [
+            "XYUI0-0.32@L2208-2236"
+          ]
+        },
+        {
+          "token_id": "XY.DPI.BorderPixelAlignment",
+          "value": "Required",
+          "evidence_refs": [
+            "XYUI0-0.32@L2208-2236"
+          ]
+        },
+        {
+          "token_id": "XY.Localization.Layout",
+          "value": "Elastic",
+          "evidence_refs": [
+            "XYUI0-0.32@L2208-2236"
+          ]
+        },
+        {
+          "token_id": "XY.Localization.Overflow",
+          "value": "Expand|Ellipsis|Wrap",
+          "evidence_refs": [
+            "XYUI0-0.32@L2208-2236"
+          ]
+        },
+        {
+          "token_id": "XY.Localization.LayoutBreak",
+          "value": "Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.32@L2208-2236"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.Density",
+          "status": "PROPOSED",
+          "note": "DPI 与 Density 完全分离（禁止耦合）",
+          "evidence_refs": []
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": [
+        {
+          "rule_id": "DpiLocalization-R02-ACC",
+          "text": "UI代码：Unit=DIP、PhysicalPixelHardcode=Forbidden、PerMonitor=Enabled、LiveMonitorSwitch=Enabled、Scale.100/125/150/200=Supported、DensityCoupling=Forbidden、Icon=Vector、BorderPixelAlignment=Required、Localization.Layout=Elastic、Overflow=Expand|Ellipsis|Wrap、LayoutBreak=Forbidden",
+          "evidence_refs": [
+            "XYUI0-0.32@L2208-2236"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "XYUI.Foundation.LineHeight",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.4",
+        "decision_id": "XYUI0-0.4",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.4@L817-818",
+          "XYUI0-0.4@L819-826",
+          "XYUI0-0.4@L827-851"
+        ]
+      },
+      "category": "foundation-typography",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "行高八组"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "LineHeight-R01",
+          "text": "结构特征：正文 14/20、保留阅读空间但不舒展、属性面板高密度、Caption/Auxiliary 更紧凑、标题随字号增加、行高不等于控件高度（Button/Input/Tree Row 高度在 Sizing 另定）",
+          "evidence_refs": [
+            "XYUI0-0.4@L819-826"
+          ]
+        },
+        {
+          "rule_id": "LineHeight-R02",
+          "text": "UI代码：Caption 12/16、Auxiliary 13/18、Body 14/20、Label 15/20、Section 17/22、PanelTitle 20/26、PageTitle 24/30、Mono 13/20",
+          "evidence_refs": [
+            "XYUI0-0.4@L827-851"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.LineHeight.Caption",
+          "value": "12/16",
+          "evidence_refs": [
+            "XYUI0-0.4@L827-851"
+          ]
+        },
+        {
+          "token_id": "XY.LineHeight.Auxiliary",
+          "value": "13/18",
+          "evidence_refs": [
+            "XYUI0-0.4@L827-851"
+          ]
+        },
+        {
+          "token_id": "XY.LineHeight.Body",
+          "value": "14/20",
+          "evidence_refs": [
+            "XYUI0-0.4@L827-851"
+          ]
+        },
+        {
+          "token_id": "XY.LineHeight.Label",
+          "value": "15/20",
+          "evidence_refs": [
+            "XYUI0-0.4@L827-851"
+          ]
+        },
+        {
+          "token_id": "XY.LineHeight.Section",
+          "value": "17/22",
+          "evidence_refs": [
+            "XYUI0-0.4@L827-851"
+          ]
+        },
+        {
+          "token_id": "XY.LineHeight.PanelTitle",
+          "value": "20/26",
+          "evidence_refs": [
+            "XYUI0-0.4@L827-851"
+          ]
+        },
+        {
+          "token_id": "XY.LineHeight.PageTitle",
+          "value": "24/30",
+          "evidence_refs": [
+            "XYUI0-0.4@L827-851"
+          ]
+        },
+        {
+          "token_id": "XY.LineHeight.Mono",
+          "value": "13/20",
+          "evidence_refs": [
+            "XYUI0-0.4@L827-851"
+          ]
+        }
+      ],
+      "relationships": [],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.LetterSpacing",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.5",
+        "decision_id": "XYUI0-0.5",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.5@L859-860",
+          "XYUI0-0.5@L861-868",
+          "XYUI0-0.5@L869-879"
+        ]
+      },
+      "category": "foundation-typography",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "字距五档"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "LetterSpacing-R01",
+          "text": "结构特征：中文正文默认字距/Label 轻微收紧/Title 默认/CAPS 英文轻微扩展/Mono 原生字距/只在有明确语义价值处调整/避免中文正文大幅拉宽",
+          "evidence_refs": [
+            "XYUI0-0.5@L861-868"
+          ]
+        },
+        {
+          "rule_id": "LetterSpacing-R02",
+          "text": "UI代码：Body=0、Label=-0.10、Title=0、Caps=+0.40、Mono=0",
+          "evidence_refs": [
+            "XYUI0-0.5@L869-879"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.LetterSpacing.Body",
+          "value": "0",
+          "evidence_refs": [
+            "XYUI0-0.5@L869-879"
+          ]
+        },
+        {
+          "token_id": "XY.LetterSpacing.Label",
+          "value": "-0.10",
+          "evidence_refs": [
+            "XYUI0-0.5@L869-879"
+          ]
+        },
+        {
+          "token_id": "XY.LetterSpacing.Title",
+          "value": "0",
+          "evidence_refs": [
+            "XYUI0-0.5@L869-879"
+          ]
+        },
+        {
+          "token_id": "XY.LetterSpacing.Caps",
+          "value": "+0.40",
+          "evidence_refs": [
+            "XYUI0-0.5@L869-879"
+          ]
+        },
+        {
+          "token_id": "XY.LetterSpacing.Mono",
+          "value": "0",
+          "evidence_refs": [
+            "XYUI0-0.5@L869-879"
+          ]
+        }
+      ],
+      "relationships": [],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Spacing",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.6",
+        "decision_id": "XYUI0-0.6",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.6@L891-892",
+          "XYUI0-0.6@L893-901",
+          "XYUI0-0.6@L902-918"
+        ]
+      },
+      "category": "foundation-spacing",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "间距八档"
+        },
+        {
+          "type": "POLICY",
+          "note": "禁止零散间距 5/7/11/13"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Spacing-R01",
+          "text": "结构特征：以 4 DIP 为主要基础单位/Token 数量较少/高频编辑器区域紧凑/小间距 4/8/中型控件与 Panel 12/16/Section 与大分组 24+/避免 5/7/11/13 等零散间距",
+          "evidence_refs": [
+            "XYUI0-0.6@L893-901"
+          ]
+        },
+        {
+          "rule_id": "Spacing-R02",
+          "text": "UI代码八档：Space.1~12 = 4/8/12/16/24/32/40/48 DIP",
+          "evidence_refs": [
+            "XYUI0-0.6@L902-918"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Space.1",
+          "value": "4 DIP",
+          "evidence_refs": [
+            "XYUI0-0.6@L902-918"
+          ]
+        },
+        {
+          "token_id": "XY.Space.2",
+          "value": "8 DIP",
+          "evidence_refs": [
+            "XYUI0-0.6@L902-918"
+          ]
+        },
+        {
+          "token_id": "XY.Space.3",
+          "value": "12 DIP",
+          "evidence_refs": [
+            "XYUI0-0.6@L902-918"
+          ]
+        },
+        {
+          "token_id": "XY.Space.4",
+          "value": "16 DIP",
+          "evidence_refs": [
+            "XYUI0-0.6@L902-918"
+          ]
+        },
+        {
+          "token_id": "XY.Space.6",
+          "value": "24 DIP",
+          "evidence_refs": [
+            "XYUI0-0.6@L902-918"
+          ]
+        },
+        {
+          "token_id": "XY.Space.8",
+          "value": "32 DIP",
+          "evidence_refs": [
+            "XYUI0-0.6@L902-918"
+          ]
+        },
+        {
+          "token_id": "XY.Space.10",
+          "value": "40 DIP",
+          "evidence_refs": [
+            "XYUI0-0.6@L902-918"
+          ]
+        },
+        {
+          "token_id": "XY.Space.12",
+          "value": "48 DIP",
+          "evidence_refs": [
+            "XYUI0-0.6@L902-918"
+          ]
+        }
+      ],
+      "relationships": [],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Indentation",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.7",
+        "decision_id": "XYUI0-0.7",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.7@L928-929",
+          "XYUI0-0.7@L930-936",
+          "XYUI0-0.7@L937-945"
+        ]
+      },
+      "category": "foundation-spacing",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "缩进四档"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Indentation-R01",
+          "text": "结构特征：每深入一级固定增加 16 DIP/适合复杂层级高密度/三四级仍保留横向空间/Tree Guide 与 Disclosure 位置统一/图标文字固定小间距/避免不同 Tree 自定义缩进",
+          "evidence_refs": [
+            "XYUI0-0.7@L930-936"
+          ]
+        },
+        {
+          "rule_id": "Indentation-R02",
+          "text": "UI代码：PerLevel=16、IconTextGap=4、TreeGuide=16 Step、Disclosure=Follow PerLevel",
+          "evidence_refs": [
+            "XYUI0-0.7@L937-945"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Indent.PerLevel",
+          "value": "16 DIP",
+          "evidence_refs": [
+            "XYUI0-0.7@L937-945"
+          ]
+        },
+        {
+          "token_id": "XY.Indent.IconTextGap",
+          "value": "4 DIP",
+          "evidence_refs": [
+            "XYUI0-0.7@L937-945"
+          ]
+        },
+        {
+          "token_id": "XY.Indent.TreeGuide",
+          "value": "16 DIP Step",
+          "evidence_refs": [
+            "XYUI0-0.7@L937-945"
+          ]
+        },
+        {
+          "token_id": "XY.Indent.Disclosure",
+          "value": "Follow XY.Indent.PerLevel",
+          "evidence_refs": [
+            "XYUI0-0.7@L937-945"
+          ]
+        }
+      ],
+      "relationships": [],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Sizing",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.8",
+        "decision_id": "XYUI0-0.8",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.8@L959-960",
+          "XYUI0-0.8@L961-968",
+          "XYUI0-0.8@L969-1000"
+        ]
+      },
+      "category": "foundation-sizing",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "基础尺寸十五项"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Sizing-R01",
+          "text": "结构特征：高频编辑器控件整体紧凑/Tree Row 高密度/Toolbar 不过高/Input 与中型控件统一 32 DIP 左右/常规图标 16 DIP/Checkbox Radio 16 DIP/Scrollbar 与 Drag Handle 细窄",
+          "evidence_refs": [
+            "XYUI0-0.8@L961-968"
+          ]
+        },
+        {
+          "rule_id": "Sizing-R02",
+          "text": "UI代码：Control XS/S/M/L=24/28/32/36、TreeRow=28、Toolbar=30、Input=32、Icon S/M/L=14/16/20、Checkbox=16、Radio=16、Switch=34x18、Scrollbar=10、DragHandle=8",
+          "evidence_refs": [
+            "XYUI0-0.8@L969-1000"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Size.Control.XS",
+          "value": "24 DIP",
+          "evidence_refs": [
+            "XYUI0-0.8@L969-1000"
+          ]
+        },
+        {
+          "token_id": "XY.Size.Control.S",
+          "value": "28 DIP",
+          "evidence_refs": [
+            "XYUI0-0.8@L969-1000"
+          ]
+        },
+        {
+          "token_id": "XY.Size.Control.M",
+          "value": "32 DIP",
+          "evidence_refs": [
+            "XYUI0-0.8@L969-1000"
+          ]
+        },
+        {
+          "token_id": "XY.Size.Control.L",
+          "value": "36 DIP",
+          "evidence_refs": [
+            "XYUI0-0.8@L969-1000"
+          ]
+        },
+        {
+          "token_id": "XY.Size.TreeRow",
+          "value": "28 DIP",
+          "evidence_refs": [
+            "XYUI0-0.8@L969-1000"
+          ]
+        },
+        {
+          "token_id": "XY.Size.Toolbar",
+          "value": "30 DIP",
+          "evidence_refs": [
+            "XYUI0-0.8@L969-1000"
+          ]
+        },
+        {
+          "token_id": "XY.Size.Input",
+          "value": "32 DIP",
+          "evidence_refs": [
+            "XYUI0-0.8@L969-1000"
+          ]
+        },
+        {
+          "token_id": "XY.Size.Icon.S",
+          "value": "14 DIP",
+          "evidence_refs": [
+            "XYUI0-0.8@L969-1000"
+          ]
+        },
+        {
+          "token_id": "XY.Size.Icon.M",
+          "value": "16 DIP",
+          "evidence_refs": [
+            "XYUI0-0.8@L969-1000"
+          ]
+        },
+        {
+          "token_id": "XY.Size.Icon.L",
+          "value": "20 DIP",
+          "evidence_refs": [
+            "XYUI0-0.8@L969-1000"
+          ]
+        },
+        {
+          "token_id": "XY.Size.Checkbox",
+          "value": "16 DIP",
+          "evidence_refs": [
+            "XYUI0-0.8@L969-1000"
+          ]
+        },
+        {
+          "token_id": "XY.Size.Radio",
+          "value": "16 DIP",
+          "evidence_refs": [
+            "XYUI0-0.8@L969-1000"
+          ]
+        },
+        {
+          "token_id": "XY.Size.Switch",
+          "value": "34x18 DIP",
+          "evidence_refs": [
+            "XYUI0-0.8@L969-1000"
+          ]
+        },
+        {
+          "token_id": "XY.Size.Scrollbar",
+          "value": "10 DIP",
+          "evidence_refs": [
+            "XYUI0-0.8@L969-1000"
+          ]
+        },
+        {
+          "token_id": "XY.Size.DragHandle",
+          "value": "8 DIP",
+          "evidence_refs": [
+            "XYUI0-0.8@L969-1000"
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "related_to",
+          "target": "XYUI.Foundation.HitTarget",
+          "status": "CONFIRMED",
+          "note": "Visual Size 与 Hit Target 独立语义（VisualSizeIndependent=True 保持）；Icon 视觉 16 DIP ≠ 热区 28 DIP，不得合并",
+          "evidence_refs": [
+            "XYUI0-0.22@L1646-1648"
+          ]
+        }
+      ],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    },
+    {
+      "id": "XYUI.Foundation.Radius",
+      "source": {
+        "source_id": "XYUI-SOURCE-000",
+        "item_id": "XYUI0-0.9",
+        "decision_id": "XYUI0-0.9",
+        "decision_status": "CONFIRMED_APPROVED",
+        "source_quality": "CLEAR",
+        "source_defect_ref": [],
+        "evidence_refs": [
+          "XYUI0-0.9@L1012-1013",
+          "XYUI0-0.9@L1014-1022",
+          "XYUI0-0.9@L1023-1045"
+        ]
+      },
+      "category": "foundation-radius",
+      "status": "ACTIVE",
+      "engineering_mapping": [
+        {
+          "type": "TOKEN",
+          "note": "圆角十一项"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "Radius-R01",
+          "text": "结构特征：圆角表达组件角色非现代感/Panel 方正/Tree Row 不做圆角卡片/Toolbar 极轻圆角/Input Button 轻微圆角/Popup 稍圆/Tag Badge 可 Full/避免整个编辑器卡片化",
+          "evidence_refs": [
+            "XYUI0-0.9@L1014-1022"
+          ]
+        },
+        {
+          "rule_id": "Radius-R02",
+          "text": "UI代码：None=0、Toolbar=2、Control=4、Input=4、Button=4、Popup=6、Panel=0、Row=0、Full=999、Tag=Full、Badge=Full",
+          "evidence_refs": [
+            "XYUI0-0.9@L1023-1045"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "token_id": "XY.Radius.None",
+          "value": "0 DIP",
+          "evidence_refs": [
+            "XYUI0-0.9@L1023-1045"
+          ]
+        },
+        {
+          "token_id": "XY.Radius.Toolbar",
+          "value": "2 DIP",
+          "evidence_refs": [
+            "XYUI0-0.9@L1023-1045"
+          ]
+        },
+        {
+          "token_id": "XY.Radius.Control",
+          "value": "4 DIP",
+          "evidence_refs": [
+            "XYUI0-0.9@L1023-1045"
+          ]
+        },
+        {
+          "token_id": "XY.Radius.Input",
+          "value": "4 DIP",
+          "evidence_refs": [
+            "XYUI0-0.9@L1023-1045"
+          ]
+        },
+        {
+          "token_id": "XY.Radius.Button",
+          "value": "4 DIP",
+          "evidence_refs": [
+            "XYUI0-0.9@L1023-1045"
+          ]
+        },
+        {
+          "token_id": "XY.Radius.Popup",
+          "value": "6 DIP",
+          "evidence_refs": [
+            "XYUI0-0.9@L1023-1045"
+          ]
+        },
+        {
+          "token_id": "XY.Radius.Panel",
+          "value": "0 DIP",
+          "evidence_refs": [
+            "XYUI0-0.9@L1023-1045"
+          ]
+        },
+        {
+          "token_id": "XY.Radius.Row",
+          "value": "0 DIP",
+          "evidence_refs": [
+            "XYUI0-0.9@L1023-1045"
+          ]
+        },
+        {
+          "token_id": "XY.Radius.Full",
+          "value": "999 DIP",
+          "evidence_refs": [
+            "XYUI0-0.9@L1023-1045"
+          ]
+        },
+        {
+          "token_id": "XY.Radius.Tag",
+          "value": "XY.Radius.Full",
+          "evidence_refs": [
+            "XYUI0-0.9@L1023-1045"
+          ]
+        },
+        {
+          "token_id": "XY.Radius.Badge",
+          "value": "XY.Radius.Full",
+          "evidence_refs": [
+            "XYUI0-0.9@L1023-1045"
+          ]
+        }
+      ],
+      "relationships": [],
+      "implementation": {
+        "mapping": [],
+        "tuning_required": []
+      },
+      "acceptance": []
+    }
+  ]
+}

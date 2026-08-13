@@ -1,0 +1,1774 @@
+<!--
+  XYUI-4 canonical spec · XYUI-PILOT-R4 · R1 批次（4.01~4.05）
+  Source: xyui/source/XYUI4/XYUI-4.md (immutable Evidence)
+    bytes: 155526
+    SHA-256: 1d92ca14813ee9377b1a19a9736fdbc3c5226a95dc4ac0815bda50d2e7281bfe
+  Canonical basis: XYUI-0 Foundation Registry (VALIDATED, AMEND-A/B) + A3-R2 Canonical Token Architecture
+  规则: 组件语义保留；Foundation 重复值全部映射 canonical；#hex/px/旧字体/旧命名空间 = 0
+  Amendments: xyui/governance/amendments.md (AMEND-A State Composition / AMEND-B Drag Entry)
+  GAP 标注见 xyui/specs/XYUI4/XYUI-4.gaps.json
+-->
+# XYUI-4 · Selection & Feedback｜选择与反馈（Canonical）
+
+> XYUI-PILOT R4 产物（R1 批次：4.01~4.05）。基于 `xyui/source/XYUI4/XYUI-4.md`（SHA-256: 1d92ca14…）reconciliation。
+> 上位规则：A2 Foundation Registry（VALIDATED，AMEND-A/B）+ A3-R2 Canonical Token Architecture。
+> 本文件中的 `XY.*` 引用全部为 Canonical Token 引用（见 XYUI-4.mapping.json）。
+> 组件职责/结构/交互/变体 = 已定稿，保留原样；Foundation 视觉值 = 引用 XYUI-0，无第二套真值。
+> 本轮范围：4.01~4.05。4.06~4.20 于 R2~R4 批次补齐，R5 全量收口。
+
+- 整理依据
+    - 原始组件设计
+        - XYUI-4.md（4.01~4.05）
+    - 上位规范
+        - XYUI-0.md
+        - XYUI Foundation Registry（含 AMEND-A/B）
+        - A3-R2 Canonical Token Architecture
+    - 整理原则
+        - 保留 XYUI-4 已定稿的组件职责、状态模型、交互与 Variant
+        - 颜色、字体、圆角、边框、Surface、Focus、Hit Target、Motion、Drag、Density、DPI 等 Foundation 规则以上位规范为准
+        - Foundation 已有语义时禁止保留早期十六进制颜色作为第二真值
+        - 所有几何单位统一使用 DIP
+        - Momentary Active 不作为 canonical state；瞬时操作映射 Foundation Pressed / Dragging / Resize 合同
+        - Persistent Active 仅作为 Tool / Mode / Toggle 语义族，引用 XYUI-2 ToggleButton 既有语义
+        - Focus 基础合同归 Foundation；XYUI-4 只定义 Selection 场景 Presentation Variant
+        - 组件独有尺寸、结构参数与阈值可继续作为 Component-Specific Token，但不得成为新的 Foundation 默认值
+        - Light / Dark 由 Foundation Semantic Token 映射，不在组件规范重复硬编码主题色
+
+- Foundation Reconciliation
+    - State Composition（AMEND-A）
+        - ComposeMode = XY.State.ComposeMode（Single = 每视觉通道单一 Primary Owner，非单状态控件）
+        - Layering = XY.State.Layering（Forbidden = 禁同一 Primary Channel 多状态争抢）
+        - Render / Composition Priority = Hover > Selected
+        - Visual Salience / Semantic Ownership = Selected > Hover
+        - Selected = PersistentBaseState（持有主体 Fill / 主 Accent / 持久选中边界）
+        - Hover = 瞬时反馈（可叠加绘制，不得夺取 Selected 主体视觉通道）
+        - Focus = 独立通道（不参与背景状态覆盖链）
+        - Dragging / DropTarget = Independent
+        - Disabled 最高优先级；状态切换不得改变控件尺寸、不得布局跳动（ResizeOnChange = Forbidden）
+    - Typography
+        - UI Font = XY.Font.UI
+        - Font Size / Weight 优先引用 XY.FontSize.* / XY.FontWeight.*
+        - 正文文字默认 XY.Text.Primary；辅助语义 XY.Text.Secondary
+    - Focus
+        - 基础合同引用 XY.Focus.Control.OutlineWidth / XY.Focus.Control.OutlineColor
+        - Keyboard Focus Visible = Required；Focus 独立于 Hover / Selected
+        - XYUI-4 只定义 Selection 场景 Presentation Variant（Dual Ring / Canvas Halo / Input Border Focus）
+        - Focus Offset 无 Foundation Token → [GAP:XYUI4-GAP-002]，不得硬编码第二真值
+    - Drag
+        - 输入合同归 Foundation（Threshold = XY.Drag.Threshold；Cancel = XY.Drag.CancelKey）
+        - Entry = XY.Drag.Entry（Handle | DirectTarget，AMEND-B）
+        - XYUI-4 只负责 Presentation（4.11 批次）
+    - Resize
+        - 基础合同引用 XY.Resize.*（Mode=Semantic / Continuous / Snap）
+        - Handle 命中面积引用 XY.HitTarget.ResizeHandle（SemanticExpanded）
+    - Motion
+        - 颜色短过渡引用 XY.Motion.Fast；普通状态过渡 XY.Motion.Normal
+        - Canvas 高频 PointerMove 场景 XY.Motion.Instant
+        - Reduced Motion 必须保留
+    - Accessibility
+        - 状态不得只靠颜色表达（ColorOnlyState 禁止）
+        - Selected / Error / Warning 需要文字+颜色双通道
+- 已知待后续 Token 层补齐
+    - Contrast / SeparationForeground（4.09 批次使用；已登记于 xyui/audit/XYUI4/conflict-matrix.md）
+    - Focus Ring Offset [GAP:XYUI4-GAP-002]
+    - Marquee / Lasso FillOpacity（4.07 / 4.08 批次使用；已登记于 xyui/audit/XYUI4/conflict-matrix.md）
+
+- 4.01 · HoverState / 悬停状态
+    - 控件定位
+        - 类型
+            - State Pattern / 状态表现模式
+        - 层级
+            - 组合模式层（消费 Foundation Hover 状态与 Token）
+        - 主要用途
+            - 表达指针当前正在指向的可交互对象
+            - 建立操作发生之前的第一层即时反馈
+        - 权威关系
+            - Foundation 拥有 Hover 状态语义与 Hover Token
+            - 本项定义不同对象类型如何消费 Foundation Hover
+    - 核心定义
+        - Hover 表示“当前指针命中”
+        - Hover 不表示“已经选中”、不表示“正在执行”、不表示“拥有键盘焦点”
+        - Hover 不应造成大面积高频闪烁、不应改变布局尺寸、不应导致控件位移
+        - Hover 不应成为唯一的可交互性提示
+    - 最终方案
+        - Contextual Hover / 上下文悬停
+        - 采用统一 Hover Language；不同对象类型允许采用不同视觉表达
+        - 保留 Surface Reveal / Border Reveal / Canvas Outline Reveal
+        - 不采用独立 Accent Hint
+    - Hover Variants
+        - Surface Hover
+            - 普通控件、Tree、List、Menu、Toolbar、Navigation、高密度数据行
+            - 显示浅层 Surface；文字颜色原则上保持不变；不使用强 Accent 色块；不增加明显阴影
+        - Border Hover
+            - Input Field、Inspector Field、Card、Panel 内可交互区域、边界本身具有语义的对象
+            - Surface 基本保持稳定；Border 轻度强化；不得达到 Focus Ring 强度
+        - Outline Hover
+            - Canvas Object、Map Region、Road、Vector Shape、Scene Object、Geometry Element
+            - 强化对象自身几何轮廓；尽量不增加大面积 Fill；轮廓不得强于 Selected Outline
+        - Handle Hover
+            - Vertex、Anchor、Resize Handle、Transform Handle
+            - 允许轻度尺寸增强；允许 Border / Outline 强化；不得使用独立 Accent Tick 或 Accent Bar
+    - 对象映射
+        - Button / Menu Item / Tree Row / List Row / DataGrid Row / Toolbar Item → Surface Hover
+        - Inspector Field / Text Field / Card → Border Hover
+        - Canvas Region / Road / Vector Shape → Outline Hover
+        - Vertex Handle → Handle Hover
+    - 状态组合规则（AMEND-A）
+        - Hover + Selected
+            - Selected 持有主体视觉（主体 Fill / 主 Accent / 持久边界）
+            - Hover 只追加非常轻的二级变化（Render Priority 允许 Hover 叠加绘制，但不得夺取 Selected 主体视觉通道）
+            - 禁止选中对象在 Hover 时看起来像新的状态；Pointer 离开后立即恢复标准 Selected
+        - Hover + Active
+            - Active 优先；Hover 不额外制造第二套强反馈
+        - Hover + Focus
+            - Focus Ring 保持独立；Hover 可叠加轻 Surface 或 Border
+        - Hover + Disabled
+            - Disabled 优先；Disabled 默认不产生 Hover 反馈
+        - Hover + Dragging
+            - Dragging 优先；由 DragFeedback（4.11 批次）接管视觉
+    - 视觉强度
+        - Surface Hover 弱 / Border Hover 弱至中弱 / Outline Hover 中弱
+        - Selected 明显高于全部 Hover Variant（Visual Salience: Selected > Hover）
+    - Canonical Token
+        - XY.HoverState.Surface.Background
+            - Value = XY.State.Color.Hover
+            - 说明
+                - 原稿 #E8F0F3 / #EEF4F6 为同一语义的相邻变体，canonical 收敛为单一 Foundation Token
+                - 层次差异如需保留，作为组件级微调（tuning），不建立第二颜色真值
+        - XY.HoverState.Border.Color
+            - Value = XY.State.Color.Hover
+        - XY.HoverState.Border.Width
+            - Value = XY.Border.Width.Default（1 DIP）
+        - XY.HoverState.Outline.Color
+            - Value = XY.Color.Accent
+        - XY.HoverState.Outline.Width
+            - Type = COMPONENT_SPECIFIC（1.5 DIP）
+        - XY.HoverState.Text.Color
+            - Value = XY.Text.Primary（文字颜色原则上保持不变）
+        - XY.HoverState.Transition
+            - Value = XY.Motion.Fast（80 ms）
+        - XY.HoverState.Shadow
+            - Value = XY.Shadow.None
+        - XY.HoverState.LayoutShift
+            - Value = XY.State.ResizeOnChange（Forbidden）
+    - 禁止事项
+        - 禁止所有 Hover 统一变成明显蓝色块
+        - 禁止使用独立 Accent Bar 作为全局 Hover 母语言
+        - 禁止 Hover 比 Selected 更显眼（视觉显著性）
+        - 禁止 Hover 造成布局跳动 / 普通控件 Hover 大幅缩放
+        - 禁止 Disabled 对象伪装成可操作 Hover
+        - 禁止 Canvas Hover 使用大面积高饱和 Fill
+
+- 4.02 · SelectedState / 选中状态
+    - 控件定位
+        - 类型
+            - State Pattern / 状态表现模式
+        - 层级
+            - 组合模式层（消费 Foundation Selected 状态与 Token）
+        - 主要用途
+            - 表达对象已经被用户明确选择；鼠标移开后持续保留选择结果
+            - 建立 XYUI 全局 Selected Language / 选择语言
+    - 最终方案
+        - Filled Selection + Edge Anchored
+        - Filled Selection 为基础母语言；Edge Anchored 为增强型变体
+        - 不采用纯 Outline Selection 作为全局母规则；不要求所有对象统一显示 Accent Edge
+    - 核心定义
+        - Selected 表示明确且持久的选择结果
+        - Selected 必须明显强于 Hover（Visual Salience）
+        - Selected 不等同 Active / Focus / Checked
+        - Selected 状态在 Pointer 离开后继续保持；不依赖动画才能被识别
+        - 不得只依赖文字颜色变化或极细边框表达
+    - 基础语言
+        - Filled Selection
+            - 通过低饱和 Selected Surface 表达选择范围；文字允许轻度强化
+            - 可配合 Border / Outline；不能使用高饱和整块蓝色；不能压过内容本身
+    - 增强语言
+        - Edge Anchored Selection
+            - 在 Filled Selection 基础上增加稳定边缘锚点；适用于导航与层级列表
+            - Accent Edge 表示持续的当前选择；不用于普通 Hover；不应在所有组件中滥用
+    - 对象映射
+        - Tree Row / List Row / DataGrid Row / Asset Item / Resource Item / Inspector Object → Filled Selection
+        - Navigation Item / Side Navigation → Filled Selection + Edge Anchor
+        - Canvas Region → 轻 Selected Fill + Selected Outline
+        - Road → 必要时强化 Stroke，不强制大面积 Fill
+        - Entity → Selected Surface 或几何高亮，复杂对象允许后续 BoundingBox 补充
+    - 状态组合规则（AMEND-A）
+        - Selected + Hover
+            - Selected 保持主体视觉；Hover 只追加非常轻的二级变化
+            - 不得让选中对象在 Hover 时看起来像新的状态；Pointer 离开后立即恢复标准 Selected
+        - Selected + Focus
+            - Selected Surface 保持；Focus Ring 独立存在；不得用 Selected Surface 代替键盘 Focus
+        - Selected + Active
+            - Selected 身份继续存在；Active 可通过 Press / Drag / Edit Feedback 临时增强；操作结束后恢复 Selected
+        - Selected + Disabled
+            - 允许保留“曾选中”语义时必须降级视觉；不得表现成正常可交互 Selected
+    - 单选规则
+        - 同一 Selection Scope 默认只有一个 Primary Selected；新对象被选中时旧对象退出 Selected
+        - Selection Scope 由组件或编辑器上下文定义
+    - 多选规则
+        - 本项只定义单对象 Selected 母语言；MultiSelection 在 4.05 单独定义
+        - 多选必须继承本项的基本视觉语言
+    - 视觉强度
+        - Hover Surface 弱 / Selected Surface 中等 / Selected Edge 中等偏强
+        - Active Feedback 强于普通 Selected / Focus Ring 独立通道
+    - Canonical Token
+        - XY.SelectedState.Background
+            - Value = XY.State.Color.Selected
+        - XY.SelectedState.BackgroundStrong
+            - Value = XY.State.Color.Selected
+            - 说明
+                - 原稿 #DCEAF0 / #E2EDF1 为同一语义的相邻变体，canonical 收敛为单一 Foundation Token
+        - XY.SelectedState.Text
+            - Value = XY.Text.Primary
+        - XY.SelectedState.Accent
+            - Value = XY.Color.Accent
+        - XY.SelectedState.Edge.Width
+            - Type = COMPONENT_SPECIFIC（3–4 DIP）
+        - XY.SelectedState.Border
+            - Value = XY.Border.Color.Selected
+        - XY.SelectedState.Border.Width
+            - Value = XY.Border.Width.Selected（2 DIP）
+        - XY.SelectedState.Canvas.Fill
+            - Value = XY.Editor.Selection（低透明度 Accent Surface 表达，透明度为组件级微调）
+        - XY.SelectedState.Canvas.Outline
+            - Value = XY.Editor.Selection
+        - XY.SelectedState.Canvas.OutlineWidth
+            - Type = COMPONENT_SPECIFIC（2 DIP）
+        - XY.SelectedState.Shadow
+            - Value = XY.Shadow.None
+        - XY.SelectedState.LayoutShift
+            - Value = XY.State.ResizeOnChange（Forbidden）
+    - 禁止事项
+        - 禁止 Selected 只改变文字颜色 / Selected 与 Hover 使用完全相同强度
+        - 禁止所有选中对象统一增加 Accent Edge / 使用高饱和整块蓝色作为默认 Selected
+        - 禁止选中后发生布局位移 / Selected 取代 Focus Ring
+        - 禁止把临时 Active 状态永久留在 Selected / Canvas Selected 遮挡对象原始信息
+
+- 4.03 · ActiveState / 激活状态（Persistent Active 语义族）
+    - 控件定位
+        - 类型
+            - Semantic Family / 语义族（解释概念，非新 Foundation State）
+        - 层级
+            - 组合模式层（引用 XYUI-2 ToggleButton 等既有 Active 语义）
+        - 主要用途
+            - 解释“对象当前正在持续生效”的语义：当前 Tool / Mode / Toggle / Editing Context
+    - C3 裁定（C-A2）
+        - 不建立 Momentary Active canonical state
+        - 瞬时操作直接映射 Foundation 既有状态
+            - Pointer Down / Button Press → Pressed（XY.State.Color.Pressed）
+            - Drag / 拖动生命周期 → Dragging（XY.State.Dragging，独立状态）
+            - Resize / 尺寸调整 → XY.Resize.* 合同（XYUI.Foundation.ResizeSplitter）
+        - Persistent Active 保留为解释概念，不建立新的 Foundation State；canonical 来源指向既有组件语义
+    - 核心定义
+        - Active 不等于 Selected：Selected = 已经被选择；Active = 当前正在生效或正在被操作
+        - Persistent Active 可以跨越 Pointer 生命周期持续存在；操作结束后不得错误残留瞬时状态
+    - Persistent Active 语义族
+        - 语义范围
+            - 当前 Tool / 当前 Mode / 启用中的 Toggle Tool / 当前编辑上下文 / 持续生效的功能
+        - 上游语义来源
+            - XYUI-2 03 ToggleButton：ON 状态持续显示底部 Action Edge；ON 使用 Active / Selected 语义（XY.ToggleButton.Background.On = XY.State.Color.Active）
+            - XYUI-4 不重复定义该语义，只描述它在 Selection / Editing 场景中的应用模式
+        - 视觉
+            - 采用 Surface Deepen；Surface 强度高于普通 Hover
+            - 允许 Border 轻度强化；不依赖额外图标才能识别；不使用独立 Accent Tick 作为母规则
+    - 对象映射（Persistent Active）
+        - Toggle Button（启用状态）/ Tool Button（当前工具）/ Toolbar Mode（当前模式）
+        - Editor Mode（当前编辑模式）/ Navigation Context（当前正在生效的上下文）
+        - Canvas Tool（区域绘制 / 道路绘制 / 顶点编辑 / 其他持续工具）
+    - 瞬时操作映射表
+        - Button / Icon Button Pointer Down → Pressed
+        - Tree / List Item Drag → Dragging
+        - Canvas Object / Region / Vertex 直接操作 → Dragging（Direct Manipulation，AMEND-B）
+        - Resize Handle → XY.Resize.* 合同
+        - Splitter → XY.Resize.* 合同
+    - 状态生命周期
+        - Default → Hover（Pointer 命中）→ Pressed（Pointer Down）→ Pointer Up 退出 Pressed
+        - 如操作产生选择则保持 Selected
+        - Persistent Active 由工具 / 模式启用产生，直到明确切换或关闭
+    - 组合规则（AMEND-A）
+        - Selected + Active：Selected 表达身份；Active 表达正在操作；允许同时存在；Active 视觉在操作期间高于 Selected；Active 结束后恢复 Selected；不得因此丢失 Selected 身份
+        - Hover + Active：Active 优先；不叠加第二层明显 Hover
+        - Focus + Active：Focus Ring 独立存在；Active 不得替代 Focus
+        - Disabled + Active：Disabled 对象默认不可进入新的 Active；进入 Disabled 时必须正确结束临时操作状态
+        - Persistent Active + Hover：Persistent Active 保持主体；Hover 只能产生极弱变化；Pointer 离开后 Persistent Active 不消失
+        - Pressed / Dragging + Drag：Pointer Down 后可进入 Drag；DragFeedback 在 4.11 批次定义；状态层与操作反馈层分离
+    - 视觉强度
+        - Default 最低 / Hover 弱 / Selected 中 / Persistent Active 中至中强 / Pressed 操作期间明显 / Focus 独立可访问性通道
+    - Canonical Token
+        - XY.ActiveState.Persistent.Background
+            - Value = XY.State.Color.Active
+        - XY.ActiveState.Persistent.Border
+            - Value = XY.State.Color.Active
+        - XY.ActiveState.Persistent.Text
+            - Value = XY.Text.Primary
+        - XY.ActiveState.Pressed.Background
+            - Value = XY.State.Color.Pressed
+        - XY.ActiveState.Pressed.Border
+            - Value = XY.State.Color.Pressed
+        - XY.ActiveState.Pressed.Offset
+            - Value = 0（Pressed / Inset 表达，不位移）
+        - XY.ActiveState.Pressed.Scale
+            - Value = 1.0
+        - XY.ActiveState.Shadow
+            - Value = XY.Shadow.None
+        - XY.ActiveState.LayoutShift
+            - Value = XY.State.ResizeOnChange（Forbidden）
+        - 说明
+            - 原稿 Active.Persistent.*（#CBDDE5 / #7EA8B9 / #244E60）与 Active.Momentary.*（#C3D7E0 / #698F9F）全部收敛为 Foundation 状态 Token；Momentary 视觉语义由 Pressed 承载
+    - 禁止事项
+        - 禁止把 Selected 和 Active 当成同一个状态
+        - 禁止 Persistent Active 依赖 Pointer Hover / Pointer Up 后残留瞬时状态
+        - 禁止普通 Button Active 产生明显跳动 / 使用大幅缩放制造按压感
+        - 禁止所有 Active 统一增加 Accent 标记 / Active 取代 Focus Ring
+        - 禁止 Disabled 控件进入新的 Active
+        - 禁止为 Resize 等操作临时创造 Active 兜底状态（引用 XY.Resize.*）
+
+- 4.04 · Focus in Selection Context / 选择上下文中的焦点
+    - 控件定位
+        - 类型
+            - Presentation Variant / 场景表现变体
+        - 层级
+            - 组合模式层（消费 Foundation Focus 合同）
+        - 主要用途
+            - 定义 Focus 在 Selection / Canvas / 输入场景中的呈现方式
+        - 权威关系（C-A3 裁定）
+            - Foundation 独占：Focus 语义、基础 Focus Ring、核心 Focus Token、状态与优先级
+            - XYUI-4 只负责：Selection 场景的 Presentation Variant，不重新定义 Focus 基础规范
+    - 核心定义
+        - Focus 表示当前键盘输入目标；不等于 Hover / Selected / Active
+        - Focus 可以和 Selected / Active 同时存在；必须能够脱离鼠标独立存在
+        - Focus 不允许仅靠颜色深浅表达
+    - Focus 来源（继承 Foundation）
+        - Keyboard Focus：Tab / Shift+Tab / 方向键 / 程序化焦点移动
+        - Pointer Focus：点击输入控件或可聚焦组件后获得焦点
+        - Programmatic Focus：错误定位 / 自动进入编辑 / 快捷键跳转 / 对话框默认焦点
+        - 键盘导航时必须显示（FocusVisible）；鼠标点击后默认不持续显示 Ring（XY.Focus.Mouse.PersistentRing = False）
+    - 基础视觉（引用 Foundation，不重定义）
+        - Ring Width = XY.Focus.Control.OutlineWidth（2 DIP）
+        - Ring Color = XY.Focus.Control.OutlineColor
+        - Ring 不覆盖组件内部 Selected Surface、不覆盖组件原始 Border、保证与 Hover Border 区分
+    - Presentation Variant（XYUI-4 保留的增值，仅定位为场景变体）
+        - Dual Ring / 双环
+            - 结构：Inner Border 表达组件自身交互状态；Outer Ring 表达 Keyboard Focus
+            - 适用：高无障碍要求场景、Selected + Focus 容易混淆场景、复杂输入组件、高风险操作入口
+            - 不得所有控件默认使用双环；避免小尺寸 UI 过重
+        - Canvas Halo / 画布光晕
+            - Canvas Handle / Vertex 使用 Halo / Ring 表达 Focus
+            - 复杂 Canvas Object：Focus 优先落在当前可操作 Handle，不强制给整个巨大对象增加粗焦点框
+        - Input Border Focus / 输入控件边界强化
+            - Text Field / Number Field / Date Picker / Combo 内部 Border 强化，表示当前编辑入口
+            - 允许同时存在 Outer Ring
+    - 组合规则
+        - Focus + Selected：Selected 保持对象身份；Focus Ring 独立叠加；不得使用 Selected Surface 代替 Focus；不得因为 Focus 而移除 Selected
+        - Focus + Hover：Focus 保持主体识别；Hover 只允许弱辅助变化；不得出现两个同强度 Border 争抢
+        - Focus + Active：Active 表达当前操作；Focus 表达键盘目标；两者允许同时存在；Active 结束后 Focus 可以继续保留
+        - Focus + Disabled：Disabled 控件默认不可获得新的交互 Focus；程序化 Focus 必须避免停留在不可操作对象
+    - 视觉强度
+        - Hover Border 弱 / Selected Surface 中 / Focus Ring 中强且独立 / Active 根据操作状态变化
+    - Canonical Token
+        - XY.SelectionFocus.Ring.Color
+            - Value = XY.Focus.Control.OutlineColor
+        - XY.SelectionFocus.Ring.Width
+            - Value = XY.Focus.Control.OutlineWidth（2 DIP）
+        - XY.SelectionFocus.Ring.Offset
+            - Type = GAP → [GAP:XYUI4-GAP-002]（原稿 2–3 DIP；Foundation 无 Offset Token；禁止硬编码第二真值）
+        - XY.SelectionFocus.InputBorder.Color
+            - Value = XY.Border.Color.Focus
+        - XY.SelectionFocus.InputBorder.Width
+            - Type = COMPONENT_SPECIFIC（1.5–2 DIP）
+        - XY.SelectionFocus.Dual.OuterColor
+            - Value = XY.Focus.Control.OutlineColor
+        - XY.SelectionFocus.Dual.InnerColor
+            - Value = XY.Border.Color.Focus
+        - XY.SelectionFocus.Shadow
+            - Value = XY.Shadow.None
+        - XY.SelectionFocus.LayoutShift
+            - Value = XY.State.ResizeOnChange（Forbidden）
+    - 禁止事项
+        - 禁止 Focus 只改变文字颜色 / 用 Hover Border 直接充当 Focus / 用 Selected Surface 取代 Focus
+        - 禁止 Focus Ring 造成布局尺寸变化 / 所有小控件默认使用双环
+        - 禁止 Canvas 大对象强制套厚重外框 / 键盘导航时隐藏 Focus
+        - 禁止 Disabled 控件表现成正常可聚焦对象
+
+- 4.05 · MultiSelection / 多选状态
+    - 控件定位
+        - 类型
+            - Selection Pattern / 选择模式
+        - 层级
+            - 组合模式层（继承 4.02 SelectedState 母语言）
+        - 主要用途
+            - 表达多个对象同时处于 Selected 状态；支持追加 / 范围 / 框选 / 套索选择；支持批量编辑
+    - 最终方案
+        - Contextual MultiSelection；Primary + Secondary；Conditional Group Halo / Group Bounds
+        - 方案2定义 Primary / Secondary 层级；方案3作为整体操作时的条件型反馈；不采用 Uniform Multi 作为默认规则
+    - 核心原则
+        - 所有被选对象都必须保持明确 Selected 身份
+        - Primary Selection 默认唯一；Secondary Selection 可以有多个；同属一个 Selection Set
+        - 多选视觉继承 4.02 SelectedState；Primary 必须比 Secondary 更明确；Secondary 不得弱到近似 Hover
+        - 普通多选不默认持续显示大型 Group Bounds；Group Bounds 只在整体操作有实际意义时出现
+    - Primary Selection
+        - 定义：当前多选集合中的主要对象（通常是最后明确点击或指定的对象）
+        - 可能承担：Inspector 主对象 / Gizmo Anchor / Pivot 参考 / 对齐基准 / 属性差异比较基准
+        - 视觉：完整 Selected Surface；允许 Selected Edge Anchor；Canvas 使用更明确 Selected Outline；文字允许轻度强化
+    - Secondary Selection
+        - 定义：已选中但不是当前 Primary 的对象；继续属于有效 Selection Set
+        - 视觉：使用弱化 Selected Surface / Border / Outline；不得使用与 Hover 相同视觉；不得因弱化而失去已选识别度
+    - Primary 产生规则
+        - 单击一个对象 → 该对象成为 Primary
+        - Ctrl / Cmd + 单击未选对象 → 加入 Selection Set，新加入对象默认可成为 Primary
+        - Ctrl / Cmd + 单击已选对象 → 从 Selection Set 移除；若移除 Primary，由组件策略指定新的 Primary
+        - Shift 范围选择 → 保留明确的 Anchor / Primary 语义
+        - Marquee / Lasso → 产生 Selection Set（4.07 / 4.08 批次）；Primary 规则由编辑器上下文决定；允许使用最近活动对象作为 Primary
+    - Selection Set
+        - 包含：一个 Primary + 零个或多个 Secondary
+        - 空集合 = 无 Selected；单对象集合 = 退化为普通 Selected；多对象集合 = 进入 MultiSelection
+    - 场景规则
+        - Tree / List：Primary 完整 Filled Selection（允许 Edge Anchor）；Secondary 较弱 Filled Selection；Shift Range 连续选择；Ctrl / Cmd Toggle 非连续选择
+        - DataGrid：Row / Cell MultiSelection 使用 Selected Surface；Primary Cell 允许 Primary Border；Focus 仍由 4.04 独立表达；禁止把 Focus Cell 当成唯一 Selected Cell
+        - Asset Grid：Primary 较强 Border；Secondary 较弱 Surface / Border
+        - Canvas：Primary 完整 Selected Fill / Outline；Secondary 较弱 Fill / Outline；多个对象默认不持续显示整体大框
+    - Group Halo / Group Bounds
+        - 定位：条件型 MultiSelection Feedback，不是普通多选的常驻装饰
+        - 显示场景：Group Move / Scale / Rotate / Transform、整体对齐、整体 Bounding 操作
+        - 隐藏场景：仅查看多选结果、普通批量属性编辑、不需要整体几何范围的命令
+        - 表现：低干扰整体范围框；可使用虚线或轻实线；不得遮盖对象细节；不得覆盖个体 Selected 语言
+    - 组合规则（C-A2 已清理 Momentary Active 依赖）
+        - MultiSelection + Hover：Primary Hover 保持 Primary 视觉；Secondary Hover 保持 Selected 身份并允许轻度增强提示当前命中；未选对象 Hover 使用 4.01 HoverState
+        - MultiSelection + Focus：Focus 可位于 Primary 或 Secondary；采用独立 Focus Ring；不得因为 Focus 改变 Selection Set
+        - MultiSelection + Active：当前被直接操作对象进入 Pressed / Dragging（Foundation 状态）；整个 Selection Set 仍保持选中；整体 Transform 时 Selection Set 进入 Group Operation Context，Group Bounds 可显示
+        - MultiSelection + Disabled：不可操作对象是否允许进入 Selection Set 由具体组件语义决定；若允许被选中，必须表现 Disabled + Selected，不得伪装成正常可编辑对象
+    - Inspector 规则
+        - 单选：显示该对象属性
+        - 多选：允许显示 Selected Count / 共有属性 / Mixed Value / Primary 对象信息
+        - 具体 Inspector 交互由后续复杂组件规范定义
+    - 视觉强度
+        - Hover 弱 / Secondary Selected 中弱 / Primary Selected 中 / Group Bounds 中弱且结构化 / Active Transform 操作期间增强
+    - Canonical Token
+        - XY.MultiSelection.Primary.Background
+            - Value = XY.State.Color.Selected
+        - XY.MultiSelection.Primary.Text
+            - Value = XY.Text.Primary
+        - XY.MultiSelection.Primary.Border
+            - Value = XY.Editor.Selection
+        - XY.MultiSelection.Primary.Edge
+            - Value = XY.Editor.Selection
+        - XY.MultiSelection.Secondary.Background
+            - Value = XY.Editor.MultiSelection
+        - XY.MultiSelection.Secondary.Text
+            - Value = XY.Text.Primary
+        - XY.MultiSelection.Secondary.Border
+            - Value = XY.Editor.MultiSelection
+        - XY.MultiSelection.Canvas.PrimaryOutline
+            - Value = XY.Editor.Selection
+        - XY.MultiSelection.Canvas.SecondaryOutline
+            - Value = XY.Editor.MultiSelection
+        - XY.MultiSelection.GroupBounds
+            - Value = XY.Editor.MultiSelection
+        - XY.MultiSelection.GroupBounds.Width
+            - Type = COMPONENT_SPECIFIC（1–1.5 DIP）
+        - XY.MultiSelection.GroupBounds.Style
+            - Type = COMPONENT_SPECIFIC（Solid 或 Dash 由上下文决定）
+        - XY.MultiSelection.LayoutShift
+            - Value = XY.State.ResizeOnChange（Forbidden）
+    - 禁止事项
+        - 禁止所有多选对象完全相同而无法识别 Primary / Secondary 弱化到近似 Hover
+        - 禁止 Primary 使用与 Active 相同的瞬时视觉 / 普通多选默认常驻巨大 Group Bounds
+        - 禁止 Group Bounds 替代个体 Selected / 多选状态覆盖 Focus Ring
+        - 禁止点击 Secondary 时意外清空整个 Selection Set / 仅靠文字标记 Primary
+
+- 4.06 · SelectionGroup / 选择组
+    - 控件定位
+        - 类型
+            - Selection Pattern / 选择模式
+        - 层级
+            - 组合模式层（NEW；上游无同级定义）
+        - 主要用途
+            - 表达多个对象在交互语义上属于同一个选择组；区分“临时多选”与“操作一个组”
+            - 支持组整体选择、进入组内部继续编辑成员、父子对象 / 图层组 / 地图对象组
+    - 与 MultiSelection 的区别
+        - MultiSelection：多个独立对象临时共同 Selected，对象之间不一定存在持续组关系
+        - SelectionGroup：存在明确 Group Identity；Group 本身可以成为 Selected Target；组内成员可以继续被单独选择
+    - 最终方案
+        - Group Container + Group Header + Group + Member Dual Selection
+        - 方案1负责整体选择范围；方案2负责持续组身份；方案3负责组内成员编辑
+    - 核心原则
+        - Group 与 Group Member 都是独立 Selection Target；Group Selected 与 Member Selected 必须能够区分
+        - 进入组内编辑后不得丢失 Group Context；Group Container 不得长期压过成员内容
+        - Group 选择不能简单等同 MultiSelection
+    - Group Selected
+        - 视觉：显示 Group Container + Group Header；成员保持弱化内部表现，不默认表现为独立 Primary
+        - 操作：移动 / 复制 / 删除 / 整体 Transform / 整体属性操作
+    - Group Container
+        - 低干扰外围边界；允许圆角矩形或几何 Bounds；使用 Selected Accent Border；内部不默认增加大面积 Fill
+        - 显示条件：Group Selected 时或需要明确整体范围时显示
+        - 不得遮盖成员内容；不得使用粗重高饱和边框；不得替代后续 BoundingBox 操作柄
+    - Group Header
+        - 内容：Group Name + 可选 Member Count + 可选 Group Type
+        - 位置：优先贴近 Group Container 上边缘；Canvas 中避免遮挡重要几何；Tree / List 中可由 Parent Row 承担
+        - 视觉：轻 Selected Surface；允许 Selected Edge；文字保持清晰
+    - Group + Member Dual Selection
+        - Group 保持当前编辑上下文（Container 保持、Header 保持、视觉降低一级）
+        - Member 使用普通 SelectedState（允许 Primary / Secondary / Focus / 瞬时操作状态）
+    - 进入 / 退出组编辑
+        - 入口：双击 Group / Enter Group 命令 / 层级导航 / Inspector 操作
+        - 结果：Group 从主要 Selection Target 转为 Editing Context；Header 保留；Container 降低视觉强度；成员恢复正常可选状态
+        - 退出：Escape / 返回上层 / 点击 Group 外部 / 层级导航
+        - 结果：组内 Member Selection 清理或按组件策略保存；Group 恢复主要 Selected Target
+    - 组合规则（AMEND-A / C-A2）
+        - Group + Hover：Group Selected 时 Hover 不覆盖 Group Selected；组内 Member Hover 使用 4.01 HoverState，Group Context 保持
+        - Group + Focus：Group Header 与组内 Member 都可获得 Focus；使用 4.04 Selection Context Focus；Focus 不改变 Group Context
+        - Group + Active：整体操作 → Group 进入 Dragging（Foundation Drag 生命周期，4.11 批次负责视觉）；成员直接操作 → Pressed / Dragging；Group 保持 Editing Context
+        - Group + MultiSelection：允许 Group 与其他 Group 共同进入 MultiSelection；允许 Group 内多个 Member 进入 MultiSelection；不允许视觉上混淆“多个 Group”与“一个 Group 的多个 Member”
+    - Tree / List
+        - Group 使用 Parent Row / Group Header；Group Selected = Filled Selection（允许 Edge Anchor）；Member Selected 使用普通 SelectedState；展开状态不等于 Group Selected
+    - Canvas
+        - Group Selected = Group Container + Group Header；Group Editing = Container 降低强度 + Header 保留 + 成员可独立 Selected；整体 Transform 由 4.10 BoundingBox / 4.11 DragFeedback 补充
+    - Canonical Token
+        - XY.SelectionGroup.Container.Border
+            - Value = XY.Editor.Selection
+        - XY.SelectionGroup.Container.BorderWidth
+            - Type = COMPONENT_SPECIFIC（1.5–2 DIP）
+        - XY.SelectionGroup.Container.Fill
+            - Value = Transparent
+        - XY.SelectionGroup.Header.Background
+            - Value = XY.State.Color.Selected
+        - XY.SelectionGroup.Header.Text
+            - Value = XY.Text.Primary
+        - XY.SelectionGroup.Header.Border
+            - Value = XY.Editor.MultiSelection
+        - XY.SelectionGroup.Context.Border
+            - Value = XY.Editor.MultiSelection
+        - XY.SelectionGroup.Context.Background
+            - Value = XY.Editor.MultiSelection
+        - XY.SelectionGroup.Member.Primary
+            - Value = XY.MultiSelection.Primary.*（引用 4.05）
+        - XY.SelectionGroup.Member.Secondary
+            - Value = XY.MultiSelection.Secondary.*（引用 4.05）
+        - XY.SelectionGroup.LayoutShift
+            - Value = XY.State.ResizeOnChange（Forbidden）
+    - 禁止事项
+        - 禁止把 SelectionGroup 简化成普通 MultiSelection / Group Selected 时所有成员同时表现成 Primary
+        - 禁止进入组编辑后完全隐藏 Group Identity / Group Container 遮挡成员内容
+        - 禁止 Group Header 使用大面积高饱和色块 / Group Container 替代 BoundingBox
+        - 禁止展开 Tree Group 自动等同 Selected / Member Focus 改变 Group Context
+
+- 4.07 · MarqueeSelection / 框选
+    - 控件定位
+        - 类型
+            - Selection Pattern / 选择模式
+        - 层级
+            - 组合模式层（NEW；上游无同级定义）
+        - 主要用途
+            - 通过矩形拖拽一次选择多个对象；支持 Canvas 空间对象批量选择；Pointer Up 前实时反馈潜在选择结果
+    - 最终方案
+        - Soft Fill Marquee 默认视觉；Outline Marquee 极简 Variant；Candidate Highlight 默认实时反馈；Directional Marquee 专业交互 Variant
+        - 四种能力允许组合；Directional Marquee 不要求所有场景强制启用
+    - 输入生命周期（REF Foundation，不重定义）
+        - Pointer Down 创建 Marquee Origin → Pointer Move 更新 Rect 与 Candidate Set → Pointer Up 提交 Selection Set → Esc 取消并恢复原 Selection State
+        - 生命周期本身归 Foundation Pointer / Drag 合同；本项只定义 Selection Geometry / Candidate / 视觉
+    - 默认视觉
+        - Soft Fill Marquee：明确 Outline + 内部极低透明度 Accent Fill；复杂 Canvas 中仍能识别选择范围；不得明显遮挡地图或对象内容
+    - 极简视觉
+        - Outline Marquee：仅 Marquee Border；Fill Transparent；适用视觉内容简单的 Canvas 与高密度信息场景
+    - Candidate Feedback
+        - 定义：Pointer Up 后预计会进入 Selection Set 的对象；属于临时状态，不等于 Selected
+        - 视觉：使用 Secondary Selected 以下的弱高亮；允许轻 Fill / 轻 Outline；不得使用完整 Primary Selected 视觉
+        - 生命周期：进入 Marquee 开始计算 → Pointer Move 实时增删 → Pointer Up 转为 Selected → Esc 全部撤销
+    - Directional Marquee
+        - 定位：专业编辑器可选交互模式，不是所有 XYUI 应用强制启用
+        - Left → Right = Containment Selection（完整包含才进入 Candidate Set）
+        - Right → Left = Crossing Selection（几何相交即可进入 Candidate Set）
+        - 视觉区别：Containment 实线 Border + 轻 Fill；Crossing 允许 Dash Border + 轻 Fill
+        - 必须通过视觉表达当前判定模式；不得只依赖用户记忆拖动方向
+    - Selection Policy
+        - Containment / Crossing / Default Simple Mode（由具体编辑器定义默认判定策略，可以不启用方向差异）
+        - Selection Policy 与 Marquee Visual 分离：视觉 Variant 不应决定业务算法
+    - 与 MultiSelection 联动
+        - 普通拖框 → 通常替换当前 Selection Set；Ctrl / Cmd + Marquee → 追加；Shift + Marquee → 范围扩展；Subtract Modifier → 从 Selection Set 删除
+        - 禁止在视觉上无法判断当前 Add / Replace / Subtract 模式
+        - Primary 规则继承 4.05：最近 Active Object 可继续作为 Primary；否则由编辑器策略选择
+    - 组合规则（AMEND-A / C-A2 已清理 Momentary Active）
+        - Marquee + Hover：进入框选后 Candidate Feedback 优先于普通 Hover；不得叠加两套强反馈
+        - Marquee + Selected：既有 Selected 可保持身份；Candidate 必须与既有 Selected 可区分；提交后统一进入新的 MultiSelection
+        - Marquee + Active：Marquee 拖拽由 Foundation Pointer / Drag 合同承载；本项负责空间选择反馈，不建立第二套 Active State
+        - Marquee + Focus：Focus 不应因 Pointer Move 被无意义清除；提交 Selection 后是否转移 Focus 由具体编辑器定义
+    - Canvas 对象规则
+        - Region 支持 Containment / Crossing；Road 支持几何相交判定；Point / Vertex 使用点命中规则
+        - Entity 使用 Bounds 或 Selection Geometry；复杂对象不得简单依赖屏幕像素矩形外观，应使用正式 Selection Geometry
+    - 视觉强度
+        - Marquee Border 中弱 / Marquee Fill 极弱 / Candidate 弱至中弱 / Selected 明显高于 Candidate
+    - Canonical Token
+        - XY.Marquee.Border.Color
+            - Value = XY.Editor.Selection
+        - XY.Marquee.Border.Width
+            - Type = COMPONENT_SPECIFIC（1–1.5 DIP）
+        - XY.Marquee.Fill.Color
+            - Value = XY.Editor.Selection
+        - XY.Marquee.Fill.Opacity
+            - Type = GAP → [GAP:XYUI4-GAP-003]（原稿 0.05–0.10；Foundation 无对应 Opacity 档位）
+        - XY.Marquee.Outline.Fill
+            - Value = Transparent
+        - XY.Marquee.Crossing.Border
+            - Value = XY.Editor.MultiSelection
+        - XY.Marquee.Crossing.BorderStyle
+            - Type = COMPONENT_SPECIFIC（Dashed）
+        - XY.Marquee.Candidate.Background
+            - Value = XY.Editor.MultiSelection
+        - XY.Marquee.Candidate.Border
+            - Value = XY.Editor.MultiSelection
+        - XY.Marquee.Candidate.CanvasFillOpacity
+            - Type = GAP → [GAP:XYUI4-GAP-003]（原稿 0.08–0.12）
+        - XY.Marquee.LayoutShift
+            - Value = XY.State.ResizeOnChange（Forbidden）
+    - 性能原则
+        - Pointer Move 必须保持即时反馈；Candidate 查询不得依赖明显卡顿的全场景重计算
+        - 大规模 Canvas 应采用局部查询或空间索引；视觉更新应尽量避免重建无关 UI
+    - 禁止事项
+        - 禁止 Marquee Fill 遮挡地图细节 / Candidate 使用完整 Primary Selected 视觉
+        - 禁止 Candidate 在 Esc 后残留 / Pointer Up 后残留 Marquee Rectangle
+        - 禁止 Directional Mode 不提供视觉差异 / 只凭 Marquee 视觉猜测 Selection Policy
+        - 禁止 Marquee PointerMove 产生明显卡顿
+
+- 4.08 · LassoSelection / 套索选择
+    - 控件定位
+        - 类型
+            - Selection Pattern / 选择模式
+        - 层级
+            - 组合模式层（NEW；上游无同级定义）
+        - 主要用途
+            - 通过任意闭合路径选择不规则空间范围内的多个对象；弥补 MarqueeSelection 只能使用矩形区域的限制
+            - 适用于地图区域 / 道路节点 / 散布 Entity / 不规则对象集合；支持鼠标与触控笔
+    - 最终方案
+        - Freehand Outline + Soft Fill Lasso + Candidate Lasso + Smoothed / Assisted Lasso
+        - 不是四套互斥 Variant，共同组成完整 Lasso Interaction Pipeline
+    - 输入生命周期（REF Foundation，不重定义）
+        - Pointer Down 建立起点 → Pointer Move 持续采集路径并实时更新 Geometry 与 Candidate Set → Pointer Up 自动闭合并提交 → Esc 取消并恢复操作前 Selection Set
+        - 生命周期归 Foundation Pointer / Drag 合同；本项只定义路径处理 / Candidate / 视觉
+    - Freehand Outline
+        - 跟随 Pointer 绘制自由路径，路径保持即时响应，结束时自动闭合
+        - 不得要求用户手工精确回到起点；不得为了视觉平滑产生明显输入延迟
+    - Soft Fill Lasso
+        - Accent Outline + 极低透明度 Accent Fill；Fill 不遮挡地图细节
+        - 继承 4.07 Soft Fill Selection Language（矩形选择与自由套索保持统一视觉体系）
+    - Candidate Lasso
+        - 当前 Lasso Geometry 下释放 Pointer 后预计进入 Selection Set 的对象；属于临时 Candidate，不等于正式 Selected
+        - 反馈实时更新；允许轻 Fill / 轻 Outline；强度弱于 Secondary Selected
+        - Pointer Up 转为 Selected；Esc 恢复操作前状态
+    - Smoothed / Assisted Lasso
+        - 用途：降低鼠标抖动、提高边界可读性、减少无意义高频轨迹点
+        - 允许：Path Simplification / Smoothing / Debounce / Automatic Closure
+        - 禁止：擅自吸附到对象边缘 / 自动改变用户选择意图 / 转化成智能边缘选择工具
+    - Lasso Smoothing
+        - 配置：Off / Low / Medium；默认建议 Mouse = Low、Pen = Off 或 Low
+        - 属于可配置输入辅助，不得强制不可关闭
+    - 轨迹采样
+        - 避免每个原始 Pointer Event 都永久保存为控制点；允许基于距离阈值采样、基于角度变化保留关键点
+        - 允许在视觉层使用平滑结果；Selection Geometry 必须保持稳定可复现
+    - 自动闭合
+        - Pointer Up 后连接终点与起点；闭合过程不得产生明显跳变；闭合前路径仍明确表现为正在绘制
+    - Selection Policy
+        - Inside：对象 Selection Geometry 位于闭合区域内部
+        - Crossing：如具体编辑器启用，对象与 Lasso Geometry 相交即可进入 Candidate
+        - Point Object 以 Selection Point 判定；Line Object 以 Segment / Stroke Geometry 判定；Polygon Object 以 Polygon Geometry 判定
+        - 复杂对象使用正式 Selection Geometry，不得只使用视觉像素猜测
+    - 与 MultiSelection 联动
+        - 无 Modifier 通常建立新的 Selection Set；Add Modifier 追加；Subtract Modifier 移除
+        - 最终结果继承 4.05（Primary / Secondary）
+        - Lasso 本身不要求天然 Primary；不得为了制造 Primary 任意改变用户最后操作对象
+    - 组合规则（AMEND-A / C-A2 已清理 Momentary Active）
+        - Lasso + Hover：Lasso 操作期间 Candidate Feedback 优先；普通 Hover 降低或暂停；不得叠加两套同强度高亮
+        - Lasso + Selected：既有 Selected 按 Add / Replace / Subtract 策略保留；Candidate 必须与正式 Selected 可区分
+        - Lasso + Active：Lasso Drawing 由 Foundation Pointer / Drag 合同承载；本项管理空间反馈与 Candidate，不建立第二套 Active State
+        - Lasso + Focus：Pointer Move 不应无意义清空 Focus；Selection Commit 后是否改变 Focus 由具体编辑器决定
+    - 视觉强度
+        - Lasso Border 中弱 / Lasso Fill 极弱 / Candidate 弱至中弱 / Selected 明显高于 Candidate
+    - Canonical Token
+        - XY.Lasso.Border.Color
+            - Value = XY.Editor.Selection
+        - XY.Lasso.Border.Width
+            - Type = COMPONENT_SPECIFIC（1–1.5 DIP）
+        - XY.Lasso.Fill.Color
+            - Value = XY.Editor.Selection
+        - XY.Lasso.Fill.Opacity
+            - Type = GAP → [GAP:XYUI4-GAP-003]（原稿 0.05–0.08）
+        - XY.Lasso.Candidate.Background
+            - Value = XY.Editor.MultiSelection
+        - XY.Lasso.Candidate.Border
+            - Value = XY.Editor.MultiSelection
+        - XY.Lasso.Candidate.FillOpacity
+            - Type = GAP → [GAP:XYUI4-GAP-003]（原稿 0.08–0.12）
+        - XY.Lasso.StartPoint.Size
+            - Type = COMPONENT_SPECIFIC（4–6 DIP）
+        - XY.Lasso.Smoothing.DefaultMouse
+            - Type = COMPONENT_SPECIFIC（Low）
+        - XY.Lasso.Smoothing.DefaultPen
+            - Type = COMPONENT_SPECIFIC（Off | Low）
+        - XY.Lasso.LayoutShift
+            - Value = XY.State.ResizeOnChange（Forbidden）
+    - 性能原则
+        - Pointer Move 必须保持实时；轨迹采样不得导致明显卡顿
+        - Candidate Query 应使用局部查询；大规模 Canvas 应使用空间索引；不得每次 Pointer Move 对全部场景对象做 O(N) 全量扫描
+        - 视觉 Path 与正式 Selection Query 可以使用不同精度层级
+    - 禁止事项
+        - 禁止 Lasso Fill 大面积遮挡地图 / Candidate 使用完整 Primary Selected 强度
+        - 禁止 Esc 后残留路径或 Candidate / Pointer Up 后残留未提交的临时路径
+        - 禁止 Smoothing 明显改变用户绘制范围 / 自动吸附对象边界冒充用户选择意图
+        - 禁止因为平滑算法产生明显 Pointer 延迟 / 大规模场景 PointerMove 使用全场景 O(N) 扫描
+
+- 4.09 · SelectionOutline / 选择轮廓
+    - 控件定位
+        - 类型
+            - Selection Presentation / 选择表现模式
+        - 层级
+            - 组合模式层（消费 Foundation Editor Token）
+        - 主要用途
+            - 通过对象自身几何轮廓表达 Selected 状态；用于 Canvas / Map / Vector / Geometry 类对象
+            - 在复杂背景中保持 Selected 对象清晰可辨；避免依赖大面积 Fill 表达选择
+    - 最终方案
+        - Contrast Halo / 对比光环轮廓：双层清晰描边
+        - 外层 Separation Stroke（与复杂背景分离）；内层 Accent Stroke（表达正式 Selected）
+        - 不采用模糊 Glow；不采用单层 Accent Outline 作为默认方案；不在本项定义 Primary / Secondary Outline
+    - 核心原则
+        - Selection Outline 必须明显强于 Hover Outline
+        - 不得依赖对象背景颜色刚好与 Accent 形成高对比；不得使用模糊发光效果
+        - 不得明显改变对象原始视觉内容；不得改变对象真实 Geometry
+    - 双层结构
+        - Outer Separation Stroke：负责将 Selection Outline 与复杂背景分离；优先使用浅色；不承担 Selected 主色语义；宽度高于 Inner Accent Stroke
+        - Inner Accent Stroke：负责表达正式 Selected；使用 XYUI Accent；保持边缘清晰；不得模糊扩散
+    - 适用对象
+        - Map Region / Road / River / Vector Shape / Polygon / Path / Polyline / Entity Silhouette / Selection Geometry / 复杂 Canvas Object
+    - 场景规则
+        - Region：保留原始 Fill；外围 Separation Stroke + 内层 Accent Stroke；必要时允许极轻 Selected Fill（由 4.02 控制）
+        - Road / Path：原始 Stroke 保持；Selection 可使用较宽 Separation Stroke；其上叠加 Accent Stroke；不得完全覆盖道路原始视觉
+        - Point / Endpoint：允许外层浅 Ring + 内层 Accent Ring；具体 Handle 规则由 4.10 BoundingBox 补充
+    - 组合规则（AMEND-A）
+        - Hover + SelectionOutline：Selected 优先；Hover Outline 不再额外叠加同强度描边；允许非常轻微 Secondary Hover 反馈；不得出现三层以上无意义描边
+        - Active + SelectionOutline：Selection Outline 保持 Selected 身份；瞬时操作可在操作期间增强内部反馈；不得用临时描边永久覆盖 Selected Outline
+        - Focus + SelectionOutline：Focus 使用独立 Focus 语言（4.04）；Selection Outline 不替代 Focus Ring；Canvas Handle Focus 可在局部叠加 Halo / Ring
+        - Disabled + SelectionOutline：如 Disabled 对象仍允许保持 Selected，Selection Outline 必须降低强度；不得表现成正常可编辑对象
+    - 复杂背景
+        - 道路重叠 / 行政边界重叠 / 网格线密集 / 深浅背景切换：保持 Separation Stroke；不得只依赖单一 Accent Contrast
+    - 深色主题原则
+        - Separation Stroke 不固定必须为白色；应切换为与背景形成稳定分离的浅层 Token；Inner Accent 继续使用主题 Accent
+        - Light / Dark 由 Foundation Semantic Token 映射（A3-R3 Token Source 阶段统一处理）
+    - Canonical Token
+        - XY.SelectionOutline.Separation.Color
+            - Type = GAP → [GAP:XYUI4-GAP-001]（原稿 #F8FAFB；Foundation 无 Contrast/SeparationForeground Token）
+        - XY.SelectionOutline.Separation.Width
+            - Type = COMPONENT_SPECIFIC（4–6 DIP）
+        - XY.SelectionOutline.Accent.Color
+            - Value = XY.Editor.Selection
+        - XY.SelectionOutline.Accent.Width
+            - Type = COMPONENT_SPECIFIC（2–3 DIP）
+        - XY.SelectionOutline.Region.Fill
+            - Value = 保持对象原始 Fill
+        - XY.SelectionOutline.Glow
+            - Value = XY.Shadow.None（禁止 Glow / Blur）
+        - XY.SelectionOutline.LayoutShift
+            - Value = XY.State.ResizeOnChange（Forbidden）
+    - 性能原则
+        - Selection Outline 应基于正式 Selection Geometry；不得为了视觉描边复制高成本完整场景数据
+        - PointerMove 高频场景应复用 Geometry / Buffer；只更新 Selection 相关对象
+    - 禁止事项
+        - 禁止模糊发光 Glow / Neon 效果 / 单纯加粗原始对象 Stroke 冒充 Selection Outline
+        - 禁止 Selection Outline 遮挡对象主要信息 / 依赖单一蓝色描边在所有背景中都可见
+        - 禁止因为 Selected 创建明显布局或 Geometry 偏移 / Hover 与 Selected 同时叠加多套强轮廓
+
+- 4.10 · BoundingBox / 包围框
+    - 控件定位
+        - 类型
+            - Editor Tool Presentation / 编辑工具表现
+        - 层级
+            - 组合模式层（消费 Foundation Editor BoundingBox / Handle Token）
+        - 主要用途
+            - 表达对象当前可操作的空间范围；提供 Resize / Rotate / Pivot 控制
+            - 支持单对象 Transform、MultiSelection 整体 Transform、SelectionGroup 整体 Transform
+    - 与 SelectionOutline 的区别
+        - SelectionOutline：表达对象已经 Selected，属于选择状态反馈
+        - BoundingBox：表达对象当前可进行空间 Transform，属于操作工具层
+        - 普通 Selected 不要求显示 BoundingBox；进入 Transform Mode 才显示
+    - 最终方案
+        - Mode-Aware Bounds + Eight Handle Bounds + Transform Bounds
+        - 方案4作为总体显示规则；方案2负责 Resize；方案3负责 Rotate / Pivot
+        - 不采用仅四角 Handle 的 Minimal Bounds 作为标准完整形态
+    - 核心原则
+        - BoundingBox 不默认随所有 Selected 常驻；只有当前操作需要空间控制时才显示
+        - BoundingBox 不替代 SelectionOutline；不改变对象真实 Geometry
+        - Handle 不得遮盖大量对象内容；必须具备足够命中面积；视觉尺寸与实际 Hit Area 可以不同
+        - Transform 结束后应恢复正常 Selected 视觉
+    - Mode-Aware Bounds
+        - Selected Mode：仅显示 SelectionOutline，不默认显示 Resize Handles
+        - Resize Mode：显示 BoundingBox + 8 Resize Handles
+        - Rotate Mode：显示 BoundingBox + Rotation Handle；允许隐藏无关 Resize Handle
+        - Pivot Edit Mode：显示 BoundingBox + Pivot / Origin Handle；突出 Pivot 编辑目标
+        - Group Transform：显示 Group BoundingBox，围绕整个 Selection Set
+        - 退出 Transform：隐藏 BoundingBox，保留 SelectionOutline
+    - Eight Handle Bounds
+        - 8 Handle：4 Corner（双轴 Resize）+ 4 Edge（单轴 Resize）
+        - Corner Handle：Top Left / Top Right / Bottom Left / Bottom Right
+        - Edge Handle：Top / Right / Bottom / Left
+    - Resize 规则
+        - 基础合同 REF Foundation（XY.Resize.*：Mode=Semantic / Continuous / Snap）
+        - 默认 Resize 跟随 Handle 类型改变 Width / Height；保持比例 / 中心缩放允许 Modifier Key（具体按键由平台交互规范定义）
+        - 最小尺寸不得缩放至不可操作状态；负尺寸 / 翻转是否允许由具体编辑器语义决定
+    - Transform Bounds
+        - Resize 使用 Eight Handle Bounds；Rotate 使用独立 Rotation Handle；Pivot 使用独立 Pivot Handle
+        - Move 通常直接拖动对象或 Bounds Interior，不要求额外 Move Handle
+        - 高级场景允许后续 2D / 3D Gizmo 系统扩展
+    - Rotation Handle
+        - 位置：默认位于 BoundingBox 上方；结构：BoundingBox 到 Rotation Handle 使用短连接线，Handle 独立可命中
+        - 视觉：圆形 Handle + Accent Border；避免与 Resize 方形 Handle 混淆
+        - 操作（REF Foundation）：Pointer Down → Pressed；Pointer Move → 实时 Rotation Feedback；Pointer Up → 提交；Esc → Cancel
+    - Pivot / Origin Handle
+        - 用途：表达当前 Transform Pivot；支持改变旋转中心 / 缩放中心
+        - 视觉：圆形或靶心式 Handle + 中心点明确；不得与 Rotation Handle 相同
+        - 位置：默认位于对象 Pivot；允许移动至对象外部
+        - 编辑：进入 Pivot Edit Mode 后可拖动；退出后保持 Pivot 结果
+    - Group BoundingBox
+        - MultiSelection / SelectionGroup 整体 Transform；范围包含 Selection Set 的整体 Bounds
+        - 使用 BoundingBox 母语言；不替代成员自己的 Selected 状态
+        - Pivot 可使用 Selection Center / Primary Object Pivot / Custom Pivot（具体策略由编辑器定义）
+    - 组合规则（AMEND-A / C-A2 已清理 Momentary Active）
+        - BoundingBox + SelectionOutline：SelectionOutline 继续表达 Selected 身份；BoundingBox 叠加表达 Transform 工具；不得让 BoundingBox 完全覆盖 SelectionOutline；不得因为进入 Transform 丢失对象选择身份
+        - BoundingBox + Hover：Handle Hover 使用 4.01 Handle Hover；Bounds Border Hover 默认不需要明显变化；对象本体 Hover 时 Selected / Transform 状态优先
+        - BoundingBox + Active：拖动 Handle → Pressed / Dragging（Foundation 状态）；对象 Geometry 实时预览 Transform；Pointer Up 提交；Esc 恢复操作前 Geometry
+        - BoundingBox + Focus：Handle 可以获得 Keyboard Focus；使用 4.04 Selection Context Focus；不得仅依赖 Hover 才能找到 Handle
+    - Handle 视觉
+        - Resize Handle 方形 + 浅 Surface + Accent Border；Rotation Handle 圆形 + Accent Border；Pivot Handle 圆形 / 靶心 + 中心 Accent Point
+        - 不同操作类型必须可辨
+    - Handle Hit Area
+        - 视觉尺寸可以较小；实际 Hit Area 应适当扩大（REF XY.HitTarget.ResizeHandle = SemanticExpanded）
+        - 触控场景允许进一步扩大；扩大 Hit Area 不应改变视觉占用
+    - Canonical Token
+        - XY.BoundingBox.Border.Color
+            - Value = XY.Editor.BoundingBox
+        - XY.BoundingBox.Border.Width
+            - Type = COMPONENT_SPECIFIC（1–1.5 DIP）
+        - XY.BoundingBox.Handle.Background
+            - Value = XY.Editor.Handle
+        - XY.BoundingBox.Handle.Border
+            - Value = XY.Editor.Selection
+        - XY.BoundingBox.Handle.Size
+            - Type = COMPONENT_SPECIFIC（6–8 DIP）
+        - XY.BoundingBox.Handle.HitSize
+            - Value = XY.HitTarget.ResizeHandle（视觉 6–8 DIP / Hit ≥ 12–16 DIP）
+        - XY.BoundingBox.RotateHandle.Background
+            - Value = XY.Editor.Handle
+        - XY.BoundingBox.RotateHandle.Border
+            - Value = XY.Editor.Selection
+        - XY.BoundingBox.Pivot.Background
+            - Value = XY.Editor.Handle
+        - XY.BoundingBox.Pivot.Border
+            - Value = XY.Editor.Selection
+        - XY.BoundingBox.Pivot.Center
+            - Value = XY.Editor.Selection
+        - XY.BoundingBox.Fill
+            - Value = Transparent
+        - XY.BoundingBox.Shadow
+            - Value = XY.Shadow.None
+        - XY.BoundingBox.LayoutShift
+            - Value = XY.State.ResizeOnChange（Forbidden）
+    - 性能原则
+        - Transform Preview 必须跟随 Pointer 实时更新；不得每次 PointerMove 重建无关 UI
+        - Bounds 计算应使用对象正式 Geometry / Bounds；Group Bounds 应避免全场景无关扫描
+    - 禁止事项
+        - 禁止所有 Selected 对象默认常驻 8 个 Handle / BoundingBox 替代 SelectionOutline
+        - 禁止 Resize / Rotate / Pivot Handle 无法视觉区分 / Handle 视觉很小且 Hit Area 同样很小
+        - 禁止 Transform 导致明显 Pointer 延迟 / BoundingBox 改变真实 Geometry
+        - 禁止操作结束后残留无关 Handles / Group BoundingBox 覆盖成员 Selected 语义
+
+- 4.11 · DragFeedback / 拖拽反馈（Presentation Layer）
+    - 控件定位
+        - 类型
+            - Drag Presentation / 拖拽表现层
+        - 层级
+            - 组合模式层（消费 Foundation Drag 合同）
+        - 主要用途
+            - 表达 Drag 操作已经开始；明确当前 Drag Source；提供 Drag Preview 与必要的 Origin Feedback
+        - 权威关系（C-A4 裁定）
+            - Foundation 独占：Drag Start / Threshold / Dragging / Cancel / Commit / Esc / Pointer Release / Lifecycle
+            - XYUI-4 只负责 Presentation：Selected 怎么显示、Hover 怎么退让、Ghost 怎么显示、Snap 怎么反馈、Drop Target 怎么反馈、Selection Outline 怎么保持
+            - 禁止在本项重新定义 Drag 输入合同
+    - 最终方案
+        - Contextual Drag + Direct Object Drag + Ghost Preview + Source + Preview
+        - 方案1用于 Direct Manipulation；方案3作为 Reorder 默认反馈；方案2和方案3用于 Transfer
+    - 核心原则
+        - Drag Feedback 必须告诉用户当前正在拖什么；必须跟随 Pointer 实时更新
+        - Drag Source 与 Drag Preview 不应产生语义混淆；不同 Drag 类型允许使用不同 Preview
+        - 最终 Drop 位置表达归 4.12 / 4.13；不应通过明显动画制造延迟感
+        - Pointer Up / Cancel 后临时 Drag Visual 必须清理
+    - Drag 类型
+        - Direct Manipulation：直接操作 Canvas 对象本体（对象实时改变位置或 Geometry）
+        - Reorder Drag：对 Tree / List / Layer 等结构进行重新排序（Source 保留结构上下文 + Preview 跟随 Pointer）
+        - Transfer Drag：跨组件或跨区域传递资源（Asset → Canvas / File → Panel / Resource → Slot）
+    - Drag Entry（AMEND-B，REF Foundation）
+        - XY.Drag.Entry = Handle | DirectTarget
+        - DirectTarget（对象本体直接拖动）仅在组件明确声明 DirectManipulation = Allowed 时成立
+        - 适用 DirectTarget：Region / Vertex / Anchor / Handle / Canvas Object / Map Marker / Node / Card / Selected Geometry
+        - 不因本项获得本体拖动能力的组件：Button / TextField 等未声明组件
+    - Direct Manipulation
+        - 对象本体直接跟随 Pointer；保留 Selected / SelectionOutline 身份；原位置允许显示极弱 Origin Feedback
+        - 不默认创建独立 Ghost Preview；保证对象与 Pointer 之间具有直接操作感；几何预览必须实时
+    - Origin Feedback
+        - 必要时表达拖动开始位置（弱 Outline / Dashed Outline / Origin Marker / 轻轨迹连接）
+        - 只在有实际帮助时启用；不得强到与当前 Drag Object 争抢注意力
+    - Ghost Preview
+        - Pointer 携带独立 Drag Preview；原 Source 可继续保持原布局位置
+        - 适用：Tree / List / Asset / Resource / File / Cross Panel Drag
+        - 视觉：轻 Selected Surface + 降低透明度 + 清晰 Border；不需要复杂 Shadow
+        - 内容：允许保留名称 / 图标 / 最小 Payload Summary
+    - Source + Preview
+        - Source 保持在原位置并进入 Drag Source State（视觉弱化；允许 Dashed Border；允许降低 Opacity）
+        - Preview 跟随 Pointer，视觉明显高于 Source，保持对象身份
+        - 适用：Reorder、跨 Panel Transfer、需要用户持续知道来源位置的操作
+    - Reorder Drag
+        - 默认反馈 = Source + Ghost Preview；Source Row 弱化但不得完全消失导致列表突然塌陷；Preview 跟随 Pointer，内容可简化
+        - 最终插入位置归 4.13 InsertionIndicator
+    - Transfer Drag
+        - Preview = Ghost Preview + 可选 Payload Summary（名称 / Type / 数量 / 可选图标）
+        - 来源位置重要时采用 Source + Preview；否则可仅使用 Ghost Preview；目标合法性归 4.12
+    - Drag Source State
+        - 当前 Drag 操作的来源对象：弱化 Surface + 允许降低 Opacity + 允许 Dashed Border + 保持布局占位
+        - 不得看起来像 Disabled / 像已删除 / 导致原列表结构瞬时收缩
+    - Drag Preview
+        - 视觉必须高于 Source；不得高于错误 / 危险反馈等系统级状态
+        - 尺寸允许保持原尺寸，大型对象允许简化 Preview；Pointer Offset 不得完全覆盖 Pointer Hit Point
+        - 简化规则：大型 Asset 缩略 Preview；复杂 Tree Row 只保留图标 + 名称；多对象 Drag 显示 Count / Stack Preview
+        - 禁止复制完整复杂 Panel 作为 Preview
+    - MultiSelection / SelectionGroup Drag
+        - Primary 作为 Drag Anchor；Secondary 保持 Selection Set；允许整体 Group Preview + Selected Count
+        - Canvas Direct Manipulation 时整个 Selection Set 实时移动，可显示 Group Bounds
+        - Group 整体拖动时 Group 作为 Drag Source；组内 Member 拖动时 Member 作为 Drag Source，Group Context 保持
+    - 组合规则（AMEND-A / C-A2 已清理 Momentary Active）
+        - Drag + Hover：Drag 开始后普通 Hover 降级；Drop Target Hover 由 4.12 接管；不得同时出现普通 Hover 与强 Drop Feedback
+        - Drag + Selected：Drag Source 保持 Selected 身份；Direct Manipulation 中 Selected 不应消失；Reorder Source 可视觉弱化但不能失去来源身份
+        - Drag + Active：Drag 状态 = XY.State.Dragging（Foundation 独立状态）；4.11 只管理 Drag Visual，不建立 Active 平行状态
+        - Drag + Focus：Drag 开始不必强制清除 Focus；Keyboard Drag 场景可继续依赖 Focus（Accessibility 规范继续定义）
+    - Drag Cancel / Commit（REF Foundation，不重定义）
+        - Cancel：Esc / 非法操作取消 / Pointer Capture Lost → 清除 Preview 与 Source 临时视觉；Direct Manipulation 恢复操作前 Geometry；恢复原 Selection State（CancelSideEffect = Forbidden）
+        - Commit：Pointer Up → Drop 合法则提交；非法则恢复或取消 → 清除 Drag Preview 与 Source 临时状态；更新最终 Selected 状态
+    - 视觉强度
+        - Drag Source 弱至中弱 / Drag Preview 中 / Direct Manipulation Object 中至中强 / Drop Target 由 4.12 定义
+    - Canonical Token
+        - XY.DragFeedback.Source.Opacity
+            - Value = XY.Opacity.DragGhost（原稿 0.40–0.65）
+        - XY.DragFeedback.Source.Border
+            - Value = XY.State.Color.Dragging
+        - XY.DragFeedback.Source.BorderStyle
+            - Type = COMPONENT_SPECIFIC（Dashed 可选）
+        - XY.DragFeedback.Preview.Background
+            - Value = XY.State.Color.Selected
+        - XY.DragFeedback.Preview.Border
+            - Value = XY.Editor.Selection
+        - XY.DragFeedback.Preview.Opacity
+            - Value = XY.Opacity.DragGhost（原稿 0.75–0.95）
+        - XY.DragFeedback.Preview.Text
+            - Value = XY.Text.Primary
+        - XY.DragFeedback.Origin.Border
+            - Value = XY.State.Color.Dragging
+        - XY.DragFeedback.Origin.Opacity
+            - Type = COMPONENT_SPECIFIC（低）
+        - XY.DragFeedback.Shadow
+            - Value = XY.Shadow.DragPreview
+        - XY.DragFeedback.LayoutShift
+            - Value = XY.State.ResizeOnChange（Forbidden）
+    - 性能原则
+        - Pointer Move 必须实时；Preview 不应每帧重建复杂 UI Tree；Direct Manipulation 应更新最小必要 Geometry
+        - 大型 Drag Payload 应使用简化 Preview；不得因为 Preview 渲染导致明显掉帧
+    - 禁止事项
+        - 禁止所有 Drag 强制使用 Ghost Preview / Direct Manipulation 与 Pointer 存在明显延迟
+        - 禁止 Reorder 时 Source 完全消失导致布局塌陷 / Drag Source 看起来像 Disabled
+        - 禁止复杂 Preview 遮挡大量 Canvas / DragFeedback 自己定义最终 Drop Position
+        - 禁止 Cancel 后残留 Ghost / Origin / Source 状态 / Pointer Up 后 Drag Visual 残留
+
+- 4.12 · DropIndicator / 放置指示
+    - 控件定位
+        - 类型
+            - Drop Presentation / 放置表现模式
+        - 层级
+            - 组合模式层（消费 Foundation DropTarget / Semantic Token）
+        - 主要用途
+            - 表达当前 Drag Payload 是否可以放置到目标；明确当前 Drop Target；在 Pointer Up 之前预告 Drop 是否会成功
+    - 与 DragFeedback / InsertionIndicator 的区别
+        - DragFeedback：表达正在拖什么（Source / Preview）
+        - DropIndicator：关注 Target，表示“放到谁里面 / 谁身上”（Valid / Invalid / Conditional）
+        - InsertionIndicator：关注 Position，表示“插在前面、后面还是两项之间”（4.13）
+    - 最终方案
+        - Contextual Drop Target + Target Border + Valid / Invalid Semantic
+        - 方案2作为主要目标定位语言；方案3作为 Drop 合法性语义语言；不采用 Target Surface 作为默认 Drop 母语言
+    - 核心原则
+        - DropIndicator 必须明确当前目标；必须在 Pointer Up 前出现；不得只依赖颜色表达合法性
+        - 不应覆盖大量目标内容 / 改变目标布局；合法与非法状态必须具有不同语义
+        - Pointer 离开目标后临时 Drop Feedback 必须清除；不负责列表插入顺序
+    - Drop 状态
+        - None：当前没有有效 Drop Target
+        - Valid：当前 Payload 可以放置；Pointer Up 执行 Drop
+        - Invalid：当前 Payload 不允许放置；Pointer Up 不执行提交
+        - Conditional：Drop 可以发生但需要转换或额外动作；可提供简短 Action Hint
+    - Contextual Drop Target
+        - Container / Slot / Tree Parent / Card / Inspector Target → Target Border
+        - Canvas Region → 沿正式目标 Geometry 显示 Drop Outline；Canvas Point / Handle → Ring / Target Marker
+        - 复杂 Geometry → 使用正式 Drop Geometry，不得强制矩形 Border
+    - Target Border
+        - 清晰 Border + 允许轻度增强宽度；目标内部内容尽量保持稳定；避免大面积颜色闪动
+    - Valid / Invalid / Conditional Drop
+        - Valid：Target Border + 合法状态语义色 + 可选合法状态符号 + 必要时短 Action Hint；Pointer Up 执行 Drop Commit
+        - Invalid：Invalid Border + Invalid Symbol + 必要时简短说明原因；Pointer Up 不得执行 Drop Commit（REF XY.Drag.InvalidTarget = ImmediateReject）
+        - Conditional：Target Border + Condition Symbol + Action Hint；不得表现得与普通 Valid 完全相同
+    - 颜色与语义
+        - 颜色不是唯一信息通道：Valid / Invalid / Conditional 都需要颜色 + 符号 + 必要时文本（REF XY.Accessibility.ColorOnlyState）
+        - 符号规则：Valid 允许 Check / Accept 类简单图形；Invalid 允许 Cross / Prohibited 类；Conditional 允许 Action / Conversion 类
+        - 禁止依赖 Emoji / 复杂装饰性图标
+    - Action Hint
+        - 解释 Pointer Up 后将发生什么（添加到数据集 / 设为材质 / 移动到组 / 创建引用 / 替换当前资源）
+        - 短、直接、只在必要时显示；不得形成大型 Tooltip
+    - 组合规则
+        - Drop + DragFeedback：Drag Preview 继续表达 Payload；Drop Target 表达目标；两者必须同时可辨；Target Feedback 不得遮盖 Drag Preview
+        - Drop + Hover：进入有效 Drop Context 后 DropIndicator 优先；普通 Hover 降级；不得同时显示普通 Hover Border 与 Drop Border 两套同强度反馈
+        - Drop + Selected：Target 本身已 Selected 时 Selected 身份保持；DropIndicator 额外表达当前 Drop Target；必须避免 Selected Border 与 Drop Border 完全相同
+        - Drop + Focus：Focus 可以继续保持；Drop Target 语义独立；Keyboard Drop 可继续依赖 Focus
+        - Drop + Disabled：Disabled Target 默认 Invalid；不得表现为正常 Valid Drop；必要时说明不可放置原因
+    - Canvas Drop / 大型 Container / 多目标重叠
+        - Region 使用 Geometry Outline；Path 沿可接收 Stroke / Path 表达；Point 使用 Target Ring；Area 使用外围 Border / Outline，不默认整块高亮
+        - 大型 Container 不默认采用明显 Target Surface；优先增强 Container Border；允许极弱背景 Tint 作为辅助；辅助 Tint 不得成为主要识别方式
+        - 多目标重叠必须只明确当前 Active Drop Target；嵌套 Target 应有稳定命中优先级；父 Target 与子 Target 不得同时使用同强度反馈
+    - Drop Commit / Cancel（REF Foundation）
+        - Pointer Up：Valid 执行操作；Conditional 执行规定动作或进入后续流程；Invalid 不提交；提交后清除 DropIndicator，更新 Selection / Focus / Data State
+        - Pointer 离开目标清除当前 Target Feedback；Esc 清除全部 Drop Feedback；Pointer Capture Lost 恢复稳定状态
+    - Canonical Token
+        - XY.DropIndicator.Target.Border
+            - Value = XY.State.Color.DropTarget.Border
+        - XY.DropIndicator.Target.BorderWidth
+            - Type = COMPONENT_SPECIFIC（1.5–2 DIP）
+        - XY.DropIndicator.Valid.Border
+            - Value = XY.Semantic.Success.Border
+        - XY.DropIndicator.Valid.Text
+            - Value = XY.Semantic.Success.Text
+        - XY.DropIndicator.Invalid.Border
+            - Value = XY.Semantic.Error.Border
+        - XY.DropIndicator.Invalid.Text
+            - Value = XY.Semantic.Error.Text
+        - XY.DropIndicator.Conditional.Border
+            - Type = GAP → [GAP:XYUI4-GAP-004]（原稿“使用独立语义 Token”；Foundation 无 Conditional Drop 专用 Semantic Token）
+        - XY.DropIndicator.Container.Tint
+            - Type = COMPONENT_SPECIFIC（Optional；极低透明度）
+        - XY.DropIndicator.LayoutShift
+            - Value = XY.State.ResizeOnChange（Forbidden）
+        - XY.DropIndicator.Shadow
+            - Value = XY.Shadow.None
+    - 性能原则
+        - Drop Target Hit Test 必须跟随 Pointer 实时响应；不得因目标检测产生明显 Drag 卡顿
+        - 复杂 Canvas 应采用局部 Target Query；只更新当前与前一 Drop Target 的反馈状态
+    - 禁止事项
+        - 禁止大型目标默认整块明显染色 / 只依赖红绿颜色表达 Valid / Invalid
+        - 禁止 Invalid Target 在 Pointer Up 后执行提交 / 普通 Hover 与 DropIndicator 使用完全相同视觉
+        - 禁止 DropIndicator 替代 InsertionIndicator / 嵌套 Target 同时高强度高亮
+        - 禁止 Pointer 离开后残留 Drop Border / Drop Feedback 改变组件布局
+
+- 4.13 · InsertionIndicator / 插入位置指示
+    - 控件定位
+        - 类型
+            - Insertion Presentation / 插入表现模式
+        - 层级
+            - 组合模式层（消费 Foundation DropZone 语义）
+        - 主要用途
+            - 表达 Drag Item 最终会被插入到哪个位置；表达项目之间的精确插入点；表达 Tree / Layer 中的目标层级
+    - 与 DropIndicator 的区别
+        - DropIndicator：回答“能不能放到这里”
+        - InsertionIndicator：回答“具体插在哪里”
+    - 最终方案
+        - Anchored Insert Line + Gap Preview
+        - 方案2负责精确位置和层级表达；方案3负责最终结构预览
+        - 不采用 Full-Width Insert Line 作为唯一标准
+    - 核心原则
+        - InsertionIndicator 必须比 DropIndicator 更精确；必须明确插入关系；Tree 场景必须能够表达层级
+        - 不得仅靠 Pointer 位置让用户猜测插入结果；拖动过程中的插入反馈必须稳定；Pointer Up 后临时 Indicator 必须清除
+        - 非法位置不得表现为正常 Insert
+    - Anchored Insert Line
+        - 结构：Insert Line + Anchor Marker + 可选 Direction Marker
+        - Anchor 表示真正的逻辑插入起点；Tree 中与当前缩进层级对齐（REF XY.Indent.PerLevel = 16 DIP）
+        - Line 从 Anchor 延伸至可理解的目标区域，不要求始终铺满整行
+    - 插入关系（术语统一 REF Foundation DropZone）
+        - Before：Indicator 位于 Target Item 上边界
+        - After：Indicator 位于 Target Item 下边界
+        - Into：使用目标层级对应缩进（原稿“Child”统一为 Foundation 术语 Into）；必要时配合 4.12 表达 Parent Target
+        - 用户应仅通过 Indicator 就能判断最终 Parent；不得出现视觉位置与实际 Parent 不一致
+    - Gap Preview
+        - 直接预览插入后的占位结果；适用于尺寸较大的 Item / Card / Asset / 明显结构重排
+        - 视觉：临时产生目标尺寸 Gap + 轻 Border / Subtle Surface + 允许 Insert Preview 文本或简化内容
+        - 普通密集 Tree 不要求默认使用大 Gap；不得制造频繁结构跳动
+    - Gap Size
+        - 默认接近 Drag Item 最终占用尺寸；大型 Item 允许压缩 Preview Gap；未知尺寸使用组件标准 Item Height
+        - 不得因为 Drag Preview 尺寸异常导致巨大 Gap
+    - Stability Zone / Hysteresis
+        - 避免 Pointer 在两个插入位置之间轻微抖动时 Indicator 高频切换
+        - 进入新的 Insert Zone 后需要超过稳定阈值再切换；已激活 Insert Zone 保留轻微容差；Pointer 明确离开后才切换
+        - 进入阈值与退出阈值允许不同；不得使用过大滞回导致 Pointer 明显越界仍不更新
+        - 稳定优先但不得牺牲位置准确性
+    - Gap Animation
+        - 允许短距离位置调整与轻度尺寸展开（REF XY.Motion.Fast）
+        - 禁止长 Fade / 弹性 Bounce / 明显 Spring
+    - 场景规则
+        - List Reorder：Anchored Insert Line + 允许 Gap Preview；Before / After 必须明确；原 Drag Source 占位规则继承 4.11
+        - Tree Reorder：主要使用 Anchored Insert Line；Anchor 与目标层级缩进对齐；移动到 Parent 内部时配合 4.12；移动到兄弟节点前后时使用 InsertionIndicator；不得将 Into Drop 与 Sibling Insert 混淆
+        - Layer Reorder：Anchored Insert Line + 允许 Gap Preview；必须明确最终 Z / Stack Order
+        - Card / Asset Reorder：允许 Gap Preview；Gap 尺寸接近 Card；必要时使用 Anchor 强化精确位置
+        - Timeline / Track：Anchored Insert Line 可旋转为 Vertical Indicator；Anchor Marker 继续表示精确时间位置；Gap Preview 仅在轨道结构重排时使用
+        - MultiSelection Drag：整体 Selection Set 作为一个 Drag Payload；Gap 尺寸表达整个 Payload 插入后的结构占位；不得为每个 Selected Item 创建独立 Gap
+    - 组合规则
+        - Insertion + DragFeedback：Drag Preview 表达正在拖什么；InsertionIndicator 表达放下后出现在哪里；两者同时存在但职责独立
+        - Insertion + DropIndicator：DropIndicator 表达合法 Target；InsertionIndicator 表达 Target 内精确位置；Tree 场景允许两者共同出现；不得使用完全相同视觉
+        - Insertion + Hover：Drag Reorder 期间 InsertionIndicator 优先；普通 Hover 降级
+        - Insertion + Selected / Focus：既有 Selected 保持，Indicator 不改变 Selection Set；Focus 可继续保持，Keyboard Reorder 可依赖 Focus + InsertionIndicator
+        - Invalid Insertion：不得显示正常 Accent Insert Line；由 4.12 Invalid Semantic 表达；Pointer Up 不执行 Reorder Commit
+    - Commit / Cancel（REF Foundation）
+        - Pointer Up：合法 Insert 提交新顺序；非法 Insert 保持原顺序；提交后移除 Indicator / Gap，更新数据顺序，恢复正常 Selection / Focus
+        - Esc：恢复原顺序、移除 Gap 与 Insert Line；Pointer Capture Lost：恢复稳定布局
+    - Canonical Token
+        - XY.InsertionIndicator.Anchor.Color
+            - Value = XY.Editor.Selection
+        - XY.InsertionIndicator.Anchor.Size
+            - Type = COMPONENT_SPECIFIC（6–8 DIP）
+        - XY.InsertionIndicator.Line.Color
+            - Value = XY.Editor.Selection
+        - XY.InsertionIndicator.Line.Width
+            - Type = COMPONENT_SPECIFIC（2–2.5 DIP）
+        - XY.InsertionIndicator.Gap.Background
+            - Value = XY.Editor.MultiSelection
+        - XY.InsertionIndicator.Gap.Border
+            - Value = XY.Editor.MultiSelection
+        - XY.InsertionIndicator.Gap.BorderStyle
+            - Type = COMPONENT_SPECIFIC（Dashed）
+        - XY.InsertionIndicator.Gap.Text
+            - Value = XY.Text.Secondary
+        - XY.InsertionIndicator.Animation
+            - Value = XY.Motion.Fast
+        - XY.InsertionIndicator.LayoutShift
+            - Value = 仅 Gap Preview 允许
+        - XY.InsertionIndicator.StabilityZone
+            - Type = COMPONENT_SPECIFIC（阈值 / 滞回参数由实现定义）
+    - 性能原则
+        - Pointer Move 必须实时；Insert Zone 计算不得导致列表卡顿；Gap Preview 不应重建整个 Tree
+        - 只更新受影响的相邻 Item；大型虚拟列表应保持虚拟化能力
+    - 禁止事项
+        - 禁止 Tree 插入线无法表达层级 / Pointer 微小抖动导致 Gap 高频上下跳动
+        - 禁止 Gap Preview 使用弹性动画 / Indicator 与实际插入位置不一致
+        - 禁止 Into Drop 与 Sibling Insert 使用完全相同反馈 / Drag Cancel 后残留 Gap
+        - 禁止非法位置显示正常 Insert Accent
+
+- 4.14 · LoadingIndicator / 加载指示
+    - 控件定位
+        - 类型
+            - Feedback Pattern / 反馈模式
+        - 层级
+            - 组合模式层（NEW；上游无同级定义）
+        - 主要用途
+            - 表达系统正在执行一个尚未完成的任务；明确具体哪个对象或功能正在工作；降低用户对“界面是不是卡死了”的疑惑
+    - 最终方案
+        - Inline Activity / 行内活动指示；Loading 默认贴近任务来源或任务对象
+        - 不采用 Local Overlay / Global Blocking / Scope-Aware Loading 作为基础 Loading 语言
+    - 核心原则
+        - Loading Feedback 应尽量靠近真正正在工作的对象；局部任务优先使用局部 Inline Feedback
+        - 不得因为单个局部任务无理由阻塞整个编辑器；Loading 必须明确系统仍然处于工作状态
+        - Loading 不等于 Progress / Disabled / Error；不应自动导致整个页面不可交互；不应造成布局大幅跳动
+    - 适用场景
+        - Dataset / Map Data / Resource / Asset Loading；Tree Node Lazy Loading；List Item Async Refresh
+        - Inspector Property Loading；Button Async Action；Search Loading；Background Calculation；局部文件读取 / 网络请求 / 解析任务
+    - 基础结构
+        - Activity Indicator（任务仍在运行）+ Task Context（正在处理哪个对象）+ Optional Label + Optional Secondary Message
+    - Inline Position
+        - 对象尾部：Tree Row / List Row / Asset Item
+        - 对象内部：Button / 紧凑型控件
+        - 对象下方：复杂组件 / 带简短状态文本的加载
+        - 对象标题区域：Panel Section / Inspector Section
+    - Tree / List
+        - 正在加载的 Row 保持 Row 结构稳定，尾部显示 Activity Indicator；Lazy Child Loading 时 Parent Row 保持可识别，子区域显示 Loading
+        - 不得因为单个节点加载冻结整个 Tree
+    - Button / Input / Inspector / Dataset
+        - Button 触发异步操作后允许按钮内部显示 Loading Activity，允许文字暂时切换为进行中语义；操作期间是否允许重复触发由 Button 业务规则决定；不得通过 Loading 把整个 Toolbar 锁死
+        - 单个属性异步读取时属性附近显示 Loading；局部计算值在 Value Area 显示；其他 Inspector 内容原则上继续保持可用
+        - 资源读取时资源行显示 Loading；资源状态未知时保持资源名称和上下文；不得只显示孤立 Spinner 而让用户不知道加载的是谁
+    - Loading Label
+        - 任务对象本身已经足够明确时可省略；任务语义不明确或时间明显超过瞬时响应时建议显示
+        - 示例语义：正在加载… / 正在读取数据… / 正在解析… / 正在计算…；短、直接、避免技术日志式长文本
+    - Loading 生命周期
+        - Task Start → Loading；Task Running → 保持 Activity Feedback；Task Success → 恢复正常内容
+        - Task Failure → 退出 Loading，进入 4.19 InlineFeedback；Task Cancel → 恢复稳定状态
+    - 短任务 / 长任务规则
+        - 极短任务允许不立即显示 Loading（避免毫秒级闪烁）；超过显示阈值再显示（阈值由实现规范统一）
+        - 长任务：可以量化真实进度时优先升级为 4.16 ProgressBar / 4.17 ProgressRing；无法量化时继续使用 LoadingIndicator / Spinner；不得伪造百分比进度
+    - 组合规则
+        - Loading + Hover：可交互的其他区域继续使用正常 Hover；Loading Spinner 自己不得表现成可点击对象
+        - Loading + Selected：对象可以同时保持 Selected（Selected 表达身份；Loading 表达当前正在处理）；不得因为 Loading 清除 Selection
+        - Loading + Focus：如对象仍可操作则 Focus 可继续保持；如暂时不可编辑则不得通过 Focus 假装可以正常提交输入
+        - Loading + Disabled：语义不同；操作入口可在 Loading 时暂时不可重复触发，但不得自动把整个对象视觉变成传统 Disabled
+        - Loading + Error：Task Failure 后退出 Loading 进入 InlineFeedback Error；禁止 Spinner 与错误状态永久同时存在
+    - 视觉规则
+        - 整体轻量 / 局部 / 低干扰；Activity Indicator 使用 Accent，尺寸与所在控件匹配；Text 使用 Secondary Text
+        - Background 默认不新增大面积 Surface；Border 默认不因 Loading 单独强化；Shadow None
+    - 动效原则
+        - 必须表达持续活动；动画稳定连续；不得剧烈跳动 / 高频闪烁 / 强烈 Glow；Reduced Motion 模式需要提供替代表达
+    - Canonical Token
+        - XY.LoadingIndicator.Indicator.Color
+            - Value = XY.Color.Accent
+        - XY.LoadingIndicator.Indicator.Track
+            - Value = XY.Accent.Soft
+        - XY.LoadingIndicator.Text.Color
+            - Value = XY.Text.Secondary
+        - XY.LoadingIndicator.Background
+            - Value = Transparent
+        - XY.LoadingIndicator.Border
+            - Value = XY.Border.Width.None
+        - XY.LoadingIndicator.Shadow
+            - Value = XY.Shadow.None
+        - XY.LoadingIndicator.Compact.Size
+            - Type = COMPONENT_SPECIFIC（12–14 DIP）
+        - XY.LoadingIndicator.Standard.Size
+            - Type = COMPONENT_SPECIFIC（14–18 DIP）
+        - XY.LoadingIndicator.Large.Size
+            - Type = COMPONENT_SPECIFIC（20–24 DIP）
+        - XY.LoadingIndicator.ShortTaskThreshold
+            - Type = COMPONENT_SPECIFIC（由实现规范统一）
+        - XY.LoadingIndicator.LayoutShift
+            - Value = XY.State.ResizeOnChange（Forbidden）
+    - 性能原则
+        - Loading Animation 不得造成明显 UI 负担；大量 Row 同时 Loading 时应避免创建高成本动画
+        - 不可见 Loading Indicator 应避免无意义持续渲染；后台任务状态变化应只更新必要 UI
+    - 禁止事项
+        - 禁止局部任务默认遮盖整个 Panel / 锁死整个 Workspace / 只显示 Loading 而不保留任务上下文
+        - 禁止伪造进度百分比 / 毫秒级任务产生明显 Loading 闪烁 / Task Failure 后 Spinner 永久继续旋转
+        - 禁止用 Loading 代替 Error Feedback / Loading 导致无必要布局跳动
+
+- 4.15 · Spinner / 旋转加载
+    - 控件定位
+        - 类型
+            - Feedback Pattern / 反馈模式
+        - 层级
+            - 组合模式层（NEW；上游无同级定义）
+        - 主要用途
+            - 表达任务正在持续运行且无法提供可靠百分比进度；作为 4.14 LoadingIndicator 的主要活动图形
+            - 适用于紧凑行内加载 / 按钮内部加载 / Tree / List Row / Inspector 局部加载 / 短时异步任务
+    - 与 LoadingIndicator / Progress 的区别
+        - LoadingIndicator 定义 Loading 语义、显示位置、任务上下文；Spinner 只定义 Indeterminate Activity 的动态图形
+        - Spinner = 无法可靠量化完成比例；ProgressBar / ProgressRing = 存在可靠进度
+        - 禁止已经知道真实进度时仍长期使用 Spinner 隐藏信息
+    - 最终方案
+        - Open Arc / 开口圆弧：单一圆形 Track + Accent Arc；Arc 持续旋转；圆角端点
+        - 不采用 Segmented Ring / Orbit Dot；不建立独立 Adaptive Spinner Variant
+    - 核心原则
+        - 视觉简单 / 状态明确 / 低干扰 / 连续运动；不得高频闪烁 / 产生 Glow / 使用大量分段造成视觉碎片
+        - 不得表现得像真实百分比 ProgressRing
+    - 基础结构
+        - Track（完整浅色圆环，提供运动参考）+ Active Arc（覆盖 Track 一部分，使用 Accent，负责持续运动）+ Center（保持透明，默认不放图标或文字）
+    - Arc 规则
+        - Arc Length 保持明显缺口，不得接近完整圆环；Stroke Cap Round；Stroke Width 随尺寸轻度适配
+        - Rotation 单方向持续旋转；运动稳定 / 连续 / 不急停 / 不弹跳
+    - 尺寸等级
+        - Compact 12–14 DIP（Tree / List / Status Cell）；Standard 14–18 DIP（默认，Button / Inspector / Inline Activity）；Large 20–24 DIP（仅用于较明显局部 Loading）
+        - 尺寸变化只调整 Size / Stroke，不改变 Spinner 母造型
+    - Compact / Standard / Large Spinner
+        - Compact：Track 允许非常轻，Arc 必须保持可辨识；禁止因尺寸太小导致 Arc 与 Track 糊成完整圆点
+        - Standard：Track 完整浅 Ring + Arc Accent Open Arc，作为默认实现基准
+        - Large：适用于较大局部内容 / 空白内容区域等待；不得因为尺寸增加而增加 Glow；不得成为视觉主角
+    - Spinner + Label
+        - 允许 Spinner 左侧或右侧配 Loading Label（继承 4.14，使用 Secondary Text）；布局保持紧凑间距，垂直居中
+    - Button / Tree List Spinner
+        - Button：允许 Spinner 替代原 Icon 或与短 Label 共存；按钮尺寸不得因 Spinner 出现而改变；必要时预留内容宽度避免 Loading 前后文字跳动
+        - Tree / List：优先放在 Row 尾部；不得覆盖 Row 主信息；多个 Row 同时 Loading 时保持统一尺寸，避免动画造成过强视觉噪声
+    - 组合规则
+        - Spinner + Selected：Selected 状态继续保持；Spinner 只表达 Activity；不得让 Spinner 替代 Selected
+        - Spinner + Focus：Focus Ring 独立保持；Spinner 本身默认不可 Focus
+        - Spinner + Disabled：Spinner 不等于 Disabled；正在 Loading 的操作入口可以暂时不可重复触发，但 Spinner 仍使用正常 Activity 语义
+        - Spinner + Error：Task Failure 后立即退出 Spinner 转入 4.19；禁止错误发生后 Spinner 继续永久旋转
+        - Spinner + Progress：真实 Progress 出现后 Spinner 应退出，切换至 ProgressBar / ProgressRing；禁止 Spinner 与确定进度长期并列表达同一任务
+    - 动效 / Reduced Motion
+        - Rotation 持续线性或近线性；推荐周期约 800–1200 ms / revolution；禁止过快旋转 / 明显加速减速摆动 / 闪烁 / 缩放脉冲 / Glow Pulse
+        - Reduced Motion：减少旋转速度或使用低运动替代；仍必须保留“任务正在运行”的非运动语义；可配合 Loading Label
+    - Canonical Token
+        - XY.Spinner.Track.Color
+            - Value = XY.Accent.Soft
+        - XY.Spinner.Arc.Color
+            - Value = XY.Color.Accent
+        - XY.Spinner.Compact.Size
+            - Type = COMPONENT_SPECIFIC（12–14 DIP）
+        - XY.Spinner.Standard.Size
+            - Type = COMPONENT_SPECIFIC（14–18 DIP）
+        - XY.Spinner.Large.Size
+            - Type = COMPONENT_SPECIFIC（20–24 DIP）
+        - XY.Spinner.Compact.StrokeWidth
+            - Type = COMPONENT_SPECIFIC（1.5–2 DIP）
+        - XY.Spinner.Standard.StrokeWidth
+            - Type = COMPONENT_SPECIFIC（2–2.5 DIP）
+        - XY.Spinner.Large.StrokeWidth
+            - Type = COMPONENT_SPECIFIC（2.5–3 DIP）
+        - XY.Spinner.StrokeCap
+            - Type = COMPONENT_SPECIFIC（Round）
+        - XY.Spinner.Center
+            - Value = Transparent
+        - XY.Spinner.Glow
+            - Value = XY.Shadow.None
+        - XY.Spinner.Shadow
+            - Value = XY.Shadow.None
+        - XY.Spinner.LayoutShift
+            - Value = XY.State.ResizeOnChange（Forbidden）
+        - XY.Spinner.RotationDuration
+            - Type = COMPONENT_SPECIFIC（800–1200 ms）
+    - 性能原则
+        - Spinner 动画必须轻量；大量同时存在时不得明显增加 UI 渲染压力
+        - 不可见 Spinner 应暂停无意义动画；被虚拟化 Row 移出视口后停止动画更新；不得为每帧重建 Spinner Geometry
+    - 禁止事项
+        - 禁止使用模糊发光 Spinner / 大量分段点作为默认视觉 / Spinner 看起来像真实百分比环
+        - 禁止 Spinner 改变控件布局尺寸 / 覆盖任务主体信息 / Task Failure 后继续旋转
+        - 禁止已知真实进度时伪装成 Indeterminate
+
+- 4.16 · ProgressBar / 进度条
+    - 控件定位
+        - 类型
+            - Feedback Pattern / 反馈模式
+        - 层级
+            - 组合模式层（NEW；上游无同级定义）
+        - 主要用途
+            - 表达一个具有可靠确定性进度的任务；告诉用户当前已经完成多少；支持百分比 / 数量 / 阶段进度；支持高密度行内进度
+    - 与 Spinner 的区别
+        - Spinner：Indeterminate Progress，无法可靠确定完成比例
+        - ProgressBar：Determinate Progress，必须存在可信的实际进度值
+    - 最终方案
+        - Clean Linear + Labeled Progress + Segmented Stage Progress + Inline Compact Progress
+        - 四种方案全部保留，根据场景选择 Variant，共享统一 Progress 母语义与 Token
+    - 核心原则
+        - Progress 必须来自真实任务进度；禁止伪造百分比；禁止用视觉动画假装任务正在前进
+        - Progress Value 必须保持单调合理；任务允许回退时必须有明确业务原因；进度视觉不得超出真实完成比例
+        - ProgressBar 不承担 Error 详细解释；任务失败后进入 4.19；完成后进入 Success / Completed State 或正常内容
+    - 基础结构
+        - Track（完整任务范围）+ Fill（已经完成的范围）+ Optional Label + Optional Value（百分比 / 数量 / 阶段）+ Optional Secondary Info（剩余数量 / 当前阶段 / 当前处理对象）
+    - Clean Linear
+        - ProgressBar 基础母形态；适用普通文件加载 / 保存 / 计算；结构：Track + Accent Fill + 可选百分比；低干扰、简单、横向连续
+    - Labeled Progress
+        - 信息增强型；适用长任务（导入 / 导出 / 构建 / 大型保存 / 批量资源处理）
+        - 内容：Task Label + Percentage + Current Count / Total Count + 可选 Remaining Count + 可选 Current Item
+        - 百分比与数量应来自同一真实任务源
+    - Segmented Stage Progress
+        - 多阶段任务 Variant（Build / Import / Export / Validation / Save / Data Processing Pipeline）
+        - 阶段：Completed Stage 完整 Accent / Current Stage 当前强调 / Pending Stage Track 弱状态
+        - 阶段必须来自真实 Task Model；不得为了视觉好看任意拆阶段；不得把不同耗时阶段机械平均成相同百分比
+    - Inline Compact Progress
+        - 高密度局部 Progress Variant（Tree Row / List Row / Asset Row / DataGrid Cell / Status Cell / Resource Item）
+        - Compact Track + Compact Fill + 可选 Percentage；不改变 Row 高度；不挤压主要名称
+    - 场景映射
+        - 普通后台任务 → Clean Linear；大型导入 / 导出 → Labeled Progress；Build / 多阶段 Validation → Segmented Stage Progress
+        - Tree Resource Processing / Asset Download / Generate → Inline Compact Progress；复杂长任务允许 Labeled + Segmented 组合
+    - Progress Value
+        - 范围 0–100% 或 0–1 Normalized Value；可显示整数百分比，必要时允许一位小数；不需要无意义高精度（63.482916% 不应直接展示）
+    - Count Progress
+        - Current / Total 形式（862 / 1240）；适用资源 / 文件 / Entity / 数据记录数量
+    - 组合规则
+        - Progress + Spinner：同一任务已有可靠全局 Progress 时不应继续用 Spinner 表达总任务；允许某阶段总体可量化而阶段内部未知子任务显示小型 Spinner；必须明确两者代表不同层级
+        - Progress + LoadingIndicator：LoadingIndicator 负责任务上下文；ProgressBar 负责确定进度；确定进度出现后优先 ProgressBar
+        - Progress + Selected：对象可以保持 Selected；Progress 表达对象任务状态；Selected 不应因 Progress 消失
+        - Progress + Focus：ProgressBar 默认不可 Focus；包含 Cancel / Pause 时操作按钮独立获得 Focus
+        - Progress + Error：任务失败停止进度动画，保留最后可信 Progress 可选，进入 4.19；不得 Error 后继续伪装任务正常前进
+        - Progress + Success：100% 表示任务完成；允许短暂显示 100% 后恢复正常内容；不得长时间停留 100% 让用户误认为仍在执行
+        - Pause：任务支持暂停时 Progress Value 保持、Activity Motion 停止、显示 Paused State；暂停功能不属于 ProgressBar 本体必须能力
+        - Cancel：Cancel Action 应独立于 ProgressBar；不得把整个 Bar 当成取消按钮
+    - 视觉规则
+        - Track 低对比，保持完整任务边界，不得比 Fill 更抢眼
+        - Fill 使用 Accent，连续清晰；不得使用高饱和渐变作为默认视觉；不得使用 Glow
+    - 动画原则
+        - Value 更新允许平滑过渡，过渡时间应短（REF XY.Motion.Fast）；不得让动画明显落后于真实 Progress
+        - 任务快速跳跃时允许直接更新；禁止循环动画伪造确定进度
+    - Canonical Token
+        - XY.ProgressBar.Track.Color
+            - Value = XY.Accent.Soft
+        - XY.ProgressBar.Fill.Color
+            - Value = XY.Color.Accent
+        - XY.ProgressBar.Text.Primary
+            - Value = XY.Text.Primary
+        - XY.ProgressBar.Text.Secondary
+            - Value = XY.Text.Secondary
+        - XY.ProgressBar.Compact.Height
+            - Type = COMPONENT_SPECIFIC（3–5 DIP）
+        - XY.ProgressBar.Standard.Height
+            - Type = COMPONENT_SPECIFIC（6–8 DIP）
+        - XY.ProgressBar.Emphasis.Height
+            - Type = COMPONENT_SPECIFIC（8–10 DIP）
+        - XY.ProgressBar.CornerRadius
+            - Value = XY.Radius.Full
+        - XY.ProgressBar.Transition
+            - Value = XY.Motion.Fast
+        - XY.ProgressBar.Glow
+            - Value = XY.Shadow.None
+        - XY.ProgressBar.Shadow
+            - Value = XY.Shadow.None
+        - XY.ProgressBar.LayoutShift
+            - Value = XY.State.ResizeOnChange（Forbidden）
+    - 性能原则
+        - Progress Value 更新不得触发无关 UI 重排；高频任务应限制无意义超高频视觉刷新
+        - 大量 Row Progress 应保持虚拟化；不可见 Progress 不应持续无意义绘制
+    - 禁止事项
+        - 禁止伪造 Progress / 使用随机增长百分比安抚用户 / Determinate Progress 使用无限循环动画冒充进度
+        - 禁止 Fill 超过真实 Value / 大量高饱和渐变 / Glow / ProgressBar 替代 Error Feedback
+        - 禁止 Inline Progress 改变 Row 高度 / 不同 Variant 使用互相矛盾的 Progress Token
+
+- 4.17 · ProgressRing / 环形进度
+    - 控件定位
+        - 类型
+            - Feedback Pattern / 反馈模式
+        - 层级
+            - 组合模式层（NEW；上游无同级定义）
+        - 主要用途
+            - 在紧凑空间中表达确定性进度；同时容纳进度与关键任务信息
+            - 适用于单一任务 / Asset Card / Resource Item / 工具面板 / 紧凑状态区域
+    - 与 Spinner / ProgressBar 的区别
+        - Spinner：Indeterminate，不知道实际完成比例，通过持续旋转表达 Activity
+        - ProgressRing：Determinate，必须知道真实完成比例，Arc Length 直接对应真实 Progress
+        - ProgressBar：适合横向空间 / 长任务 / 大量文字说明 / 阶段化任务
+        - ProgressRing：适合紧凑空间 / 单任务 / 图标型内容 / 中心内容与进度组合
+    - 最终方案
+        - Center Content Ring / 中心内容环：外环表达 Determinate Progress + 中心提供 Content Slot
+        - 不采用纯空心 Ring 作为最终默认；不采用 Icon Ring 作为独立母方案；不在本项扩展完整 Status Transition Variant
+    - 核心原则
+        - Progress 必须来自真实任务数据；Arc Length 必须与真实 Progress 一致
+        - Center Content 必须与当前任务相关；不得遮挡 Progress 读取；不得通过旋转伪装 Spinner
+        - 不得伪造百分比；不得为了视觉效果让 Arc 超前于真实 Progress
+    - 基础结构
+        - Track（完整浅色圆环，表达总任务范围）+ Progress Arc（使用 Accent，长度对应真实完成比例）+ Center Slot + Optional Label（位于 Ring 外部）
+    - Center Content
+        - Percentage（68%）/ Current / Total（42 / 60）/ Task Identity（简短名称 / Type）/ Optional Icon（允许极简图形标识，不得比进度环本身更抢眼）/ Empty（必要时允许中心为空）
+        - 整数百分比优先；禁止显示无意义高精度（68.4731%）
+        - 尺寸有限时优先缩短表达；过大数字应转移到外部 Label
+        - 多个 ProgressRing 并列时中心只放最重要身份；详细任务说明放 Ring 外部
+    - Track / Progress Arc
+        - Track 低对比，宽度随尺寸适配，不得比 Progress Arc 更明显
+        - Progress Arc：起点默认 12 点方向（StartAngle -90deg）、默认顺时针、Stroke Cap Round、颜色 Accent、长度严格对应 Progress Value
+    - Progress Value
+        - 范围 0–100% 或 0–1 Normalized；0% Arc 不显示或接近零长度；100% Arc 完整闭合
+        - 更新允许短平滑过渡（REF XY.Motion.Fast）；不得明显滞后于真实 Progress
+    - 组合规则
+        - ProgressRing + Label：Ring 负责 Progress；Label 负责任务名称与详细说明（下方或右侧）；Center Content 与外部 Label 不重复堆砌同一信息
+        - ProgressRing + Selected：所在 Item 可以继续 Selected；不得用 Selected Color 改写 Progress Value
+        - ProgressRing + Focus：本体默认不可 Focus；存在 Cancel / Pause Action 时 Action 独立 Focus
+        - ProgressRing + Loading：任务尚无真实 Progress 时使用 Spinner；真实 Progress 可用后切换为 ProgressRing；不得同时让同一 Ring 既旋转又表示百分比
+        - ProgressRing + Error：任务失败停止 Progress 更新，退出正常 Progress 状态，进入 4.19；可以保留最后可信 Value，但必须明确任务已失败
+        - ProgressRing + Success：达到 100% 可短暂保持完整 Ring，随后根据场景恢复正常 Item 状态
+    - 动画原则 / Reduced Motion
+        - Value Transition 短且平滑；禁止整环持续旋转 / Glow Pulse / Scale Pulse / 无意义 Bounce；快速 Value 更新允许直接追随真实 Value
+        - Reduced Motion：Progress Value 仍通过 Arc Length 表达；可以减少 Value Transition 动画；不影响读取真实 Progress
+    - Canonical Token
+        - XY.ProgressRing.Track.Color
+            - Value = XY.Accent.Soft
+        - XY.ProgressRing.Arc.Color
+            - Value = XY.Color.Accent
+        - XY.ProgressRing.Text.Primary
+            - Value = XY.Text.Primary
+        - XY.ProgressRing.Text.Secondary
+            - Value = XY.Text.Secondary
+        - XY.ProgressRing.Compact.Size
+            - Type = COMPONENT_SPECIFIC（32–40 DIP）
+        - XY.ProgressRing.Standard.Size
+            - Type = COMPONENT_SPECIFIC（48–64 DIP）
+        - XY.ProgressRing.Large.Size
+            - Type = COMPONENT_SPECIFIC（72–96 DIP）
+        - XY.ProgressRing.Compact.StrokeWidth
+            - Type = COMPONENT_SPECIFIC（3–4 DIP）
+        - XY.ProgressRing.Standard.StrokeWidth
+            - Type = COMPONENT_SPECIFIC（5–7 DIP）
+        - XY.ProgressRing.Large.StrokeWidth
+            - Type = COMPONENT_SPECIFIC（7–9 DIP）
+        - XY.ProgressRing.StrokeCap
+            - Type = COMPONENT_SPECIFIC（Round）
+        - XY.ProgressRing.StartAngle
+            - Type = COMPONENT_SPECIFIC（-90deg / 12 点方向）
+        - XY.ProgressRing.Glow
+            - Value = XY.Shadow.None
+        - XY.ProgressRing.Shadow
+            - Value = XY.Shadow.None
+        - XY.ProgressRing.LayoutShift
+            - Value = XY.State.ResizeOnChange（Forbidden）
+    - 性能原则
+        - 只根据 Value 更新 Arc Geometry；不得每次进度刷新重建整个 Item
+        - 大量 ProgressRing 同时存在时限制无意义超高频刷新；不可见 Ring 不应持续进行无用动画
+    - 禁止事项
+        - 禁止伪造 Progress / ProgressRing 持续旋转冒充 Spinner / 中心内容遮挡进度环
+        - 禁止 Center Content 堆叠过多信息 / 使用 Glow / 高饱和渐变作为默认 Progress Arc
+        - 禁止 Progress Arc 超过真实 Value / ProgressRing 取代 Error Feedback
+
+- 4.18 · Skeleton / 骨架占位
+    - 控件定位
+        - 类型
+            - Feedback Pattern / 反馈模式
+        - 层级
+            - 组合模式层（NEW；上游无同级定义）
+        - 主要用途
+            - 在真实内容尚未准备完成时预先占据未来布局空间；降低加载完成后的 Layout Shift
+            - 支持 Tree / List / Inspector / Asset Card / DataGrid / Search Result / 大型数据面板
+    - 与 LoadingIndicator 的区别
+        - LoadingIndicator：表达某个任务正在执行，强调 Activity
+        - Skeleton：表达未来内容结构，强调 Layout Preservation
+        - 两者可以组合但不得产生重复噪声
+    - 最终方案
+        - Structural Blocks + Content-Shaped Skeleton + Progressive Reveal
+        - 方案1作为基础视觉；方案3负责按内容类型建立真实结构占位；方案4负责数据逐步到达后的内容替换
+        - 不采用 Shimmer Skeleton 作为默认方案
+    - 核心原则
+        - Skeleton 必须尽量接近未来真实布局；不是随意灰色装饰块；主要目标是减少 Layout Shift
+        - Skeleton 不应比真实内容更抢眼；真实数据可用后应尽快替换对应占位
+        - 不得等待整个大型区域全部完成才一次性替换；不得使用高频闪烁或大面积流光
+    - Structural Blocks
+        - 低对比几何块预占未来内容空间：Text Placeholder 圆角横条 / Icon Placeholder 圆形或方形 / Image Placeholder 矩形 / Field Placeholder 接近真实 Field 尺寸 / Card Placeholder 接近真实 Card 结构
+        - 颜色使用低对比中性色，与 Background / Panel 保持低对比
+    - Content-Shaped Skeleton
+        - Tree Skeleton 应像 Tree；Inspector Skeleton 应像 Inspector；Asset Skeleton 应像 Asset Card；DataGrid Skeleton 应像 DataGrid
+        - 不得所有组件都使用同样三条灰线
+        - Tree：保留 Row Height / Indentation / Icon / Expander 占位 / Text Width 大致差异；不得因为真实内容加载后改变 Tree 基础行高
+        - List：保留 Row Height / 主要图标区域 / Primary Text / 可选 Secondary Text / 尾部状态区域
+        - Inspector：保留 Label Column / Value Field Column / Section Grouping / 标准 Row Gap；不得用几根随机横条代替真实 Inspector Layout
+        - Asset Card：保留 Thumbnail Area / Title / Metadata / Card Size；加载完成后 Card 尺寸不得明显跳变
+        - DataGrid：保留 Row / Column Structure 与 Cell Bounds；不同列允许不同 Placeholder Width；不得破坏已有列宽
+    - Text / Image Placeholder
+        - Text 长度接近未来文本大致宽度；不同 Row 使用不同宽度；禁止每条 Placeholder 完全相同造成机械感；保持轻微圆角
+        - Image / Thumbnail 尺寸与真实 Media Slot 相同，比例保持最终 Aspect Ratio；禁止加载完成后图片导致容器重新计算大幅尺寸
+    - Progressive Reveal
+        - Stage A：全部或大部分内容仍为 Skeleton；Stage B：已获取数据部分显示真实内容，未知部分继续 Skeleton；Stage C：所有必要数据准备完成，Skeleton 全部退出
+        - Reveal 优先级：稳定身份信息（Title / Name / ID / Type）→ 核心属性 → 次要信息；顺序稳定，避免随机位置不断闪现
+    - Partial Data
+        - 字段已经可靠时立即显示真实值；字段仍未知时继续显示 Skeleton
+        - 禁止使用假值填充 / 使用临时随机文本冒充真实数据
+    - Error / Empty Result
+        - 部分字段失败：对应 Skeleton 结束，转入 4.19 或字段级错误；不得失败后 Skeleton 永久保留造成“还在加载”的误导
+        - 加载完成后确实没有内容：Skeleton 退出，进入 4.20 EmptyState；不得空数据继续保留 Skeleton
+    - 组合规则
+        - Skeleton + LoadingIndicator：结构已经明确时优先 Skeleton；任务语义需要额外说明时允许局部 Loading Label；不得每个 Skeleton Block 再各自配 Spinner
+        - Skeleton + Progress：已有真实确定进度时允许在区域附近提供 ProgressBar；Skeleton 继续负责内容占位；两者职责独立
+        - Skeleton + Selected：Placeholder 对应的真实对象尚不存在时不得伪造 Selected；已有对象只是属性仍在加载时可以保留 Selected 状态
+        - Skeleton + Focus：纯 Placeholder 默认不可 Focus；加载完成后真实 Interactive Element 再进入正常 Focus Flow；禁止 Skeleton 看起来可以编辑却无法交互
+    - 静态视觉 / 颜色层级
+        - 默认无 Shimmer / Pulse / Fade Loop；使用稳定低对比结构块；Activity 如有需要由 LoadingIndicator 单独补充
+        - Primary Placeholder 略深 / Secondary Placeholder 略浅 / Media Placeholder 允许比 Text Placeholder 稍大面积但保持低对比
+    - Transition
+        - Skeleton → Real Content 允许短 Crossfade（0–100 ms）或直接替换（REF XY.Motion.Fast）
+        - 真实内容出现速度优先；不得为了动画延迟数据显示
+    - Canonical Token
+        - XY.Skeleton.Primary.Background
+            - Type = COMPONENT_SPECIFIC（低对比中性色；实现期映射 Foundation Surface 家族，不建立第二颜色真值）
+        - XY.Skeleton.Secondary.Background
+            - Type = COMPONENT_SPECIFIC（同上）
+        - XY.Skeleton.Strong.Background
+            - Type = COMPONENT_SPECIFIC（同上）
+        - XY.Skeleton.Container.Background
+            - Type = COMPONENT_SPECIFIC（同上）
+        - XY.Skeleton.Border
+            - Value = XY.Border.Color.Subtle
+        - XY.Skeleton.TextRadius
+            - Type = COMPONENT_SPECIFIC（4–6 DIP）
+        - XY.Skeleton.MediaRadius
+            - Type = COMPONENT_SPECIFIC（4–6 DIP）
+        - XY.Skeleton.Animation
+            - Value = None by Default
+        - XY.Skeleton.Shimmer
+            - Value = Disabled by Default
+        - XY.Skeleton.LayoutShift
+            - Value = Minimize（首要目标）
+    - 性能原则
+        - Skeleton Geometry 应简单；不得为大量 Placeholder 建立高成本动画
+        - 虚拟列表只创建可见 Skeleton Row；真实数据到达后只更新对应部分；不得因一个字段到达重建整个 Panel
+    - 禁止事项
+        - 禁止默认大面积 Shimmer / 所有组件统一使用随机灰色横条 / Skeleton 与最终内容尺寸严重不一致
+        - 禁止加载完成后产生明显 Layout Jump / 使用假内容代替 Skeleton
+        - 禁止 Error 后继续显示 Loading Skeleton / Empty Result 继续保留 Skeleton / Skeleton 看起来像 Disabled Interactive Control
+
+- 4.19 · InlineFeedback / 行内反馈（Composition Pattern）
+    - 控件定位
+        - 类型
+            - Composition Pattern / 组合模式
+        - 层级
+            - 组合模式层（消费 XYUI-1 文本组件 + Foundation Semantic Token）
+        - 主要用途
+            - 在具体控件、字段、局部任务附近表达结果或问题；告诉用户哪个对象发生了什么；解释为什么当前值无效
+            - 支持 Form Validation / Inspector / File Path Validation / Async Task Result / Save / Parse / Validate 等局部反馈
+    - 权威关系（C-B1 裁定）
+        - XYUI-1 已冻结组件：ErrorText / WarningText / HelpText / StatusBadge / StatusDot / IconLabel
+        - 本项不重新定义第二套 Error / Warning Text 组件，只定义组合模式
+        - XYUI-4 独有职责：Validation Timing / Debounce / Async Validation / Lifecycle / Border + Message Composition / Cross-field Error / Severity 生命周期
+    - 与 Notification / Toast 的区别
+        - InlineFeedback 贴近具体对象，具有明确局部上下文，适合需要立即修正的问题
+        - Toast / Notification 属于更高层状态与通知体系，不用于替代具体字段错误
+    - 最终方案
+        - Message Below + Border + Message + Severity-Aware Feedback
+        - 方案2作为默认定位结构；方案1负责解释信息；方案4统一语义等级；不采用固定 Inline Status Slot 作为通用默认结构
+    - 核心原则
+        - 反馈必须靠近真正的问题来源；用户第一眼应能定位问题控件，第二眼应能判断反馈性质
+        - 必要时必须说明原因；颜色不能成为唯一语义通道；Error 不应只把 Border 染红而不给原因
+        - Success 不应制造过多视觉噪声；反馈不得无故提升为全局 Notification；反馈消失时不得导致明显布局抖动
+    - 组合结构（COMPOSE）
+        - Target（具体控件 / 字段 / 局部任务）+ Severity Border（锁定反馈位置与性质）+ XYUI-1 Icon（IconLabel / StatusDot 家族，增强非颜色辨识）+ XYUI-1 Message Component（ErrorText / WarningText / HelpText）+ Optional Action
+    - Message Below
+        - 紧贴关联控件下方；优先与控件内容起始边对齐
+        - 内容：一句主要信息 + 必要时第二句修复建议；简短 / 明确 / 可行动 / 不写技术日志
+    - Severity（REF Foundation Semantic）
+        - Success：操作成功 / 当前值有效 / 任务完成；反馈强度低至中弱；可以短暂显示，结果已经非常明显时可以省略；禁止每次普通输入都持续显示绿色 Success
+        - Info：补充信息 / 自动行为说明 / 非问题性提示；反馈强度低；不得看起来像 Warning；不得阻止正常操作
+        - Warning：当前状态仍可继续但存在风险；反馈强度中；提交通常允许；必要时提供解决建议
+        - Error：当前值无效 / 操作失败 / 无法提交；反馈强度最高；当前输入无效时不得提交；Message 必须说明问题原因并尽量说明如何修正
+    - 颜色不是唯一信息通道
+        - 必须至少结合 Border + Icon + Text；色觉差异情况下仍能区分 Feedback；禁止仅通过红绿切换表达 Error / Success
+        - Icon：Success 用 Check 类简洁图形；Info 用 Info 类；Warning 用 Warning 类；Error 用 Cross / Error 类；不使用 Emoji / 复杂装饰图标；尺寸保持紧凑
+    - Validation Timing（XYUI-4 独有）
+        - 即时 Validation 仅适合用户能够立即理解并修复的规则
+        - Blur Validation 适合格式完整后再判断的字段；Submit Validation 适合跨字段或复杂规则
+        - 不得用户刚输入第一个字符就不断闪 Error
+    - Debounce / Async Validation（XYUI-4 独有）
+        - 异步 Validation 允许 Debounce，避免每次按键触发高成本验证与 Feedback 高频闪动
+        - 验证中可使用 4.14 LoadingIndicator
+        - Validation Start 进入局部 Loading；Success 退出 Loading 进入 Success 或正常状态；Failure 退出 Loading 进入 Warning / Error
+        - 禁止 Spinner 与 Error 永久同时存在；禁止异步验证结果覆盖更新后的新输入
+    - 错误消息写法 / Message Length
+        - 优先说明具体问题与用户可以怎么修（“文件不存在，请检查路径”“名称已存在，请使用其他名称”“值必须位于 0–100”）
+        - 避免 Invalid input / Operation failed / Error 1024 类纯技术消息（除非技术代码对用户确实有帮助）
+        - 短消息单行优先；较长消息允许换行；特别复杂问题保留关键原因，详细诊断交给日志或高级详情；不得把堆栈信息塞进 InlineFeedback
+    - 布局 / 多个错误 / 跨字段错误
+        - Feedback Message 出现时允许局部高度增加；表单建议为常见反馈预留合理空间；密集 Inspector 允许根据布局策略局部展开
+        - 每个错误靠近对应字段；不得把所有错误集中堆到一个无上下文区域；Submit 后允许另外提供 Error Summary，但不替代字段 InlineFeedback
+        - 错误涉及多个字段时 Feedback 放在最合适的共同容器；相关字段可同时使用轻 Border 标识；不得随意把错误归咎于其中一个字段
+    - 组合规则
+        - InlineFeedback + Focus：Error Field 获得 Focus 时继续使用 Focus Ring（4.04）；Error Border 语义必须仍可识别；不得 Focus 覆盖 Error 导致问题不可见
+        - InlineFeedback + Hover：Hover 不得覆盖 Severity Border；Feedback 状态优先于普通 Hover Border
+        - InlineFeedback + Disabled：Disabled Field 的历史 Error 是否继续显示由业务语义决定；如果用户无法修复，Message 应解释原因或依赖
+        - InlineFeedback + Loading：验证执行中 Loading；验证完成退出 Loading 显示对应 Feedback；不得同时表达“还在验证”和“已经失败”
+        - InlineFeedback + Skeleton：Skeleton 本身不显示字段 Validation；真实字段加载完成后再进入正常 Feedback Flow
+    - Feedback Lifecycle（XYUI-4 独有）
+        - 出现：Validation Result / Task Result / User Action Result
+        - 保持：直到用户修复 / 下一次有效验证 / 或短暂 Success 生命周期结束
+        - 消失：问题解决 / 目标销毁 / 上下文切换
+        - Success 生命周期：允许短暂显示，稳定结果已经明显时可自动消退；不得永久占据空间造成持续绿色噪声
+        - Warning 生命周期：条件仍存在则保持；条件解除则清除
+        - Error 生命周期：错误仍存在则保持；用户修改后根据验证策略重新判断；不得用户修改一个字符就无条件立即清除再闪回
+    - Canonical Token
+        - XY.InlineFeedback.Success.Border
+            - Value = XY.Semantic.Success.Border
+        - XY.InlineFeedback.Success.Text
+            - Value = XY.Semantic.Success.Text
+        - XY.InlineFeedback.Info.Border
+            - Value = XY.Semantic.Info.Border
+        - XY.InlineFeedback.Info.Text
+            - Value = XY.Semantic.Info.Text
+        - XY.InlineFeedback.Warning.Border
+            - Value = XY.Semantic.Warning.Border
+        - XY.InlineFeedback.Warning.Text
+            - Value = XY.Semantic.Warning.Text
+        - XY.InlineFeedback.Error.Border
+            - Value = XY.Semantic.Error.Border
+        - XY.InlineFeedback.Error.Text
+            - Value = XY.Semantic.Error.Text
+        - XY.InlineFeedback.Border.Width
+            - Type = COMPONENT_SPECIFIC（1.5–2 DIP）
+        - XY.InlineFeedback.Message.FontSize
+            - Value = XY.FontSize.Caption
+        - XY.InlineFeedback.Message.Gap
+            - Value = XY.Space.4
+        - XY.InlineFeedback.Icon.Size
+            - Type = COMPONENT_SPECIFIC（12–16 DIP）
+        - XY.InlineFeedback.Shadow
+            - Value = XY.Shadow.None
+        - XY.InlineFeedback.Message.Component
+            - Value = XYUI-1 ErrorText / WarningText / HelpText（NAMESPACE_REF）
+        - XY.InlineFeedback.Icon.Component
+            - Value = XYUI-1 IconLabel / StatusDot / StatusBadge（NAMESPACE_REF）
+    - 性能原则
+        - Validation 不得阻塞输入；异步 Validation 应取消过期请求结果
+        - 只更新相关字段反馈；不得每次输入重建整个 Inspector；大量字段 Validation 应避免同步全量重算
+    - 禁止事项
+        - 禁止只靠颜色表达 Severity / 只有红 Border 没有错误原因 / 普通 Info 看起来像 Error
+        - 禁止 Warning 自动阻止提交 / 复杂错误硬塞入固定窄 Status Slot / InlineFeedback 塞技术堆栈
+        - 禁止异步验证结果覆盖更新后的新输入 / Error 消失与重现产生高频闪烁
+        - 禁止把局部字段问题升级成无上下文全局 Toast
+
+- 4.20 · EmptyState / 空状态（Composition Pattern）
+    - 控件定位
+        - 类型
+            - Composition Pattern / 组合模式
+        - 层级
+            - 组合模式层（消费 XYUI-1 EmptyText + XYUI-2 Button）
+        - 主要用途
+            - 表达区域已经完成加载但当前不存在可显示内容；明确区分 Empty 与 Loading / Error
+            - 避免完全空白区域让用户误认为界面故障；在必要时提供一个明确的下一步操作
+    - 权威关系（C-B2 裁定）
+        - XYUI-1 22 EmptyText：Primitive（文本表达）
+        - XYUI-4 EmptyState：Pattern / Composition（状态组合 + 可选操作）
+        - 按钮必须引用 XYUI-2 01 Button 正式组件
+    - 最终方案
+        - Plain Empty Message + Empty + Primary Action
+        - 方案1作为基础母形态；方案2作为行动型 Variant
+        - 不采用 Context Illustration 作为标准组成；不建立复杂 Contextual Empty 分类框架
+    - 核心原则
+        - EmptyState 必须明确告诉用户区域当前为什么没有内容；必须保持轻量
+        - 不得因为内容为空制造大型视觉中心；不得使用大型插画；不得把局部 EmptyState 做成欢迎页
+        - Primary Action 只有在下一步明确时才出现；一个 EmptyState 默认最多一个 Primary Action；没有明确下一步时只使用 Plain Empty Message
+        - Empty 不等于 Error；Empty 不等于 Loading
+    - 组合结构（COMPOSE）
+        - Plain Empty Message：Title（XYUI-1 EmptyText 主文本）+ Optional Description
+        - Empty + Primary Action：Title + Description + Primary Action（XYUI-2 Button）
+        - 示例：暂无数据集（当前地图还没有注册任何数据集）；暂无图层（创建图层以开始添加地图内容 → 创建图层）
+    - Action 是否出现
+        - 有单一明确下一步 → 显示 Primary Action
+        - 存在多个同等合理路径 → 不应强行选择一个 Primary Action，保持 Plain Empty Message
+        - 用户当前没有执行权限 → 不显示不可执行的 Primary Action
+        - 当前只是查询无结果 → 默认不显示“创建”类无关操作
+    - Primary Action
+        - 数量默认 0 或 1；位置位于说明文本下方；对齐根据容器布局居中或跟随内容轴；尺寸使用 XYUI-2 标准 Button
+        - 禁止多个 Primary Button / 按钮墙 / 教程入口堆叠 / 无关操作
+    - Title / Description
+        - Title 快速说明 Empty 状态：中性 / 直接 / 不使用营销语言 / 优先单行（暂无数据集 / 暂无图层 / 暂无结果 / 暂无记录）
+        - Description 补充 Empty 原因与下一步：优先一至两行；不得写成长篇帮助文档；不得堆技术实现细节
+    - 状态转移（严格分离）
+        - Loading → Empty：Loading 期间使用 4.14 LoadingIndicator 或 4.18 Skeleton；任务完成后存在内容则显示真实内容，结果为空则退出 Loading 进入 EmptyState；禁止 Loading 完成后继续保留 Spinner
+        - Skeleton → Empty：数据仍未知用 Skeleton；确认最终没有内容则 Skeleton 退出显示 EmptyState；禁止用 Skeleton 长期代替 EmptyState
+        - Error → Empty：Error 尚未解决保持 Error Feedback（4.19）；只有确认操作成功且数据确实为空才能进入 EmptyState；禁止请求失败时显示“暂无数据”掩盖错误
+        - Empty → Content：创建或加载首个内容成功后 EmptyState 立即退出显示真实内容；不得真实内容已经存在仍残留 Empty Message
+    - 组合规则
+        - EmptyState + Focus：纯文本 EmptyState 默认不可 Focus；存在 Primary Action 时 Button 进入正常 Focus Flow；不得让整个空面板成为无意义 Focus Target
+        - EmptyState + Selected：EmptyState 本身不属于 Selected Object；区域为空时不得伪造 Selection
+        - EmptyState + Disabled：区域为空且当前不可创建内容时不显示无法执行的 Primary Action；必要说明使用 Description 或其他正式 Feedback
+    - 布局原则
+        - 在可用内容区域内自然定位；不得为了视觉居中制造巨大空白；紧凑 Panel 使用紧凑 EmptyState；大型内容区可以适当居中；整体保持与容器密度一致
+    - 视觉规则
+        - Background 继承父容器；Title Secondary / Medium Emphasis；Description Secondary Text；Primary Action 使用正式 Button Token
+        - 不额外增加 Card（除非父组件本身就是 Card）；不使用大型 Illustration / Shadow / Glow
+    - 文案原则
+        - 优先陈述事实，然后说明必要上下文，有唯一正确下一步时提供操作
+        - 避免 Oops / 这里空空如也 / 开始你的奇妙旅程 / 营销式或娱乐式文案；保持工具型编辑器语气
+    - Canonical Token
+        - XY.EmptyState.Title.Component
+            - Value = XYUI-1 EmptyText（NAMESPACE_REF）
+        - XY.EmptyState.Title.Color
+            - Value = XY.Text.Primary
+        - XY.EmptyState.Title.FontSize
+            - Value = XY.FontSize.Label
+        - XY.EmptyState.Description.Color
+            - Value = XY.Text.Secondary
+        - XY.EmptyState.Description.FontSize
+            - Value = XY.FontSize.Caption
+        - XY.EmptyState.Background
+            - Value = Transparent（继承父容器）
+        - XY.EmptyState.Border
+            - Value = XY.Border.Width.None
+        - XY.EmptyState.Shadow
+            - Value = XY.Shadow.None
+        - XY.EmptyState.Illustration
+            - Value = None by Default
+        - XY.EmptyState.PrimaryAction.Component
+            - Value = XYUI-2 Button（NAMESPACE_REF）
+        - XY.EmptyState.PrimaryAction.Count
+            - Value = 0–1
+        - XY.EmptyState.TitleDescription.Gap
+            - Value = XY.Space.8
+        - XY.EmptyState.Action.Gap
+            - Value = XY.Space.12
+        - XY.EmptyState.Compact.Padding
+            - Type = COMPONENT_SPECIFIC（12–16 DIP）
+        - XY.EmptyState.Standard.Padding
+            - Type = COMPONENT_SPECIFIC（20–32 DIP）
+    - 禁止事项
+        - 禁止完全空白而不给状态解释 / Error 被伪装成 Empty / Loading 被提前显示成 Empty
+        - 禁止使用大型 SaaS 风格插画 / EmptyState 同时塞多个 Primary Action
+        - 禁止堆叠创建、导入、浏览、教程、模板等按钮 / 没有明确下一步时强行提供 CTA
+        - 禁止 Primary Action 与当前 Empty 原因无关 / EmptyState 制造大量无意义留白 / 真实内容出现后 EmptyState 继续残留

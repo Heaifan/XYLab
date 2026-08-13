@@ -1,0 +1,1374 @@
+<!--
+  XYUI-6 canonical spec · XYUI-PILOT-R6 · FAST-CLOSE（6.01~6.20）
+  Source: xyui/source/XYUI6/XYUI-6.md (immutable Evidence)
+    bytes: 161709
+    SHA-256: 15dcf491e7d2512994e2c140b1ea4a526b58aec21f70935d5faeef8f8e92e358（原始稿 a52fd6cd…，仅清行尾空白）
+  Canonical basis: XYUI-0 Foundation Registry (VALIDATED, AMEND-A/B) + A3-R2 Canonical Token Architecture
+  规则: 组件语义保留；Foundation 重复值全部映射 canonical；#hex/px/旧字体/旧命名空间 = 0
+  Reconciliation 裁定: 本轮 6 项所有权划清（6.03 DataGrid 归属修正 XYUI-5 mapping 引用 / 6.05 vs XYUI-3 TreeNavigation /
+    6.09 View 切换 vs XYUI-3 ViewSwitcher / 6.15 Data Group vs XYUI-4 SelectionGroup / 6.19 vs XYUI-4 EmptyState /
+    6.20 数据层合同 vs XYUI-5 VirtualizedLayout 机制）
+  GAP 标注见 xyui/specs/XYUI6/XYUI-6.gaps.json
+-->
+# XYUI-6 · Data & Collections｜数据与集合（Canonical）
+
+> XYUI-PILOT R6 产物（FAST-CLOSE）。基于 `xyui/source/XYUI6/XYUI-6.md`（SHA-256: a52fd6cd…）reconciliation。
+> 上位规则：A2 Foundation Registry（VALIDATED，AMEND-A/B）+ A3-R2 Canonical Token Architecture + XYUI-1/2/3/4/5 canonical。
+> 本文件中的 `XY.*` 引用全部为 Canonical Token 引用（见 XYUI-6.mapping.json）。
+> 组件职责/结构/交互/变体 = 已定稿，保留原样；Foundation 视觉值 = 引用 XYUI-0，无第二套真值。
+> XYUI-6 只负责：数据集合如何被组织、展示、筛选、排序、分页、分组、选择、编辑和反馈；不重新拥有其内部 Primitive。
+
+- 整理依据
+    - 原始组件设计
+        - XYUI-6.md（6.01~6.20，20 项，内建 Ownership Check 与上游引用）
+    - 上位规范
+        - XYUI-0.md + Foundation Registry（含 AMEND-A/B）+ A3-R2 Token Architecture
+        - XYUI-1/2/3/4/5 canonical
+    - 整理原则
+        - 保留 XYUI-6 已定稿的组件职责、数据语义、结构、交互与 Variant
+        - Text/Information→XYUI-1；Input/Action/Search→XYUI-2；Navigation/Pagination/Switching→XYUI-3；Hover/Selected/Focus/Feedback→XYUI-4；Layout/Scroll/Virtualization/Container→XYUI-5
+        - 组合优先顺序：REF → REUSE → COMPOSE → COMPONENT_SPECIFIC → GAP；不创建第二真值
+        - 所有几何单位统一使用 DIP（原稿 16 处 px 叙述尺寸收敛为组件级档位，非第二真值）
+        - 排序表达必须语义化（字段 + 方向语义文字）；↑↓ 仅允许 Secondary Direction Indicator
+        - 效率三原则全局生效：第一眼看到关键信息 / 高频操作一层直达 / 能一次点击完成不人为要求两次（危险/不可逆操作例外：confirmation + undo + safety guard）
+        - 信息优先级 P0~P3 为 XYUI-6 数据集合层机制：空间不足按 P3→P2→P1 隐藏，P0 不得隐藏
+        - Density 合同归 Foundation（XY.Density.*）；XYUI-6 只定义数据组件如何消费；Compact≠拥挤、Spacious≠无意义留白
+        - 组件独有尺寸/密度档位可保留为 COMPONENT_SPECIFIC，但不得成为新的 Foundation 默认值
+        - Light / Dark 由 Foundation Semantic Token 映射，不在组件规范重复硬编码主题色
+
+- Foundation Reconciliation
+    - State（AMEND-A）
+        - ComposeMode = XY.State.ComposeMode（Single = 每视觉通道单一 Primary Owner，非单状态控件）
+        - Layering = XY.State.Layering（Forbidden = 禁同一 Primary Channel 多状态争抢）；Disabled 最高优先级
+        - XYUI-6 不建立自有第二套 State Priority；Hover/Selected/Focus 视觉与优先级一律 REF XYUI-4
+        - ResizeOnChange = Forbidden：状态切换不得改变行高/列宽（XY.State.ResizeOnChange）
+    - Typography
+        - UI Font = XY.Font.UI；Font Size / Weight 引用 XY.FontSize.* / XY.FontWeight.*
+        - 正文 = XY.Text.Primary；辅助 = XY.Text.Secondary / XY.Text.Tertiary；Placeholder = XY.Text.Placeholder
+        - 单行超长策略 = XYUI-1 TruncatedText（Ellipsis）+ Tooltip（REF XYUI-1 19）
+    - Alignment
+        - 文字 = XY.Alignment.Text（Left）；数值 = XY.Alignment.Number（Right）；Boolean/Icon = Center；Status = Left/Center；Action = Right/Center
+        - 同类型字段必须保持一致对齐（Column/Cell 消费，不重定义）
+    - Density
+        - XY.Density.Mode = Auto | Compact | Comfortable（WholeUI，Hysteresis Required；MixedMode Forbidden）
+        - 行高/信息密度档位（Dense/Compact/Regular/Rich）为组件级 COMPONENT_SPECIFIC 档位，由 Density Context 与容器宽度选择；不得成为 Foundation 第二套密度
+    - Divider / 分隔
+        - 列表行分隔 = XY.Divider.ListRow；表头 = XY.Divider.Header；弱列分隔 = XY.Divider.VerticalSplit
+        - 默认全网格深色框线 = Forbidden；斑马纹 = 极低对比 Surface 交替（Panel / PanelAlt 语义），不得形成明显彩条
+    - Scroll
+        - 滚动容器行为 = XYUI-5 ScrollArea（Scrollbar 视觉 XY.Scrollbar.*）；固定表头/冻结列不改变数据语义
+        - 横向滚动与列隐藏可组合；LayoutShift = Forbidden
+    - Virtualization
+        - 布局机制（Viewport/Overscan/Recycling/SizeCache/ScrollAnchor）= XYUI-5 VirtualizedLayout（5.14）
+        - 数据层虚拟化合同（Stable Identity/Anchor/状态持久化/流式/增量）= XYUI-6 6.20；禁止建立第二套布局基础设施（DataVirtualizationEngine = Forbidden）
+    - Selection / Focus / HitTarget
+        - 选择/焦点视觉与状态 = XYUI-4；Row Selected ≠ Active Cell ≠ Editing Cell（6.03 合同）
+        - HitTarget = XY.HitTarget.ListRow / TreeRow；触控热区可大于视觉元素（XY.HitTarget.VisualSizeIndependent）
+    - Input / Action
+        - 全部输入控件 = XYUI-2（Search = XYUI-2 Search Field）；XYUI-6 不重新设计输入控件
+        - 危险/不可逆操作进入受保护流程（confirmation / undo）；More Menu 不得成为高频动作唯一入口
+    - Navigation / View
+        - Pagination 导航合同 = XYUI-3 Pagination（3.13）；View Mode 切换控制 = XYUI-3 ViewSwitcher（3.21）；通用工具栏结构 = XYUI-3 Toolbar（3.15）
+        - XYUI-6 只定义数据集侧语义（总条数/页大小投影/视图模式集合/工作状态可见性）
+    - Feedback / Loading / Empty
+        - Loading 视觉 = XYUI-4 LoadingIndicator / Skeleton；Inline 反馈 = XYUI-4 InlineFeedback；验证失败反馈 = XYUI-4
+        - Empty 视觉承载 = XYUI-4 EmptyState（4.20）；Empty/No-Result/FullFailure 语义区分 = XYUI-6 6.19
+        - 状态不得仅靠颜色（ColorOnlyState Forbidden）；Loading 不得清空已有可用数据（Context Preserve）
+    - Motion
+        - 状态短过渡 = XY.Motion.Fast / Normal；禁止装饰性动效；Reduced Motion 必须保留
+    - 性能合同（XYUI-6 全局）
+        - Virtualization / Incremental Update / Stable Identity / Minimal Re-render / Local State Update / 禁无谓全量重建
+        - XYUI 定义 observable performance expectation，不绑定具体前端技术栈
+
+- 上游所有权边界（Canonical Cross-Component Ownership）
+    - Visual Foundation → XYUI-0；Text / Information → XYUI-1；Input / Action / Search → XYUI-2；Navigation / Pagination / Switching → XYUI-3；Selection / Hover / Focus / Feedback → XYUI-4；Layout / Scroll / Virtualization / Container → XYUI-5；Data & Collection Semantics → XYUI-6
+
+- 已知待后续 Token 层补齐
+    - 排序方向指示符语义 Token（↑↓ 辅助指示）无 Foundation 定义 → [GAP:XYUI6-GAP-001]，排序语义以文字为主（见 XYUI-6.gaps.json）
+    - 本轮其余缺口：0（行高/密度档位 = COMPONENT_SPECIFIC；Mini Progress = REF XYUI-4 ProgressBar Inline Compact；Zebra = Surface 交替语义；冻结列边界 = XY.Border.Color.Subtle）
+
+- 6.01 · List / 列表
+    - 控件定位
+        - 类型
+            - Data Collection Component / 数据集合组件
+        - 层级
+            - 数据层（NEW；同组件四 Variant，不拆多套组件）
+        - 主要用途
+            - 连续展示一组同类或相关数据对象；定义列表条目的信息组织、密度、排列和操作槽位
+            - 适用复杂对象管理（地图对象 / Entity / Dataset / 实验对象 / 资源对象）
+    - Ownership
+        - Inherits：XYUI-0 Text/Spacing/Density/Divider/Accessibility；XYUI-4 Selection/Focus 状态
+        - Owns：Collection Semantics（条目信息组织/密度档位/排列/操作槽位）；Row Structure；Dataset Binding；Item State Projection；Batch Behavior
+        - Must Not Redefine：Text（REF XYUI-1）/ Selection/Hover/Focus（REF XYUI-4）/ 滚动容器与布局机制（REF XYUI-5）/ Virtualization 机制（REF 5.14）
+    - 最终方案
+        - 方案4 Rich List 为主要完整形态；方案1 Compact / 方案2 Detail / 方案3 Block 为辅助信息密度变体
+        - 四形态属于同一 List Component 的 Variant，共享相同语义、状态和交互规则；不得拆成四套互不兼容组件
+    - 核心原则
+        - 列表保持紧凑，避免一条数据占据过多纵向空间；避免将普通列表设计成大面积卡片集合
+        - 优先增加横向信息而不是无限增加高度；单条默认避免超过两层主要文本
+        - 辅助信息弱于主名称；状态信息靠近尾部；操作按钮默认不抢占主视觉
+    - 结构
+        - List → Item（Leading / Content（Primary+Secondary）/ Metadata / Status / Action）
+        - Leading 区固定左侧；Content 为主要弹性区域；Trailing 靠右对齐
+    - Variants
+        - Rich：复杂对象管理（Leading Visual + Primary + Secondary + Trailing Metadata + Status + Action Slot）
+        - Compact：窄侧栏/对象导航/简单集合/快速选择（单行高密度低装饰）
+        - Detail：Dataset/文件/资源（主名称 + 第二行辅助信息 + 轻分隔线）
+        - Block：监测对象/实时指标（轻量背景块，不得演变成大型 Card）
+    - Density / 尺寸
+        - ItemHeight 档位 = COMPONENT_SPECIFIC：Compact 约 28–34 DIP / Regular 约 36–44 DIP / Rich 约 44–56 DIP（允许按字体/缩略图/输入方式自适应；非不可变约束）
+        - 消费 XY.Density.* Context；左右 Padding 保持紧凑；窄侧栏允许进一步缩小水平 Padding
+    - 交互
+        - Click = 选中条目；Double Click 由业务定义打开/进入（List 基础组件不强制绑定）；Context Menu / Inline Action / Drag = 可选
+        - 多选支持 Single / Multi（规则 REF XYUI-4）；批量操作归 6.18 Bulk Operations
+    - 响应式
+        - Wide = 完整 Rich；Medium = Leading+Primary+Secondary+关键 Metadata；Narrow = 转 Detail/Compact、Action 收进 More
+        - 不得仅通过缩小字体解决空间不足
+    - 性能
+        - 普通数量标准 List；大量数据切换 Virtualized Collection（REF 6.20 / 5.14）；不得因 Rich 视觉结构导致全量昂贵重绘
+    - 可访问性
+        - 条目具有明确可聚焦语义；状态不得仅依赖颜色；图标不能成为唯一文本语义；键盘能够遍历和选择
+    - Canonical Token
+        - XY.List.Variant
+            - Type = COMPONENT_SPECIFIC（Rich | Compact | Detail | Block）
+        - XY.List.ItemHeight
+            - Type = COMPONENT_SPECIFIC（Compact | Regular | Rich；Adaptive）
+        - XY.List.Visual
+            - Type = COMPONENT_SPECIFIC（Plain | Divider | SoftBlock；Divider = XY.Divider.ListRow）
+        - XY.List.Leading / Trailing
+            - Type = COMPONENT_SPECIFIC（None|Icon|Thumbnail|TypeMarker / None|Value|Count|Status|Action|More）
+        - XY.List.PrimaryText
+            - Value = SingleLine + Ellipsis（REF XYUI-1 TruncatedText）
+        - XY.List.Selection / Focus
+            - Value = Reference XYUI-4
+        - XY.List.Scrolling
+            - Value = Reference XYUI-5 ScrollArea
+        - XY.List.Virtualization
+            - Value = Reference XYUI-6 6.20（机制 REF 5.14）
+        - XY.List.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止把四种形态拆成互不兼容的独立组件 / 把普通列表设计成大面积卡片集合
+        - 禁止依赖字号极小强塞信息 / 重新定义 Selection/Hover/Focus 规则 / 重新定义滚动与虚拟化机制
+
+- 6.02 · Table / 表格
+    - 控件定位
+        - 类型
+            - Data Collection Component / 数据集合组件
+        - 层级
+            - 数据层（NEW；展示与比较为主，非 Excel 式重编辑控件）
+        - 主要用途
+            - 结构化展示二维数据；核心任务是浏览、比较和理解数据；复杂编辑交给 6.03 Data Grid
+    - Ownership
+        - Inherits：XYUI-0 Text/Alignment/Divider/Density；XYUI-4 Selection/Focus；XYUI-1 文本
+        - Owns：二维数据集展示语义（Row/Column/Cell/Header/Footer）；列对齐与列宽策略（REF 6.10 Column）；排序/筛选入口（REF 6.13/6.14）
+        - Must Not Redefine：Grid Layout（XYUI-5 Grid 是空间布局 ≠ DataGrid/Table）/ 复杂单元格编辑（归 6.03）/ Selection 视觉（REF XYUI-4）
+    - 最终方案
+        - 方案4 Compact Rich Table 为主要形态；方案1 Linear / 方案3 Column Structured / 方案2 Zebra 为辅助 Variant（同一 Table Component）
+    - 核心原则
+        - 保持高信息密度；优先使用轻量分隔；避免默认完整网格线；允许单元格承载状态/图标/辅助文本等富信息但不得破坏列对齐
+    - 结构
+        - Table → Header（列名/排序提示/辅助图标）+ Body（Row → Cell）+ Optional Footer（汇总/总计/统计）
+    - Variants
+        - Rich：Compact Rich Table（Primary + Secondary + Leading Marker + Status + Metadata；单元格默认最多两层主要文本）
+        - Linear：普通数据展示（主要依赖横向分隔线，无完整网格，视觉最轻）
+        - ColumnStructured：工程工具（弱化纵向列分隔线、加强字段结构；不得使用深色完整单元格框）
+        - Zebra：长数据表条件辅助（极轻微交替背景 XY.Surface 交替语义；不得形成明显彩条；短表默认不开启；不得同时强分隔线+强斑马纹）
+    - 列 / 对齐
+        - 列定义与列宽/优先级/响应式隐藏 = REF 6.10 Column；Text 左对齐 / Number 右对齐 / Boolean 居中；同类型数据必须一致对齐
+        - 长文本默认 Ellipsis（REF XYUI-1 TruncatedText）+ Tooltip；表格不得无限增高显示长文本
+    - 尺寸
+        - RowHeight 档位 = COMPONENT_SPECIFIC：Compact 约 30–36 DIP / Regular 约 36–44 DIP / Rich 约 42–52 DIP；Header 约 30–36 DIP（内容可自适应，默认紧凑）
+    - 交互 / 状态
+        - Row Click / Cell Click / Column Resize / Context Menu = 可选；Column Sort 由 6.13 定义；复杂单元格编辑不属于 Table 默认职责
+        - Default/HoverRow/SelectedRow/Focused/Disabled/Loading/Error：Selection 与 Focus REF XYUI-4
+    - 响应式
+        - Wide 完整列；Medium 压缩弹性列；Narrow 隐藏次要列或转为 Rich List（移动端不建议复杂横向大表）；不得强制所有列挤在屏幕内
+    - 性能
+        - 普通数据量 Table；超大数据量 Virtualized Collection（REF 6.20）；大量实时更新避免全表重绘
+    - 可访问性
+        - 保持明确行列语义；Header 与 Cell 建立语义关联；状态不得仅依赖颜色；键盘可遍历重要交互项
+    - Canonical Token
+        - XY.Table.Variant
+            - Type = COMPONENT_SPECIFIC（Rich | Linear | ColumnStructured | Zebra）
+        - XY.Table.RowHeight
+            - Type = COMPONENT_SPECIFIC（Compact | Regular | Rich）
+        - XY.Table.GridLines
+            - Type = COMPONENT_SPECIFIC（None | Horizontal（XY.Divider.ListRow）| ColumnSoft（XY.Divider.VerticalSplit）；Full Dark Grid = Forbidden）
+        - XY.Table.Zebra
+            - Value = Surface 交替低对比（XY.Surface.Panel / PanelAlt 语义；Subtle）
+        - XY.Table.Header
+            - Value = 浅背景（XY.Surface.PanelAlt）+ XY.FontWeight.Semibold（层级轻微，不过重）
+        - XY.Table.TextOverflow
+            - Value = Ellipsis（REF XYUI-1 TruncatedText）
+        - XY.Table.Selection
+            - Value = Reference XYUI-4
+        - XY.Table.Sorting / Filtering
+            - Value = Reference XYUI-6 6.13 / 6.14
+        - XY.Table.Virtualization
+            - Value = Reference XYUI-6 6.20
+        - XY.Table.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止演化成复杂 Spreadsheet（编辑统一交 6.03 Data Grid）/ 默认全网格深色框线 / 强分隔线与强斑马纹同时使用
+        - 禁止与 XYUI-5 Grid 混成同一个 canonical（Grid Layout ≠ DataGrid/Table）/ 无限增高显示长文本
+
+- 6.03 · Data Grid / 数据网格
+    - 控件定位
+        - 类型
+            - Data Collection Component / 数据集合组件
+        - 层级
+            - 数据层（NEW；XYUI Data Grid 正式组件；修正 XYUI-5 mapping 错误引用「XYUI-1 DataGrid」→ 本项）
+        - 主要用途
+            - 大量结构化数据的浏览、选择、编辑和批量操作；适用于编辑器、数据调试器、批量对象管理器、实验数据编辑
+    - Ownership
+        - Inherits：XYUI-2 输入控件；XYUI-4 Selection/Focus/Feedback；XYUI-5 滚动；6.10 Column / 6.11 Row / 6.12 Cell
+        - Owns：核心状态分离（Row Selection / Active Cell / Editing Cell）；编辑模型（Display/Edit Mode）；键盘导航合同；剪贴板（可选）；冻结列高级能力
+        - Must Not Redefine：输入控件（REF XYUI-2）/ 排序/筛选/分组（REF 6.13/6.14/6.15）/ Inline Editing 统一规则（REF 6.17）/ 批量操作（REF 6.18）/ 虚拟化机制（REF 5.14）
+    - 最终方案
+        - 方案3 Hybrid Grid 为核心交互模型；方案4 的 Dense 思想保留为 Density Variant
+    - 核心原则
+        - 保持专业编辑器视觉而非默认 Excel 化；允许按场景扩展 Spreadsheet 能力（但 Spreadsheet 能力不是所有 Data Grid 强制能力）
+    - 核心状态分离
+        - Row Selection：当前选中的一个或多个数据对象（对象操作/批量操作）
+        - Active Cell：当前键盘焦点所在单元格（同一时刻通常仅一个；不代表已进入编辑）
+        - Editing Cell：当前真正处于编辑状态的字段（默认同一时刻仅一个）
+        - 三者必须分别建模；不得将选中行、活动单元格和编辑状态混为一个状态
+    - 交互
+        - 单击行 = 选中对象；单击 Cell = Active Cell（可同时按业务选中 Row）；双击 Cell = 进入编辑
+        - Enter = 进入/提交编辑；Esc = 取消编辑恢复原值；Tab / Shift+Tab = 提交并移动下一/上一可编辑 Cell；方向键 = 移动 Active Cell
+        - Ctrl/Cmd = 离散 Row 多选；Shift = 连续 Row 范围选择
+    - 编辑模型
+        - Display Mode：平时优先显示普通文本或数据视觉；Edit Mode：进入编辑后才实例化 Input Control（Text/Number/Select/Checkbox/Date Picker 等，REF XYUI-2）
+        - 提交 = Enter / Tab / 点击外部（由业务策略决定）；取消 = Esc；验证失败保留用户上下文（REF XYUI-4）
+    - 选择视觉
+        - Selected Row = 整行轻量 Selected 背景；Active Cell = 明确但克制的边框/焦点提示；Editing Cell = 实际输入组件
+        - 三种状态同时存在时必须能够区分；颜色和 Focus 规则 REF XYUI-4
+    - 列 / 行
+        - Columns：Fixed/Flex/Fit/MinMax（REF 6.10）+ Resizable/Reorderable/Hideable/Freezable（可选高级能力）
+        - Row Density：Regular（普通编辑器）/ Compact（主流专业工具）/ Dense（大量数据，对应方案4 高密度思想）；Dense 不改变核心交互合同
+    - Grid Visual
+        - 默认 = 轻横线（XY.Divider.ListRow）+ 低对比表头（XY.Surface.PanelAlt）+ 弱化纵向格线；可选 Column Divider / Zebra / Full Grid；Full Grid 不作为默认视觉
+    - 滚动
+        - 垂直 + 水平滚动；滚动容器 REF XYUI-5；Header 可固定；冻结规则不得影响数据语义
+    - 响应式
+        - Wide = 完整 Data Grid；Medium = 压缩弹性列、隐藏低优先级列；Narrow = 不强行压缩成手机表格，优先转 List / Detail Editor 或横向滚动；不得仅缩小字体适配窄屏
+    - 性能
+        - 大量数据使用 Virtualization（REF 6.20 / 5.14）；单 Cell 编辑不得导致整个 Grid 重建；频繁实时数据更新应局部更新
+    - 可访问性
+        - Row 和 Cell 具有明确语义；键盘能够完整导航；Active Cell 必须具有可感知 Focus；Selection 不得仅依赖颜色
+    - Canonical Token
+        - XY.DataGrid.SelectionMode
+            - Type = COMPONENT_SPECIFIC（Row | MultiRow | CellRange）
+        - XY.DataGrid.ActiveCell
+            - Type = COMPONENT_SPECIFIC（Single）
+        - XY.DataGrid.EditMode
+            - Type = COMPONENT_SPECIFIC（OnDoubleClick | OnEnter | Explicit）
+        - XY.DataGrid.Density
+            - Type = COMPONENT_SPECIFIC（Dense | Compact | Regular）
+        - XY.DataGrid.GridLines
+            - Type = COMPONENT_SPECIFIC（None | Horizontal | ColumnSoft | Full；Full 非默认）
+        - XY.DataGrid.Columns
+            - Type = COMPONENT_SPECIFIC（Resizable | Reorderable | Hideable | Freezable；可选）
+        - XY.DataGrid.Clipboard
+            - Type = COMPONENT_SPECIFIC（Optional；粘贴前必须数据类型验证，非法数据不得静默写入）
+        - XY.DataGrid.Sorting / Filtering / Grouping
+            - Value = Reference XYUI-6 6.13 / 6.14 / 6.15
+        - XY.DataGrid.InlineEditing / BulkOperations
+            - Value = Reference XYUI-6 6.17 / 6.18
+        - XY.DataGrid.Virtualization
+            - Value = Reference XYUI-6 6.20（机制 REF 5.14）
+        - XY.DataGrid.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止将选中行/活动单元格/编辑状态混为一个状态 / 重新设计输入控件 / 默认 Excel 化全网格
+        - 禁止无验证粘贴静默写入非法数据 / 仅缩小字体适配窄屏 / 单 Cell 编辑触发整个 Grid 重建
+
+- 6.04 · Property Grid / 属性网格
+    - 控件定位
+        - 类型
+            - Data Collection Component / 数据集合组件
+        - 层级
+            - 数据层（NEW；Inspector / 属性面板 / 对象详情编辑的 Property 承载）
+        - 主要用途
+            - 查看和编辑当前对象的结构化属性；适用于地图对象、Entity、资源、实验参数、环境参数等
+    - Ownership
+        - Inherits：XYUI-2 输入控件（16 类 Property 输入）；XYUI-4 Validation/Feedback；XYUI-5 滚动
+        - Owns：Property 语义与视觉语言统一；Section 组织与折叠；分栏布局（TwoColumn/AdaptiveSplit/Stacked）；Modified/Reset；多对象 Mixed 值编辑
+        - Must Not Redefine：输入控件（REF XYUI-2）/ 验证（REF XYUI-4）/ 滚动机制（REF XYUI-5）/ 编辑流程统一规则（REF 6.17）
+    - 最终方案
+        - 方案4 Hybrid Compact Inspector 为主要结构；吸收方案2 Adaptive Split 可拖动分栏；方案3 Stacked 作为窄屏与复杂属性降级布局
+    - 核心原则
+        - 统一的是 Property 语义与视觉语言，不是所有 Property 强制相同高度和内部结构；普通属性优先紧凑两列；复杂属性允许扩展值区域
+        - 避免 Inspector 出现大量无意义纵向留白；属性名与属性值必须具有清晰层级
+    - 结构
+        - PropertyGrid → Section（可折叠；标题紧凑；不得设计成大型卡片）→ PropertyRow（LabelArea + ValueArea + Optional ActionArea + Optional Description）
+    - 布局模式
+        - TwoColumn（默认桌面）/ AdaptiveSplit（Label/Value 比例可拖动；最小 Label 宽保证可识别、最小 Value 宽保证可操作；分栏状态允许宿主记忆；不得因超长属性名无限挤压 Value）/ InlineComposite（X/Y/Z、Width/Height 等紧密关联值并排）/ Expanded（Slider/Color/Curve/Path/长文本）/ Stacked（Label 上 Value 下）
+    - Property 类型
+        - Text/Number/Boolean/Enum/Date/Color/Vector2/Vector3/Range/Slider/Path/ResourceReference/ObjectReference/LongText/ReadOnly/Custom；实际输入组件 REF XYUI-2
+    - 值区域
+        - Editable（对应输入组件）/ ReadOnly（弱化但可复制文本，不得伪装成可编辑输入框）/ Derived / Mixed（多对象不同值）/ Invalid（明确错误反馈）
+    - 多对象编辑
+        - 相同值正常显示；不同值显示 Mixed；修改 Mixed 将新值应用到目标选择集；危险批量修改允许业务要求二次确认
+    - Modified / Reset
+        - Modified 表示相对默认值已修改（可选）；Reset 不占大量永久空间（Hover 或尾部操作槽出现）
+    - 尺寸
+        - 普通 Property Row 约 28–34 DIP；Section Header 约 28–32 DIP；复杂 Property Row = Adaptive（COMPONENT_SPECIFIC）；触控模式扩大有效操作热区
+    - 响应式
+        - Wide = TwoColumn/AdaptiveSplit；Medium = 缩短 Label 区、复杂属性 Expanded；Narrow = Stacked；Mobile = Stacked + 扩大触控热区；不得单纯缩小字体适配
+    - 可访问性
+        - Label 与 Value 建立明确关联；错误状态不能只依赖颜色；键盘可遍历可编辑 Property；只读属性仍应可读取和复制
+    - Canonical Token
+        - XY.PropertyGrid.Layout
+            - Type = COMPONENT_SPECIFIC（TwoColumn | AdaptiveSplit | InlineComposite | Expanded | Stacked）
+        - XY.PropertyGrid.Splitter
+            - Type = COMPONENT_SPECIFIC（Resizable；Splitter 视觉 REF XY.Resize.Splitter.Visual）
+        - XY.PropertyGrid.ValueType
+            - Type = COMPONENT_SPECIFIC（Text|Number|Boolean|Enum|Color|Vector|Range|Path|Reference|Custom）
+        - XY.PropertyGrid.State
+            - Type = COMPONENT_SPECIFIC（Default | ReadOnly | Disabled | Mixed | Invalid | Modified；视觉 REF XYUI-4）
+        - XY.PropertyGrid.Reset
+            - Type = COMPONENT_SPECIFIC（Optional）
+        - XY.PropertyGrid.Validation / Input / Scrolling
+            - Value = Reference XYUI-4 / XYUI-2 / XYUI-5
+        - XY.PropertyGrid.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止强迫所有属性使用相同高度和相同结构 / Inspector 大量无意义纵向留白 / 把 Section 设计成大型卡片
+        - 禁止只读属性伪装成可编辑输入框 / 静默吞掉验证错误 / 重新定义输入控件与滚动机制
+
+- 6.05 · Hierarchical Data View / 层级数据视图
+    - 控件定位
+        - 类型
+            - Data Collection Component / 数据集合组件
+        - 层级
+            - 数据层（NEW；Node 本身代表真实数据对象）
+        - 主要用途
+            - 展示具有父子、包含、归属关系的数据对象集合（World Outliner / Entity Hierarchy / 资源层级 / 组织结构 / 场景对象树）
+        - 与 XYUI-3 TreeNavigation 边界：TreeNavigation 核心是导航；Hierarchical Data View 核心是数据关系（两者语义分离，不合并）
+    - Ownership
+        - Inherits：XYUI-4 Selection/Focus/DragFeedback；XYUI-1 文本；XY.Indent.*（PerLevel/Disclosure）
+        - Owns：层级数据关系表达（Indent + Guide Line）；Expand/Collapse（Lazy Children）；Drag Reparent/Reorder 数据操作；节点内容模式（Simple/Typed/Rich/Structured）
+        - Must Not Redefine：TreeNavigation（REF XYUI-3）/ Selection 视觉（REF XYUI-4）/ 虚拟化机制（REF 5.14）/ 拖拽输入合同（REF XY.Drag.*）
+    - 最终方案
+        - 方案2 Guide Line Tree 为默认主方案；方案1 Compact Tree（浅层级/窄空间）/ 方案3 Rich Hierarchy（复杂对象信息增强）/ 方案4 Tree Table（层级+列数据结合）为同一 Hierarchy 体系 Variant
+    - 核心原则
+        - 层级关系必须优先于装饰；缩进与引导线共同表达父子关系；不得只依赖空白缩进表达复杂深层级
+        - Guide Line 必须低对比（颜色低于正文和边框层级），不得形成过重树状网格；Node 保持紧凑，默认不采用大卡片
+    - Guide Line
+        - 默认开启；配置 = Full | ActiveBranch（仅强化当前 Node 祖先路径）| Off；Branch Connector 允许横向短连接线（不得复杂传统树状粗线）
+        - 普通 Guide Line 保持极低对比，不得与 Selection 边框争夺注意力
+    - 展开折叠
+        - Parent Node 显示 ExpandControl；Leaf Node 不显示伪展开图标但保持文本对齐
+        - Click ExpandControl 只负责展开折叠；Click Node 负责选择对象；不得因点击箭头意外改变选择
+    - 选择
+        - Single / Multi / Range（视觉 REF XYUI-4）；选中 Node 后不得破坏 Guide Line 可读性
+    - 拖动 / 重组
+        - 可选 Drag Reparent / Drag Reorder；拖动过程必须显示目标关系（Before/Inside/After）；改变父子关系属于显式数据操作，不得因普通拖动误触完成重组
+        - 提交前验证：是否允许成为目标 Parent / 是否循环引用 / 是否违反业务结构；非法操作必须反馈
+    - 节点内容
+        - Simple（Name）/ Typed（Type Marker + Name）/ Rich（Name+Secondary+Status+Count+Metadata）/ Structured（Hierarchy Column + Additional Columns）
+    - 加载
+        - 支持 Lazy Children；LoadingChildren 只影响当前 Branch（不得锁死整个 Hierarchy）；加载失败允许当前节点局部错误反馈
+    - 搜索过滤
+        - 允许配合 6.14 Filtering；命中深层子节点时允许自动展开祖先路径或显示过滤后的关系路径；不得直接把子节点提升为 Root 而不解释关系
+    - 响应式
+        - Wide = Guide Line Tree + Rich Metadata；Medium = 保留 Guide Line、隐藏低优先级 Metadata；Narrow = 减小 Indent Step、必要时 Compact Tree；Tree Table 窄屏优先降级为普通 Hierarchy；不得仅缩小字体解决层级空间问题
+    - 性能
+        - 大量节点必须支持 Virtualization（REF 6.20 / 5.14）；折叠 Branch 不应持续渲染不可见后代；展开局部不得触发无必要的全树重建
+    - 可访问性
+        - Node 具有 TreeItem 语义；Parent/Expanded 状态可感知；键盘上下移动、左右展开折叠、Enter 激活；Guide Line 不能作为唯一层级语义
+    - Canonical Token
+        - XY.Hierarchy.Variant
+            - Type = COMPONENT_SPECIFIC（Guide | Compact | Rich | TreeTable）
+        - XY.Hierarchy.GuideLine
+            - Type = COMPONENT_SPECIFIC（Full | ActiveBranch | Off；低对比强制）
+        - XY.Hierarchy.Indent
+            - Value = XY.Indent.PerLevel（Adaptive；每级统一 Indent Step，不得随机缩进）
+        - XY.Hierarchy.Selection
+            - Type = COMPONENT_SPECIFIC（Single | Multi | Range；视觉 REF XYUI-4）
+        - XY.Hierarchy.Expand
+            - Type = COMPONENT_SPECIFIC（Manual | Lazy）
+        - XY.Hierarchy.Drag
+            - Type = COMPONENT_SPECIFIC（None | Reorder | Reparent | Both；输入合同 REF XY.Drag.*）
+        - XY.Hierarchy.Content
+            - Type = COMPONENT_SPECIFIC（Simple | Typed | Rich | Structured）
+        - XY.Hierarchy.Filtering / Virtualization
+            - Value = Reference XYUI-6 6.14 / 6.20
+        - XY.Hierarchy.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止四种形态拆成互不兼容的独立交互模型 / 只靠空白缩进表达复杂深层级 / 过重树状网格
+        - 禁止点击箭头意外改变选择 / 普通拖动误触完成重组 / 循环引用不被拦截 / Guide Line 作为唯一层级语义
+
+- 6.06 · Item View / 条目视图
+    - 控件定位
+        - 类型
+            - Data Item Information Model / 数据条目信息模型
+        - 层级
+            - 数据层（NEW；不是独立数据排列容器）
+        - 主要用途
+            - 定义单个数据对象在集合组件中的信息表达方式；可被 List、Grid、Search Result、Picker、Recent、Favorite 等复用
+    - Ownership
+        - Inherits：XYUI-1 文本/StatusBadge/StatusDot/Icon；XYUI-4 Selection 状态
+        - Owns：信息优先级模型（P0~P3）；Adaptive Slot 裁剪机制；Item 信息结构（Leading/Primary/Secondary/Metadata/Status/Action）
+        - Must Not Redefine：Selection（REF XYUI-4）/ 输入控件（REF XYUI-2）/ 排列容器（List/Grid 归各集合组件）
+    - 最终方案
+        - 方案3 Rich Item 为主；方案1 Single-Line Item（极窄空间辅助）/ 方案2 Two-Level Item（普通候选列表辅助）/ 方案4 Adaptive Item 作为同一 Item 的响应式裁剪机制（不是另一套组件）
+    - 核心原则
+        - Information First：关键信息优先暴露，不把高频判断信息藏进 Tooltip/More/详情页
+        - Action Direct：高频安全操作尽量一步完成（Selection/Open/Toggle 优先直达）；危险和不可逆操作允许增加确认层
+        - Progressive Detail：信息按重要程度逐层显示；空间不足时隐藏低优先级信息，不得首先牺牲 Primary
+        - Rich 不等于臃肿：默认控制在 2 至 3 层信息以内，避免把 Item 设计成大型 Card
+    - 结构
+        - Item → Leading（Icon/Thumbnail/TypeMarker/Avatar/ResourcePreview；必须辅助识别，不能只是装饰）+ Primary（对象名称，最高层级，默认单行 Ellipsis）+ Secondary + Metadata + Status（Ready/Modified/Warning/Error/Disabled/Running/自定义；必须直接可见）+ Action（高频直达/次要入 More/危险受保护）
+    - 信息优先级
+        - P0 = 对象身份（名称）+ 严重异常状态（不得隐藏）
+        - P1 = 对象类型 + 当前核心业务状态 + 最关键数值
+        - P2 = ID + 所属关系 + 次级数值
+        - P3 = 更新时间 + 辅助说明 + 低频 Metadata
+        - 空间不足按 P3 → P2 → P1 顺序隐藏
+    - Density / 尺寸
+        - Compact（Primary+Status，约 30–36 DIP）/ Regular（Primary+Secondary+Status，约 40–48 DIP）/ Rich（+Metadata+Status，约 52–64 DIP）/ Extended（仅特殊场景，不得作为普通列表默认）（COMPONENT_SPECIFIC）
+        - 允许根据 Thumbnail 自适应；避免无意义上下 Padding
+    - 交互
+        - Single Click 默认用于选择（明确启动器场景可直接打开）；Double Click 只作为可选快捷操作，不能成为查看关键信息的必要步骤
+        - Inline Action 允许；Context Menu 提供完整低频操作但不能承载唯一的高频入口；关键状态不能仅 Hover 才出现
+    - 响应式
+        - Wide = Rich；Medium = Regular/Rich 隐藏低优先级 Metadata；Narrow = Two-Level；Very Narrow = Single-Line
+        - 统一使用 Adaptive Slot 裁剪，不得重新生成完全不同对象组件
+    - 复用
+        - XY.List.Item / XY.AssetGrid.Item / XY.SearchResult.Item / XY.Picker.Item / XY.Recent.Item 统一使用 Item View 信息模型
+    - Canonical Token
+        - XY.ItemView.Variant
+            - Type = COMPONENT_SPECIFIC（Rich | Regular | Compact）
+        - XY.ItemView.Leading
+            - Type = COMPONENT_SPECIFIC（None | Icon | Thumbnail | TypeMarker）
+        - XY.ItemView.Primary
+            - Value = Required + SingleLine + Ellipsis（REF XYUI-1 TruncatedText）
+        - XY.ItemView.Secondary / Metadata / Status / Action
+            - Type = COMPONENT_SPECIFIC（Optional；Status 视觉 REF XYUI-1 StatusBadge/StatusDot）
+        - XY.ItemView.Density
+            - Type = COMPONENT_SPECIFIC（Compact | Regular | Rich）
+        - XY.ItemView.Adaptive
+            - Value = On（Adaptive Slot 裁剪）
+        - XY.ItemView.InformationPriority
+            - Type = COMPONENT_SPECIFIC（P0 | P1 | P2 | P3）
+        - XY.ItemView.Selection
+            - Value = Reference XYUI-4
+        - XY.ItemView.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止为了表面简洁隐藏用户高频需要判断的信息 / 把 Item 设计成大型 Card / Double Click 成为关键信息唯一入口
+        - 禁止响应式重新生成完全不同对象组件 / 关键状态仅 Hover 才出现
+
+- 6.07 · Asset Grid / 资源网格
+    - 控件定位
+        - 类型
+            - Data Collection Component / 数据集合组件
+        - 层级
+            - 数据层（NEW；视觉预览为主要识别方式）
+        - 主要用途
+            - 以视觉预览为主要识别方式浏览和管理资源对象（地图/材质/模型/纹理/图标/模板/Prefab/Terrain/数据资源）
+        - 与普通 List 边界：List 主要依赖文字扫描；Asset Grid 主要依赖 Preview + 关键信息判断
+    - Ownership
+        - Inherits：XYUI-4 Selection/DragFeedback；XYUI-1 文本/StatusBadge；6.06 Item View 信息模型；6.10 排序/筛选/分组 REF
+        - Owns：Preview 语义与占位策略（Image/Texture/Model/Material/Map/Icon/Generated Thumbnail/Type Placeholder）；Tile 尺寸体系；资源状态直接暴露（Modified/Unsaved/Error/Missing）
+        - Must Not Redefine：Selection（REF XYUI-4）/ Sorting/Filtering/Grouping（REF 6.13/6.14/6.15）/ 虚拟化机制（REF 5.14）
+    - 最终方案
+        - 方案3 Rich Asset Grid 为主；方案1 Preview First（视觉判断优先资源）/ 方案2 Compact Asset Tile（窄空间和状态型资源）/ 方案4 Dense Visual Grid（大量小型视觉资源）为辅助 Variant
+    - 核心原则
+        - Information First：关键规格/关键状态直接展示；未保存、错误、失效等异常不得藏进详情页
+        - Visual First：视觉类资源必须保证 Preview 有足够识别面积；Preview 不得被大量文字挤压到失去意义
+        - Rich But Compact：富信息不等于大型 Card；尽可能减少无意义 Padding
+    - 结构
+        - AssetTile → Preview（主要识别区）+ Primary（名称，单行 Ellipsis）+ Secondary（类型/尺寸/分辨率/格式）+ Metadata（文件大小/Layer 数/参数数/依赖数/更新时间）+ Status + Optional Action
+        - 无 Preview 时显示明确类型占位视觉，不得使用无法区分对象类型的统一空白方块
+    - 信息优先级
+        - P0 = 资源名称 + Preview + 严重异常状态；P1 = 资源类型 + 核心规格 + Modified/Unsaved 状态；P2 = 文件大小/数量/更新时间；P3 = 次级 Metadata
+        - 空间不足按 P3 → P2 → P1 隐藏；P0 不得隐藏
+    - Tile Size / 布局
+        - Small（适合 Dense）/ Medium（默认）/ Large（适合 Preview First）/ Rich（预览与 Metadata 平衡）；允许用户调整缩略图尺寸，尺寸变化不得改变数据语义
+        - Grid 自动根据可用宽度排列列数；Tile Width 固定区间内自适应；Gap 保持小；容器边缘紧凑避免大片空白
+    - 交互
+        - Single Click = 选择资源；Double Click 可作为打开快捷方式但高频判断不得依赖它；Drag 可用于拖入 Scene/资源引用/重新组织；Context Menu 完整低频操作；Hover Action 可显示快捷动作但关键状态不能仅 Hover 显示
+        - 快速预览：允许 Space / Preview Action；预览不等同于打开完整编辑器（适合模型、纹理、地图、音频等）
+    - 加载 / 性能
+        - Preview Loading = 局部 Skeleton/Placeholder；Preview Error = 明确错误占位；不得阻塞整个 Asset Grid
+        - 大量 Asset 必须支持 Virtualization（REF 6.20）；Thumbnail 应缓存；不可见 Asset 不持续高频生成 Preview；实时 Preview 应限制更新成本
+    - 响应式
+        - Wide = Rich Asset Grid；Medium = 减少列数保留关键信息；Narrow = 转 Compact Asset Tile 或 Rich List；Mobile = 增大触控热区、减少同时显示 Metadata、Preview 保持可识别；不得单纯缩小 Tile 和字体解决空间问题
+    - 可访问性
+        - 资源名称始终有文本语义；Preview 不能成为唯一识别方式；状态不得仅靠颜色；支持键盘遍历和选择
+    - Canonical Token
+        - XY.AssetGrid.Variant
+            - Type = COMPONENT_SPECIFIC（Rich | PreviewFirst | Compact | Dense）
+        - XY.AssetGrid.Preview
+            - Type = COMPONENT_SPECIFIC（Image|Texture|Model|Material|Generated|Placeholder）
+        - XY.AssetGrid.TileSize
+            - Type = COMPONENT_SPECIFIC（Small | Medium | Large）
+        - XY.AssetGrid.Metadata / Status / Action
+            - Type = COMPONENT_SPECIFIC（Optional；状态视觉 REF XYUI-1 StatusBadge）
+        - XY.AssetGrid.Selection
+            - Value = Reference XYUI-4
+        - XY.AssetGrid.Sorting / Filtering / Grouping
+            - Value = Reference XYUI-6 6.13 / 6.14 / 6.15
+        - XY.AssetGrid.Virtualization
+            - Value = Reference XYUI-6 6.20
+        - XY.AssetGrid.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止为视觉简洁迫使用户反复打开详情确认资源状态 / Preview 被文字挤压失去意义 / 统一空白方块占位
+        - 禁止异常状态仅 Hover 显示 / 尺寸变化改变数据语义 / 实时 Preview 无限更新成本
+
+- 6.08 · Collection Header / 集合头部
+    - 控件定位
+        - 类型
+            - Data Collection Component / 数据集合组件
+        - 层级
+            - 数据层（NEW；与当前集合状态直接绑定，不同于普通页面标题）
+        - 主要用途
+            - 集合型组件顶部的信息与核心操作区域；服务于 List、Table、Data Grid、Hierarchy、Asset Grid 等
+        - 回答四问：当前是什么集合 / 集合规模是多少 / 当前发生了什么 / 最常用操作是什么
+    - Ownership
+        - Inherits：XYUI-2 Button（Primary Action 控件）；XYUI-4 状态视觉；6.13/6.14/6.18/6.19 REF
+        - Owns：集合身份 + 关键状态 + 最高频核心操作的组织与 P0~P3 优先级收起策略
+        - Must Not Redefine：排序/筛选控件语义（REF 6.13/6.14）/ 批量操作（REF 6.18）/ 集合状态表达（REF 6.19）
+    - 最终方案
+        - 方案4 Adaptive Command Header 为主体（组合集合身份、关键状态与高频操作，按可用宽度动态裁剪）；吸收方案2 Direct Actions + 方案3 Status-Aware；方案1 保留为 Minimal Variant
+    - 核心原则
+        - Information First：集合身份直接显示、关键数量直接显示、异常与修改状态优先显示
+        - Action Direct：高频安全操作直接暴露，不得默认全部收入 More Menu
+        - Priority Based Collapse：空间不足时按优先级收起，不是简单把所有操作全部隐藏
+        - Compact：保持单层或轻量双层结构，避免演变成大型工具栏
+    - 结构
+        - CollectionHeader → IdentityArea（Title 必选 + Count 可选 + Secondary 可选）+ StatusArea（Selected/Modified/Error/Warning/Filtered Count/Loading/Sync State；只显示当前有决策价值的状态）+ ActionArea（Primary = 最高频安全动作如新建；Secondary = 筛选/排序/刷新/视图切换；危险动作不得作为默认 Primary）+ OverflowArea（低频操作/高级设置，不能成为高频功能唯一入口）
+    - 信息优先级
+        - P0 = 集合名称 + 严重错误 + 最核心 Primary Action（必须保留）
+        - P1 = 总数 + 已选数量 + 未保存或修改状态 + 当前关键模式
+        - P2 = 筛选状态 + 排序状态 + 次级 Action
+        - P3 = 辅助说明 + 低频 Action + 次级 Metadata
+    - 响应式
+        - Wide = Identity + Status + Direct Actions + More；Medium = Identity + Key Status + Primary Actions + More；Narrow = Title + Critical Status + Primary Action + More；Very Narrow = Title + Primary Action（严重异常仍必须可见）；不能单纯缩小字号适配
+    - Canonical Token
+        - XY.CollectionHeader.Identity
+            - Type = COMPONENT_SPECIFIC（Title 必选 | Count | Secondary）
+        - XY.CollectionHeader.Status
+            - Type = COMPONENT_SPECIFIC（Optional；视觉 REF XYUI-4 / XYUI-1 StatusBadge）
+        - XY.CollectionHeader.Action
+            - Type = COMPONENT_SPECIFIC（Primary | Secondary | Overflow）
+        - XY.CollectionHeader.Variant
+            - Type = COMPONENT_SPECIFIC（Adaptive | Minimal）
+        - XY.CollectionHeader.Priority / Collapse
+            - Type = COMPONENT_SPECIFIC（P0~P3；Adaptive）
+        - XY.CollectionHeader.Sorting / Filtering / BulkOperations / CollectionState
+            - Value = Reference XYUI-6 6.13 / 6.14 / 6.18 / 6.19
+        - XY.CollectionHeader.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止演变成大型工具栏（集合观察/整理工具归 6.09）/ 高频功能唯一入口藏进 More / 严重异常隐藏在 More 中
+        - 禁止正常状态堆满大量 Badge / 危险动作作为默认 Primary Action / 单纯缩小字号适配
+
+- 6.09 · Collection Toolbar / 集合工具栏
+    - 控件定位
+        - 类型
+            - Data Collection Component / 数据集合组件
+        - 层级
+            - 数据层（NEW；通用工具栏结构 REF XYUI-3 Toolbar；本项拥有集合上下文工作状态）
+        - 主要用途
+            - 集合数据的搜索、筛选、排序、分组、视图切换与显示控制；服务于 List、Table、Data Grid、Hierarchy、Asset Grid 等
+        - 与 6.08 Collection Header 边界：Header 负责集合身份/关键状态/最高频核心操作；Toolbar 负责如何观察、整理和处理当前集合
+    - Ownership
+        - Inherits：XYUI-2 Search Field；XYUI-3 Toolbar（通用结构）/ ViewSwitcher（视图切换控制）
+        - Owns：集合工作状态可见性模型（Active Filter / Sort / Group / View Mode / Hidden Columns 直接显示）；P0~P3 优先级收起；Filter Token 直接移除；Clear Filters
+        - Must Not Redefine：Sorting/Filtering/Grouping 语义（REF 6.13/6.14/6.15）/ 批量操作（REF 6.18）/ 集合状态（REF 6.19）
+    - 最终方案
+        - 方案4 Adaptive Work Toolbar 为主；吸收方案2 功能分组 + 方案3 状态直接展示；方案1 保留为 Compact Linear 辅助布局
+    - 核心原则
+        - State Visible：当前启用的筛选、排序、分组、视图模式应尽量直接显示（空间足够时不得仅显示模糊数量）
+        - Action Direct：高频工具直接可用，不得全部隐藏在 More Menu
+        - Group Related Actions：相关操作视觉分组，避免无结构按钮长条
+        - Adaptive Collapse：仅在空间不足时逐级收起低优先级内容；状态压缩不得导致状态丢失
+    - 结构
+        - CollectionToolbar → SearchArea（通常最左，直接可用；极窄可降级为搜索图标但展开后立即获得输入焦点）+ FilterArea（未筛选=筛选入口；已筛选=具体 Filter Token 如「类型: City」「阵营: 魏」，每 Token 可直接移除；窄空间压缩为「筛选 3」点击展示完整条件）+ SortArea（当前排序字段+方向语义，如「名称 ↑」「修改时间 ↓」；不得仅显示无语义排序图标）+ GroupArea（当前分组规则如「按类型」；无分组不强制占位）+ ViewArea（List/Grid/Table/Compact 切换；当前模式必须明确；切换控制 REF XYUI-3 ViewSwitcher）+ DisplayArea（显示列/Thumbnail Size/Density/Metadata Visibility/Guide Line；高频直接暴露、低频入 Popover）+ OverflowArea（低频工具，不得承载唯一核心搜索/筛选/排序入口）
+    - 功能分组
+        - Search / Data Organization（Filter/Sort/Group）/ View（View Mode/Density）/ Display（Columns/Metadata）/ Other（低频命令）；分组之间轻量 Divider（XY.Divider.VerticalSplit），不得厚重工具栏边界
+    - 信息优先级
+        - P0 = Search + 当前严重影响结果的 Active Filter；P1 = Filter Action + Current Sort + Primary View Toggle；P2 = Grouping + Display Option + Secondary View Option；P3 = 低频工具 + 高级显示设置
+    - 尺寸 / 触控
+        - Desktop Toolbar Height 约 36–44 DIP（COMPONENT_SPECIFIC）；允许多行 Filter Token 时自适应；默认尽量保持单行
+        - 触控扩大按钮实际热区；允许 Toolbar 局部横向滚动；优先保留搜索、筛选和当前状态
+    - 可访问性
+        - 图标必须有文本语义；当前筛选和排序必须可被辅助技术读取；键盘能够遍历主要工具；不得依赖颜色表达 Active 状态
+    - Canonical Token
+        - XY.CollectionToolbar.Search
+            - Value = Reference XYUI-2 Search Field
+        - XY.CollectionToolbar.Filter
+            - Value = Reference XYUI-6 6.14（FilterState：Expanded | Count）
+        - XY.CollectionToolbar.Sort
+            - Value = Reference XYUI-6 6.13（语义化方向指示；↑↓ 仅辅助）
+        - XY.CollectionToolbar.Group
+            - Value = Reference XYUI-6 6.15
+        - XY.CollectionToolbar.View
+            - Value = Reference XYUI-3 ViewSwitcher（数据集视图模式集合：List | Grid | Table | Compact）
+        - XY.CollectionToolbar.Display
+            - Type = COMPONENT_SPECIFIC（Columns | ThumbnailSize | Density | MetadataVisibility | GuideLine）
+        - XY.CollectionToolbar.Overflow
+            - Type = COMPONENT_SPECIFIC（低频工具）
+        - XY.CollectionToolbar.Variant
+            - Type = COMPONENT_SPECIFIC（Adaptive | Compact）
+        - XY.CollectionToolbar.Collapse
+            - Type = COMPONENT_SPECIFIC（PriorityBased；状态压缩不得导致状态丢失）
+        - XY.CollectionToolbar.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止把搜索/筛选/排序唯一入口藏进 More / 空间充足时只显示模糊数量不显示具体状态 / 状态因响应式消失
+        - 禁止仅显示无语义排序图标（↑↓）/ 厚重工具栏边界 / 缩小到难以点击
+
+- 6.10 · Column / 列
+    - 控件定位
+        - 类型
+            - Data Collection Component / 数据集合组件
+        - 层级
+            - 数据层（NEW；列布局规则层）
+        - 主要用途
+            - 定义 Table、Data Grid、Tree Table 等结构化集合中的列布局规则：列宽、对齐、优先级、缩放与响应式隐藏；不负责具体 Cell 内容交互
+    - Ownership
+        - Inherits：XYUI-0 Alignment/Density；XY.Resize.*（列宽调整输入合同）
+        - Owns：WidthMode（Auto/Fixed/Fit/Flex/MinMax）；列信息优先级（P0~P3）；响应式裁剪；列宽分配顺序；MinWidth/MaxWidth；Resizable/Reorderable/Hideable/Freezable 能力
+        - Must Not Redefine：排序/筛选语义（REF 6.13/6.14）/ 横向滚动机制（REF XYUI-5 ScrollArea）/ Selection 视觉（REF XYUI-4）
+    - 最终方案
+        - 方案4 Priority Adaptive Column 作为总体机制（每列具有信息优先级，根据可用空间决定压缩、隐藏或保留）+ 吸收方案3 Content-Aware Width
+    - 核心原则
+        - Content Aware：不同数据类型不应平均占用空间（名称/描述等长文本优先 Flex；状态/数量/类型等短字段优先 Fit；操作列通常 Fixed 或 Fit）
+        - Readable First：重要数据必须保持可读，不能为了保留所有列将字体压缩到难以阅读
+        - Adaptive：同一 Column 定义可适应不同容器宽度，不为桌面/平板/移动端重复定义三套列
+    - WidthMode
+        - Fixed（序号/Checkbox/Icon/Action）/ Fit（Type/Status/Short Enum/Count）/ Flex（Name/Description/Path）/ MinMax（可变长度业务数据）/ Auto（系统按内容类型推荐，允许业务显式覆盖）
+    - 列优先级
+        - P0 = 核心身份信息 + 严重状态 + 不可隐藏关键操作（空间不足仍必须保留）；P1 = 高频判断信息 + 主要业务数据；P2 = 辅助业务数据 + 更新时间等；P3 = ID/来源/低频 Metadata（优先隐藏）
+    - 响应式裁剪
+        - Wide = P0+P1+P2+P3；Medium = P0+P1+必要 P2；Narrow = P0+必要 P1；Very Narrow = 核心 P0，必要时将 Table 转为 Rich List
+        - 被隐藏列数据仍存在（允许通过详情或列显示设置重新启用）；用户显式隐藏优先于自动布局
+    - 列宽分配顺序
+        - 先满足 Fixed → 再 Fit → 再所有列 MinWidth → 剩余空间分给 Flex → 超过 MaxWidth 停止扩张 → 空间不足按 Priority 收缩或隐藏
+        - 每列必须拥有 MinWidth（不得压缩到字段不可识别；Name MinWidth 保证基础对象识别；Action MinWidth 保证热区可用）
+    - 对齐
+        - Text = Left；Number = Right；Boolean = Center；Status = Left/Center；Action = Right/Center；同类型字段必须保持一致
+    - 列交互
+        - Resizable：拖动列边界调整（Drag Target 实际热区大于视觉分隔线；Double Click 可选 Fit Content；用户自定义宽度允许宿主记忆，不得改变 Column 语义）
+        - Reorderable：拖动 Header 调整顺序（关键 P0 列允许业务锁定位置；不得因重排破坏数据绑定）
+        - Hideable：P0 默认不可自动隐藏（部分场景允许用户手动隐藏）；P1/P2/P3 允许按响应式规则隐藏
+        - Freezable：高级能力（适用于 Data Grid）；可冻结关键身份列/序号/选择列；不得冻结大量列导致正文空间过窄；冻结列边界 = XY.Border.Color.Subtle 竖分隔（不引入阴影第二真值）
+    - Header
+        - 显示 Column Label；可选 Sort Indicator / Filter Indicator / Resize Handle / Context Menu；当前排序或筛选状态应直接可见
+    - 横向滚动
+        - 复杂 Data Grid 可保留横向滚动；横向滚动与列隐藏可以组合；核心冻结列保持可见；滚动规则 REF XYUI-5
+    - Canonical Token
+        - XY.Column.WidthMode
+            - Type = COMPONENT_SPECIFIC（Auto | Fixed | Fit | Flex | MinMax）
+        - XY.Column.Priority
+            - Type = COMPONENT_SPECIFIC（P0 | P1 | P2 | P3）
+        - XY.Column.MinWidth
+            - Value = Required
+        - XY.Column.MaxWidth
+            - Type = COMPONENT_SPECIFIC（Optional；避免单个 Flex Column 在超宽屏无限拉长）
+        - XY.Column.Resizable / Reorderable / Hideable / Freezable
+            - Type = COMPONENT_SPECIFIC（True | False；Resize 输入合同 REF XY.Resize.*）
+        - XY.Column.Alignment
+            - Value = XY.Alignment.Text / Number（Left / Right / Center 消费）
+        - XY.Column.Overflow
+            - Value = Ellipsis（REF XYUI-1 TruncatedText）| Wrap（特殊场景）
+        - XY.Column.FrozenBoundary
+            - Value = XY.Border.Color.Subtle
+        - XY.Column.Sorting / Filtering
+            - Value = Reference XYUI-6 6.13 / 6.14
+        - XY.Column.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止所有列平均分配作为默认策略 / 简单从最右侧开始隐藏 / 字体压缩到难以阅读 / 无限水平压缩
+        - 禁止因重排破坏数据绑定 / 冻结大量列导致正文空间过窄 / 用户自定义宽度改变 Column 语义
+
+
+- 6.11 · Row / 行
+    - 控件定位
+        - 类型
+            - Data Collection Component / 数据集合组件
+        - 层级
+            - 数据层（NEW；Row 不只是 Cell 的容器，同时代表一个完整数据对象）
+        - 主要用途
+            - 用于 Table、Data Grid、Tree Table 等结构化集合中的单条数据对象：整行数据承载、对象选择、状态表达与快捷操作
+    - Ownership
+        - Inherits：XYUI-4 Selection 状态；6.10 Column（Cells 布局）；6.03 Active Cell 合同；6.16 Expandable Row
+        - Owns：整行信息优先级（P0~P3）；QuickAction 槽位（默认最多 1~2 个）；行级 Modified/Unsaved/Error 直接暴露；Row Error vs Cell Error 区分
+        - Must Not Redefine：Selection 视觉（REF XYUI-4）/ 输入控件（REF XYUI-2）/ 展开行为（REF 6.16）
+    - 最终方案
+        - 方案2+3+4 组合：方案4 Adaptive Rich Row 为总体结构；吸收方案2 Rich Data Row 信息前置；吸收方案3 Action-Aware Row 高频操作直达；方案1 Minimal Row 保留为纯数据辅助模式
+    - 核心原则
+        - Information First：对象身份和关键状态优先可见，不要求进入 Inspector 才能完成基础判断
+        - Action Direct：最高频安全操作允许一步直达，不要求选择后再打开右键菜单
+        - Controlled Density：Rich 不等于无限增加内容；每行只展示当前场景真正有价值的信息
+        - Row Is Not Toolbar：直接操作默认最多 1~2 个；次要操作进入 More；危险操作不得永久高亮
+    - 结构
+        - Row → Leading（Selection/Expand/Drag Handle/Type Marker/Icon，可选）+ Primary（对象最核心身份信息）+ Secondary（ID/Type/所属关系，可选，空间不足优先隐藏）+ Cells（遵循 6.10 Column 定义）+ Status（关键状态直接展示，严重状态必须优先可见）+ QuickAction（1~2 个最高频动作如定位/显示/预览/启用）+ More（低频/高级/危险操作入口；不得成为最高频动作唯一入口）
+    - 行信息优先级
+        - P0 = 对象身份 + 严重状态；P1 = 核心业务值 + 最高频 Quick Action；P2 = Secondary + 次级业务值；P3 = 低频 Metadata + 低频 Action；空间不足按 P3 → P2 → P1 裁剪，P0 始终优先保留
+    - 行高
+        - Dense 约 26–32 DIP（大量纯数据）/ Compact 约 32–40 DIP（默认专业编辑器）/ Rich 约 42–52 DIP（双层身份信息）/ Expanded 按业务需要自适应（不得作为普通默认）（COMPONENT_SPECIFIC）
+    - 选择 / Active Cell
+        - Row Selection 表示当前数据对象被选择（REF XYUI-4）；Multi/Range 允许；Data Grid 中 Row Selection 与 Active Cell 分离（REF 6.03）
+        - Active Cell 可与 Selected Row 同时存在；Row Selected 不等于 Cell Editing；不得用同一种视觉完全覆盖二者
+    - 交互
+        - Single Click = 选择 Row；Double Click 可由业务定义打开（不得作为查看关键状态的必要方式）；Quick Action 单击直接执行；Context Menu 完整低频操作
+        - Hover 整行允许，可显示低频 Quick Action（关键状态不得仅 Hover 出现）
+        - 拖动可选 Reorder/Move/Drag Reference（需要时显示 Drag Handle；普通点击区域不得误触 Drag）
+    - 修改状态 / 错误
+        - Modified/Unsaved 允许直接显示（高价值场景）；Error 必须清晰暴露；不得要求打开详情后才能发现数据异常
+        - Row Error（对象级问题）与 Cell Error（字段级问题）必须能够区分；反馈 REF XYUI-4
+    - 响应式
+        - Wide = Rich Row；Medium = 隐藏低优先级 Secondary 和 Cell；Narrow = Primary + Critical Status + More；必要时转换为 Item View / Rich List；不得通过无限压缩列和字体解决
+    - 性能
+        - 大量 Row 支持 Virtualization（REF 6.20）；不可见 Quick Action 不应产生昂贵实例；实时状态更新应局部刷新
+    - 可访问性
+        - Row 具有明确语义；Selection 可感知；Action 有明确名称；状态不得只靠颜色
+    - Canonical Token
+        - XY.Row.Variant
+            - Type = COMPONENT_SPECIFIC（AdaptiveRich | Rich | ActionAware | Minimal）
+        - XY.Row.Density
+            - Type = COMPONENT_SPECIFIC（Dense | Compact | Rich）
+        - XY.Row.Leading / Secondary / Status
+            - Type = COMPONENT_SPECIFIC（Optional；Status 视觉 REF XYUI-1 StatusBadge/StatusDot）
+        - XY.Row.QuickActions.MaxPrimaryActions
+            - Type = COMPONENT_SPECIFIC（1 | 2）
+        - XY.Row.Overflow
+            - Type = COMPONENT_SPECIFIC（More）
+        - XY.Row.Priority
+            - Type = COMPONENT_SPECIFIC（P0~P3）
+        - XY.Row.Selection
+            - Value = Reference XYUI-4
+        - XY.Row.Column / Expandable
+            - Value = Reference XYUI-6 6.10 / 6.16
+        - XY.Row.Virtualization
+            - Value = Reference XYUI-6 6.20
+        - XY.Row.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止把每行演变成按钮工具栏 / 关键状态仅 Hover 出现 / 双击成为查看关键状态的必要方式
+        - 禁止普通点击区域误触 Drag / Row Error 与 Cell Error 混为一谈 / 无限压缩列和字体
+
+- 6.12 · Cell / 单元格
+    - 控件定位
+        - 类型
+            - Data Collection Component / 数据集合组件
+        - 层级
+            - 数据层（NEW；最小数据表达单元）
+        - 主要用途
+            - Table、Data Grid、Tree Table 等结构化数据组件中的最小数据表达单元：单个字段值的展示、语义表达、交互与编辑承载
+        - 分工：Column 决定同类字段布局；Row 代表完整对象；Cell 表达具体字段
+    - Ownership
+        - Inherits：XYUI-2 输入控件；XYUI-4 Feedback/ProgressBar；6.03 Data Grid 状态合同
+        - Owns：DataType 模型（13 类）；InteractionMode 模型（ReadOnly/Inspect/Editable/DirectEdit）；Semantic Representation（Mini Bar/进度/引用定位等）；DataType 与 InteractionMode 独立建模
+        - Must Not Redefine：输入控件（REF XYUI-2）/ 验证反馈（REF XYUI-4）/ Active/Editing 状态（REF 6.03）
+    - 最终方案
+        - 方案4 Adaptive Semantic Cell 为总体模型；吸收方案2 Semantic Cell 语义表达；吸收方案3 Direct Editable Cell；方案1 Plain Value 作为 ReadOnly 基础模式
+    - 核心原则
+        - Information First：关键数据第一眼可理解，不要求用户反复进入详情查看基础状态
+        - Semantic Representation：数据表现方式应匹配数据语义，不是所有 Cell 都只使用纯文字
+        - Action Direct：高频可编辑字段允许直接操作，不得无意义增加双击或进入编辑步骤
+        - Visual Restraint：普通字段保持轻量，不能把整个 Data Grid 做成满屏输入框
+        - Data Truth：视觉辅助不能取代真实数值；关键数值应仍能读取或获得精确值
+    - Cell 内容类型（DataType）
+        - Text / Number（右对齐）/ Percentage（可选 Value + Mini Bar）/ Boolean（Check/Toggle/Plain State）/ Status（Text/Marker/Compact Badge）/ Progress（Mini Progress/Value+Progress）/ Color（Swatch+Value）/ Enum / DateTime / Reference（可定位/打开）/ Icon / Composite / Custom
+        - Mini Bar / Mini Progress = REF XYUI-4 ProgressBar Inline Compact Progress Variant（不改变 Row 高度）
+    - InteractionMode
+        - ReadOnly（纯展示可复制）/ Inspect（轻量展示，单击可查看/定位/打开关联对象）/ Editable（平时轻量展示，单击/Enter/明确编辑动作进入 Edit Mode）/ DirectEdit（输入控件直接存在，适用于 XYLab/调试/频繁调参）
+        - InteractionMode 与 DataType 分离：Number 可以是 ReadOnly/Editable/DirectEdit；不得因为数据类型相同强制使用相同交互模式
+    - 编辑
+        - Display Mode（普通显示）/ Active Mode（Active Cell）/ Edit Mode（实际输入控件）/ DirectEdit Mode（控件常驻）
+        - Data Grid 中 Row Selection / Active Cell / Editing Cell 保持独立（REF 6.03）
+        - 编辑触发：Editable = Enter/单击/双击/Explicit Edit（由场景策略决定，不得强制所有 Editable 使用双击）；提交 = Enter/Tab/失焦（可配置）/Explicit Apply；取消 = Esc 恢复编辑前值
+    - 验证
+        - 类型/范围/业务规则验证（REF XYUI-4 Feedback）；验证失败明确指出当前 Cell、保留用户输入上下文、不得静默吞掉错误
+    - 状态
+        - Default/Hover/Active/Editing/DirectEdit/SelectedByRange/Modified/Invalid/Disabled/ReadOnly/Loading/Missing/Error；状态视觉 REF XYUI-4
+        - Modified 提示必须克制；严重错误优先级高于普通 Modified
+    - 异常
+        - Missing Reference 直接显示缺失（不得显示为空白让用户猜测）；Invalid Value 明确错误状态；Load Error 显示局部失败；异常状态不得仅依赖颜色
+    - 数值 / 百分比 / Boolean
+        - 数值 Cell：默认右对齐；相同单位保持统一格式；支持整数/小数/百分比/单位；不得随意使用不同小数精度；格式化不改变底层真实值
+        - 百分比与进度：Text Only / Mini Bar / Bar+Value（REF 4-16 Inline Compact）；精确判断重要时必须保留数值，不得仅靠条形长度表达
+        - Boolean：高频控制 Toggle/Checkbox（REF XYUI-2）；只读状态文字或状态标识；危险 Boolean 不得因单击热区过大造成误触
+    - 尺寸 / 对齐 / Overflow
+        - 遵循 Row Density（REF 6.11）；Cell Padding 保持紧凑；DirectEdit 控件尽量填满可用 Cell 高度；不得在 Cell 内制造大量上下留白
+        - Text Left / Number Right / Boolean+Icon Center / Status Left-Center / Reference Left；同 Column 内必须一致
+        - Ellipsis 默认长文本策略（REF XYUI-1 TruncatedText）；Wrap 特殊场景；Tooltip 辅助查看完整内容但不能承担关键状态唯一信息
+    - 响应式
+        - Wide 允许完整 Semantic Representation；Medium 压缩视觉辅助保留关键值；Narrow 优先保留精确核心值（复杂 Semantic Cell 可降级）；DirectEdit 空间不足可转 Editable；不得简单缩小字体
+    - 性能
+        - Semantic Renderer 应轻量；大量 Cell 不应默认实例化复杂输入控件；DirectEdit 只用于真正高频字段；不可见 Cell 结合 Virtualization（REF 6.20）
+    - 可访问性
+        - 视觉条、颜色、图标不能成为唯一数据来源；精确值可被辅助技术读取；可编辑 Cell 明确编辑语义；错误信息与对应 Cell 关联
+    - Canonical Token
+        - XY.Cell.Display
+            - Type = COMPONENT_SPECIFIC（Plain | Semantic | Custom）
+        - XY.Cell.DataType
+            - Type = COMPONENT_SPECIFIC（Text|Number|Percentage|Boolean|Status|Progress|Color|Enum|DateTime|Reference|Icon|Composite|Custom）
+        - XY.Cell.InteractionMode
+            - Type = COMPONENT_SPECIFIC（ReadOnly | Inspect | Editable | DirectEdit）
+        - XY.Cell.State
+            - Type = COMPONENT_SPECIFIC（Default | Active | Editing | Modified | Invalid | Disabled | Missing；视觉 REF XYUI-4）
+        - XY.Cell.Alignment
+            - Value = XY.Alignment.Text / Number 消费（Left | Center | Right）
+        - XY.Cell.Overflow
+            - Value = Ellipsis（REF XYUI-1 TruncatedText）| Wrap
+        - XY.Cell.MiniProgress
+            - Value = Reference XYUI-4 ProgressBar（Inline Compact Progress）
+        - XY.Cell.Input / Feedback / DataGrid / Virtualization
+            - Value = Reference XYUI-2 / XYUI-4 / XYUI-6 6.03 / 6.20
+        - XY.Cell.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止将所有 Cell 默认设计成输入控件 / 视觉辅助取代真实数值 / 缺失引用显示为空白
+        - 禁止随意使用不同小数精度 / 强制所有 Editable 双击 / 仅靠条形长度或颜色表达精确值
+
+- 6.13 · Sorting / 排序
+    - 控件定位
+        - 类型
+            - Data Collection Component / 数据集合组件
+        - 层级
+            - 数据层（NEW；排序状态必须能够直接理解）
+        - 主要用途
+            - 控制集合数据的排列顺序；适用于 List、Table、Data Grid、Asset Grid、Hierarchy、游戏列表等
+    - Ownership
+        - Inherits：XYUI-2 控件（排序选择控件）；6.03/6.09/6.10 入口承载
+        - Owns：排序语义模型（Field + Semantic Order）；排序状态可见性（Single/Multi/Manual）；业务语义排序（距离最近/最危险优先/最近使用等）；Manual Order 与字段排序区分
+        - Must Not Redefine：↑↓ 作为主要排序表达（Forbidden；仅允许 Secondary Direction Indicator）/ 输入控件设计（REF XYUI-2）
+    - 最终方案
+        - 方案2 Visible Sort Control 为主；方案4 Context-Aware Entry 作为场景适配机制（Table/DataGrid 表头快捷触发、List/Asset Grid 显式 Sort Control、Game UI 业务语义排序器、Search Result 相关度/最新）；方案3 Multi-Sort 作为高级能力；方案1 仅保留表头快速排序能力
+    - 核心原则
+        - Semantic First：排序应表达业务语义，不得只依赖 ↑↓
+        - State Visible：当前排序字段直接可见、当前排序方式直接可见
+        - Action Direct：单击排序控件即可调整，常用排序不得藏进多层菜单
+        - Professional Expression：排序状态优先使用完整字段名与方向语义；↑↓ 仅允许作为辅助提示，不得作为核心视觉语言
+    - 排序语义表达
+        - Number = 从高到低/从低到高；Distance = 由近到远/由远到近；DateTime = 最近优先/最早优先；Name = A → Z / Z → A / 拼音顺序；Priority = 最高优先/最低优先
+        - 业务语义排序（距离最近/最常用/推荐/未完成优先等）必须直接显示业务含义
+    - 主控结构 / 显示形式
+        - SortControl → Field（必选）+ Order（Semantic）+ Optional Secondary Sort + Trigger
+        - Compact（最近修改）/ Standard（人口 · 从高到低）/ Rich（排序：人口 · 从高到低）/ Advanced（主要：人口 · 从高到低；其次：名称 · A → Z）
+    - 交互
+        - 单击主控打开排序选择；已选字段可直接切换排序方式；重新选择字段直接替换主排序条件；Clear 恢复默认顺序；不得要求用户先进入设置页再修改排序
+    - 表头快捷排序 / 多级排序
+        - Header Quick Sort：表头点击快速切换排序；排序字段文字本身承担主要信息；箭头或方向图标只做辅助；不得只显示 ↑ 或 ↓
+        - Multi-Sort：用于开发工具/数据分析/大型 Data Grid（1 · 人口 · 从高到低；2 · 名称 · A → Z；3 · 阵营 · 默认顺序）；多级排序不是普通界面默认模式，普通用户无需承担高级复杂度
+    - 默认排序 / 自定义顺序
+        - 允许集合定义 Default Sort（最近修改/名称/自定义顺序/相关度）；默认排序仍应在有判断价值时显示
+        - Manual Order（拖动排序）与字段排序必须区分；开启字段排序后不得假装仍是手动顺序
+    - 响应式
+        - Wide 完整字段+顺序；Medium 保留完整主要语义；Narrow 可缩短为「最近修改」「人口最高」「距离最近」；极窄使用 Sort Trigger 但当前排序摘要仍应可获取；不得优先压缩成只有箭头
+    - 可访问性
+        - 必须能读取完整排序语义（如「人口，从高到低」「修改时间，最近优先」），不能只读取 Ascending/Descending 图标
+    - Canonical Token
+        - XY.Sort.Control
+            - Type = COMPONENT_SPECIFIC（Field Required + Order Semantic）
+        - XY.Sort.Mode
+            - Type = COMPONENT_SPECIFIC（Single | Multi | Manual）
+        - XY.Sort.Display
+            - Type = COMPONENT_SPECIFIC（Compact | Standard | Rich | Advanced）
+        - XY.Sort.Entry
+            - Type = COMPONENT_SPECIFIC（Control | ColumnHeader | Toolbar；Context-Aware）
+        - XY.Sort.DirectionIndicator
+            - Type = COMPONENT_SPECIFIC（Optional；SecondaryOnly；↑↓ 禁止作为主要表达）[GAP:XYUI6-GAP-001]
+        - XY.Sort.MultiSort
+            - Type = COMPONENT_SPECIFIC（Optional；Primary/Secondary/Tertiary）
+        - XY.Sort.Toolbar / Column / DataGrid
+            - Value = Reference XYUI-6 6.09 / 6.10 / 6.03
+        - XY.Sort.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止排序核心视觉依赖 ↑↓ / 只显示无语义排序图标 / 常用排序藏进多层菜单
+        - 禁止把 Manual Order 伪装成字段排序 / 普通用户承担多级排序复杂度 / 要求先进入设置页再修改排序
+
+- 6.14 · Filtering / 筛选
+    - 控件定位
+        - 类型
+            - Data Collection Component / 数据集合组件
+        - 层级
+            - 数据层（NEW；结构化条件筛选语义）
+        - 主要用途
+            - 从集合中按条件筛选目标数据；适用于 List、Table、Data Grid、Hierarchy、Asset Grid 等；既服务普通快速筛选，也服务专业开发、调试和数据分析
+    - Ownership
+        - Inherits：XYUI-2 输入控件（条件值输入）；XYUI-4 反馈（InvalidCondition）
+        - Owns：Filter Token 语义（Field + Operator + Value）；Active Filter Set 与结果投影；AND/OR/NOT 条件组合与嵌套 Group；Preset 管理；筛选状态摘要（128 → 6）
+        - Must Not Redefine：Search（全文关键词匹配 = XYUI-2 Search Field 语义；Filter = 结构化条件；两者可同时存在，结果交集；不得混成同一个不可解释状态）/ 排序（Filter 先决定集合，Sorting 再决定顺序，REF 6.13）/ 分组（Filtering 决定谁存在，Grouping 决定如何归类，REF 6.15）
+    - 最终方案
+        - 方案4 Adaptive Filter System 为总体机制（按工作复杂度逐级暴露能力）+ 方案3 Professional Filter Builder 为核心高级能力
+    - 核心原则
+        - State Visible：当前筛选状态尽量直接显示，用户必须知道数据为什么减少
+        - Progressive Complexity：普通任务保持直接，复杂任务进入高级 Builder，不强迫简单用户承担高级复杂度
+        - Simple Outside, Powerful Inside：普通界面保持简洁；高级模式必须拥有足够表达能力
+    - 快速筛选
+        - Visible Filter Token：字段+运算符+值（阵营 = 魏 / 人口 ≥ 100000 / 状态 = 已修改）；每条件可直接移除/直接编辑；允许 Clear All / Add Filter
+        - 快速添加：Field + Operator + Value + Add；默认一步完成一个筛选条件；按字段类型自动提供 Operator（Text：等于/包含/开头为；Number：=/≠/>/≥/</≤/Between；Boolean：是/否；Enum：等于/不等于/属于；DateTime：早于/晚于/区间）
+    - 高级 Filter Builder
+        - Condition（Field+Operator+Value）/ Condition Group（ALL=AND / ANY=OR）/ 支持嵌套 Group / NOT 高级模式可选
+        - 允许调整条件顺序、删除条件/Group、复制条件或 Group、启用或临时禁用条件；复杂逻辑必须有清晰层级，不得只靠缩进而无法判断条件归属
+        - 条件层级视觉：Group 轻量容器、子条件明确缩进、AND/OR 直接文字语义（不得仅用图标表达逻辑关系）；深层嵌套应限制视觉复杂度，过深时允许树状结构或表达式模式
+    - 筛选状态摘要 / 结果反馈
+        - 直接展示核心条件（阵营：魏 / 人口：≥100000）；条件很多时显示高优先级条件 + 「+N」，点击 +N 展开完整条件
+        - 显示总数与当前结果数（128 → 6）；无结果明确 Zero Result + Clear/Relax Filter；不得让用户误以为原始数据消失
+    - 运算符 / 字段类型
+        - Equals/NotEquals/Contains/NotContains/StartsWith/EndsWith/GreaterThan/GreaterOrEqual/LessThan/LessOrEqual/Between/In/NotIn/IsEmpty/IsNotEmpty/IsNull/IsNotNull + 业务可扩展 Custom Operator
+        - 字段类型：Text/Number/Boolean/Enum/DateTime/Status/Reference/Collection/Custom
+    - Preset / 临时筛选
+        - 专业模式支持 Preset（已修改资源/异常 Entity/高人口城镇/待处理对象）+ Save/Rename/Duplicate/Delete/Set Default；Preset 不改变底层数据
+        - 临时 Filter 与 Saved Preset 必须区分；关闭 Collection 后是否保存由宿主决定
+    - 非法条件
+        - 字段不存在/Operator 不兼容/Value 类型错误/引用对象失效 → 必须明确显示具体错误条件，不得静默忽略无效条件
+    - 响应式
+        - Wide 多条件+快速添加+Builder；Medium 核心条件+「+N」；Narrow 最重要条件+Filter Count；Mobile Filter Builder 使用独立 Sheet/Panel；高级能力不得因窄屏被删除，只改变承载方式
+    - 性能
+        - 大量数据筛选应支持增量或索引实现；UI 层不得要求全量重建所有不可见 Item；结合 Virtualization（REF 6.20）
+    - 可访问性
+        - AND/OR 必须有文字语义；条件字段/Operator/Value 可被辅助技术识别；错误条件需要明确关联；键盘能够编辑、增加和删除条件
+    - Canonical Token
+        - XY.Filter.Summary / Token
+            - Type = COMPONENT_SPECIFIC（状态摘要 + 可移除 Token）
+        - XY.Filter.Builder
+            - Type = COMPONENT_SPECIFIC（Advanced；嵌套 Group）
+        - XY.Filter.Mode
+            - Type = COMPONENT_SPECIFIC（Quick | Advanced）
+        - XY.Filter.GroupLogic
+            - Type = COMPONENT_SPECIFIC（All | Any | Not；文字语义强制）
+        - XY.Filter.Operator
+            - Type = COMPONENT_SPECIFIC（TypeAware）
+        - XY.Filter.Preset
+            - Type = COMPONENT_SPECIFIC（Optional）
+        - XY.Filter.StateVisible
+            - Value = True
+        - XY.Filter.ResultFeedback
+            - Type = COMPONENT_SPECIFIC（总数 → 结果数；Zero Result 明确 + Clear/Relax）
+        - XY.Filter.Sorting / Grouping / Virtualization
+            - Value = Reference XYUI-6 6.13 / 6.15 / 6.20
+        - XY.Filter.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止高级能力以牺牲普通操作效率为代价 / 普通能力限制专业工具表达深度 / 搜索与筛选混成同一个不可解释状态
+        - 禁止静默忽略无效条件 / 无结果让用户误以为原始数据消失 / 仅用图标表达逻辑关系
+
+- 6.15 · Grouping / 分组
+    - 控件定位
+        - 类型
+            - Data Collection Component / 数据集合组件
+        - 层级
+            - 数据层（NEW；数据归类语义）
+        - 主要用途
+            - 将集合数据按照一个或多个业务字段归类展示；Filtering 决定哪些数据留下；Grouping 决定留下的数据如何归类；Sorting 决定每个 Group 内部如何排列
+        - 与 XYUI-4 SelectionGroup 边界：SelectionGroup = 选择集合（选择语义）；Data Group = 数据归类（集合语义）；两者不合并
+    - Ownership
+        - Inherits：XYUI-1 文本/数值；6.05 Guide Line 语言（多级）；6.09/6.13/6.14 REF
+        - Owns：Group Header 语义（Group Name + Count + Summary + Status + ExpandControl）；组级摘要（Count/Sum/Average/Min/Max/ErrorCount/WarningCount/ModifiedCount/自定义）；Single-Level / Multi-Level 模式；Group Order 与组内排序分离
+        - Must Not Redefine：Tree Guide Line 视觉（REF 6.05）/ 选择语义（REF XYUI-4）/ 卡片嵌套排版（Forbidden）
+    - 最终方案
+        - 方案3 Rich Summary Group 为主；方案4 原排版弃用（No Card Nesting），保留方案4 的 Multi-Level Grouping 能力并强制切换 Tree Guide Line 结构
+    - 核心原则
+        - Information First：组级数量、核心指标、异常状态优先直接显示
+        - Summary Before Detail：先看整体，再决定是否展开看成员
+        - No Card Nesting：禁止多级分组采用卡片层层嵌套、大型容器套大型容器
+        - Tree For Deep Hierarchy：多级 Group 使用 Tree Guide Line 表达层级（REF 6.05）
+    - Group Header
+        - Primary（Group Name）+ Count（成员数量）+ Summary（组级核心指标；默认只显示最有判断价值的 2~4 项，不得堆叠过多）+ Status（异常/警告/正常/修改）+ ExpandControl + Optional Action
+        - 摘要示例：12 支军队 / 总兵力 184,200 / 平均疲劳 42% / 异常 2
+    - 折叠
+        - 展开显示成员；折叠仅保留 Group Header + Summary；折叠后关键异常仍必须可见；不得因为折叠隐藏整个 Group 的错误状态
+    - 单级 / 多级
+        - Single-Level 默认 Rich Summary Group（按战区/资源类型/状态/阵营）
+        - Multi-Level 必须使用 Tree Guide Line（如：阵营 → 魏 → 华北战区/中原战区）；每一级明确缩进 + 低对比层级引导线；当前 Group Header 仍可拥有 Summary；深层级不得依赖背景块嵌套表示关系
+    - 分组状态显示
+        - Collection Toolbar 中直接显示当前 Grouping（按战区/按类型）；多级时显示 1 · 阵营、2 · 战区；当前 Grouping 不应隐藏在设置页
+    - 组顺序 / 组级操作 / 选择
+        - Group Order 可按组名称/成员数量/Summary 指标/业务自定义；Group Order 与 Row Sorting 分离，不得混淆组排序和组内排序
+        - 组级操作：Select Group/Collapse/Expand/Focus/Apply Action（高频安全直接显示，低频入 More，危险不突出）
+        - 允许选择单个 Group（可选）或 Group 内成员；是否点击 Group Header 选中全部成员由业务决定；不得默认造成意外大批量选择
+    - 拖动 / 空组
+        - 可选 Group Reorder / Member Move；改变业务归属时必须明确目标关系；复杂层级拖动 REF 6.05 Hierarchy 规则
+        - 空组默认可隐藏（业务需要时可显示并明确 0 项）；不得显示空白大区域
+    - 响应式 / 性能
+        - Wide 完整 Rich Summary；Medium 保留核心 Summary 隐藏低优先级指标；Narrow = Group Name + Count + Critical Status；多级分组减少 Indent Step 仍保留 Guide Line；不得改为卡片套娃
+        - 折叠 Group 不应持续渲染所有不可见成员；大量 Group 支持 Virtualization；Group Summary 避免每帧全量重算（REF 6.20）
+    - 可访问性
+        - Group Header 具有明确 Group 语义；Expanded/Collapsed 可感知；Summary 可被读取；Guide Line 不是唯一层级语义
+    - Canonical Token
+        - XY.Grouping.Group / Header / Summary
+            - Type = COMPONENT_SPECIFIC（Group Name + Count + Summary + Status + ExpandControl）
+        - XY.Grouping.Mode
+            - Type = COMPONENT_SPECIFIC（SingleLevel | MultiLevel）
+        - XY.Grouping.Visual
+            - Type = COMPONENT_SPECIFIC（RichSummary | TreeGuide）
+        - XY.Grouping.Collapsible
+            - Value = True
+        - XY.Grouping.SummaryMetric
+            - Type = COMPONENT_SPECIFIC（Count | Sum | Average | Min | Max | StatusCount | Custom；聚合摘要以文本+数值表达，REF XY.Text.Secondary + XY.Alignment.Number）
+        - XY.Grouping.GuideLine
+            - Value = Reference XYUI-6 6.05
+        - XY.Grouping.Sorting / Filtering / Virtualization
+            - Value = Reference XYUI-6 6.13 / 6.14 / 6.20
+        - XY.Grouping.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止卡片层层嵌套表达多级分组 / 折叠隐藏整个 Group 的错误状态 / 摘要堆叠过多指标
+        - 禁止混淆组排序和组内排序 / 默认意外大批量选择 / 空白大区域 / Guide Line 作为唯一层级语义
+
+
+- 6.16 · Expandable Row / 展开行
+    - 控件定位
+        - 类型
+            - Data Collection Component / 数据集合组件
+        - 层级
+            - 数据层（NEW；行级扩展信息承载）
+        - 主要用途
+            - 在不离开当前集合上下文的情况下查看 Row 的扩展信息；适用于 Table、Data Grid、List、游戏数据列表等；解决一行信息不足但又不值得跳转完整详情页的问题
+    - Ownership
+        - Inherits：XYUI-4 状态视觉；6.03（Active Cell/Row Selection 独立）；6.11 Row；6.20（虚拟化下展开高度）
+        - Owns：ExpandedPanel 内容结构（Summary/Properties/Status/Preview/Quick Actions/Detail Link）；ExpansionMode（Single/Multiple/LimitedMultiple/Adaptive）；展开状态与 Selection 分离；Lazy Load 行为
+        - Must Not Redefine：Selection 视觉（REF XYUI-4）/ 完整详情页（Expanded Panel 提供入口但核心信息不以详情页为前提）/ 虚拟化机制（REF 5.14）
+    - 最终方案
+        - 方案2 Rich Expanded Panel 为主要视觉（展开后直接展示真正有判断价值的信息）+ 方案4 Adaptive Expansion 为总体行为策略（按容器宽度与任务场景决定 Single 或 Multiple Expansion）
+    - 核心原则
+        - Context Stay：查看详情时尽量留在当前集合上下文，避免不必要跳转 Inspector 或详情页
+        - Information First：展开一次即提供核心扩展信息，不得展开以后继续要求多次点击才能看到基础详情
+        - Rich But Focused：展开区允许丰富内容，但只展示当前对象的重要信息
+    - 结构
+        - ExpandableRow → BaseRow（保持原 Row Density）+ ExpandControl + ExpandedPanel（Summary + Properties + Status + Optional Preview + Quick Actions + Optional Detail Link）
+        - ExpandedPanel 内部保持紧凑，优先横向利用空间，避免大型 Card 化
+    - 展开行为
+        - Single（同一 Collection 同时只展开一个，展开新 Row 自动收起旧 Row）/ Multiple（允许多个同时展开，适合对比）/ LimitedMultiple（有限数量如最多 3 个）/ Adaptive（由容器与业务决定实际策略）
+        - 默认策略：Wide Desktop = Multiple；Medium Panel = LimitedMultiple；Narrow Panel = Single；Game UI = Single 优先（避免破坏列表整体节奏）；Mobile = Single 或 Full Width Inline / Bottom Sheet
+    - 展开入口 / 状态
+        - ExpandControl 明确箭头或展开控制（不得成为唯一展开方式）；Row Double Click 可选快捷方式；Click Row 默认仍负责 Selection，不得因普通选择误触展开
+        - Collapsed / Expanded / Loading / Error / Disabled（视觉 REF XYUI-4）
+    - 加载
+        - 允许 Lazy Load，只加载当前 Row 扩展详情；Loading 不锁定整个 Collection；失败时只影响当前 Expanded Panel
+    - 快捷操作 / 详情入口
+        - 允许直接提供定位/预览/启用/打开/应用（高频安全操作优先直达，危险操作保持受保护）
+        - Expanded Panel 可提供完整详情入口，但完整详情不是查看核心信息的前提（如展开后已见人口/驻军/税率，详情页才提供全部几十项参数）
+    - 高度 / 布局 / 对比
+        - Base Row 保持原 Row Density；Expanded Panel Adaptive 按内容决定；默认避免超过可视区域的大块展开（复杂内容建议跳完整 Detail View）
+        - Two Column（属性）/ Multi Column（宽桌面）/ Stacked（窄屏）/ Mini Dashboard（状态型对象）；布局可按内容类型变化
+        - Multiple Expansion 对比时同类字段保持相似位置方便纵向比较，不得每个 Row 使用完全随机详情结构
+    - 选择 / Active Cell
+        - Expanded 与 Selected 分离（Row 可以 Expanded 但未 Selected，也可以 Selected 但 Collapsed，不得混为一个状态）
+        - Data Grid 中 Active Cell / Row Selection / Expanded 三者独立（REF 6.03）
+    - 响应式
+        - Wide = Rich Panel + Multiple；Medium = Rich Panel + LimitedMultiple；Narrow = Single + Stacked Layout；Mobile = Inline Full Width 或 Bottom Sheet；展开语义不变
+    - 性能
+        - Collapsed Row 不实例化复杂详情控件；Expanded Panel 允许 Lazy Load；Virtualization 下需要正确处理展开高度（REF 6.20）
+    - 可访问性
+        - ExpandControl 具有 Expanded/Collapsed 语义；键盘支持展开收起；Expanded Panel 与对应 Row 建立关联
+    - Canonical Token
+        - XY.ExpandableRow.Panel
+            - Type = COMPONENT_SPECIFIC（Rich）
+        - XY.ExpandableRow.ExpansionMode
+            - Type = COMPONENT_SPECIFIC（Single | Multiple | LimitedMultiple | Adaptive）
+        - XY.ExpandableRow.Placement
+            - Type = COMPONENT_SPECIFIC（Inline | FullWidth | Sheet）
+        - XY.ExpandableRow.Loading
+            - Type = COMPONENT_SPECIFIC（Lazy）
+        - XY.ExpandableRow.Selection
+            - Value = Independent（REF XYUI-4）
+        - XY.ExpandableRow.DataGrid / Row / Virtualization
+            - Value = Reference XYUI-6 6.03 / 6.11 / 6.20
+        - XY.ExpandableRow.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止普通选择误触展开 / 展开后继续要求多次点击才能看到基础详情 / 大型 Card 化
+        - 禁止每个 Row 完全随机详情结构 / 展开面板超过可视区域大块展开 / Expanded 与 Selected 混为一个状态
+
+- 6.17 · Inline Editing / 行内编辑
+    - 控件定位
+        - 类型
+            - Data Collection Component / 数据集合组件
+        - 层级
+            - 数据层（NEW；编辑流程统一规则层）
+        - 主要用途
+            - 定义用户在当前集合上下文中直接修改数据时的完整编辑流程；适用于 Table、Data Grid、Property Grid、List、Hierarchy 等
+        - 分工：Cell 负责字段的展示与 InteractionMode（REF 6.12）；Inline Editing 负责真正进入编辑后的触发、提交、取消、验证与保护策略
+    - Ownership
+        - Inherits：XYUI-2 输入控件；XYUI-4 Validation/Feedback；6.03 Active Cell 模型；6.12 Cell
+        - Owns：编辑模式矩阵（频率 × 风险 × 复杂度 → Direct/Inline/ContextualCommit/Explicit/Protected）；提交/取消合同（Enter/Tab/Apply/Blur/Esc）；Modified State；焦点流转；Undo/Redo 接入约定
+        - Must Not Redefine：输入控件（REF XYUI-2）/ 验证反馈（REF XYUI-4）/ 批量编辑（单 Cell Inline Editing 不自动扩展为批量修改，REF 6.18）
+    - 最终方案
+        - 方案4 Adaptive Inline Editing 为总体机制；吸收方案2 Direct Inline Edit（普通低风险默认）/ 方案3 Contextual Commit（中风险确认）/ 方案1 Explicit Edit Mode（复杂/高风险）
+    - 核心原则
+        - Action Direct：高频低风险编辑尽量一步直达，不得无意义增加「编辑」按钮
+        - Risk Proportional：保护强度与操作风险匹配；低风险不应承担高风险操作的繁琐流程
+        - Context Stay：普通编辑尽量在当前位置完成，不为了修改简单值跳转完整详情页
+        - State Clear：用户必须知道当前是否正在编辑、是否已修改、是否已提交
+        - Reversible First：可撤销操作优先轻量交互；不可逆操作提高确认级别
+    - 判断维度与推荐矩阵
+        - EditFrequency（Low/Medium/High）× Risk（Low/Medium/High）× Complexity（Simple/Structured/Complex）
+        - High Frequency + Low Risk = DirectEdit；Medium Frequency + Low Risk = InlineEdit；Medium Frequency + Medium Risk = InlineEdit + ContextualCommit；Low Frequency + Medium Risk = ExplicitEdit；High Risk = ProtectedFlow（默认不使用直接 Inline Commit）
+    - DirectEdit
+        - 适用 XYLab 高频参数/Debug 数值/频繁 Toggle/快速实验参数；输入控件直接存在；提交 Enter/Tab 或业务允许的即时更新；取消 Esc/必要时 Undo；不得因为 DirectEdit 跳过 Validation
+    - InlineEdit
+        - 适用名称/普通数值/低风险 Enum/常规属性；初始轻量展示；触发单击/Enter/Explicit Edit（由组件场景决定，不得强制双击作为唯一编辑入口）；进入后替换为对应输入控件；提交 Enter/Tab；取消 Esc
+    - ContextualCommit
+        - 适用中风险字段/长文本/重要配置/明显业务影响数据；初始编辑与 InlineEdit 相同；产生差异后显示 Modified + Apply/Cancel；未修改时不显示多余提交按钮；提交动作只在真正需要时出现
+    - ExplicitEdit / ProtectedFlow
+        - ExplicitEdit：复杂结构/高级配置/较高风险/多字段一起提交；必须有明确进入编辑的入口；编辑态与浏览态清晰区分；允许 Apply/Cancel/Reset；不得用于普通改名等低风险高频操作
+        - ProtectedFlow：不可逆变更/删除关键引用/批量重大修改/Schema 类操作；不直接在 Inline Editing 中提交；进入受保护确认流程；可结合 Undo 时仍应明确影响范围
+    - 提交 / 取消 / 焦点
+        - Enter 默认提交当前字段；Tab 提交并移动至下一可编辑字段；Shift+Tab 提交并移动至上一字段；Apply = ContextualCommit/ExplicitEdit；Blur 可配置（不得在高风险字段静默提交）
+        - Esc 恢复编辑前值；Cancel = ContextualCommit/ExplicitEdit；取消后不得留下半提交状态
+        - 进入编辑后焦点直接进入输入控件；提交后返回 Cell 或移动下一 Cell；取消后返回原 Cell；Data Grid 中 REF 6.03 Active Cell 模型
+    - 验证 / Modified / Undo
+        - Input Validation（类型/格式/范围）+ Business Validation（业务约束/引用完整性/权限）；失败保持当前编辑上下文、明确指出问题、不得静默回滚或修改用户输入（REF XYUI-4）
+        - 输入值与原值不同 → 标记 Modified；ContextualCommit 只在 Modified 后出现 Apply/Cancel；恢复原值 Modified 自动消失
+        - 成功提交后应允许宿主接入 Undo/Redo（尤其编辑器和 XYLab）；Undo 不等于替代高风险确认
+    - 响应式 / 场景
+        - Wide/Medium = Inline/DirectEdit；Narrow 复杂输入允许扩展为整宽编辑；Mobile 简单字段 Inline、复杂字段 Sheet；语义保持一致，不得因移动端完全重新设计编辑逻辑
+        - 游戏 UI：高频安全设置允许直接操作（编队优先级/自动补给开关）；不可逆或高成本操作增加确认；不得把开发工具式复杂编辑器直接搬进玩家界面
+        - 开发工具：允许更多 DirectEdit、键盘连续编辑、高密度参数调整、强调效率
+    - 性能 / 可访问性
+        - 普通 Editable Cell 不应常驻实例化复杂控件；进入 Editing 后再创建需要的 Editor；DirectEdit 仅用于真正高频字段；避免大 Data Grid 每个 Cell 都常驻输入控件
+        - 编辑状态/Modified 可感知；Validation Error 与字段关联；键盘必须能够提交和取消
+    - Canonical Token
+        - XY.InlineEdit.Mode
+            - Type = COMPONENT_SPECIFIC（Direct | Inline | ContextualCommit | Explicit | Protected）
+        - XY.InlineEdit.EditFrequency / Risk / Complexity
+            - Type = COMPONENT_SPECIFIC（Low|Medium|High / Low|Medium|High / Simple|Structured|Complex）
+        - XY.InlineEdit.Commit
+            - Type = COMPONENT_SPECIFIC（Enter | Tab | Apply | ConfigurableBlur）
+        - XY.InlineEdit.Cancel
+            - Type = COMPONENT_SPECIFIC（Esc | ExplicitCancel）
+        - XY.InlineEdit.State
+            - Type = COMPONENT_SPECIFIC（View | Editing | Modified | Invalid | Committing；视觉 REF XYUI-4）
+        - XY.InlineEdit.Undo
+            - Type = COMPONENT_SPECIFIC（Optional；成功提交后可接入宿主 Undo/Redo）
+        - XY.InlineEdit.Input / Feedback / Cell / DataGrid / BulkOperations
+            - Value = Reference XYUI-2 / XYUI-4 / XYUI-6 6.12 / 6.03 / 6.18
+        - XY.InlineEdit.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止低风险承担高风险操作的繁琐流程 / 高风险字段静默提交（Blur）/ 强制双击作为唯一编辑入口
+        - 禁止 DirectEdit 跳过 Validation / 取消后留下半提交状态 / 静默回滚或修改用户输入 / 单 Cell 编辑自动扩展为批量修改
+
+- 6.18 · Bulk Operations / 批量操作
+    - 控件定位
+        - 类型
+            - Data Collection Component / 数据集合组件
+        - 层级
+            - 数据层（NEW；多选后的操作语义层）
+        - 主要用途
+            - 对多个已选对象执行统一或兼容的批量操作；适用于 List、Table、Data Grid、Hierarchy、Asset Grid 等；与 Multi Selection 配合；解决多选后操作入口、影响范围和混合对象兼容性问题
+    - Ownership
+        - Inherits：XYUI-4 Selection（多选状态）；6.04 Property Grid（Mixed Value 规则）；6.08/6.09 承载；6.17（批量编辑不自动扩展）
+        - Owns：Selection Summary（数量+类型构成+关键状态）；Applicable Set 计算（Full/Partial/None）；Contextual Bulk Bar 承载；风险分级（Low/Medium/High/Destructive）；Undo 单一逻辑单元约定
+        - Must Not Redefine：Selection 视觉（REF XYUI-4）/ 集合状态（REF 6.19）/ 输入控件（REF XYUI-2）
+    - 最终方案
+        - 方案3 Rich Selection Summary 为主要信息结构 + 方案4 Adaptive Bulk Workbench 为核心复杂能力 + 方案2 Contextual Bulk Bar 作为默认承载方式（保留原 Collection Toolbar，额外显示批量工作条）
+    - 核心原则
+        - Selection Visible：多选形成后必须明确告诉用户已选择多少对象
+        - Impact Visible：批量操作执行前必须知道影响多少对象，不得神秘地只修改一部分
+        - Context Preserve：形成多选后原搜索、筛选、排序上下文尽量保留，不得无必要完全替换原 Toolbar
+        - Risk Proportional：批量影响越大，风险保护越高
+    - 默认承载 / Selection Summary
+        - Collection Toolbar 保持原工作上下文；Contextual Bulk Bar 在 Toolbar 下方或邻近位置出现（Selection Summary + Primary Bulk Actions + More + Clear Selection）；不得永久占据空间；无多选时自动隐藏
+        - 基础 = 已选择 N 个对象；丰富模式 = 类型构成+修改数量+异常数量（18 City · 4 Road · 2 Region；3 个已修改 · 1 个异常）；摘要只显示有判断价值的信息
+    - Applicable Set
+        - 每个 Bulk Action 必须能够计算 Applicable Set（当前动作实际可作用的已选对象子集）；例：隐藏 24/24、修改人口 18/24（仅 City）、修改道路宽度 4/24（仅 Road）
+        - 动作状态：Full Applicable / Partial Applicable（必须显示实际数量）/ Not Applicable（可禁用但应允许解释原因）；不得只显示 Enabled/Disabled 而不解释原因；不得静默跳过不兼容对象
+    - 执行反馈
+        - Full Applicable：「将修改 24 个对象」；Partial Applicable：「将修改 18 个 City，另外 6 个对象不受影响」；高风险显示影响范围，必要时明确确认
+    - 批量动作 / 批量编辑
+        - Common（Show/Hide、Enable/Disable、Move、Tag、Export）；Compatible Property Edit（公共属性/特定类型属性）；Advanced（Batch Rename、Batch Transform、Batch Assignment、业务自定义）；Dangerous（Delete、Remove Reference、Destructive Conversion → 进入保护流程）
+        - Shared Property 直接允许编辑；Partial Property 显示适用数量（用户必须知道只修改部分选择）；Mixed Value 显示 Mixed；写入新值应用到 Applicable Set（REF 6.04 Property Grid Mixed Value 规则）
+    - 高频动作 / 清除选择 / 混合选择
+        - 默认直接显示 1~3 个真正高频动作（按场景动态决定），其他进入 More；不得把 Bulk Bar 变成几十个按钮
+        - 必须有直接 Clear Selection 入口（Esc 可由桌面宿主支持）；Clear Selection 不得误执行数据修改
+        - 允许同类型与异构对象；异构选择优先展示公共动作，特定动作标明 Applicable Set；禁止默默对部分对象执行但不告知用户
+        - 选择对象增加或减少 → Summary 与 Applicable Set 实时更新；动作本身不应保留过期影响范围
+    - 风险 / Undo
+        - Low 直接执行（可 Undo 优先）；Medium 显示影响数量（必要时 Contextual Commit）；High 明确确认（显示对象数量和影响类型）；Destructive 不得因追求一步操作而取消必要保护
+        - 编辑器批量操作优先支持 Undo；一次 Bulk Operation 应形成一个逻辑 Undo Unit；不得要求用户撤销 24 次才能恢复一次批量操作
+    - 响应式 / 性能
+        - Wide 完整 Rich Selection Summary + 多个 Primary Action；Medium 核心 Summary + 关键 Action + More；Narrow 已选择 N + 最高频 Action + More；Mobile 可使用 Bottom Bulk Bar（复杂 Workbench 使用 Sheet）；影响数量语义不得因窄屏消失
+        - 大型选择集不得要求 UI 创建每个对象的独立操作控件；Summary 和 Applicable Set 基于集合能力计算；大量对象操作允许显示 Progress 但不得阻塞用户理解当前状态
+    - 可访问性
+        - 已选数量/动作适用数量可被读取；Partial Applicable 不得只用颜色表示；键盘可以进入 Bulk Bar 并清除选择
+    - Canonical Token
+        - XY.BulkOperations.Bar / Summary / Workbench
+            - Type = COMPONENT_SPECIFIC（ContextualBar；Basic|Rich；复杂能力）
+        - XY.BulkOperations.Action
+            - Type = COMPONENT_SPECIFIC（高频 1~3 直达 + More）
+        - XY.BulkOperations.ApplicableState
+            - Type = COMPONENT_SPECIFIC（Full | Partial | None）
+        - XY.BulkOperations.ApplicableCount
+            - Value = RequiredForPartial
+        - XY.BulkOperations.Risk
+            - Type = COMPONENT_SPECIFIC（Low | Medium | High | Destructive）
+        - XY.BulkOperations.Placement
+            - Type = COMPONENT_SPECIFIC（ContextualBar | Workbench | MobileSheet）
+        - XY.BulkOperations.Undo
+            - Value = SingleLogicalUnit
+        - XY.BulkOperations.Selection / Toolbar / InlineEditing
+            - Value = Reference XYUI-4 / XYUI-6 6.09 / 6.17
+        - XY.BulkOperations.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止静默跳过不兼容对象 / 默默对部分对象执行但不告知用户 / 删除等危险操作作为高亮默认动作
+        - 禁止 Bulk Bar 变成几十个按钮 / 清除选择误执行数据修改 / 动作保留过期影响范围 / 撤销 24 次才能恢复一次批量操作
+
+- 6.19 · Collection State / 集合状态
+    - 控件定位
+        - 类型
+            - Data Collection Component / 数据集合组件
+        - 层级
+            - 数据层（NEW；集合状态语义层）
+        - 主要用途
+            - 定义 List、Table、Data Grid、Hierarchy、Asset Grid 等集合组件在非正常数据状态下的统一表达方式；负责 Empty、Loading、Partial Failure、Full Failure、Unavailable 等状态；不得把所有状态统一显示为「暂无数据」
+        - 与 XYUI-4 边界：视觉承载（EmptyState/LoadingIndicator/Skeleton/InlineFeedback）= REF XYUI-4；本项拥有状态语义（原因/影响范围/恢复路径）
+    - Ownership
+        - Inherits：XYUI-4 EmptyState（4.20 视觉承载，仅用于真正 Initial Empty）/ LoadingIndicator / Skeleton / InlineFeedback；6.14（FilteredEmpty 摘要）
+        - Owns：13 态语义模型（Ready/InitialEmpty/FilteredEmpty/SearchEmpty/Loading/IncrementalLoading/PartialFailure/FullFailure/PermissionBlocked/Unavailable/Offline/Stale/Disabled）；状态层级（Item/Group/Collection/Page）；诊断结构（Cause/Impact/Recovery）
+        - Must Not Redefine：Loading 视觉（REF XYUI-4）/ 状态颜色（REF XY.Semantic.* + XYUI-4）/ Toast（只适合瞬时结果反馈，不得作为持续 Collection State 的唯一载体）
+    - 最终方案
+        - 方案4 State Diagnostic System 为完整状态模型；方案3 Inline Operational State 为核心日常原则（局部问题优先局部表达）；方案2 Contextual State 负责 Empty 与当前上下文解释；方案1 Simple Center State 仅用于真正 Initial Empty
+    - 核心原则
+        - Cause Visible（说明发生了什么）/ Impact Visible（说明影响范围）/ Actionable（尽可能提供直接恢复或下一步动作）
+        - Local Failure First：局部错误不得升级成全局错误页
+        - Context Preserve：只要现有内容仍然可用，不得为了 Loading 或 Partial Error 清空现有 Collection
+        - Truthful State：Empty、Loading、Error、Filtered Empty 等必须语义分离
+    - 状态模型（13 态语义）
+        - Ready / InitialEmpty（集合真实为空，尚未创建任何对象）/ FilteredEmpty（原始集合存在数据，当前 Filter 导致 0 Result）/ SearchEmpty（搜索关键词无匹配）/ Loading（首次加载，当前尚无可用数据）/ IncrementalLoading（部分数据已可用，剩余仍在加载）/ PartialFailure（部分对象或能力失败，其他内容仍可使用）/ FullFailure（整个 Collection 无法提供核心功能）/ PermissionBlocked（数据存在但当前用户无权限）/ Unavailable（资源或服务暂不可用）/ Offline（依赖连接不可用）/ Stale（当前数据可能已过期）/ Disabled（集合因业务条件暂时不可用）
+    - Empty 语义细分
+        - Initial Empty：居中 Empty State（REF 4.20）+ 轻量 Illustration/Icon + 明确说明为什么为空 + 最直接 Primary Action（「还没有道路」「创建第一条道路开始编辑地图」「新建道路」）；不得显示无意义「暂无数据」
+        - Filtered Empty：说明当前筛选无结果 + 显示当前 Filter 摘要 + 原始集合数量（原始集合共有 128 个对象）+ Clear Filter（Primary）/Modify Filter（Secondary）；不得暗示原数据被删除
+        - Search Empty：显示当前搜索词（没有找到「洛阳城墙」）+ Clear Search/修改搜索词；可与 Filtered Empty 组合
+    - Loading 语义细分
+        - 首次加载可用 Skeleton/Loading State；数据已存在时禁止清空现有内容重新显示整屏 Loading（转 IncrementalLoading）
+        - Loading 必须区分：正在获取数据/正在处理数据/等待外部资源
+        - Incremental Loading：已有数据继续可用；在 Header/Toolbar 或列表末端显示 Loading（已加载 128/420，继续加载...）；新数据逐步补充；不得阻塞现有操作
+    - Partial / Full Failure
+        - Partial Failure：错误在哪里就在哪里表达（3 个缩略图加载失败/2 个对象引用缺失/某个 Group 加载失败）；正常对象继续显示；失败对象直接标识；集合顶部可显示总体摘要；提供 Retry Failed/Show Errors/Open Log；不得把整个 Collection 替换成 Error Page
+        - Full Failure：只有核心集合功能完全不可用时使用；必须显示 What Happened/Cause/Impact/Optional Last Successful State/Recovery Action（地图对象无法加载 → 原因 map.json 无法读取 → 影响对象列表与编辑暂不可用 → 上次成功 14:32 → Retry/Open Log/Repair/Locate File）；不得只显示 Error Code
+    - Permission / Unavailable / Offline / Stale
+        - Permission Blocked：显示无法访问的原因与当前可做什么（你可以查看但不能修改/当前目录无写入权限）；只禁用真正受限功能；可读数据仍应继续展示
+        - Unavailable/Offline：有缓存数据继续展示缓存并明确显示 Stale/Offline；无数据显示 Unavailable State；提供 Retry/Reconnect/Use Cached Data（视业务支持）
+        - Stale：显示当前数据仍可查看 + 明确指出可能已过期（数据最后更新于 14:32）+ Refresh；不得把 Stale 当成 Full Failure
+    - 状态诊断结构 / 位置 / 层级
+        - StateTitle（发生了什么）+ Cause（为什么）+ Impact（影响什么）+ Context（相关条件或范围）+ Recovery（下一步怎么处理）+ Details（日志/错误详情/低频信息）
+        - Inline（对象级/Group 级错误/局部 Loading）/ Banner（集合级 Partial Failure/Offline/Stale）/ Content State（Initial/Filtered/Search Empty/Full Failure）/ Toast（仅瞬时结果反馈）
+        - Item Level → Group Level → Collection Level → Page Level；错误必须尽可能停留在最低有效层级，不得无理由逐级升级
+    - 结果数量 / 恢复操作
+        - Ready = 当前 Count；Filtered = Result/Total（6/128）；IncrementalLoading = Loaded/Expected（如能确定）；PartialFailure 可显示 Success/Failed
+        - Retry/ClearFilter/ClearSearch/Create/OpenLog/Locate/Refresh 必须针对真实原因，不得所有状态统一给一个「刷新」
+    - 响应式 / 性能 / 可访问性
+        - Wide 完整 Cause+Impact+Recovery；Medium 保留关键诊断信息；Narrow = Title+Core Cause+Primary Action；Mobile 复杂详情允许展开；不得为了省空间只显示一个 Error Icon
+        - PartialFailure 不触发整个集合重建；IncrementalLoading 只追加或局部更新；状态变化尽可能局部刷新（REF 6.20）
+        - Loading 可感知；Error 与影响范围可感知；Recovery Action 具有明确名称；不能只使用颜色区别状态
+    - Canonical Token
+        - XY.CollectionState.State
+            - Type = COMPONENT_SPECIFIC（Ready|InitialEmpty|FilteredEmpty|SearchEmpty|Loading|IncrementalLoading|PartialFailure|FullFailure|PermissionBlocked|Unavailable|Offline|Stale|Disabled）
+        - XY.CollectionState.Scope
+            - Type = COMPONENT_SPECIFIC（Item | Group | Collection | Page）
+        - XY.CollectionState.Presentation
+            - Type = COMPONENT_SPECIFIC（Inline | Banner | ContentState）
+        - XY.CollectionState.Diagnostic
+            - Type = COMPONENT_SPECIFIC（Cause | Impact | Context | Recovery）
+        - XY.CollectionState.RecoveryAction
+            - Value = ContextAware（不得所有状态统一「刷新」）
+        - XY.CollectionState.Visual
+            - Value = Reference XYUI-4 EmptyState / LoadingIndicator / Skeleton / InlineFeedback
+        - XY.CollectionState.Filtering / Feedback / Virtualization
+            - Value = Reference XYUI-6 6.14 / XYUI-4 / 6.20
+        - XY.CollectionState.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止把所有状态统一显示为「暂无数据」/ 局部错误升级成全局错误页 / 已有可用数据时因 Loading 或 Partial Error 清空集合
+        - 禁止 Stale 当成 Full Failure / 只显示 Error Code / 所有状态统一「刷新」/ 只显示一个 Error Icon
+
+- 6.20 · Virtualized Collection / 虚拟化大数据集合
+    - 控件定位
+        - 类型
+            - Data Collection Component / 数据集合组件
+        - 层级
+            - 数据层（NEW；集合底层数据层虚拟化合同）
+        - 主要用途
+            - 用于 List、Table、Data Grid、Hierarchy、Asset Grid、Log、Event Stream 等超大数据集合；解决大量 Row、Cell、Item 同时实例化导致的性能与内存问题
+        - 与 XYUI-5 边界：布局机制（Viewport/Overscan/Recycling/SizeCache/ScrollAnchor）= REF XYUI-5 5.14 VirtualizedLayout；本项拥有数据层合同（Stable Identity/Anchor 语义/状态持久化/流式/增量/总量表达）
+    - Ownership
+        - Inherits：XYUI-5 VirtualizedLayout（机制）；XYUI-4 Selection 状态；6.03/6.13/6.14/6.15/6.16/6.18/6.19 语义 REF
+        - Owns：Stable Identity 要求；Anchor（Identity + ViewportOffset）；Selection/Expansion/Editing/ActiveCell 持久化合同；Range Awareness；Jump To；Progressive Loading；Streaming/Follow Mode；TotalCount（Known/Estimated/Unknown）表达
+        - Must Not Redefine：虚拟化布局机制（REF 5.14；不建立 DataVirtualizationEngine 第二套布局基础设施）/ Scrollbar（REF Foundation）/ Selection 视觉（REF XYUI-4）
+    - 最终方案
+        - 方案4 Professional Virtual Data View 为总体机制（动态高度、展开、分组、树结构、选择、跳转与增量数据）；吸收方案1 Invisible Virtualization（正常状态下对用户透明）；方案2 Range Awareness（仅超大集合快速滚动或定位时显示）；方案3 Progressive Loading（数据源未完全加载时持续增量加载）
+    - 核心原则
+        - Invisible By Default：用户看到的是普通 Collection，不要求理解 Virtualization、Page、Chunk 等技术概念
+        - Stable Context：当前阅读位置/选择/展开状态/Active Cell 必须稳定
+        - Identity Based：状态必须基于对象稳定 Identity，不得基于当前复用出来的 Visual Row
+        - Incremental / Local Update：只渲染和更新必要范围；已有数据继续可用；不得因为一条变化重建整个 Collection
+    - 对象身份 / 状态持久化
+        - 必须有 Stable Identity（EntityId/ResourceId/RowKey）；Selection/Expanded/Active/Editing 状态全部绑定 Identity，不得绑定 Visual Index
+        - Selection Stability：对象滚出 Viewport 后 Selection 仍保留，滚回后正确恢复 Selected Visual State；多选集合不得因 Row Recycling 丢失（REF XYUI-4）
+        - Active Cell Stability：使用 Row Identity + Column Identity，不得使用当前视觉行号作为唯一状态（REF 6.03）
+        - Expandable Row：展开状态与 Identity 绑定；展开后高度变化必须重新计算布局；其他可见对象不得无故跳动（REF 6.16）
+    - Variable Height / Stable Anchor
+        - 必须支持 Rich Row/Expandable Row/Group Header/多行文本/动态错误信息；允许使用高度缓存（实际高度变化后局部修正）；不得假设所有 Row 固定高度
+        - Stable Anchor = 当前稳定对象 Identity + 相对 Viewport 的 Offset；数据变化后优先保持 Anchor 对象视觉位置（用户正在查看 Entity-041268，上方新增 1000 条数据，仍尽量保持原屏幕位置）；不得单纯记录 Index
+        - Index 可用于内部优化但不得作为稳定状态唯一来源（Filtering/Sorting/Grouping/Insert/Delete/Expand/Collapse/Progressive Loading 都会改变 Index）
+    - Scroll Position / Range Awareness / Jump To
+        - 普通滚动连续自然；恢复位置优先使用 Anchor Identity + Offset；无法恢复 Anchor 时寻找最近合法位置；不得恢复到完全无关位置
+        - Range Awareness 默认不常驻；适用 10 万级 Entity/超长 Log/大型事件列表/大型数据分析结果；快速拖动滚动条时可显示当前范围/百分比/当前对象（41,268–41,294 / 100,000）；停止滚动后自动弱化或隐藏（视觉 REF XYUI-1 Caption/Badge）
+        - Jump To 允许按 ID/Name/Index/Time/业务 Key 直接跳转；跳转后目标成为新的 Stable Anchor；目标不存在时明确反馈；不得静默跳到近似对象
+    - Progressive Loading / TotalCount / Streaming
+        - Progressive Loading 适用远端数据/分页数据源/日志流/大型历史记录；已有数据保持可用；加载下一批显示局部 Loading（不得清空现有 Collection）；失败只标记对应范围或批次（REF 6.19 Partial Failure）
+        - TotalCount 表达必须与真实数据状态一致：Known（100,000）/ Estimated（约 100,000）/ Unknown（12,000+）；不得伪造精确总量
+        - Infinite/Streaming：用户正在最新位置可跟随最新数据；正在浏览旧记录不得强制跳回最新（显示 New Items Indicator「新增 128 条·跳到最新」）；Follow Mode 开启自动跟随最新项，用户主动向上滚动自动暂停 Follow，提供明确 Resume Follow；不得不断抢夺用户滚动位置
+    - Grouping / Hierarchy / Filtering / Sorting / Bulk / Editing 组合
+        - Group Header 参与虚拟化；Collapsed Group 成员不实例化；Expanded Group 仅实例化当前 Viewport 范围成员；多级 Group 使用 Tree Guide Line（REF 6.15/6.05）
+        - Tree 节点虚拟化：折叠分支成员不进入可视 Flattened Range；展开分支后增量加入；节点状态与 Identity 绑定（REF 6.05）
+        - Filtering 后重新生成逻辑结果集合；Selection 是否保留由业务规则决定；Scroll Anchor 优先恢复到仍存在的对象（REF 6.14）
+        - Sorting 改变 Index、Identity 不改变；排序后 Active/Selected 对象仍保持对象语义；必要时重新定位 Anchor（REF 6.13）
+        - 虚拟化不得限制批量选择；即使对象不在 Viewport 中仍属于 Selection Set；Select All 不等于实例化全部对象；Applicable Set 由数据层计算（REF 6.18）
+        - 编辑中的 Row 离开 Viewport 时由宿主策略决定（保持 Editing Session/自动 Commit/阻止滚出）；不得因为 Visual Recycling 静默丢失用户输入；编辑状态与数据对象 Identity 绑定（REF 6.17）
+    - Loading Placeholder / 缓存 / 错误处理
+        - 只有尚未获得数据的范围使用 Placeholder；不得用 Placeholder 替换已有真实数据；Placeholder 高度应尽量接近预期内容（减少加载完成后跳动）
+        - 允许 Measurement Cache/Thumbnail Cache/Cell Renderer Cache/Data Window Cache；缓存失效必须与 Data Identity 和版本绑定；不得显示错误对象的旧缓存
+        - 单 Item 失败局部 Error；单批次失败 Partial Failure；整个数据源失败 Full Failure（REF 6.19）；不得因为局部数据失败清空整个虚拟集合
+    - 空状态 / 响应式 / 可访问性
+        - 虚拟化本身不改变 Empty State（仍 REF 6.19：Filtered Empty/Search Empty/Initial Empty 保持原语义）
+        - Desktop 完整虚拟化能力（Range Awareness/Jump To 可选）；Mobile 同样虚拟化（Overscan 与缓存策略可调整，不因移动端改为真正渲染全部 Item）；低性能设备允许降低 Preview 质量/减少 Overscan（不得降低状态正确性）
+        - 虚拟化不得让辅助技术误以为集合只有当前可视十几项；需要提供正确 Collection Size/Position 语义；总量未知不得伪造精确总数；键盘导航必须能够穿越虚拟边界
+    - Canonical Token
+        - XY.VirtualCollection.Mode
+            - Type = COMPONENT_SPECIFIC（Standard | Progressive | Streaming）
+        - XY.VirtualCollection.ItemSize
+            - Type = COMPONENT_SPECIFIC（Fixed | Variable）
+        - XY.VirtualCollection.Overscan
+            - Value = Reference XYUI-5 VirtualizedLayout（Adaptive）
+        - XY.VirtualCollection.Identity
+            - Value = Required（Stable Identity；SelectionPersistence/ExpansionPersistence/ActiveCellPersistence = IdentityBased）
+        - XY.VirtualCollection.Anchor
+            - Type = COMPONENT_SPECIFIC（Identity + Offset）
+        - XY.VirtualCollection.RangeAwareness
+            - Type = COMPONENT_SPECIFIC（Off | Auto | Always）
+        - XY.VirtualCollection.JumpTo
+            - Type = COMPONENT_SPECIFIC（Optional）
+        - XY.VirtualCollection.ProgressiveLoading
+            - Type = COMPONENT_SPECIFIC（Optional）
+        - XY.VirtualCollection.FollowMode
+            - Type = COMPONENT_SPECIFIC（Optional；Resume Follow 明确提供）
+        - XY.VirtualCollection.TotalCount
+            - Type = COMPONENT_SPECIFIC（Known | Estimated | Unknown；不得伪造精确总量）
+        - XY.VirtualCollection.Mechanics
+            - Value = Reference XYUI-5 VirtualizedLayout（Viewport/Overscan/Recycling/SizeCache；不建第二套布局基础设施）
+        - XY.VirtualCollection.CollectionState / ExpandableRow / Grouping / Filtering / Sorting / BulkOperations
+            - Value = Reference XYUI-6 6.19 / 6.16 / 6.15 / 6.14 / 6.13 / 6.18
+        - XY.VirtualCollection.Unit
+            - Value = DIP via XYUI-0
+    - 禁止事项
+        - 禁止建立 DataVirtualizationEngine 第二套布局基础设施（机制 REF 5.14）/ 状态绑定 Visual Index 或 Visual Row 实例
+        - 禁止 Row Recycling 丢失 Selection/Expansion/Editing/Active Cell / 一条变化重建整个 Collection / 滚动时全集合 O(N) 扫描
+        - 禁止新数据/动态高度/展开变化无故破坏当前阅读位置 / 伪造精确总量 / 缓存显示错误对象的旧缓存 / 局部数据失败清空整个虚拟集合

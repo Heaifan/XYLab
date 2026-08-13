@@ -1,0 +1,38 @@
+{
+  "phase": "XYUI-PILOT-R4-FAST-CLOSE",
+  "gap_count": 4,
+  "gaps": [
+    {
+      "gap_id": "XYUI4-GAP-001",
+      "type": "MISSING_TOKEN",
+      "item": "CONTRAST_SEPARATION_FOREGROUND",
+      "detail": "4.09 SelectionOutline 的 Separation Stroke（浅色分离描边，原稿 #F8FAFB）。Foundation 无 Contrast/SeparationForeground Token。与 XYUI3-GAP-001（COMPONENT_SPECIFIC_CONTRAST_FOREGROUND）同家族。本版不伪造 Canonical Token，由后续 Token Source 阶段登记并裁决。",
+      "occurrences": 1,
+      "blocking": false
+    },
+    {
+      "gap_id": "XYUI4-GAP-002",
+      "type": "MISSING_TOKEN",
+      "item": "FOCUS_RING_OFFSET",
+      "detail": "4.04 Focus in Selection Context 的 Outer Ring Offset（原稿 2–3 DIP）。Foundation Focus 无 Offset Token。本版不伪造 Canonical Token。",
+      "occurrences": 1,
+      "blocking": false
+    },
+    {
+      "gap_id": "XYUI4-GAP-003",
+      "type": "REQUIRES_DECISION",
+      "item": "MARQUEE_LASSO_FILL_OPACITY",
+      "detail": "4.07/4.08 Marquee/Lasso 的极低透明 Accent Fill（原稿 0.05–0.12）。Foundation XY.Opacity.* 六档无对应低透明 Accent Fill 档位。不得把原稿 opacity 硬编码为 canonical 真值。",
+      "occurrences": 4,
+      "blocking": false
+    },
+    {
+      "gap_id": "XYUI4-GAP-004",
+      "type": "MISSING_TOKEN",
+      "item": "CONDITIONAL_DROP_SEMANTIC",
+      "detail": "4.12 DropIndicator 的 Conditional Drop（需要转换/引用/替换/确认的放置）无 Foundation 专用 Semantic Token。原稿仅声明“使用独立语义 Token”。本版不伪造，由后续 Token Source 阶段裁决。",
+      "occurrences": 1,
+      "blocking": false
+    }
+  ]
+}

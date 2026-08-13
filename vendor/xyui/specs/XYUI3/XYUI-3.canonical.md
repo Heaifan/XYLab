@@ -1,0 +1,11079 @@
+<!--
+  XYUI-3 canonical spec · XYUI-PILOT-R3
+  Source: xyui/source/XYUI3/XYUI-3.md (immutable Evidence)
+    bytes: 338481
+    SHA-256: 4c91ba6aaf182969d5b466c631c3e584f0dbc6b31548d8ee5103e187e8957f1d
+  Canonical basis: XYUI-0 Foundation Registry (VALIDATED) + A3-R2 Canonical Token Architecture
+  规则: 组件语义保留；Foundation 重复值全部映射 canonical；#hex/px/旧字体/旧命名空间 = 0
+  GAP 标注见 xyui/specs/XYUI3/XYUI-3.gaps.json
+-->
+# XYUI-3 · Navigation / 导航与切换（按 XYUI-0 Foundation 收敛版）
+
+- 整理依据
+    - 原始组件设计
+        - XYUI-3.md
+    - 上位规范
+        - XYUI-0.md
+        - XYUI Foundation Registry
+        - A3-R2 Canonical Token Architecture
+    - 整理原则
+        - 保留 XYUI-3 已定稿的 24 个导航组件、组件职责、结构、状态模型、交互、响应式规则、Variant 与 Optional Slot
+        - XYUI-0 制定晚于 XYUI-3，因此颜色、字体、圆角、边框、Surface、Focus、Hit Target、Motion、Drag、Density、DPI 等 Foundation 规则以上位规范为准
+        - Foundation 已有语义时禁止保留早期十六进制颜色与平台字体作为第二真值
+        - 所有几何单位统一使用 DIP
+        - Canonical Border 颜色使用 XY.Border.Color.*
+        - Canonical State 颜色使用 XY.State.Color.*
+        - 同色不等于同义；Semantic Token 按组件职责映射，不按旧十六进制值粗暴合并
+        - 组件独有尺寸、结构参数与响应式阈值可继续作为 Component-Specific Token，但不得成为新的 Foundation 默认值
+        - Light / Dark 由 Foundation Semantic Token 映射，不在组件规范重复硬编码主题色
+- Foundation Reconciliation
+    - Typography
+        - UI Font = XY.Font.UI
+        - Font Size / Weight 优先引用 XY.FontSize.* / XY.FontWeight.*
+        - 旧平台字体声明不再作为组件字体来源
+    - Density
+        - XY.Density.Mode = Auto | Compact | Comfortable
+        - Toolbar 高度由 XY.Density.Compact.Toolbar / XY.Density.Comfortable.Toolbar 驱动
+        - Tree Row 高度由 XY.Density.Compact.TreeRow / XY.Density.Comfortable.TreeRow 驱动
+        - 禁止组件创建与 Foundation 冲突的第二套全局 Density
+    - Indentation
+        - Default = XY.Indent.PerLevel = 16 DIP
+        - TreeNavigation / TableOfContents 默认继承该缩进
+    - Focus
+        - Keyboard Focus Visible = Required
+        - OutlineWidth = XY.Focus.Control.OutlineWidth
+        - OutlineColor = XY.Focus.Control.OutlineColor
+        - Focus 独立于 Hover / Selected，不得以 Hover 背景代替
+        - Focus 不改变尺寸与布局
+    - State
+        - ComposeMode = XY.State.ComposeMode
+        - Disabled 最高优先级
+        - Pressed > Hover
+        - Selected = PersistentBaseState
+        - Focus 独立处理
+    - Drag
+        - Threshold = XY.Drag.Threshold = 6 DIP
+        - DropPosition = Before | Into | After
+        - Esc = Cancel
+        - Reject = Immediate
+        - CancelSideEffect = Forbidden
+        - Drag / Snap Motion = XY.Motion.Instant
+    - Overlay Host
+        - Menu / ContextMenu / SubMenu / Overflow / Flyout / CommandPalette = XY.Overlay.OverlayHost
+        - Dock Drag Preview / Drag Ghost = XY.Overlay.DragHost
+        - Modal NavigationDrawer + Backdrop = XY.Overlay.ModalHost
+        - Tooltip = XY.Overlay.TooltipHost
+        - Numeric ZIndex = Forbidden
+    - Motion
+        - Sidebar Collapse / NavigationDrawer OpenClose / Flyout Transition 使用 Foundation Motion Token
+        - 短交互优先 XY.Motion.Fast
+        - 普通状态过渡优先 XY.Motion.Normal
+        - Decorative Motion = Forbidden
+        - Reduced Motion 必须保留
+    - Hit Target
+        - Visual Size 与 Hit Target 分离
+        - Icon-only 控件最小热区继承 XY.HitTarget.Icon.Min
+        - Dock Grip / Tab Close / Tree Chevron / Toolbar Tool / Breadcrumb Segment 必须提供足够热区
+    - Accessibility
+        - Icon-only Navigation / Toolbar 必须提供 Accessible Name
+        - Selected / Modified / Error / Warning 不得只靠颜色表达
+    - Surface / Elevation
+        - Navigation Container 优先使用 XY.Surface.Panel / XY.Surface.Toolbar
+        - Menu / Popup / Flyout 使用 XY.Surface.Overlay
+        - Selected 使用 XY.Surface.Selected
+        - Popup / Menu 使用 XY.Shadow.Popup
+        - Drag Preview 使用 XY.Shadow.DragPreview
+    - Sidebar Width
+        - 标准编辑器 Left Default 继续由 XY.Resize.Left.Default / XYUI-0 Layout 负责
+        - 原 XYUI-3 约 240 DIP 的双区 Sidebar 宽度保留为 Context-Rich / Wide Variant 候选
+        - 不得覆盖 Foundation Left.Default
+- 已知待后续 Token 层补齐
+    - COMPONENT_SPECIFIC_CONTRAST_FOREGROUND [GAP:XYUI3-GAP-001]
+        - Source 中少量强调底色上的高对比前景语义
+        - XYUI-0 当前没有明确独立 OnAccent / ContrastForeground Semantic Token
+        - 本版不伪造 Canonical Token；由后续 Token Source 阶段登记并裁决
+
+- 3.01 · MenuBar / 菜单栏
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 组合组件层
+        - 主要用途
+            - 承载应用级一级菜单入口
+            - 组织全局命令分类
+            - 作为 Menu / SubMenu 的一级触发入口
+        - 典型示例
+            - 文件
+            - 编辑
+            - 视图
+            - 窗口
+            - 帮助
+            - 状态
+                - Default
+                    - 纯文字
+                    - 无背景
+                    - 无状态线
+                - Hover
+                    - 显示浅色背景
+                    - 不改变整体布局
+                - Active / Open
+                    - 文字颜色切换为 Accent Text
+                    - 文字字重略微提高
+                    - 底部显示 Accent Line
+                - Disabled
+                    - 原则上一级 MenuBar 项较少使用 Disabled
+                    - 如必须禁用
+                        - 文字使用 Disabled Text
+                        - 无 Hover
+                        - 无 Active Line
+                - Focus
+                    - 键盘导航时必须存在明确 Focus 状态
+                    - Focus 不应只依赖颜色
+                    - 必须使用 XY.Focus.Control 独立 Focus Outline
+                - Pressed
+                    - 短暂状态
+                    - 点击后直接进入 Active / Open
+    - 结构
+        - MenuBar
+            - MenuItem
+                - Label
+                - 一级菜单名称
+            - MenuItem · Hover
+                - Label
+                - 一级菜单名称
+                - Hover Background
+            - MenuItem · Active
+                - Label
+                    - 一级菜单名称
+                - Active Indicator
+                    - 底部 Accent Line
+            - Bottom Divider
+                - MenuBar 与下方内容区域分界
+    - 最终方案
+        - 方案名称
+            - 底部状态线型
+        - 方案编号
+            - 方案 2
+        - 设计方向
+            - 弱化 MenuBar 本体
+            - 强化当前一级菜单状态
+            - 保持桌面编辑器高信息密度
+            - 避免菜单项看起来像普通按钮
+        - 视觉特征
+            - 浅色背景
+            - 底部使用细分隔线
+            - 默认菜单项仅显示文字
+            - Hover 使用轻微浅色背景
+            - Active 使用文字强调 + 底部 Accent Line
+            - 不使用大面积高饱和背景
+            - 不使用明显按钮边框
+            - 菜单项保持紧凑排列
+        - 使用场景
+            - 桌面编辑器
+                - 地图编辑器
+                - 脚本编辑器
+                - 资源编辑器
+                - 调试工具
+            - 桌面应用
+                - 复杂生产力工具
+                - 多模块管理工具
+            - Web
+                - 大型 Web 应用可选择性使用
+                - 不建议直接照搬传统桌面 MenuBar
+            - Mobile
+                - 通常不使用完整 MenuBar
+                - 应转化为 NavigationDrawer / BottomNavigation / More Menu
+    - 布局规范
+        - 高度
+            - 建议基础高度 40 DIP
+        - 菜单项高度
+            - 建议 32 DIP
+        - 水平内边距
+            - 建议单项左右 10～12 DIP
+        - 菜单项间距
+            - 不额外制造大间隔
+            - 依靠自身 Padding 排列
+        - 底部分隔线
+            - 1 DIP
+        - Active Line
+            - 建议 2～3 DIP
+        - Active Line 宽度
+            - 接近菜单项文字区域宽度
+            - 不建议贯穿整个菜单项
+        - 圆角
+            - Hover 背景仅使用轻微圆角
+            - XY.Radius.Control
+        - 整体原则
+            - 紧凑
+            - 连续
+            - 不制造无意义空白
+            - 优先让内容区域获得更多空间
+    - 颜色建议
+        - MenuBar Background
+            - XY.Surface.Panel
+        - App Background
+            - XY.Surface.App
+        - Border / Divider
+            - XY.Divider.Default
+        - Default Text
+            - XY.Text.Primary
+        - Secondary Text
+            - XY.Text.Secondary
+        - Hover Background
+            - XY.State.Color.Hover
+        - Active Text
+            - XY.Accent.Strong
+        - Accent
+            - XY.Accent.Default
+        - Disabled Text
+            - XY.State.Disabled.Text
+    - 字体
+        - 桌面默认
+            - XY.Font.UI
+        - 字号
+            - 建议 13～14 DIP
+        - Default Weight
+            - XY.FontWeight.Regular
+        - Active Weight
+            - XY.FontWeight.Medium
+        - 原则
+            - 不使用过粗字体
+            - Active 主要依靠颜色与底部状态线表达
+            - 避免仅靠 Bold 区分状态
+    - 交互
+        - 鼠标
+            - Pointer Enter
+                - 进入 Hover
+            - Pointer Leave
+                - 退出 Hover
+            - Click
+                - 打开对应 Menu
+                - 进入 Active / Open
+            - 再次点击当前 Active 项
+                - 关闭 Menu
+        - 连续菜单切换
+            - 当任意一级 Menu 已展开
+                - 鼠标移入其他一级菜单项
+                - 可直接切换打开对应 Menu
+            - 无需再次完整 Click
+        - 键盘
+            - Alt
+                - 进入 MenuBar 键盘导航模式
+            - Left / Right
+                - 切换一级菜单项
+            - Enter / Down
+                - 展开当前 Menu
+            - Esc
+                - 关闭 Menu
+                - 退出当前导航层级
+        - 移动端
+            - 不直接复用桌面 MenuBar 交互
+            - 应转换为适合触控的导航结构
+    - 行为规则
+        - 同时仅允许一个一级 Menu 处于 Open
+        - Menu 打开时
+            - 对应 MenuBar Item 必须保持 Active
+        - Menu 关闭时
+            - Active Line 消失
+        - 切换一级菜单时
+            - 旧 Menu 关闭
+            - 新 Menu 打开
+            - Active 状态同步切换
+        - 点击 MenuBar 外部
+            - 关闭当前 Menu
+        - 窗口失焦
+            - 默认关闭展开 Menu
+        - 菜单状态不得影响 MenuBar 尺寸
+        - Hover / Active 不允许导致文本跳动
+    - 与其他 XYUI 控件关系
+        - MenuBar
+            - 调用
+                - Menu
+                    - 调用
+                        - SubMenu
+                        - MenuItem
+                        - Separator
+                        - ShortcutHint
+                        - Icon
+                        - Check State
+        - 依赖
+            - Text
+            - Selection State
+            - Divider
+        - 可与
+            - TitleBar
+            - Toolbar
+            - CommandBar
+        - 共同组成
+            - 桌面应用顶部导航系统
+    - 与 TitleBar 的关系
+        - 当前定稿方案
+            - MenuBar 保持独立导航语义
+            - 暂不强制与 TitleBar 合并
+        - 桌面紧凑模式
+            - 未来允许提供 Compact Variant
+            - 可将 MenuBar 嵌入 TitleBar
+        - 原则
+            - 基础组件定义不能依赖某一种窗口框架
+            - TitleBar 融合应作为布局变体
+            - 不能成为 MenuBar 唯一实现
+    - UI Tokens
+        - MenuBar.Height
+            - 40
+        - MenuBar.Item.Height
+            - 32
+        - MenuBar.Item.PaddingX
+            - 10～12
+        - MenuBar.Background
+            - XY.Surface.Panel
+        - MenuBar.Border
+            - XY.Border.Color.Default
+        - MenuBar.Text
+            - XY.Text.Primary
+        - MenuBar.Hover.Background
+            - XY.State.Color.Hover
+        - MenuBar.Active.Text
+            - XY.Accent.Strong
+        - MenuBar.Active.Accent
+            - XY.Accent.Default
+        - MenuBar.Active.LineHeight
+            - 2～3
+        - MenuBar.Disabled.Text
+            - XY.State.Disabled.Text
+        - MenuBar.Item.Radius
+            - XY.Radius.Popup
+    - UI代码
+        - MenuBar
+            - Height
+                - 40
+            - Background
+                - XY.Surface.Panel
+            - BorderBottom
+                - 1
+            - BorderColor
+                - XY.Border.Color.Default
+        - MenuItem
+            - Height
+                - 32
+            - PaddingLeft
+                - 10
+            - PaddingRight
+                - 10
+            - FontSize
+                - XY.FontSize.Body
+            - FontWeight
+                - XY.FontWeight.Regular
+            - TextColor
+                - XY.Text.Primary
+            - Background
+                - Transparent
+            - Radius
+                - XY.Radius.Control
+        - MenuItem.Hover
+            - Background
+                - XY.State.Color.Hover
+            - TextColor
+                - XY.Text.Primary
+        - MenuItem.Active
+            - FontWeight
+                - XY.FontWeight.Semibold
+            - TextColor
+                - XY.Accent.Strong
+            - Background
+                - Transparent
+            - IndicatorPosition
+                - Bottom
+            - IndicatorHeight
+                - 3
+            - IndicatorColor
+                - XY.Accent.Default
+        - MenuItem.Disabled
+            - TextColor
+                - XY.State.Disabled.Text
+            - Background
+                - Transparent
+            - PointerEnabled
+                - False
+    - 适配规则
+        - Compact
+            - 降低横向 Padding
+            - 保持状态线和文字可辨识
+            - 不建议压缩到低于可点击最小尺寸
+        - Comfortable
+            - 增加少量水平 Padding
+            - 不增加无意义纵向高度
+        - Desktop
+            - 完整支持鼠标 + 键盘
+        - Web
+            - 允许保留同视觉语言
+            - 根据浏览器导航习惯调整
+        - Mobile
+            - 不直接使用完整 MenuBar
+            - 切换为移动导航组件
+    - 禁止项
+        - 禁止将每个菜单项做成明显独立按钮
+        - 禁止大量圆角胶囊
+        - 禁止 Active 使用高饱和大色块
+        - 禁止 Hover 导致尺寸变化
+        - 禁止一级菜单之间存在过大空隙
+        - 禁止仅依赖颜色表达键盘 Focus
+        - 禁止把 MenuBar 和 Toolbar 的视觉层级做成完全一致
+        - 禁止为了装饰增加无功能图标
+        - 禁止在桌面高信息密度场景留下大面积顶部空白
+    - 最终结论
+        - 采用方案
+            - 方案 2 · 底部状态线型
+        - 核心视觉语言
+            - 文字主导
+            - 轻 Hover
+            - Accent Line 表达 Active
+            - 浅色
+            - 紧凑
+            - 低干扰
+        - 适合作为
+            - XYUI 桌面应用标准 MenuBar
+            - 玄域引擎编辑器一级菜单基准
+        - 后续衔接
+            - 3.02 · Menu
+    
+- 3.02 · Menu / 菜单
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 组合组件层
+        - 主要用途
+            - 承载一组相关命令
+            - 作为 MenuBar / ContextMenu / SubMenu 等组件的命令容器
+            - 通过结构化分组帮助用户快速定位操作
+        - 典型内容
+            - 普通命令
+            - 带图标命令
+            - 快捷键提示
+            - 勾选状态
+            - 禁用状态
+            - 分隔线
+            - 子菜单入口
+    - 使用场景
+        - 应用顶部菜单
+            - 文件
+            - 编辑
+            - 视图
+            - 窗口
+            - 帮助
+        - 编辑器
+            - 资源管理
+            - 地图管理
+            - 对象管理
+            - 项目设置
+        - Web
+            - 复杂生产力应用
+            - 桌面式 Web 工具
+        - Mobile
+            - 不直接照搬桌面 Menu
+            - 根据触控场景转换为大尺寸菜单或 Action Sheet
+    - 最终方案
+        - 方案名称
+            - 标准桌面菜单型
+        - 方案编号
+            - 方案 1
+        - 设计方向
+            - 遵循成熟桌面编辑器菜单逻辑
+            - 强化命令信息层级
+            - 保持高信息密度
+            - 避免卡片化
+            - 避免网页下拉框感
+        - 视觉特征
+            - 浅色悬浮面板
+            - 轻量边框
+            - 轻微圆角
+            - 紧凑行高
+            - Hover 使用浅蓝背景
+            - 快捷键右对齐
+            - 子菜单箭头最右对齐
+            - 分隔线明确划分命令组
+            - Disabled 使用低对比度文字
+    - 结构
+        - Menu
+            - MenuItem
+                - Leading Area
+                    - Icon
+                    - Check State
+                    - Radio State
+                - Label
+                    - 命令名称
+                - Trailing Area
+                    - ShortcutHint
+                    - SubMenu Indicator
+            - Separator
+            - Disabled MenuItem
+            - Checked MenuItem
+            - SubMenu Trigger
+    - 信息布局
+        - 左侧区域
+            - 图标
+            - 勾选状态
+            - 单选状态
+        - 中央区域
+            - 主命令文字
+        - 右侧区域
+            - 快捷键提示
+            - 子菜单箭头
+        - 原则
+            - 所有列应纵向对齐
+            - 禁止每一行内容左右漂移
+            - 快捷键不得紧贴命令文字
+            - 子菜单箭头保持固定最右位置
+    - 状态
+        - Default
+            - 透明行背景
+            - 正常文字颜色
+        - Hover
+            - 浅蓝色背景
+            - 命令文字允许略微强调
+        - Pressed
+            - 短暂按压反馈
+            - 执行后关闭 Menu
+        - Open
+            - 用于包含 SubMenu 的项目
+            - 对应项目保持 Hover / Active 视觉
+        - Checked
+            - 左侧显示 Check Mark
+            - 主文字保持正常
+        - Radio Selected
+            - 左侧显示 Radio 状态
+        - Disabled
+            - 文字降低对比度
+            - 快捷键降低对比度
+            - 禁止 Hover 强调
+            - 禁止执行
+        - Focus
+            - 键盘导航必须有明确焦点
+            - 必须使用 XY.Focus.Control 独立 Outline，不得以 Hover 背景代替
+            - 不得仅靠鼠标 Hover
+    - 布局规范
+        - Menu 最小宽度
+            - 建议 180～220 DIP
+        - Menu 最大宽度
+            - 由内容决定
+            - 超长命令文字不得无限撑宽
+        - MenuItem 高度
+            - 建议 28～32 DIP
+        - 水平内边距
+            - 建议 10～12 DIP
+        - Leading Area
+            - 建议预留 20～24 DIP
+        - Trailing Area
+            - 按快捷键与箭头内容动态计算
+        - Separator 高度
+            - 建议 9～12 DIP 占位
+        - Separator Line
+            - 1 DIP
+        - Menu Radius
+            - XY.Radius.Popup
+        - Menu Border
+            - 1 DIP
+        - 整体原则
+            - 高密度
+            - 容易扫描
+            - 稳定对齐
+            - 不制造卡片间隙
+    - 颜色建议
+        - Menu Background
+            - XY.Surface.Overlay
+        - Menu Border
+            - XY.Border.Color.Default
+        - Menu Text
+            - XY.Text.Primary
+        - Secondary Text
+            - XY.Text.Secondary
+        - Hover Background
+            - XY.State.Color.Hover
+        - Hover Text
+            - XY.Accent.Strong
+        - Separator
+            - XY.Divider.Default
+        - Check / Accent
+            - XY.Accent.Default
+        - Disabled Text
+            - XY.State.Disabled.Text
+- 3.03 · ContextMenu / 上下文菜单
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 组合组件层
+        - 主要用途
+            - 针对当前对象或当前区域提供就地操作
+            - 通过右键 / 长按触发
+            - 根据当前上下文动态生成相关命令
+        - 核心语义
+            - 我现在对这个对象能做什么
+        - 与 Menu 的区别
+            - Menu
+                - 按命令分类寻找操作
+            - ContextMenu
+                - 围绕当前对象提供操作
+    - 使用场景
+        - 地图对象
+            - 区域
+            - 道路
+            - 城镇
+            - 资源
+            - 标记
+        - 数据结构
+            - Dataset
+            - Layer
+            - Node
+            - Entity
+        - 编辑器
+            - Hierarchy 节点
+            - 资源项
+            - Dock Tab
+            - Viewport 对象
+            - 列表行
+            - 树节点
+        - Web
+            - 桌面式 Web 编辑器
+        - Mobile
+            - 长按触发
+            - 必要时转换为触控友好的 Action Menu
+    - 最终方案
+        - 方案名称
+            - 对象标题型
+        - 方案编号
+            - 方案 2
+        - 设计方向
+            - 在菜单顶部明确显示当前操作对象
+            - 强化上下文辨识
+            - 避免用户误操作相似对象
+            - 保持标准桌面菜单主体结构
+        - 视觉特征
+            - 顶部存在轻量 Context Header
+            - Header 使用弱背景区分
+            - 显示对象类型 + 对象名称
+            - 命令区继续采用标准 Menu 视觉语言
+            - 危险操作位于底部独立分组
+            - 整体保持浅色、紧凑、专业编辑器风格
+    - 结构
+        - ContextMenu
+            - ContextHeader
+                - ContextType
+                    - 当前对象类型
+                - ContextName
+                    - 当前对象名称
+            - Separator
+            - MenuItem
+                - Leading Area
+                    - Icon
+                    - Check State
+                - Label
+                - 命令名称
+                - Trailing Area
+                    - ShortcutHint
+                    - SubMenu Indicator
+            - Separator
+            - Danger Zone
+                - Destructive MenuItem
+    - Context Header
+        - 第一行
+            - 辅助信息
+            - 例
+                - 当前对象
+                - 区域
+                - 道路
+                - 数据集
+        - 第二行
+            - 主要对象名称
+            - 例
+                - 区域 · 广州
+                - 道路 · G105
+                - 数据集 · 行政区
+        - 原则
+            - 对象名称优先
+            - 对象类型作为辅助信息
+            - 不显示无意义内部数据
+            - 默认不显示 UUID
+            - 禁止 Header 变成复杂信息卡片
+    - 状态
+        - Default
+            - 标准菜单项
+        - Hover
+            - 浅蓝背景
+        - Pressed
+            - 短暂按压反馈
+        - Focus
+            - 键盘导航焦点
+        - Checked
+            - 左侧显示 Check
+        - Disabled
+            - 降低对比度
+            - 不可交互
+        - SubMenu Open
+            - 当前项保持激活状态
+        - Destructive
+            - 危险文字使用弱警示色
+            - 保持低饱和
+            - 禁止高饱和红色大面积背景
+    - 布局规范
+        - ContextMenu 最小宽度
+            - 建议 220～240 DIP
+        - ContextHeader 高度
+            - 建议 40～44 DIP
+        - ContextHeader Padding
+            - 左右约 14～16 DIP
+        - MenuItem 高度
+            - 建议 28～32 DIP
+        - 分隔线
+            - 1 DIP
+        - 整体圆角
+            - 4～6 DIP
+        - 整体原则
+            - 紧凑
+            - 信息清晰
+            - 避免纵向过度膨胀
+            - Context Header 只承担识别对象职责
+    - 颜色建议
+        - ContextMenu Background
+            - XY.Surface.Overlay
+        - ContextHeader Background
+            - XY.Surface.Overlay
+        - Border
+            - XY.Border.Color.Default
+        - Primary Text
+            - XY.Text.Primary
+        - Secondary Text
+            - XY.Text.Secondary
+        - Hover Background
+            - XY.State.Color.Hover
+        - Hover Text
+            - XY.Accent.Strong
+        - Accent
+            - XY.Accent.Default
+        - Disabled Text
+            - XY.State.Disabled.Text
+        - Danger Text
+            - 低饱和暗红
+            - 建议约 XY.Semantic.Error.Text
+    - 字体
+        - ContextType
+            - 字号
+                - XY.FontSize.Caption
+            - 字重
+                - XY.FontWeight.Regular
+            - 颜色
+                - Secondary Text
+        - ContextName
+            - 字号
+                - XY.FontSize.Auxiliary
+            - 字重
+                - XY.FontWeight.Medium
+        - MenuItem
+            - 字号
+                - XY.FontSize.Auxiliary
+            - 字重
+                - XY.FontWeight.Regular
+        - Shortcut
+            - 字号
+                - XY.FontSize.Auxiliary
+            - 颜色
+                - Secondary Text
+    - 交互
+        - 鼠标
+            - Right Click
+                - 打开 ContextMenu
+            - Pointer Enter
+                - Hover MenuItem
+            - Click
+                - 执行命令
+            - Click Outside
+                - 关闭 ContextMenu
+        - 键盘
+            - Up / Down
+                - 切换 MenuItem
+            - Enter
+                - 执行命令
+            - Right
+                - 进入 SubMenu
+            - Left
+                - 返回上一级
+            - Esc
+                - 关闭 ContextMenu
+        - 触控
+            - Long Press
+                - 打开 ContextMenu
+            - 移动端必要时扩大 Item 高度
+    - 打开规则
+        - ContextMenu 必须与当前对象绑定
+        - 打开时记录 Context Target
+        - Context Header 必须反映当前 Target
+        - Context Target 改变后
+            - 旧菜单必须失效或关闭
+        - 禁止菜单打开后继续错误作用于旧对象
+        - 多选对象时
+            - Header 显示
+                - 已选择 N 项
+            - 只显示所有选中对象共同支持的命令
+    - 定位规则
+        - 优先出现在右键位置附近
+        - 不得遮挡关键对象信息超过必要范围
+        - 不得超出窗口边界
+        - 右侧空间不足
+            - 向左偏移
+        - 底部空间不足
+            - 向上偏移
+        - SubMenu
+            - 优先向右
+            - 不足时向左
+    - 命令排序
+        - 第一组
+            - 当前对象最高频操作
+            - 例
+                - 编辑
+                - 打开
+                - 定位
+        - 第二组
+            - 编辑操作
+            - 例
+                - 重命名
+                - 复制
+                - 创建副本
+        - 第三组
+            - 状态 / 组织
+            - 例
+                - 可见
+                - 锁定
+                - 移动到
+        - 最后一组
+            - 危险操作
+            - 例
+                - 删除
+                - 移除
+                - 清空
+    - 危险操作
+        - 必须独立分组
+        - 建议位于菜单底部
+        - 文字可使用低饱和警示色
+        - 禁止使用整行鲜红背景作为默认状态
+        - 高风险不可逆操作
+            - 执行后可进入二次确认
+        - 可撤销操作
+            - 优先依赖 Undo 系统而非频繁弹窗
+    - 数据建议
+        - ContextMenu
+            - ContextType
+            - ContextId
+            - ContextName
+            - Items
+        - MenuItem
+            - Id
+            - Label
+            - Command
+            - Shortcut
+            - IsEnabled
+            - IsChecked
+            - IsDestructive
+            - SubMenu
+        - 原则
+            - Context 数据与视觉组件分离
+            - ContextMenu 不保存业务对象本身
+            - 通过稳定 ID / Command Context 传递业务目标
+    - 与其他 XYUI 控件关系
+        - ContextMenu
+            - 复用
+                - MenuItem
+                - ShortcutHint
+                - Check State
+                - Separator
+                - SubMenu
+        - 依赖
+            - Text
+            - Selection State
+            - Divider
+        - 可作用于
+            - TreeNavigation
+            - Tabs
+            - DockTabs
+            - Sidebar
+            - Toolbar
+            - Viewport
+            - List
+            - Table
+    - UI Tokens
+        - ContextMenu.MinWidth
+            - 230
+        - ContextMenu.Radius
+            - XY.Radius.Popup
+        - ContextMenu.BorderWidth
+            - XY.Border.Width.Default
+        - ContextMenu.Header.Height
+            - 42
+        - ContextMenu.Item.Height
+            - 30
+        - ContextMenu.Background
+            - XY.Surface.Overlay
+        - ContextMenu.Header.Background
+            - XY.Surface.Overlay
+        - ContextMenu.Border
+            - XY.Border.Color.Default
+        - ContextMenu.Text
+            - XY.Text.Primary
+        - ContextMenu.SecondaryText
+            - XY.Text.Secondary
+        - ContextMenu.Hover.Background
+            - XY.State.Color.Hover
+        - ContextMenu.Hover.Text
+            - XY.Accent.Strong
+        - ContextMenu.Danger.Text
+            - XY.Semantic.Error.Text
+    - UI代码
+        - ContextMenu
+            - MinWidth
+                - 230
+            - Background
+                - XY.Surface.Overlay
+            - BorderWidth
+                - XY.Border.Width.Default
+            - BorderColor
+                - XY.Border.Color.Default
+            - CornerRadius
+                - XY.Radius.Popup
+        - ContextHeader
+            - Height
+                - 42
+            - Background
+                - XY.Surface.Overlay
+            - PaddingLeft
+                - 14
+            - PaddingRight
+                - 14
+        - ContextHeader.Type
+            - FontSize
+                - XY.FontSize.Caption
+            - TextColor
+                - XY.Text.Secondary
+        - ContextHeader.Name
+            - FontSize
+                - XY.FontSize.Auxiliary
+            - FontWeight
+                - XY.FontWeight.Semibold
+            - TextColor
+                - XY.Text.Primary
+        - ContextMenuItem
+            - Height
+                - 30
+            - PaddingLeft
+                - 14
+            - PaddingRight
+                - 14
+            - FontSize
+                - XY.FontSize.Auxiliary
+            - TextColor
+                - XY.Text.Primary
+        - ContextMenuItem.Hover
+            - Background
+                - XY.State.Color.Hover
+            - TextColor
+                - XY.Accent.Strong
+        - ContextMenuItem.Disabled
+            - TextColor
+                - XY.State.Disabled.Text
+            - PointerEnabled
+                - False
+        - ContextMenuItem.Destructive
+            - TextColor
+                - XY.Semantic.Error.Text
+    - 适配规则
+        - Desktop
+            - 右键触发
+            - 标准紧凑布局
+        - Web
+            - 允许复用
+            - 需避免与浏览器默认右键菜单冲突
+        - Mobile
+            - 长按触发
+            - 扩大热区
+            - 必要时转换为 Action Sheet
+        - Compact
+            - 缩小 Item 高度
+            - Header 不低于基本可读高度
+        - Comfortable
+            - 适度增加 Item 高度
+    - 禁止项
+        - 禁止 Header 展示过量对象属性
+        - 禁止 Header 变成 Inspector
+        - 禁止默认显示 UUID 等内部 ID
+        - 禁止 ContextMenu 与 Context Target 脱节
+        - 禁止危险命令混入普通高频命令组
+        - 禁止使用大面积鲜红警告背景
+        - 禁止每个命令都强制使用图标
+        - 禁止菜单因 Hover 发生尺寸变化
+        - 禁止右键后弹出与对象无关的大量命令
+    - 最终结论
+        - 采用方案
+            - 方案 2 · 对象标题型
+        - 核心视觉语言
+            - 明确当前对象
+            - 标准菜单主体
+            - 浅色
+            - 紧凑
+            - 低干扰
+            - 危险操作独立分组
+        - 适合作为
+            - XYUI 标准 ContextMenu
+            - 玄域编辑器对象右键菜单规范
+        - 后续衔接
+            - 3.04 · SubMenu
+    
+- 3.04 · SubMenu / 子菜单
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 组合组件层
+        - 主要用途
+            - 承载 Menu 内部的下一层命令
+            - 表达命令层级关系
+            - 避免一级 Menu 中塞入过多命令
+            - 支持二级及必要的三级菜单
+        - 核心语义
+            - 当前命令项还有下一层可选内容
+        - 典型示例
+            - 导出
+                - 导出地图数据
+                - 导出图片
+                - 导出配置
+            - 窗口
+                - 布局
+                    - 默认布局
+                    - 地图布局
+                    - 脚本布局
+    - 使用场景
+        - Menu
+            - 一级菜单内部展开
+        - ContextMenu
+            - 对象操作继续细分
+        - 编辑器
+            - 导入 / 导出
+            - 创建对象
+            - 布局选择
+            - 视图模式
+            - 排序方式
+            - 对象移动
+        - Web
+            - 复杂生产力工具
+        - Mobile
+            - 不建议直接复用桌面侧向展开
+            - 应根据窄屏转换为内嵌或页面级导航
+    - 最终方案
+        - 方案名称
+            - 层级连接型
+        - 方案编号
+            - 方案 2
+        - 设计方向
+            - 保留经典侧向 SubMenu 行为
+            - 通过轻量连接关系强化父子层级
+            - 提升多级菜单的视觉可追踪性
+            - 避免过度装饰
+        - 视觉特征
+            - 父菜单项保持 Active / Hover 状态
+            - 右侧显示 SubMenu Indicator
+            - 子菜单从父项侧边展开
+            - 父项与子菜单之间存在轻量连接线
+            - 连接点可使用 Accent 小圆点
+            - 子菜单仍采用标准 Menu 面板样式
+    - 结构
+        - Parent Menu
+            - MenuItem · SubMenu Trigger
+                - Label
+                - 父级命令名称
+                - SubMenu Indicator
+                    - 右箭头
+                - Active State
+                    - 浅蓝背景
+            - Connector
+                - Connector Line
+                - 短水平连接线
+                - Anchor Dot
+                    - 轻量 Accent 标记
+            - SubMenu Panel
+                - MenuItem
+                - 普通命令
+                - 快捷键
+                - 状态
+                - 下一层 SubMenu Indicator
+    - 父级状态
+        - Default
+            - 正常菜单项
+            - 显示右侧 SubMenu Indicator
+        - Hover
+            - 进入浅色 Hover
+        - SubMenu Open
+            - 父项保持 Active
+            - 父项不得因鼠标进入子菜单而失去状态
+        - Focus
+            - 键盘导航时保持当前父项可识别
+        - Disabled
+            - 不允许展开 SubMenu
+            - Indicator 同步弱化
+    - 子菜单状态
+        - Closed
+            - 不显示子面板
+        - Opening
+            - 根据 Hover / Keyboard 打开
+        - Open
+            - 保持父项 Active
+        - Switching
+            - 移动到其他带 SubMenu 项时
+                - 旧子菜单关闭
+                - 新子菜单打开
+        - Closing
+            - 离开有效导航区域后关闭
+    - 层级连接
+        - Connector Line
+            - 目的
+                - 明确子菜单来源
+                - 降低多层菜单的视觉歧义
+            - 长度
+                - 建议 12～18 DIP
+            - 粗细
+                - 1～2 DIP
+            - 颜色
+                - 低饱和 Border / Accent 混合色
+        - Anchor Dot
+            - 尺寸
+                - 约 4～6 DIP
+            - 颜色
+                - Accent
+            - 作用
+                - 强调当前展开关系
+            - 原则
+                - 只在已展开的 SubMenu 使用
+                - 禁止所有 MenuItem 都显示连接点
+    - 布局规范
+        - 父菜单与子菜单
+            - 默认相邻
+            - 不保留大间隙
+        - Connector
+            - 位于父项与子面板之间
+            - 不得侵入文字区域
+        - SubMenu 对齐
+            - 建议以当前父项垂直中心或父项顶部附近作为参考
+        - SubMenu Item 高度
+            - 与 Menu 保持一致
+            - 建议 28～32 DIP
+        - SubMenu 宽度
+            - 按内容自适应
+            - 不得小于可读最小宽度
+        - 圆角
+            - 与 Menu 统一
+            - XY.Radius.Popup
+        - 整体原则
+            - 父子层关系清晰
+            - 不牺牲高信息密度
+            - 不制造大面积悬浮空隙
+    - 展开方向
+        - 默认
+            - 向右展开
+        - 右侧空间不足
+            - 自动向左展开
+        - 底部空间不足
+            - 允许整体向上偏移
+        - 禁止
+            - 为了保持向右而超出窗口
+            - 为了保持原位置而裁切命令内容
+    - 鼠标交互
+        - Pointer Enter 父项
+            - 进入 Hover
+            - 准备展开
+        - Hover Delay
+            - 允许轻微延迟
+            - 避免鼠标快速划过时连续弹出
+        - Pointer Move 向子菜单
+            - 保持父项 Active
+            - 不得立即关闭
+        - Pointer Leave 父子有效区域
+            - 关闭 SubMenu
+        - Click 普通子项
+            - 执行命令
+            - 关闭菜单链
+        - Click 带下一层 SubMenu 的子项
+            - 进入下一层
+    - 鼠标容错区
+        - 必须存在父项到子菜单的有效移动区域
+        - 允许使用三角安全区 / Pointer Intent 判断
+        - 目的
+            - 避免鼠标斜向移动时误关闭
+        - 原则
+            - 用户向子菜单方向移动时优先保持打开
+            - 用户明显移向其他父项时才切换
+        - 不得
+            - 要求用户严格水平移动鼠标
+    - 键盘交互
+        - Up / Down
+            - 切换同级 MenuItem
+        - Right
+            - 展开当前 SubMenu
+            - 进入下一层
+        - Left
+            - 关闭当前 SubMenu
+            - 返回父级
+        - Enter
+            - 普通命令
+                - 执行
+            - SubMenu Trigger
+                - 展开
+        - Esc
+            - 关闭当前层
+            - 逐级返回
+        - 原则
+            - 键盘行为必须与视觉层级同步
+    - 多级规则
+        - 允许
+            - 二级 SubMenu
+            - 必要的三级 SubMenu
+        - 不建议
+            - 四级及以上
+        - 当层级过深
+            - 重新组织 IA
+            - 改用 Dialog / CommandPalette / Navigation Page
+        - 原则
+            - SubMenu 用于命令细分
+            - 不是无限树形导航
+    - 视觉层级
+        - 父菜单
+            - 正常面板层级
+        - 当前 SubMenu
+            - 可通过轻微 Border 强化
+        - 下一层
+            - 继续相同规则
+        - 禁止
+            - 每一层使用不同高饱和颜色
+            - 通过越来越深的阴影制造层级
+            - 使用强烈 3D 效果
+    - 颜色建议
+        - SubMenu Background
+            - XY.Surface.Overlay
+        - SubMenu Border
+            - XY.Border.Color.Default
+        - Parent Active Background
+            - XY.Surface.Selected
+        - Parent Active Text
+            - XY.Accent.Strong
+        - Connector
+            - XY.Border.Color.Subtle
+        - Anchor Dot
+            - XY.Accent.Default
+        - Default Text
+            - XY.Text.Primary
+        - Secondary Text
+            - XY.Text.Secondary
+        - Disabled Text
+            - XY.State.Disabled.Text
+    - 字体
+        - 与 Menu 保持一致
+            - XY.Font.UI
+        - MenuItem FontSize
+            - XY.FontSize.Auxiliary
+        - Default Weight
+            - XY.FontWeight.Regular
+        - Active
+            - 不强制加粗
+        - 原则
+            - 层级主要靠位置和连接关系表达
+            - 不依赖字体大小变化
+    - 与 Menu 的关系
+        - Menu
+            - 提供父容器
+        - MenuItem
+            - 作为 SubMenu Trigger
+        - SubMenu
+            - 视觉上仍属于 Menu
+            - 行为上属于下一层命令容器
+        - 统一规则
+            - 字体
+            - Item 高度
+            - Hover
+            - Disabled
+            - Shortcut
+            - Separator
+            - Round Radius
+    - 与 ContextMenu 的关系
+        - ContextMenu
+            - 可直接触发 SubMenu
+        - Context Header
+            - 只存在于 ContextMenu 根层
+            - 默认不在每级 SubMenu 重复
+        - 原因
+            - 避免多层菜单纵向膨胀
+            - 避免重复上下文信息
+    - 数据建议
+        - MenuItem
+            - Id
+            - Label
+            - Command
+            - Items
+            - IsEnabled
+        - SubMenu
+            - 无需独立业务数据类型
+            - 可由 MenuItem.Items 自动生成
+        - 原则
+            - 视觉层级根据数据树生成
+            - 不为每层硬编码独立 UI
+    - UI Tokens
+        - SubMenu.OffsetX
+            - 8～16
+        - SubMenu.Connector.Length
+            - 16
+        - SubMenu.Connector.Width
+            - 2
+        - SubMenu.Anchor.Size
+            - 5
+        - SubMenu.Background
+            - XY.Surface.Overlay
+        - SubMenu.Border
+            - XY.Border.Color.Default
+        - SubMenu.Active.Background
+            - XY.Surface.Selected
+        - SubMenu.Active.Text
+            - XY.Accent.Strong
+        - SubMenu.Connector
+            - XY.Border.Color.Subtle
+        - SubMenu.Anchor
+            - XY.Accent.Default
+        - SubMenu.Radius
+            - XY.Radius.Popup
+    - UI代码
+        - SubMenu
+            - Background
+                - XY.Surface.Overlay
+            - BorderWidth
+                - XY.Border.Width.Default
+            - BorderColor
+                - XY.Border.Color.Default
+            - CornerRadius
+                - XY.Radius.Popup
+            - OpenDirection
+                - Auto
+        - SubMenuTrigger
+            - Indicator
+                - ChevronRight
+            - IndicatorColor
+                - XY.Text.Secondary
+        - SubMenuTrigger.Active
+            - Background
+                - XY.Surface.Selected
+            - TextColor
+                - XY.Accent.Strong
+            - IndicatorColor
+                - XY.Accent.Strong
+        - SubMenuConnector
+            - Width
+                - 16
+            - StrokeWidth
+                - 2
+            - Color
+                - XY.Border.Color.Subtle
+            - AnchorSize
+                - 5
+            - AnchorColor
+                - XY.Border.Color.Subtle
+        - SubMenu.Disabled
+            - TextColor
+                - XY.State.Disabled.Text
+            - PointerEnabled
+                - False
+    - 适配规则
+        - Desktop
+            - 默认使用侧向展开
+            - 支持 Mouse Intent
+        - Web Desktop
+            - 可复用
+            - 必须处理 Viewport Boundary
+        - Tablet
+            - 可视空间足够时允许侧向展开
+        - Mobile
+            - 不建议多级浮层
+            - 优先转换为内嵌 / 页面式导航
+        - Compact
+            - 保持与 Menu 相同 Item 高度
+            - 缩短 Connector
+        - Comfortable
+            - 允许略增 Item 高度
+            - 连接关系不变
+    - 禁止项
+        - 禁止多级菜单之间留下明显大空隙
+        - 禁止鼠标稍微斜移就关闭 SubMenu
+        - 禁止父项在子菜单打开后丢失 Active 状态
+        - 禁止层级无限递归
+        - 禁止每层使用不同视觉主题
+        - 禁止用大量阴影表示层级
+        - 禁止连接线穿过菜单文字
+        - 禁止为未展开 MenuItem 显示 Anchor Dot
+        - 禁止 SubMenu 超出窗口仍强制向原方向展开
+    - 最终结论
+        - 采用方案
+            - 方案 2 · 层级连接型
+        - 核心视觉语言
+            - 经典侧向展开
+            - 轻量父子连接
+            - 父项 Active 保持
+            - 自动方向调整
+            - 鼠标容错导航
+        - 适合作为
+            - XYUI 标准 SubMenu
+            - Menu / ContextMenu 多级命令结构规范
+        - 后续衔接
+            - 3.05 · NavigationMenu
+    
+- 3.05 · NavigationMenu / 导航菜单
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 组合组件层
+        - 主要用途
+            - 在多个模块、页面、功能区之间进行长期导航切换
+            - 表达当前所在模块
+            - 组织应用主要功能入口
+        - 核心语义
+            - 我现在位于哪个功能区域
+        - 与 Menu 的区别
+            - Menu
+                - 主要用于执行命令
+                - 执行后通常关闭
+            - NavigationMenu
+                - 主要用于切换位置
+                - Selected 状态长期保持
+        - 与 Sidebar 的区别
+            - NavigationMenu
+                - 是导航项集合
+            - Sidebar
+                - 是承载导航、树、工具等内容的侧边容器
+    - 典型场景
+        - 玄域引擎
+            - 地图
+            - 环境
+            - 数据
+            - 资源
+            - 脚本
+            - 调试
+            - 设置
+        - 桌面编辑器
+            - 功能模块切换
+            - 工具区切换
+            - 管理模块切换
+        - Web 应用
+            - 后台管理
+            - 复杂生产力应用
+        - Mobile
+            - 大型导航可转换为 NavigationDrawer
+    - 最终方案
+        - 方案名称
+            - 左侧 Accent Bar 型
+        - 方案编号
+            - 方案 1
+        - 设计方向
+            - 以纵向导航为主要使用方式
+            - 使用左侧 Accent Bar 明确 Selected 状态
+            - 避免大面积强调色
+            - 保持浅色高信息密度
+            - 适合长期驻留式编辑器导航
+        - 视觉特征
+            - 默认导航项以图标 + 文字组成
+            - Selected 使用浅蓝背景
+            - Selected 左侧显示 Accent Bar
+            - Selected 图标和文字同步强调
+            - Hover 使用更轻的背景变化
+            - 分组通过 Group Label + Separator 表达
+    - 结构
+        - NavigationMenu
+            - NavigationGroup
+                - GroupLabel
+                    - 分组名称
+                - NavigationItem
+                    - Leading Icon
+                    - Label
+                    - Optional Badge
+                    - Optional Status
+                - Separator
+            - NavigationItem · Selected
+                - Accent Bar
+                - 左侧选中标记
+                - Selected Background
+                - 浅色选中背景
+                - Selected Icon
+                - Accent 色
+                - Selected Label
+                - 强调文字
+    - 信息层级
+        - GroupLabel
+            - 用于表达功能区
+            - 例
+                - 工作区
+                - 工具
+                - 管理
+        - NavigationItem
+            - 承担实际导航
+        - Badge
+            - 仅用于数量或状态提醒
+            - 不得成为主要导航信息
+    - 状态
+        - Default
+            - 透明背景
+            - 正常图标
+            - 正常文字
+        - Hover
+            - 显示轻量 Hover Background
+            - 不改变尺寸
+        - Selected
+            - 浅色 Selected Background
+            - 左侧 Accent Bar
+            - 图标使用 Accent
+            - 文字使用 Active Text
+            - 允许字重轻微增加
+        - Pressed
+            - 短暂按压反馈
+        - Focus
+            - 键盘导航时显示明确 Focus
+            - 不得仅依赖 Selected
+        - Disabled
+            - 降低图标与文字对比度
+            - 不可导航
+    - 布局规范
+        - 推荐方向
+            - Vertical
+        - Item 高度
+            - 建议 32～36 DIP
+        - Item 水平 Padding
+            - 建议 10～14 DIP
+        - Icon Size
+            - XY.Icon.Size.S
+        - Icon 与文字间距
+            - 建议 8～12 DIP
+        - Accent Bar 宽度
+            - 建议 3 DIP
+        - Selected Radius
+            - XY.Radius.Control
+        - GroupLabel 高度
+            - 建议 24～28 DIP
+        - Group 间距
+            - 保持紧凑
+            - 不制造明显大空白
+        - Separator
+            - 1 DIP
+        - 整体原则
+            - 纵向连续
+            - 图标列严格对齐
+            - 文字列严格对齐
+            - 优先为内容区域节省空间
+    - Selected 规则
+        - 同一导航层级默认仅允许一个 Selected
+        - Selected 必须长期保持
+        - 页面重新载入后
+            - 应根据当前 Route / Workspace 恢复 Selected
+        - Selected 不得仅通过文字加粗表达
+        - Accent Bar 为核心状态标识
+        - 背景为辅助状态标识
+        - 图标与文字同步切换状态
+    - Hover 与 Selected 关系
+        - Default + Hover
+            - 显示轻量背景
+        - Selected + Hover
+            - Selected 状态不得消失
+            - 只允许轻微加强背景
+        - 禁止 Hover 覆盖 Selected 语义
+    - 分组规则
+        - 允许多个 NavigationGroup
+        - GroupLabel 使用 Secondary Text
+        - GroupLabel 不可点击
+        - 不同 Group 可使用 Separator
+        - 少量导航项时
+            - 不强制添加 Group
+        - 大量导航项时
+            - 必须按功能组织
+        - 禁止为了视觉效果制造无意义分组
+    - 图标规则
+        - 一级导航建议使用图标
+        - 图标必须具有明确语义
+        - 同一组使用统一尺寸
+        - 默认使用单色线性或统一风格图标
+        - Selected 时允许改变 Stroke / Fill
+        - 禁止每个图标使用不同高饱和颜色
+        - 禁止无意义装饰图标
+    - 文字规则
+        - Label
+            - 使用明确功能名称
+            - 尽量保持简短
+        - GroupLabel
+            - 使用功能分类名称
+        - 禁止
+            - 长说明文字直接塞入 NavigationItem
+            - 使用内部代码名称作为用户标签
+            - 使用不明确缩写作为主要导航
+    - 交互
+        - 鼠标
+            - Pointer Enter
+                - Hover
+            - Click
+                - 切换 Selected
+                - 导航到对应模块
+        - 键盘
+            - Up / Down
+                - 切换 Focus
+            - Enter / Space
+                - 激活当前项
+            - Home
+                - 跳到第一项
+            - End
+                - 跳到最后一项
+        - 触控
+            - 扩大点击热区
+            - 保持整行可点击
+    - 导航行为
+        - 点击 NavigationItem
+            - 更新当前导航状态
+            - 更新 Selected
+            - 切换对应内容区域
+        - 切换内容时
+            - NavigationMenu 本身保持位置稳定
+        - 禁止
+            - 切换页面时整个导航重新闪烁
+            - Selected 更新滞后于内容
+            - 用户已切换页面但导航仍显示旧状态
+    - Badge / Status
+        - 允许
+            - 数字 Badge
+            - Status Dot
+            - 轻量 Warning 状态
+        - 位置
+            - 优先右侧
+        - 规则
+            - 不能抢夺 Label 主视觉
+            - Selected 后仍必须可读
+        - 例
+            - 资源
+                - 12
+            - 调试
+                - StatusDot
+    - 颜色建议
+        - Background
+            - XY.Surface.Panel
+        - Item Text
+            - XY.Text.Primary
+        - Secondary Text
+            - XY.Text.Secondary
+        - Icon
+            - XY.Text.Secondary
+        - Hover Background
+            - XY.State.Color.Hover
+        - Selected Background
+            - XY.Surface.Selected
+        - Selected Text
+            - XY.Accent.Strong
+        - Selected Icon
+            - XY.Accent.Default
+        - Accent Bar
+            - XY.Accent.Default
+        - Border
+            - XY.Border.Color.Default
+        - Disabled
+            - XY.State.Disabled.Text
+    - 字体
+        - NavigationItem
+            - FontSize
+                - XY.FontSize.Auxiliary
+            - FontWeight
+                - XY.FontWeight.Regular
+        - Selected
+            - FontWeight
+                - XY.FontWeight.Medium
+        - GroupLabel
+            - FontSize
+                - XY.FontSize.Caption
+            - FontWeight
+                - XY.FontWeight.Regular
+            - TextColor
+                - Secondary Text
+    - 与其他 XYUI 控件关系
+        - NavigationMenu
+            - 通常放入
+                - Sidebar
+                - NavigationDrawer
+        - NavigationItem
+            - 可包含
+                - Icon
+                - Text
+                - Badge
+                - StatusDot
+        - 可切换
+            - Tabs
+            - Workspace
+            - View
+            - Page
+        - 可与
+            - Breadcrumb
+            - Toolbar
+            - CommandBar
+            - TreeNavigation
+        - 共同构成
+            - 应用导航系统
+    - 与 Sidebar 的关系
+        - NavigationMenu
+            - 负责导航行为
+        - Sidebar
+            - 负责侧边区域布局与容器能力
+        - NavigationMenu 不负责
+            - 拖拽调整宽度
+            - Sidebar 折叠
+            - 额外工具面板
+            - Tree / Inspector 容器
+        - 原则
+            - 导航逻辑与容器布局分离
+    - 数据建议
+        - NavigationGroup
+            - Id
+            - Label
+            - Items
+        - NavigationItem
+            - Id
+            - Label
+            - Icon
+            - Route
+            - Command
+            - Badge
+            - IsEnabled
+            - IsVisible
+        - NavigationState
+            - SelectedId
+            - FocusedId
+        - 原则
+            - SelectedId 为单一状态源
+            - UI 不单独维护重复选中状态
+    - UI Tokens
+        - NavigationMenu.Item.Height
+            - 36
+        - NavigationMenu.Item.PaddingX
+            - 12
+        - NavigationMenu.Icon.Size
+            - XY.Icon.Size.M
+        - NavigationMenu.IconGap
+            - 10
+        - NavigationMenu.AccentBar.Width
+            - 3
+        - NavigationMenu.Item.Radius
+            - XY.Radius.Popup
+        - NavigationMenu.Background
+            - XY.Surface.Panel
+        - NavigationMenu.Text
+            - XY.Text.Primary
+        - NavigationMenu.SecondaryText
+            - XY.Text.Secondary
+        - NavigationMenu.Hover.Background
+            - XY.State.Color.Hover
+        - NavigationMenu.Selected.Background
+            - XY.Surface.Selected
+        - NavigationMenu.Selected.Text
+            - XY.Accent.Strong
+        - NavigationMenu.Selected.Icon
+            - XY.Accent.Default
+        - NavigationMenu.Selected.Accent
+            - XY.Accent.Default
+    - UI代码
+        - NavigationMenu
+            - Orientation
+                - Vertical
+            - Background
+                - XY.Surface.Panel
+        - NavigationGroupLabel
+            - Height
+                - 26
+            - FontSize
+                - XY.FontSize.Caption
+            - TextColor
+                - XY.Text.Secondary
+        - NavigationItem
+            - Height
+                - 36
+            - PaddingLeft
+                - 12
+            - PaddingRight
+                - 12
+            - IconSize
+                - XY.Icon.Size.M
+            - IconGap
+                - 10
+            - FontSize
+                - XY.FontSize.Auxiliary
+            - FontWeight
+                - XY.FontWeight.Regular
+            - TextColor
+                - XY.Text.Primary
+            - IconColor
+                - XY.Text.Secondary
+            - Background
+                - Transparent
+            - CornerRadius
+                - XY.Radius.Control
+        - NavigationItem.Hover
+            - Background
+                - XY.State.Color.Hover
+        - NavigationItem.Selected
+            - Background
+                - XY.Surface.Selected
+            - TextColor
+                - XY.Accent.Strong
+            - IconColor
+                - XY.Accent.Default
+            - FontWeight
+                - XY.FontWeight.Semibold
+            - AccentPosition
+                - Left
+            - AccentWidth
+                - 3
+            - AccentColor
+                - XY.Accent.Default
+        - NavigationItem.Disabled
+            - TextColor
+                - XY.State.Disabled.Text
+            - IconColor
+                - XY.State.Disabled.Text
+            - PointerEnabled
+                - False
+    - 适配规则
+        - Desktop
+            - 完整图标 + 文字
+        - Compact
+            - 降低 Item 高度与 Padding
+            - 不移除 Selected Accent
+        - 窄宽度
+            - 允许隐藏文字转为 NavigationRail
+            - 不建议在原 NavigationMenu 中强行挤压
+        - Web
+            - 可直接复用
+            - 与 Route 状态同步
+        - Mobile
+            - 优先转换为 NavigationDrawer / BottomNavigation
+    - 禁止项
+        - 禁止 Selected 使用高饱和整行蓝色
+        - 禁止仅通过 Bold 表达 Selected
+        - 禁止不同 Item 图标尺寸不一致
+        - 禁止无意义大间距
+        - 禁止把 NavigationMenu 当普通命令菜单
+        - 禁止点击导航后 Selected 与实际页面不同步
+        - 禁止一个普通单选导航层同时存在多个 Selected
+        - 禁止每个导航项做成独立悬浮卡片
+        - 禁止大量彩色图标破坏统一视觉
+        - 禁止在 GroupLabel 中放重要操作按钮
+    - 最终结论
+        - 采用方案
+            - 方案 1 · 左侧 Accent Bar 型
+        - 核心视觉语言
+            - 纵向导航
+            - 浅色 Selected Background
+            - 左侧 Accent Bar
+            - 图标 + 文字
+            - 紧凑分组
+            - 长期 Selected 状态
+        - 适合作为
+            - XYUI 标准 NavigationMenu
+            - 玄域引擎主要模块导航基础组件
+        - 后续衔接
+            - 3.06 · Sidebar
+    
+- 3.06 · Sidebar / 侧边导航栏
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 组合容器层
+        - 主要用途
+            - 承载应用侧边导航与当前模块上下文内容
+            - 组织一级导航、二级内容导航及辅助操作
+            - 为桌面编辑器提供长期驻留的侧边功能区域
+            - 在需要时通过折叠释放主内容空间
+        - 核心语义
+            - 应用左侧长期驻留的导航与上下文容器
+        - 与 NavigationMenu 的区别
+            - NavigationMenu
+                - 负责导航项本身
+            - Sidebar
+                - 负责导航区域整体布局
+                - 负责折叠
+                - 负责宽度
+                - 负责分区
+                - 负责上下文内容承载
+        - 与 NavigationRail 的关系
+            - Sidebar 展开态
+                - 完整图标 + 文字 + 上下文区域
+            - Sidebar 折叠态
+                - 转换为 NavigationRail
+            - 不是简单隐藏文字
+            - 而是切换到另一种受控导航形态
+    - 使用场景
+        - 玄域引擎
+            - 主导航
+                - 地图
+                - 环境
+                - 数据
+                - 资源
+                - 脚本
+                - 调试
+            - 当前模块导航
+                - 地图基础
+                - 地图环境
+                - 数据集
+                - 区域
+                - 道路
+                - 城镇
+                - 资源
+        - 桌面编辑器
+            - IDE
+            - DCC
+            - 地图编辑器
+            - 资源编辑器
+            - 调试工具
+        - Web
+            - 大型后台
+            - 桌面式生产力工具
+    - 最终方案
+        - 方案名称
+            - 双区自适应折叠型
+        - 来源
+            - 方案 2
+                - Sidebar ⇄ NavigationRail
+            - 方案 3
+                - 导航 + 上下文双区
+        - 组合原则
+            - 展开态使用方案 3 的内部结构
+            - 折叠态使用方案 2 的 Rail 转换逻辑
+            - 一级导航与当前模块内容保持语义分离
+            - 折叠后优先保留一级导航
+            - 上下文区域在 Rail 模式下隐藏或转入临时浮层
+        - 视觉方向
+            - 浅色
+            - 紧凑
+            - 分区明确
+            - 高空间利用率
+            - 低装饰
+            - 编辑器优先
+    - 整体结构
+        - Sidebar
+            - Header
+                - Workspace / App Identity
+                - Collapse Toggle
+            - Primary Navigation Region
+                - NavigationMenu
+                    - Primary Navigation Items
+            - Context Region
+                - Context Header
+                    - 当前模块名称
+                - Context Navigation
+                    - 二级导航
+                    - TreeNavigation
+                    - Search
+                    - 局部工具
+            - Footer
+                - Settings
+                - Help
+                - Optional Account
+            - Resize Handle
+    - 展开态结构
+        - Header
+            - 显示应用 / 工作区识别
+            - 显示 Collapse Toggle
+        - Primary Navigation Region
+            - 承担全局一级模块导航
+            - 保持稳定位置
+        - Context Region
+            - 根据当前一级模块动态变化
+            - 承担当前模块内部导航和内容入口
+            - 允许使用 TreeNavigation / Search / ToolGroup 等组件
+        - Footer
+            - 始终贴近底部
+            - 不随 Context Region 内容漂移
+        - Resize Handle
+            - 允许用户拖拽修改宽度
+    - 折叠态结构
+        - 转换目标
+            - NavigationRail
+        - 保留
+            - 一级导航图标
+            - Selected 状态
+            - Footer 高频入口
+            - 展开按钮
+        - 隐藏
+            - 一级导航文字
+            - GroupLabel
+            - Context Region 常驻内容
+            - 复杂二级内容
+        - Context Region 折叠后
+            - 默认不常驻
+            - 必要时通过临时 Flyout / Popup 打开
+            - 不得把复杂 Tree 强行压进 Rail
+        - 原则
+            - Rail 是独立适配形态
+            - 不是把 Sidebar 直接压窄
+    - 主导航区域
+        - 使用组件
+            - NavigationMenu
+        - 职责
+            - 切换应用一级模块
+        - Selected
+            - 左侧 Accent Bar
+            - 浅色背景
+            - 图标与文字强调
+        - 稳定性
+            - 切换 Context Region 时主导航位置不得跳动
+            - 一级导航顺序保持固定
+    - 上下文区域
+        - 职责
+            - 显示当前一级模块专属内容
+        - 内容类型
+            - 二级 NavigationMenu
+            - TreeNavigation
+            - Search
+            - ToolGroup
+            - List
+            - 局部 CommandBar
+        - 例
+            - 地图
+                - 地图基础
+                - 地图环境
+                - 数据集
+            - 资源
+                - 纹理
+                - 模型
+                - 材质
+        - 原则
+            - 只展示当前模块相关内容
+            - 不能与一级导航混成一列
+            - 允许根据模块完全替换内容
+            - 优先填满剩余垂直空间
+        - Context Header
+            - 用于提示当前模块
+            - 文字简短
+            - 可包含少量局部操作
+            - 禁止变成大型标题区
+    - Header
+        - 用途
+            - 应用 / Workspace 识别
+            - 折叠控制
+        - 高度
+            - 建议 44～52 DIP
+        - 内容
+            - Optional App Mark
+            - Workspace Name
+            - Collapse Toggle
+        - 原则
+            - 保持紧凑
+            - 不得使用大 Logo 占据垂直空间
+            - 不得成为装饰性 Banner
+    - Footer
+        - 位置
+            - 固定贴近 Sidebar 底部
+        - 内容
+            - 设置
+            - 帮助
+            - Optional Account
+            - Optional Status
+        - 原则
+            - 与主导航分离
+            - 不因 Context Region 高度变化而移动
+            - 低频操作优先放置于此
+    - 宽度规则
+        - 展开默认宽度
+            - 建议 220～280 DIP
+        - Context-Rich / Wide Variant 候选
+            - 240 DIP 左右
+            - Type = COMPONENT_SPECIFIC_VARIANT
+        - 最小宽度
+            - 约 180～200 DIP
+        - 最大宽度
+            - 按应用布局限制
+            - 建议不超过主窗口宽度的约 30%
+        - 折叠 Rail 宽度
+            - 建议 52～72 DIP
+        - 推荐基础值
+            - 64 DIP 左右
+        - 拖拽
+            - 通过 Resize Handle 调整
+        - 宽度保存
+            - 记录用户最近展开宽度
+            - 重新展开时恢复
+    - 折叠规则
+        - Manual Collapse
+            - 用户主动点击折叠
+        - Responsive Collapse
+            - 窗口过窄时可自动进入 Rail
+        - 重新展开
+            - 恢复上一次展开宽度
+        - 折叠动画
+            - 允许轻量宽度过渡
+            - Duration = XY.Motion.Fast
+            - ReducedMotion = Respect
+            - 不得拖慢操作
+        - 状态保持
+            - Selected 一级导航不得改变
+            - 当前 Workspace 不得改变
+            - Context 状态可保留
+        - 禁止
+            - 折叠后丢失用户当前模块
+            - 折叠后导航图标重新排序
+    - 自适应规则
+        - Wide
+            - 完整 Sidebar
+            - 显示 Header
+            - 显示 Primary Navigation
+            - 显示 Context Region
+            - 显示 Footer
+        - Medium
+            - 允许缩窄 Sidebar
+            - Context Region 保持
+        - Narrow
+            - 转换为 NavigationRail
+            - Context Region 变为按需弹出
+        - Extremely Narrow / Mobile
+            - Sidebar 不常驻
+            - 转为 NavigationDrawer
+        - 原则
+            - 紧凑就紧凑
+            - 宽松就宽松
+            - 根据空间自动适应
+            - 不使用固定单一密度覆盖所有尺寸
+    - 布局规则
+        - 垂直结构
+            - Header
+                - 固定高度
+            - Primary Navigation
+                - 内容高度
+            - Context Region
+                - Flex Grow
+                - 占满剩余空间
+            - Footer
+                - 固定贴底
+        - 上下文内容溢出
+            - Context Region 内部独立滚动
+        - 禁止
+            - 整个 Sidebar 因内部 Tree 滚动导致 Footer 消失
+            - Header 与 Footer 随内容滚动
+        - 空间利用
+            - 不留大块无意义空白
+            - Context Region 默认撑满剩余高度
+    - Resize Handle
+        - 位置
+            - Sidebar 外侧边缘
+        - 视觉宽度
+            - 约 1～2 DIP
+        - 实际命中宽度
+            - 建议 6～10 DIP
+        - Hover
+            - 轻量 Accent 强调
+        - Dragging
+            - 显示明确拖拽状态
+        - 双击
+            - 可选恢复默认宽度
+        - 原则
+            - 视觉细
+            - 交互热区足够
+    - Selected 状态
+        - 一级导航
+            - 使用 NavigationMenu 标准
+                - 左侧 Accent Bar
+                - 浅色背景
+                - Accent 图标
+                - Active Text
+        - 二级上下文导航
+            - 可使用较弱 Selected
+            - 避免与一级导航争夺视觉层级
+        - 原则
+            - 一级 Selected 强于二级 Selected
+            - 用户必须能一眼知道当前模块
+    - 分区视觉
+        - Primary / Context
+            - 使用 Separator 或背景层次区分
+        - Context Region
+            - 允许使用极浅 Secondary Surface
+        - Footer
+            - 顶部 Separator
+        - 禁止
+            - 每个区域都做独立大卡片
+            - 使用过多边框
+            - 使用大量阴影
+    - 颜色建议
+        - Sidebar Background
+            - XY.Surface.Panel
+        - Header Background
+            - XY.Surface.PanelAlt
+        - Context Background
+            - XY.Surface.PanelAlt
+        - Border
+            - XY.Border.Color.Default
+        - Resize Handle
+            - XY.Border.Color.Subtle
+        - Primary Text
+            - XY.Text.Primary
+        - Secondary Text
+            - XY.Text.Secondary
+        - Hover Background
+            - XY.State.Color.Hover
+        - Selected Background
+            - XY.Surface.Selected
+        - Selected Text
+            - XY.Accent.Strong
+        - Accent
+            - XY.Accent.Default
+    - 字体
+        - Primary Navigation
+            - XY.FontSize.Auxiliary
+        - Context Header
+            - 11～13 DIP
+        - Secondary Navigation
+            - XY.FontSize.Auxiliary
+        - Footer
+            - XY.FontSize.Auxiliary
+        - 原则
+            - 一级导航优先
+            - Context Header 弱化
+            - 不依赖大字号制造层级
+    - 交互
+        - Collapse Toggle
+            - 展开 Sidebar
+            - 折叠为 NavigationRail
+        - Resize
+            - Pointer Drag
+                - 实时调整宽度
+        - Primary Navigation Click
+            - 切换一级模块
+            - 更新 Context Region
+        - Context Navigation Click
+            - 切换当前模块内部内容
+        - Footer Click
+            - 进入设置 / 帮助等全局区域
+        - Keyboard
+            - 支持导航焦点
+            - 折叠控制可通过键盘触发
+    - 状态模型
+        - SidebarState
+            - IsCollapsed
+            - ExpandedWidth
+            - SelectedPrimaryId
+            - SelectedContextId
+            - ContextMode
+        - 原则
+            - 折叠状态和导航状态分离
+            - 折叠 Sidebar 不等于改变 Route
+            - SelectedPrimaryId 为当前一级模块唯一来源
+    - 数据建议
+        - Sidebar
+            - Id
+            - Header
+            - PrimaryNavigation
+            - ContextProvider
+            - FooterItems
+            - MinWidth
+            - MaxWidth
+            - DefaultWidth
+            - CollapsedWidth
+        - ContextProvider
+            - 根据 SelectedPrimaryId 提供当前模块内容
+        - 原则
+            - Sidebar 不硬编码每个模块内容
+            - 一级导航与 Context Region 数据解耦
+    - 与其他 XYUI 控件关系
+        - Sidebar
+            - 包含
+                - NavigationMenu
+                - TreeNavigation
+                - SearchField
+                - ToolGroup
+                - CommandBar
+                - Divider
+                - Footer Actions
+        - 折叠为
+            - NavigationRail
+        - 移动端转换为
+            - NavigationDrawer
+        - 与
+            - Toolbar
+            - Tabs
+            - Breadcrumb
+            - WorkspaceSwitcher
+        - 共同组成
+            - 应用 Shell
+    - UI Tokens
+        - Sidebar.Width.Default
+            - XY.Resize.Left.Default
+        - Sidebar.Width.Min
+            - 190
+        - Sidebar.Width.Max
+            - 360
+        - Sidebar.Width.Collapsed
+            - 64
+        - Sidebar.Header.Height
+            - 48
+        - Sidebar.Footer.MinHeight
+            - 48
+        - Sidebar.Background
+            - XY.Surface.Panel
+        - Sidebar.Header.Background
+            - XY.Surface.PanelAlt
+        - Sidebar.Context.Background
+            - XY.Surface.PanelAlt
+        - Sidebar.Border
+            - XY.Border.Color.Default
+        - Sidebar.ResizeHandle
+            - XY.Border.Color.Subtle
+        - Sidebar.Accent
+            - XY.Accent.Default
+    - UI代码
+        - Sidebar
+            - Width
+                - XY.Resize.Left.Default
+            - MinWidth
+                - 190
+            - MaxWidth
+                - 360
+            - CollapsedWidth
+                - 64
+            - Background
+                - XY.Surface.Panel
+            - BorderRight
+                - 1
+            - BorderColor
+                - XY.Border.Color.Default
+        - SidebarHeader
+            - Height
+                - 48
+            - Background
+                - XY.Surface.PanelAlt
+            - PaddingX
+                - 12
+        - SidebarPrimaryRegion
+            - Width
+                - Fill
+            - Background
+                - XY.Surface.Panel
+        - SidebarContextRegion
+            - Height
+                - Fill
+            - Background
+                - XY.Surface.PanelAlt
+            - Overflow
+                - Auto
+        - SidebarFooter
+            - Position
+                - Bottom
+            - Background
+                - XY.Surface.Panel
+            - BorderTop
+                - 1
+            - BorderColor
+                - XY.Border.Color.Default
+        - SidebarResizeHandle
+            - VisualWidth
+                - 2
+            - HitWidth
+                - 8
+            - Color
+                - XY.Border.Color.Subtle
+            - Cursor
+                - ResizeHorizontal
+        - Sidebar.Collapsed
+            - Mode
+                - NavigationRail
+            - Width
+                - 64
+            - ContextRegion
+                - Hidden
+    - 适配规则
+        - Desktop Wide
+            - 双区完整展开
+        - Desktop Compact
+            - 缩小宽度
+            - 保持双区
+        - Desktop Narrow
+            - 自动或手动折叠为 Rail
+        - Web
+            - 根据 Viewport 宽度自动适配
+        - Tablet
+            - 优先 Rail
+            - Context 内容按需弹出
+        - Mobile
+            - 转换为 NavigationDrawer
+            - 不常驻占用屏幕
+    - 禁止项
+        - 禁止 Sidebar 仅仅等于一列 NavigationItem
+        - 禁止折叠时粗暴裁掉文字导致残缺
+        - 禁止把 Tree 等复杂内容强塞进 64 DIP Rail
+        - 禁止一级导航与上下文二级导航混在同一视觉层级
+        - 禁止 Header 占据过多高度
+        - 禁止 Footer 因内容滚动消失
+        - 禁止 Context Region 留大面积无意义空白
+        - 禁止 Sidebar 固定死宽且无法适配
+        - 禁止 Resize Handle 视觉过粗
+        - 禁止拖动宽度后重新展开丢失用户宽度
+        - 禁止折叠导致当前模块状态丢失
+    - 最终结论
+        - 采用方案
+            - 方案 2 + 方案 3
+            - 双区自适应折叠型
+        - 核心结构
+            - Primary Navigation
+            - Context Region
+            - Sticky Footer
+            - Resizable Width
+        - 核心响应机制
+            - Sidebar ⇄ NavigationRail
+        - 核心视觉语言
+            - 浅色
+            - 紧凑
+            - 充分利用空间
+            - 一级与上下文导航明确分层
+        - 适合作为
+            - XYUI 标准 Sidebar
+            - 玄域引擎编辑器主侧栏基础结构
+        - 后续衔接
+            - 3.07 · NavigationRail
+    
+- 3.07 · NavigationRail / 导航轨
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 组合导航组件
+        - 主要用途
+            - 在窄宽度环境中承载一级导航
+            - 作为 Sidebar 折叠后的紧凑形态
+            - 在保留主要导航能力的同时释放内容区空间
+            - 通过 Context Flyout 按需恢复 Sidebar 原有上下文区域能力
+        - 核心语义
+            - 常驻一级导航
+            - 上下文内容按需展开
+        - 与 Sidebar 的关系
+            - Sidebar 展开
+                - 一级导航 + Context Region
+            - NavigationRail 折叠
+                - 一级导航常驻
+                - Context Region 转为 Flyout
+            - 两者共享
+                - SelectedPrimaryId
+                - 导航顺序
+                - 图标体系
+                - Footer Items
+    - 使用场景
+        - 桌面编辑器
+            - Viewport 空间不足
+            - 用户主动折叠 Sidebar
+            - 小尺寸窗口
+        - Web
+            - 窄屏桌面式应用
+        - Tablet
+            - 常驻 Rail + 按需 Flyout
+        - 玄域引擎
+            - 地图
+            - 环境
+            - 数据
+            - 资源
+            - 脚本
+            - 调试
+    - 最终方案
+        - 方案名称
+            - Rail + Context Flyout 型
+        - 方案编号
+            - 方案 3
+        - 设计方向
+            - 保持一级导航长期常驻
+            - 将 Sidebar Context Region 转换为按需 Flyout
+            - 折叠后减少常驻信息而不丢失功能
+            - Selected 视觉继续继承 NavigationMenu
+        - 视觉特征
+            - 窄型垂直 Rail
+            - 图标居中排列
+            - Selected 使用浅色背景
+            - 左侧保留 Accent Bar
+            - 当前项可连接 Context Flyout
+            - Flyout 使用轻量连接线表达来源
+            - Hover 显示 Tooltip
+    - 整体结构
+        - NavigationRail
+            - Expand Control
+            - Primary Navigation
+                - RailItem
+                    - Icon
+                    - Selected Indicator
+                    - Optional Badge
+            - Separator
+            - Footer Items
+            - Context Trigger
+                - Connector
+                - Context Flyout
+                    - Context Header
+                    - Context Navigation
+                    - Context Tools
+    - 尺寸规范
+        - Rail 宽度
+            - 建议 56～72 DIP
+        - 推荐基础值
+            - 64 DIP
+        - RailItem 高度
+            - 建议 40～48 DIP
+        - 推荐基础值
+            - 42～44 DIP
+        - 图标尺寸
+            - XY.Icon.Size.M
+        - Selected Accent Bar
+            - 宽度约 3 DIP
+        - Item Radius
+            - XY.Radius.Control
+        - 整体原则
+            - 足够紧凑
+            - 图标仍具有清晰热区
+            - 不得因为窄而牺牲可点击性
+    - Selected 状态
+        - 继承 NavigationMenu
+            - 左侧 Accent Bar
+            - 浅色 Selected Background
+            - Accent Icon
+        - 原则
+            - 折叠前后 Selected 语义完全一致
+            - 不能因为进入 Rail 模式丢失当前模块
+            - 一级 Selected 状态必须一眼可见
+    - Hover
+        - 显示轻量 Hover Background
+        - 显示 Tooltip
+        - Tooltip 内容
+            - 一级模块名称
+            - 必要时显示当前二级位置
+        - 例
+            - 地图
+            - 当前：地图基础
+        - Tooltip 不应立即遮挡 Flyout Trigger
+    - Context Flyout
+        - 用途
+            - 承载折叠前 Sidebar Context Region 的主要能力
+        - 内容
+            - Context Header
+            - 二级 Navigation
+            - TreeNavigation
+            - Search
+            - ToolGroup
+            - 局部 CommandBar
+        - 出现位置
+            - 从当前 RailItem 右侧展开
+        - 宽度
+            - 根据内容自适应
+            - 建议约 200～320 DIP
+        - 高度
+            - 根据内容自适应
+            - 不得超出窗口
+        - 视觉
+            - 浅色面板
+            - 轻边框
+            - 轻量 Connector
+        - 原则
+            - Flyout 是临时上下文区域
+            - 不能变成第二个永久 Sidebar
+    - Context Trigger
+        - 推荐行为
+            - 首次单击 RailItem
+                - 切换一级模块
+            - 当前已 Selected 的 RailItem 再次点击
+                - 打开对应 Context Flyout
+            - 存在明确二级内容时
+                - 可显示轻量 Context Trigger 状态
+        - Hover
+            - 只显示 Tooltip
+            - 默认不自动展开复杂 Flyout
+        - 原因
+            - 避免鼠标经过 Rail 时频繁弹出大型面板
+        - 可选
+            - 键盘快捷方式直接打开当前 Context Flyout
+    - Context Flyout 打开规则
+        - 同一时间只允许一个 Context Flyout 打开
+        - 打开 Flyout
+            - 当前 RailItem 保持 Selected
+        - 点击其他一级 RailItem
+            - 切换模块
+            - 关闭旧 Flyout
+        - 点击 Rail 外部
+            - 关闭 Flyout
+        - Esc
+            - 关闭 Flyout
+        - 再次点击当前 Trigger
+            - 关闭 Flyout
+        - 窗口空间不足
+            - 调整 Flyout 位置
+            - 保持在可视区域内
+    - Connector
+        - 用途
+            - 表达 Flyout 来源于当前 RailItem
+        - 结构
+            - 短水平线
+            - Optional Anchor Dot
+        - 颜色
+            - 低饱和连接色
+        - 原则
+            - 仅在 Context Flyout 打开时显示
+            - 不得永久存在
+            - 不得成为视觉装饰
+    - 一级导航
+        - 仅保留 Icon
+        - 文字
+            - 通过 Tooltip 提供
+        - 导航顺序
+            - 与展开 Sidebar 完全一致
+        - SelectedPrimaryId
+            - 与 Sidebar 共用
+        - 禁止
+            - 折叠模式重新定义一套导航顺序
+            - 折叠后隐藏关键一级模块
+    - Footer
+        - 常驻底部
+        - 内容
+            - 设置
+            - 帮助
+            - Optional Account
+        - 原则
+            - 图标表达必须清楚
+            - 与 Primary Navigation 使用 Separator 区分
+    - Expand Control
+        - 用途
+            - 重新展开 Sidebar
+        - 位置
+            - Rail 顶部
+        - 交互
+            - Click
+                - 恢复 Sidebar
+            - Keyboard
+                - 支持 Focus + Enter
+        - 恢复
+            - 恢复之前 ExpandedWidth
+            - 恢复 Context Region
+            - 保持当前 SelectedPrimaryId
+    - Badge / Status
+        - 允许
+            - 数字 Badge
+            - StatusDot
+            - 轻量状态标记
+        - 限制
+            - 数量必须克制
+            - 不得每个 RailItem 都显示多个状态
+            - 状态不得覆盖主图标
+        - 原则
+            - 一级导航识别优先于状态提醒
+    - 图标规则
+        - 图标是 Rail 的主要语义载体
+        - 必须具有高辨识度
+        - 同一套图标语言
+            - 尺寸统一
+            - 线宽统一
+            - 视觉重量统一
+        - 禁止
+            - 仅靠字母缩写代替图标
+            - 不同模块使用完全不同图标风格
+            - 高饱和多彩图标
+    - 键盘交互
+        - Up / Down
+            - 切换 RailItem Focus
+        - Enter / Space
+            - 切换一级模块
+        - Right
+            - 在当前模块存在 Context 时打开 Flyout
+        - Left / Esc
+            - 关闭 Context Flyout
+        - Home
+            - 第一项
+        - End
+            - 最后一项
+        - 原则
+            - 键盘用户必须能完整访问 Context Flyout
+    - 鼠标交互
+        - Pointer Enter
+            - Hover
+            - 显示 Tooltip
+        - Click 未选中项
+            - 切换模块
+        - Click 当前 Selected Item
+            - 打开或关闭 Context Flyout
+        - Click Outside
+            - 关闭 Flyout
+        - 拖拽
+            - NavigationRail 本身默认不可调整宽度
+            - 需要宽度调整时重新展开 Sidebar
+    - 触控
+        - RailItem 热区
+            - 不得低于触控基本尺寸
+        - Tablet
+            - 适合常驻 Rail
+        - Mobile
+            - 不建议常驻
+            - 转换为 NavigationDrawer / BottomNavigation
+    - 状态模型
+        - NavigationRailState
+            - SelectedPrimaryId
+            - FocusedItemId
+            - IsContextFlyoutOpen
+            - OpenContextId
+        - 与 Sidebar 共享
+            - SelectedPrimaryId
+            - Context State
+        - 原则
+            - Sidebar 和 Rail 不能各自保存一份独立导航状态
+            - 折叠只是布局模式变化
+    - 数据建议
+        - RailItem
+            - Id
+            - Label
+            - Icon
+            - Route
+            - ContextProvider
+            - Badge
+            - IsEnabled
+            - IsVisible
+        - ContextProvider
+            - 决定是否存在 Context Flyout
+            - 提供当前模块的 Context 内容
+        - 原则
+            - 没有 Context 内容的 RailItem 不需要虚构 Flyout
+    - 颜色建议
+        - Rail Background
+            - XY.Surface.Panel
+        - Border
+            - XY.Border.Color.Default
+        - Hover Background
+            - XY.State.Color.Hover
+        - Selected Background
+            - XY.Surface.Selected
+        - Selected Icon
+            - XY.Accent.Default
+        - Default Icon
+            - XY.Text.Secondary
+        - Accent Bar
+            - XY.Accent.Default
+        - Connector
+            - XY.Border.Color.Subtle
+        - Flyout Background
+            - XY.Surface.Overlay
+        - Flyout Border
+            - XY.Border.Color.Subtle
+        - Tooltip Background
+            - XY.Surface.Overlay
+        - Tooltip Text
+            - COMPONENT_SPECIFIC_CONTRAST_FOREGROUND [GAP:XYUI3-GAP-001]
+    - 与其他 XYUI 控件关系
+        - NavigationRail
+            - 由
+                - Sidebar
+            - 折叠转换而来
+        - 包含
+            - NavigationItem Compact Variant
+            - Icon
+            - Badge
+            - StatusDot
+            - Tooltip
+        - 触发
+            - Context Flyout
+                - NavigationMenu
+                - TreeNavigation
+                - SearchField
+                - ToolGroup
+        - 移动端进一步转换
+            - NavigationDrawer
+            - BottomNavigation
+    - UI Tokens
+        - NavigationRail.Width
+            - 64
+        - NavigationRail.Item.Height
+            - 44
+        - NavigationRail.Icon.Size
+            - XY.Icon.Size.L
+        - NavigationRail.Item.Radius
+            - XY.Radius.Control
+        - NavigationRail.AccentBar.Width
+            - 3
+        - NavigationRail.Background
+            - XY.Surface.Panel
+        - NavigationRail.Border
+            - XY.Border.Color.Default
+        - NavigationRail.Hover.Background
+            - XY.State.Color.Hover
+        - NavigationRail.Selected.Background
+            - XY.Surface.Selected
+        - NavigationRail.Selected.Icon
+            - XY.Accent.Default
+        - NavigationRail.Selected.Accent
+            - XY.Accent.Default
+        - NavigationRail.ContextFlyout.Width
+            - 240
+        - NavigationRail.Connector
+            - XY.Border.Color.Subtle
+    - UI代码
+        - NavigationRail
+            - Width
+                - 64
+            - Background
+                - XY.Surface.Panel
+            - BorderRight
+                - 1
+            - BorderColor
+                - XY.Border.Color.Default
+        - RailItem
+            - Height
+                - 44
+            - IconSize
+                - XY.Icon.Size.L
+            - Background
+                - Transparent
+            - CornerRadius
+                - XY.Radius.Control
+        - RailItem.Hover
+            - Background
+                - XY.State.Color.Hover
+            - ShowTooltip
+                - True
+        - RailItem.Selected
+            - Background
+                - XY.Surface.Selected
+            - IconColor
+                - XY.Accent.Default
+            - AccentPosition
+                - Left
+            - AccentWidth
+                - 3
+            - AccentColor
+                - XY.Accent.Default
+        - ContextFlyout
+            - Width
+                - 240
+            - Background
+                - XY.Surface.Overlay
+            - BorderWidth
+                - XY.Border.Width.Default
+            - BorderColor
+                - XY.Border.Color.Subtle
+            - CornerRadius
+                - XY.Radius.Control
+        - ContextConnector
+            - Color
+                - XY.Border.Color.Subtle
+            - StrokeWidth
+                - 2
+    - 适配规则
+        - Desktop
+            - Sidebar 折叠后使用
+        - Desktop Narrow
+            - 推荐常驻 Rail
+        - Web
+            - 可根据 Viewport 自动进入 Rail
+        - Tablet
+            - 可常驻 Rail + Flyout
+        - Mobile
+            - 转 NavigationDrawer / BottomNavigation
+    - 禁止项
+        - 禁止 Rail 只是把 Sidebar 文字隐藏
+        - 禁止折叠后丢失 Context Region 能力
+        - 禁止 Hover 自动弹出大型复杂 Flyout
+        - 禁止多个 Context Flyout 同时存在
+        - 禁止 Tooltip 与 Flyout 同时争夺视觉
+        - 禁止 Rail 与 Sidebar 使用不同 Selected 状态源
+        - 禁止折叠前后导航顺序变化
+        - 禁止复杂 Tree 常驻在 Rail 内部
+        - 禁止大量 Badge / Dot 堆积
+        - 禁止图标语义模糊
+        - 禁止折叠后重新学习一套完全不同的导航逻辑
+    - 最终结论
+        - 采用方案
+            - 方案 3 · Rail + Context Flyout 型
+        - 核心机制
+            - 一级导航常驻
+            - Context Region 按需 Flyout
+        - 核心视觉语言
+            - 继承 Sidebar / NavigationMenu
+            - 左侧 Accent Bar
+            - 浅色 Selected
+            - 图标导航
+            - 轻量 Connector
+        - 适合作为
+            - XYUI 标准 NavigationRail
+            - Sidebar 折叠态标准实现
+            - 玄域编辑器紧凑导航模式
+        - 后续衔接
+            - 3.08 · Tabs
+    
+- 3.08 · Tabs / 页签
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 组合导航组件
+        - 主要用途
+            - 在同一区域内切换多个并列内容页
+            - 表达当前活动内容
+            - 支持编辑器中的文档、页面、面板切换
+        - 核心语义
+            - 多个平级内容中的当前页
+        - 与 TabBar 的区别
+            - Tabs
+                - 定义单个 Tab 的结构、状态与交互
+            - TabBar
+                - 负责管理一组 Tabs
+                - 处理溢出、滚动、排序、新建、批量关闭等
+    - 使用场景
+        - 玄域引擎
+            - 地图基础
+            - 地图环境
+            - 数据集
+            - 区域编辑
+        - 代码编辑
+            - Map.cs
+            - World.cs
+            - Region.cs
+        - 资源编辑
+            - 纹理
+            - 材质
+            - 模型
+        - 属性区域
+            - 属性
+            - 历史
+            - 日志
+        - 桌面应用
+            - 多文档界面
+            - 多视图界面
+    - 最终方案
+        - 方案名称
+            - 轻分隔无卡片型
+        - 方案编号
+            - 方案 4
+        - 设计方向
+            - 避免传统厚重卡片式页签
+            - 通过文字、轻背景、分隔线和 Accent Line 表达状态
+            - 优先提高信息密度
+            - 适合大量 Tab 并列
+            - 保持专业桌面编辑器感
+        - 视觉特征
+            - 整体无独立卡片边框
+            - Tab 之间使用轻量垂直 Divider
+            - Selected 使用轻微背景
+            - Selected 使用底部 Accent Line
+            - Close Button 保持弱化
+            - Modified 状态使用小圆点
+    - 结构
+        - Tab
+            - Optional Leading Icon
+            - Label
+            - Optional Modified Indicator
+            - Optional Status
+            - Optional Close Button
+            - Divider
+            - Selected Indicator
+        - Default Tab
+            - 透明背景
+            - Secondary Text
+        - Selected Tab
+            - 轻量 Selected Background
+            - Active Text
+            - 底部 Accent Line
+        - Closable Tab
+            - Close Button
+        - Modified Tab
+            - Modified Dot
+    - 状态
+        - Default
+            - 背景透明
+            - 文字使用 Secondary Text
+        - Hover
+            - 显示轻量 Hover Background
+            - Close Button 可从隐藏转为可见
+        - Selected
+            - 显示浅色 Selected Background
+            - 文字使用 Active Text
+            - 底部显示 Accent Line
+        - Selected + Hover
+            - 保持 Selected 状态
+            - 仅允许轻微加强背景
+        - Pressed
+            - 短暂按压反馈
+        - Focus
+            - 显示明确键盘 Focus
+        - Disabled
+            - 降低文字与图标对比度
+            - 不可激活
+        - Modified
+            - 显示小型状态点
+            - 表示存在未保存修改
+    - 布局规范
+        - Tab 高度
+            - 建议 36～42 DIP
+        - 推荐基础值
+            - 40 DIP
+        - 水平 Padding
+            - 建议 12～16 DIP
+        - Label 与 Close Gap
+            - 约 8 DIP
+        - Divider
+            - 宽度 1 DIP
+            - 高度低于 Tab 总高度
+        - Accent Line
+            - 高度 2～3 DIP
+            - 位于底部
+        - Tab 最小宽度
+            - 根据图标、文字与关闭按钮确定
+        - Tab 最大宽度
+            - 建议限制
+            - 超长标题使用省略
+        - 整体原则
+            - 紧凑
+            - 连续
+            - 尽量减少边框
+            - 不制造独立卡片感
+    - Selected 规则
+        - 同一 Tab Group 默认仅允许一个 Selected
+        - Selected 必须与当前显示内容同步
+        - Selected 使用
+            - 轻背景
+            - Active Text
+            - 底部 Accent Line
+        - 禁止
+            - 只靠 Bold 表达 Selected
+            - Selected 使用高饱和整块背景
+            - 切换内容后 Tab 状态滞后
+    - Hover 规则
+        - Hover 不改变 Tab 尺寸
+        - 可显示轻背景
+        - Closable Tab
+            - Close Button 可在 Hover 时增强
+        - 未选中 Tab
+            - Hover 不得强于 Selected
+    - Close Button
+        - 用途
+            - 关闭当前 Tab
+        - 位置
+            - Label 右侧
+        - 显示方式
+            - Selected Tab
+                - 可常显
+            - 未选中 Tab
+                - 可 Hover 时显示
+        - 命中区域
+            - 必须大于图标本体
+        - 交互
+            - 点击 Close 不应先激活 Tab 再关闭
+        - Modified Tab
+            - 关闭前根据业务规则处理未保存修改
+        - 禁止
+            - Close Button 过于抢眼
+            - Close Hover 导致 Tab 宽度变化
+    - Modified Indicator
+        - 用途
+            - 表示内容已修改但未保存
+        - 推荐形式
+            - 小圆点
+        - 位置
+            - Label 后方或 Close Button 位置附近
+        - 颜色
+            - 低饱和 Secondary / Accent
+        - 保存成功后
+            - 立即消失
+        - 原则
+            - 不能依赖 Tooltip 才能发现
+            - 不得使用巨大警示标记
+    - 图标规则
+        - 图标为可选
+        - 适合
+            - 文件类型
+            - 资源类型
+            - 工具类型
+        - 不适合
+            - 所有 Tab 强制放图标
+        - 尺寸
+            - 建议 14～16 DIP
+        - Selected
+            - 允许切换为 Active Icon Color
+        - 禁止
+            - 彩色图标过多
+            - 图标压过标题文字
+    - 文字规则
+        - Label
+            - 简短清晰
+            - 优先显示对象名称或页面名称
+        - 长标题
+            - 使用 Ellipsis
+            - Tooltip 显示完整标题
+        - 重复名称
+            - 可增加轻量辅助上下文
+        - 禁止
+            - 使用过长路径作为默认 Tab Label
+            - 让完整 UUID 成为页签标题
+    - 交互
+        - 鼠标
+            - Click
+                - 激活 Tab
+            - Middle Click
+                - 桌面端可选直接关闭
+            - Click Close
+                - 关闭 Tab
+            - Double Click
+                - 由具体场景定义
+                - 默认不赋予复杂行为
+        - 键盘
+            - Left / Right
+                - 切换 Focus
+            - Enter / Space
+                - 激活
+            - Ctrl+Tab
+                - 可由 TabBar 管理
+            - Ctrl+W
+                - 关闭当前 Tab
+        - 触控
+            - 扩大 Tab 与 Close 热区
+    - 内容同步
+        - Tab Selected
+            - 对应内容区域必须立即显示
+        - Content Activated
+            - 对应 Tab 必须同步 Selected
+        - 单一状态源
+            - SelectedTabId
+        - 禁止
+            - UI Tab 与实际文档状态各自维护独立 Selected
+    - 可关闭规则
+        - Permanent Tab
+            - 不可关闭
+            - 不显示 Close
+        - Closable Tab
+            - 允许关闭
+        - Pinned Tab
+            - 关闭规则由 TabBar 管理
+        - Modified Tab
+            - 关闭时进入保存策略
+        - 原则
+            - 关闭能力由数据属性决定
+            - 不能仅靠是否显示 X 判断业务状态
+    - 分隔规则
+        - 相邻 Tab 使用垂直 Divider
+        - Selected Tab 的边界
+            - 可弱化相邻 Divider
+        - Divider 不贯穿整条 TabBar
+        - 禁止
+            - 粗边框切割每个 Tab
+            - 多个边框叠加形成卡片感
+    - 颜色建议
+        - TabBar Background
+            - XY.Surface.Panel
+        - Default Text
+            - XY.Text.Secondary
+        - Active Text
+            - XY.Accent.Strong
+        - Hover Background
+            - XY.State.Color.Hover
+        - Selected Background
+            - XY.Surface.Selected
+        - Accent Line
+            - XY.Accent.Default
+        - Divider
+            - XY.Divider.Default
+        - Close Icon
+            - XY.Text.Secondary
+        - Modified Dot
+            - XY.Text.Secondary
+        - Disabled
+            - XY.State.Disabled.Text
+    - 字体
+        - 默认字体
+            - XY.Font.UI
+        - FontSize
+            - XY.FontSize.Auxiliary
+        - Default Weight
+            - XY.FontWeight.Regular
+        - Selected Weight
+            - XY.FontWeight.Medium
+        - 原则
+            - 不依赖大幅字重变化
+            - Tab 名称保持高可读性
+    - 与其他 XYUI 控件关系
+        - Tabs
+            - 由
+                - TabBar
+            - 统一管理
+        - Tab 可包含
+            - Icon
+            - Text
+            - StatusDot
+            - IconButton · Close
+        - Tab 可触发
+            - ContextMenu
+        - 可用于
+            - DockTabs
+            - Workspace
+            - Editor Document Area
+            - Property Panel
+        - ContextMenu 示例
+            - 关闭
+            - 关闭其他
+            - 关闭右侧
+            - 固定
+            - 移动到新窗口
+    - UI Tokens
+        - Tab.Height
+            - 40
+        - Tab.PaddingX
+            - 14
+        - Tab.Icon.Size
+            - XY.Icon.Size.S
+        - Tab.Close.Size
+            - 14
+        - Tab.Divider.Width
+            - 1
+        - Tab.AccentLine.Height
+            - 3
+        - Tab.Background
+            - Transparent
+        - Tab.Hover.Background
+            - XY.State.Color.Hover
+        - Tab.Selected.Background
+            - XY.Surface.Selected
+        - Tab.Text
+            - XY.Text.Secondary
+        - Tab.Selected.Text
+            - XY.Accent.Strong
+        - Tab.Accent
+            - XY.Accent.Default
+        - Tab.Divider
+            - XY.Divider.Default
+    - UI代码
+        - Tab
+            - Height
+                - 40
+            - PaddingLeft
+                - 14
+            - PaddingRight
+                - 14
+            - FontSize
+                - XY.FontSize.Auxiliary
+            - FontWeight
+                - XY.FontWeight.Regular
+            - TextColor
+                - XY.Text.Secondary
+            - Background
+                - Transparent
+        - Tab.Hover
+            - Background
+                - XY.State.Color.Hover
+        - Tab.Selected
+            - Background
+                - XY.Surface.Selected
+            - TextColor
+                - XY.Accent.Strong
+            - FontWeight
+                - XY.FontWeight.Medium
+            - IndicatorPosition
+                - Bottom
+            - IndicatorHeight
+                - 3
+            - IndicatorColor
+                - XY.Accent.Default
+        - Tab.Divider
+            - Width
+                - 1
+            - Color
+                - XY.Divider.Default
+        - Tab.Close
+            - IconSize
+                - XY.Icon.Size.S
+            - IconColor
+                - XY.Text.Secondary
+            - Visibility
+                - SelectedOrHover
+        - Tab.Modified
+            - Indicator
+                - Dot
+            - IndicatorColor
+                - XY.Text.Secondary
+    - 适配规则
+        - Desktop
+            - 标准紧凑模式
+            - 支持鼠标关闭与 ContextMenu
+        - Web
+            - 可直接复用
+            - 注意浏览器宽度变化
+        - Tablet
+            - 扩大横向热区
+        - Mobile
+            - 仅适合少量同级页面
+            - 大量 Tab 应改用其他导航模式
+        - Compact
+            - 降低 Padding
+            - 保留 Label 清晰度
+        - Comfortable
+            - 适当增加 Tab 高度与 Padding
+    - 禁止项
+        - 禁止把 Tab 做成一排独立按钮卡片
+        - 禁止大量圆角胶囊
+        - 禁止 Selected 使用高饱和整块背景
+        - 禁止 Hover 导致 Tab 宽度变化
+        - 禁止 Close Button 出现后推动文字位置
+        - 禁止未保存状态仅通过颜色极弱表达
+        - 禁止 Tab 标题无限撑宽
+        - 禁止 Selected 与实际内容不同步
+        - 禁止使用粗重边框围住每个 Tab
+        - 禁止大量彩色文件类型图标破坏统一视觉
+    - 最终结论
+        - 采用方案
+            - 方案 4 · 轻分隔无卡片型
+        - 核心视觉语言
+            - 无卡片
+            - 轻 Divider
+            - 轻 Selected Background
+            - 底部 Accent Line
+            - 紧凑高密度
+        - 适合作为
+            - XYUI 标准 Tabs
+            - 玄域编辑器基础页签视觉
+        - 后续衔接
+            - 3.09 · TabBar
+    
+- 3.09 · TabBar / 页签栏
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 组合导航容器
+        - 主要用途
+            - 管理一组 Tabs
+            - 负责页签排列、切换、滚动、溢出与新增
+            - 在大量页签情况下保持可访问性
+        - 核心语义
+            - 管理当前区域内的一组并列页面
+        - 与 Tabs 的区别
+            - Tabs
+                - 定义单个页签的视觉和状态
+            - TabBar
+                - 管理整组 Tabs
+                - 处理空间不足
+                - 处理滚动
+                - 处理溢出
+                - 处理新建
+                - 处理排序
+    - 使用场景
+        - 玄域引擎
+            - 地图编辑文档
+            - 数据编辑页面
+            - 脚本文件
+            - 资源文档
+        - IDE
+            - 代码文件
+            - 配置文件
+            - 日志页
+        - DCC
+            - 文档
+            - 面板
+            - 编辑视图
+    - 最终方案
+        - 方案名称
+            - 多通道滚动溢出型
+        - 来源
+            - 方案 1
+                - 左右滚动箭头
+            - 方案 2
+                - 滚轮 / 触控板横向滚动
+                - 溢出菜单
+        - 组合原则
+            - 鼠标滚轮与触控板作为高效直接操作
+            - 左右箭头作为显式可发现入口
+            - 溢出菜单作为大量 Tab 的快速定位兜底
+            - 不同交互方式共享同一滚动状态
+    - 整体结构
+        - TabBar
+            - ScrollPrevious Button
+            - TabViewport
+                - Tab
+                - Tab
+                - Tab
+            - ScrollNext Button
+            - Overflow Button
+            - Optional NewTab Button
+    - 默认状态
+        - Tab 未溢出
+            - 隐藏或弱化 ScrollPrevious
+            - 隐藏或弱化 ScrollNext
+            - Overflow Button 可根据产品需求隐藏
+            - 最大化 Tab 可用空间
+        - Tab 溢出
+            - 显示 ScrollPrevious
+            - 显示 ScrollNext
+            - 显示 Overflow Button
+            - 允许滚轮横向滚动
+            - 允许触控板横向滑动
+    - TabViewport
+        - 用途
+            - 承载可滚动 Tabs
+        - 布局
+            - Horizontal
+        - Overflow
+            - Clip
+        - 滚动
+            - Horizontal
+        - 原则
+            - Tab 宽度不因滚动状态变化
+            - 操作按钮不进入滚动区域
+            - Scroll / Overflow / New Tab 固定在边缘
+    - 左右滚动箭头
+        - ScrollPrevious
+            - 向前移动 TabViewport
+        - ScrollNext
+            - 向后移动 TabViewport
+        - 显示规则
+            - 仅内容溢出时显示
+            - 或常驻但在不可滚动方向 Disabled
+        - 推荐
+            - 溢出时显示
+            - 不可继续滚动方向使用 Disabled
+        - 点击
+            - 按固定距离滚动
+            - 优先滚动约一个 Tab 或一组 Tab
+        - 长按
+            - 可选连续滚动
+        - 原则
+            - 箭头只负责滚动
+            - 不负责切换 Selected Tab
+    - 滚轮与触控板
+        - Mouse Wheel
+            - 指针位于 TabBar 上时
+                - 允许转换为横向滚动
+        - Shift + Wheel
+            - 支持显式横向滚动
+        - Touchpad
+            - 直接响应横向手势
+        - 原则
+            - 不得影响 Selected 状态
+            - 不得让整个页面跟随横向滚动
+            - 滚动速度保持可控
+        - 目标
+            - 熟练用户无需频繁点击箭头
+    - Overflow Button
+        - 表现形式
+            - ⋯
+            - 或 ChevronDown
+        - 用途
+            - 查看全部已打开 Tabs
+            - 快速定位当前不可见 Tab
+        - 打开
+            - Overflow Menu / Tab List
+        - 内容
+            - 全部 Tab
+            - Selected 状态
+            - Modified 状态
+            - Optional Icon
+        - 数量较多时
+            - 提供 Search
+        - 点击列表项
+            - 激活对应 Tab
+            - 自动滚动 TabBar 使其可见
+        - 原则
+            - Overflow 不是简单显示被隐藏项
+            - 可作为全部 Tab 的统一快速入口
+    - Overflow Search
+        - 触发条件
+            - Tab 数量较多
+        - 推荐阈值
+            - 约 10～15 个以上可出现
+        - 搜索字段
+            - 按标题过滤
+            - 可按文件名 / 页面名匹配
+        - 禁止
+            - 少量 Tab 时强制显示大型搜索界面
+    - NewTab Button
+        - 状态
+            - Optional
+        - 位置
+            - TabBar 最右侧固定区域
+        - 用途
+            - 新建文档
+            - 打开新页面
+        - 行为
+            - 由业务场景定义
+        - 原则
+            - 不得与 Overflow Button 混淆
+            - 没有新建语义时不显示
+    - 滚动状态
+        - ScrollOffset
+            - 统一滚动位置
+        - 来源
+            - Arrow Click
+            - Mouse Wheel
+            - Touchpad
+            - Programmatic Reveal
+        - 原则
+            - 所有交互操作共享同一 ScrollOffset
+            - 不得分别维护不同位置
+    - Selected Tab 可见性
+        - 切换 Selected Tab 后
+            - 必须保证 Selected Tab 可见
+        - 如果 Tab 位于 Viewport 外
+            - 自动滚动至可视区域
+        - 优先
+            - 使用最小必要滚动
+        - 禁止
+            - 每次选择都强制居中导致整条 TabBar 跳动
+    - 新建 Tab 后
+        - 默认
+            - 新 Tab 进入 Selected
+            - 自动滚动使其可见
+        - 可选
+            - 后台打开
+                - 不抢夺 Selected
+                - 但可提供轻量状态提示
+    - 关闭 Tab 后
+        - 当前非 Selected Tab
+            - 保持当前 Selected
+        - 关闭 Selected Tab
+            - 选择相邻合理 Tab
+            - 优先最近使用或相邻项
+        - 滚动位置
+            - 尽量保持稳定
+            - 避免整个 TabBar 大幅跳动
+    - 拖拽排序
+        - 允许
+            - Desktop
+        - 行为
+            - 拖动 Tab 改变顺序
+        - 拖动到 Viewport 边缘
+            - 自动滚动
+        - Selected 状态
+            - 拖动过程中保持
+        - 原则
+            - 拖拽排序不由滚动箭头干扰
+        - 移动后
+            - 保持 Tab 可见
+    - Pinned Tab
+        - 当前基础方案
+            - 不强制设计独立固定区
+        - 允许
+            - 未来作为 TabBar Variant 扩展
+        - 原因
+            - 避免将方案 3 的复杂性并入基础规范
+        - 原则
+            - 基础 TabBar 先解决滚动与定位
+    - 键盘交互
+        - Ctrl+Tab
+            - 切换 Tabs
+        - Ctrl+Shift+Tab
+            - 反向切换
+        - Ctrl+W
+            - 关闭当前 Tab
+        - Left / Right
+            - Focus 在 TabBar 内时切换焦点
+        - Home
+            - 第一项
+        - End
+            - 最后一项
+        - 键盘切换后
+            - 自动确保目标 Tab 可见
+    - 状态模型
+        - TabBarState
+            - SelectedTabId
+            - ScrollOffset
+            - IsOverflowing
+            - FocusedTabId
+            - OpenOverflowMenu
+        - 原则
+            - SelectedTabId 与 Tabs 共用
+            - ScrollOffset 是唯一滚动状态
+            - IsOverflowing 根据实际布局计算
+    - 宽度与布局
+        - TabBar Height
+            - 继承 Tabs 基础高度
+            - 推荐约 40～44 DIP
+        - Arrow Width
+            - 约 30～36 DIP
+        - Overflow Width
+            - 约 36～44 DIP
+        - NewTab Width
+            - 约 36～44 DIP
+        - TabViewport
+            - Flex Grow
+            - 占用全部剩余宽度
+        - 原则
+            - 控制按钮固定
+            - TabViewport 自适应
+            - 无溢出时尽量释放按钮占用空间
+    - 颜色建议
+        - Background
+            - XY.Surface.Panel
+        - Border
+            - XY.Border.Color.Default
+        - Control Background
+            - XY.Surface.Panel
+        - Control Hover
+            - XY.Surface.PanelAlt
+        - Control Icon
+            - XY.Text.Secondary
+        - Disabled Icon
+            - XY.State.Disabled.Text
+        - Overflow Active
+            - XY.Surface.Selected
+        - Accent
+            - XY.Accent.Default
+    - 与 Tabs 的关系
+        - TabBar
+            - 管理
+                - Tab
+        - Tab 视觉
+            - 继续采用
+                - 轻分隔无卡片型
+        - TabBar 不修改
+            - Tab Selected 视觉
+            - Tab Modified 视觉
+            - Tab Close 视觉
+        - TabBar 只负责
+            - 空间管理
+            - 滚动
+            - 溢出
+            - 排序
+            - 辅助操作
+    - 与其他 XYUI 控件关系
+        - TabBar
+            - 包含
+                - Tabs
+                - IconButton · ScrollPrevious
+                - IconButton · ScrollNext
+                - IconButton · Overflow
+                - Optional IconButton · New
+            - Overflow 可调用
+                - Menu
+                - SearchField
+                - List
+        - 可用于
+            - DockTabs
+            - Document Area
+            - Editor Panels
+    - UI Tokens
+        - TabBar.Height
+            - 44
+        - TabBar.Arrow.Width
+            - 34
+        - TabBar.Overflow.Width
+            - 40
+        - TabBar.NewTab.Width
+            - 40
+        - TabBar.Background
+            - XY.Surface.Panel
+        - TabBar.Border
+            - XY.Border.Color.Default
+        - TabBar.Control.Hover
+            - XY.Surface.PanelAlt
+        - TabBar.Control.Icon
+            - XY.Text.Secondary
+        - TabBar.Control.Disabled
+            - XY.State.Disabled.Text
+    - UI代码
+        - TabBar
+            - Height
+                - 44
+            - Orientation
+                - Horizontal
+            - Background
+                - XY.Surface.Panel
+            - Overflow
+                - Hidden
+        - TabViewport
+            - Width
+                - Fill
+            - OverflowX
+                - Scroll
+            - Scrollbar
+                - Hidden
+        - ScrollPrevious
+            - Width
+                - 34
+            - Icon
+                - ChevronLeft
+            - Visibility
+                - OverflowOnly
+        - ScrollNext
+            - Width
+                - 34
+            - Icon
+                - ChevronRight
+            - Visibility
+                - OverflowOnly
+        - OverflowButton
+            - Width
+                - 40
+            - Icon
+                - MoreHorizontal
+            - Visibility
+                - OverflowOnly
+        - NewTabButton
+            - Width
+                - 40
+            - Icon
+                - Add
+            - Visibility
+                - Contextual
+    - 适配规则
+        - Desktop
+            - 箭头 + Wheel + Overflow
+        - Web Desktop
+            - 箭头 + Wheel + Touchpad + Overflow
+        - Tablet
+            - 横向手势 + Overflow
+            - 箭头可根据空间隐藏
+        - Mobile
+            - 仅适合少量 Tabs
+            - 大量文档不建议使用传统 TabBar
+        - Compact
+            - 缩小固定按钮宽度
+            - 保持 Tab 最小可读宽度
+    - 禁止项
+        - 禁止只有隐藏滚动手势而没有显式兜底
+        - 禁止只有左右箭头而没有快速定位大量 Tab 的方式
+        - 禁止滚动箭头点击后改变 Selected Tab
+        - 禁止 Overflow Menu 只列不可见 Tab 导致用户理解混乱
+        - 禁止 Selected Tab 在滚动区域外长期不可见
+        - 禁止切换 Tab 时每次强制居中
+        - 禁止 NewTab / Overflow / Scroll 控件进入可滚动区域
+        - 禁止横向滚动带动整个应用页面
+        - 禁止关闭 Tab 后产生大幅无必要跳动
+        - 禁止无溢出时仍长期占用大量箭头空间
+    - 最终结论
+        - 采用方案
+            - 方案 1 + 方案 2
+            - 多通道滚动溢出型
+        - 核心交互
+            - 左右箭头
+            - Mouse Wheel / Touchpad
+            - Overflow Menu
+        - 核心原则
+            - 可发现性与高效操作同时保留
+            - 大量 Tab 始终可快速定位
+        - 适合作为
+            - XYUI 标准 TabBar
+            - 玄域编辑器文档页签栏基础规范
+        - 后续衔接
+            - 3.10 · DockTabs
+    
+- 3.10 · DockTabs / 停靠页签
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 组合导航组件
+        - 主要用途
+            - 管理可停靠面板中的页签
+            - 支持面板切换
+            - 支持页签拖拽
+            - 支持重新停靠
+            - 支持拆分与浮动布局
+        - 核心语义
+            - 这是一个可以切换并重新安排位置的编辑器面板页签
+        - 与普通 Tabs 的区别
+            - Tabs
+                - 主要负责同一区域中的内容切换
+            - DockTabs
+                - 除切换外还承担布局重组
+                - 允许拖拽
+                - 允许重新停靠
+                - 允许浮动
+                - 允许分屏
+    - 使用场景
+        - 玄域引擎
+            - Hierarchy
+            - Assets
+            - Inspector
+            - Console
+            - Log
+            - 地图内容
+            - 属性面板
+        - IDE
+            - 项目资源
+            - 终端
+            - 调试
+            - 输出
+        - DCC
+            - 属性
+            - 场景树
+            - 资源
+            - 时间轴
+    - 最终方案
+        - 方案名称
+            - 拖拽握柄型
+        - 方案编号
+            - 方案 2
+        - 设计方向
+            - 继承标准 Tabs 的轻分隔视觉
+            - 增加轻量 Grip 提示 DockTab 可拖拽
+            - 提升停靠能力的可发现性
+            - 避免额外 Panel Header 占据纵向空间
+        - 视觉特征
+            - Tab 左侧增加小型 Drag Grip
+            - Selected 使用轻背景
+            - Selected 使用 Accent Line
+            - Close 位于右侧
+            - Tab 之间使用 Divider
+            - 整体保持紧凑
+    - 结构
+        - DockTab
+            - Drag Grip
+                - 点阵 / 短线握柄
+            - Optional Icon
+            - Label
+            - Optional Modified Indicator
+            - Close Button
+            - Divider
+            - Selected Indicator
+        - DockTabBar
+            - DockTab
+            - DockTab
+            - DockTab
+        - Dragging Overlay
+            - Drag Preview
+            - Dock Indicator
+            - Dock Target
+    - Drag Grip
+        - 用途
+            - 明确提示页签可以拖动
+            - 提供稳定拖拽起始区域
+        - 推荐形式
+            - 2×2 点阵
+            - 2×3 点阵
+            - 短竖线组
+        - 位置
+            - Tab 左侧
+        - 尺寸
+            - 视觉约 10～14 DIP
+        - 命中区域
+            - 大于实际图形
+            - 建议约 18～22 DIP
+        - 默认
+            - 低对比度
+        - Hover
+            - 轻微增强
+            - Cursor 切换为拖拽语义
+        - Dragging
+            - 进入明确拖拽状态
+        - 原则
+            - Grip 只承担拖拽
+            - 不承担 Selected 切换
+            - 不得抢过 Tab Label 视觉
+    - 状态
+        - Default
+            - 普通文字
+            - 弱 Grip
+            - 透明背景
+        - Hover
+            - 轻 Hover Background
+            - Grip 变清晰
+            - Close 可增强
+        - Selected
+            - Selected Background
+            - Active Text
+            - Accent Line
+            - Grip 保持可见
+        - Pressed
+            - 短暂按压反馈
+        - Dragging
+            - Tab 原位置显示占位状态
+            - 显示 Drag Preview
+            - 显示 Dock Targets
+        - Modified
+            - 显示未保存状态
+        - Disabled
+            - 不可拖拽
+            - 不可激活
+    - 拖拽开始
+        - Pointer Down Grip
+            - 进入准备状态
+        - 超过 Drag Threshold
+            - 开始拖拽
+        - 正式阈值
+            - XY.Drag.Threshold
+            - 6 DIP
+        - 目的
+            - 避免轻微点击被误识别为拖拽
+        - 禁止
+            - Pointer Down 立即拆出面板
+            - 轻微鼠标抖动触发拖动
+    - 拖拽行为
+        - 同一 DockTabBar 内
+            - 允许重新排序
+        - 拖到其他 DockGroup
+            - 允许移动到目标 TabBar
+        - 拖到 Dock Target
+            - 允许分屏停靠
+        - 拖出有效 Dock 区域
+            - 可转换为 Floating Window
+        - 拖回原区域
+            - 允许恢复
+        - 原则
+            - 拖动过程中 Selected 内容保持稳定
+            - 直到 Drop 成功后才提交布局变化
+    - Dock Targets
+        - 推荐目标
+            - Center
+                - 加入目标 Tab Group
+            - Left
+                - 左侧分屏
+            - Right
+                - 右侧分屏
+            - Top
+                - 顶部拆分
+            - Bottom
+                - 底部拆分
+        - 显示规则
+            - 只有拖拽进入有效 Dock 区域后显示
+        - 视觉
+            - 低饱和半透明提示
+            - 明确目标轮廓
+        - 禁止
+            - 平时常驻 Dock Target
+            - 用高饱和巨大遮罩挡住内容
+    - Dock Preview
+        - 用途
+            - 预览 Drop 后面板位置
+        - 表现
+            - 半透明矩形
+            - 轻 Accent Border
+        - 出现
+            - Pointer 位于有效 Dock Target
+        - 消失
+            - 离开目标
+            - 取消拖拽
+        - 原则
+            - Preview 只表达结果
+            - 不能妨碍用户判断底层内容
+    - Floating
+        - 触发
+            - 拖出有效 Dock 区
+            - 业务允许时
+        - 结果
+            - 创建 Floating Panel / Window
+        - 状态保持
+            - Tab 内容保持
+            - Selected 状态保持
+            - 内部页面状态保持
+        - 重新停靠
+            - 允许从 Floating Window 拖回主窗口
+        - 限制
+            - 是否支持跨窗口由平台能力决定
+    - 重新排序
+        - 同一 TabBar
+            - Grip Drag
+                - 改变顺序
+        - 插入位置
+            - 显示轻量 Insert Indicator
+        - Drop
+            - 更新 TabOrder
+        - Cancel
+            - 恢复原顺序
+        - 原则
+            - Tab 不应在 Drag 过程中反复跳动
+    - Close
+        - 位置
+            - Tab 右侧
+        - 行为
+            - 只关闭当前 DockTab
+        - Modified
+            - 根据保存规则处理
+        - 关闭最后一个 DockTab
+            - 根据 DockPanel 规则决定
+                - 关闭 Panel
+                - 保留空 Panel
+        - 原则
+            - 不可由 DockTabs 自行猜测
+        - Permanent Panel
+            - 可禁用 Close
+    - Selected
+        - 同一 DockGroup
+            - 默认一个 Selected
+        - Selected 与 DockPanel Content 同步
+        - 拖到新 DockGroup
+            - Drop 后通常保持 Selected
+        - 禁止
+            - 视觉 Selected 与实际显示 Panel 不一致
+    - ContextMenu
+        - Right Click DockTab
+            - 打开 ContextMenu
+        - 建议命令
+            - 关闭
+            - 关闭其他
+            - 关闭右侧
+            - 固定
+            - 取消固定
+            - 移动到新窗口
+            - 移动到其他 DockGroup
+        - Context Header
+            - 可显示当前 Panel 名称
+    - 键盘
+        - Ctrl+Tab
+            - 切换当前 DockGroup 内页签
+        - Ctrl+W
+            - 关闭当前 DockTab
+        - Left / Right
+            - 切换 Focus
+        - Enter
+            - 激活
+        - 拖拽重排
+            - 如支持无障碍
+                - 提供替代命令
+                - 不强制用户只能鼠标拖动
+    - 布局规范
+        - DockTab Height
+            - 建议 36～40 DIP
+        - Grip Visual Width
+            - 约 10～14 DIP
+        - Grip Hit Width
+            - 约 20 DIP
+        - Label Padding
+            - 约 8～12 DIP
+        - Close Hit Area
+            - 建议至少 24×24 DIP
+        - Divider
+            - 1 DIP
+        - Selected Indicator
+            - 2～3 DIP
+        - 原则
+            - 比普通文档 Tab 略强调可拖拽能力
+            - 但不明显增高
+    - 颜色建议
+        - DockTabBar Background
+            - XY.Surface.PanelAlt
+        - Default Text
+            - XY.Text.Secondary
+        - Selected Text
+            - XY.Accent.Strong
+        - Selected Background
+            - XY.Surface.Raised
+        - Selected Accent
+            - XY.Accent.Default
+        - Grip Default
+            - XY.Text.Tertiary
+        - Grip Hover
+            - XY.Text.Secondary
+        - Divider
+            - XY.Divider.Default
+        - Dock Preview Border
+            - XY.Border.Color.Default
+        - Dock Preview Background
+            - 低透明 Accent
+    - 字体
+        - DockTab Label
+            - FontSize
+                - XY.FontSize.Auxiliary
+            - Default Weight
+                - XY.FontWeight.Regular
+            - Selected Weight
+                - XY.FontWeight.Medium
+        - 原则
+            - 不使用过大字重区分 Selected
+    - 数据模型
+        - DockTab
+            - Id
+            - Label
+            - Icon
+            - ContentId
+            - IsClosable
+            - IsModified
+            - IsPinned
+            - DockGroupId
+            - Order
+        - DockLayoutState
+            - Groups
+            - Splits
+            - FloatingPanels
+            - SelectedTabByGroup
+        - 原则
+            - 布局状态与内容状态分离
+            - DockTab 只引用 ContentId
+            - 拖拽过程中使用临时布局状态
+            - Drop 后一次性提交正式布局
+    - 与其他 XYUI 控件关系
+        - DockTabs
+            - 复用
+                - Tabs
+                - TabBar
+                - IconButton · Close
+                - ContextMenu
+                - Tooltip
+        - 扩展
+            - Drag Grip
+            - Dock Preview
+            - Dock Target
+        - 承载于
+            - DockPanel
+            - Workspace Layout
+        - 可转为
+            - Floating Window
+    - UI Tokens
+        - DockTab.Height
+            - 38
+        - DockTab.Grip.VisualWidth
+            - 12
+        - DockTab.Grip.HitWidth
+            - 20
+        - DockTab.Close.HitSize
+            - 24
+        - DockTab.Divider.Width
+            - 1
+        - DockTab.Selected.LineHeight
+            - 3
+        - DockTabBar.Background
+            - XY.Surface.PanelAlt
+        - DockTab.Selected.Background
+            - XY.Surface.Raised
+        - DockTab.Selected.Text
+            - XY.Accent.Strong
+        - DockTab.Selected.Accent
+            - XY.Accent.Default
+        - DockTab.Grip
+            - XY.Text.Tertiary
+    - UI代码
+        - DockTab
+            - Height
+                - 38
+            - Background
+                - Transparent
+            - TextColor
+                - XY.Text.Secondary
+            - FontSize
+                - XY.FontSize.Auxiliary
+        - DockTab.Grip
+            - VisualWidth
+                - 12
+            - HitWidth
+                - 20
+            - Color
+                - XY.Text.Tertiary
+            - Cursor
+                - Drag
+        - DockTab.Hover
+            - Background
+                - XY.State.Color.Hover
+        - DockTab.Selected
+            - Background
+                - XY.Surface.Raised
+            - TextColor
+                - XY.Accent.Strong
+            - IndicatorPosition
+                - Top
+            - IndicatorHeight
+                - 3
+            - IndicatorColor
+                - XY.Accent.Default
+        - DockTab.Close
+            - HitWidth
+                - 24
+            - HitHeight
+                - 24
+        - DockPreview
+            - BorderWidth
+                - XY.Border.Width.Default
+            - BorderColor
+                - XY.Border.Color.Default
+            - Background
+                - AccentLowOpacity
+    - 适配规则
+        - Desktop
+            - 完整 Dock Drag
+            - 支持 Floating
+        - Web Desktop
+            - 允许 Dock Drag
+            - Floating 能力视浏览器实现决定
+        - Tablet
+            - 可支持长按拖拽
+            - Dock Target 热区扩大
+        - Mobile
+            - 不建议复杂 DockTabs
+            - 改用普通 Tabs / Navigation
+        - Compact
+            - Grip 视觉可缩小
+            - Hit Area 不应过小
+    - 禁止项
+        - 禁止拖拽能力完全不可发现
+        - 禁止使用巨大 Grip 挤压标题
+        - 禁止 Grip 点击导致 Tab 意外关闭或切换
+        - 禁止轻微鼠标抖动就触发 Dock Drag
+        - 禁止拖拽过程直接连续提交正式布局
+        - 禁止 Dock Preview 使用高饱和大色块
+        - 禁止关闭最后一个 Tab 时由组件自行猜测 Panel 生命周期
+        - 禁止 Drag Grip 与 Close Button 命中区域重叠
+        - 禁止拖动后丢失 Panel 内部状态
+    - 最终结论
+        - 采用方案
+            - 方案 2 · 拖拽握柄型
+        - 核心视觉语言
+            - 轻分隔 Tabs
+            - 小型 Drag Grip
+            - Selected Accent
+            - 低装饰
+        - 核心行为
+            - Tab 排序
+            - Dock 重组
+            - 分屏
+            - Floating
+        - 适合作为
+            - XYUI 标准 DockTabs
+            - 玄域编辑器 Dock Panel 页签基础规范
+        - 后续衔接
+            - 3.11 · Breadcrumb
+    
+- 3.11 · Breadcrumb / 面包屑导航
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 组合导航组件
+        - 主要用途
+            - 表达当前内容所在层级路径
+            - 允许用户快速返回任意上级
+            - 允许从某一级直接切换同级兄弟节点
+            - 在深层路径下保持紧凑可读
+        - 核心语义
+            - 我现在在哪里
+            - 我可以快速返回哪一层
+    - 使用场景
+        - 玄域引擎
+            - 项目
+                - 地图
+                    - 数据集
+                        - 行政区
+                            - 广东省
+            - 资源
+                - 模型
+                    - 车辆
+                        - 坦克
+        - 文件系统
+            - 项目目录
+            - 资源目录
+            - 代码目录
+        - 编辑器
+            - 对象层级
+            - 数据层级
+            - 页面层级
+    - 最终方案
+        - 方案名称
+            - 自适应可展开 Breadcrumb
+        - 来源
+            - 方案 2
+                - Hover Segment
+            - 方案 3
+                - 节点可展开
+            - 方案 4
+                - 中间层折叠
+        - 组合原则
+            - 默认保持纯文字轻量路径
+            - Hover 时显示轻背景提示可交互
+            - 支持从任一级展开同级兄弟节点
+            - 路径过长时优先折叠中间层
+            - 根节点与当前节点优先保留
+    - 默认结构
+        - Breadcrumb
+            - BreadcrumbItem
+                - Label
+                - Optional Dropdown Indicator
+            - Separator
+                - Chevron
+            - CollapsedItem
+                - Ellipsis
+            - CurrentItem
+                - Label
+    - 显示规则
+        - 普通节点
+            - 显示文字
+            - 默认无背景
+        - Hover 节点
+            - 显示浅色 Segment Background
+            - 明确可点击
+        - 当前节点
+            - 使用 Active Text
+            - 允许轻微提高字重
+            - 默认不可再次导航
+        - 可展开节点
+            - 显示轻量 Dropdown Indicator
+        - 折叠节点
+            - 显示 Ellipsis
+    - Separator
+        - 推荐形式
+            - ChevronRight
+            - 视觉字符类似
+                - ›
+        - 作用
+            - 表达父子层级
+        - 颜色
+            - Secondary / Disabled Text
+        - 原则
+            - Separator 不可抢夺视觉
+            - 禁止使用粗重箭头
+    - Hover Segment
+        - 默认
+            - 无背景
+        - Hover
+            - 显示浅色背景
+            - 轻微圆角
+        - 作用
+            - 告诉用户该路径节点可点击
+        - 原则
+            - Hover 不改变节点宽度
+            - 不推动相邻节点
+        - 触控
+            - 没有 Hover 时通过点击热区保证可操作性
+    - 节点展开
+        - 触发
+            - 点击 Dropdown Indicator
+            - 或点击节点的展开区域
+        - 弹出
+            - Sibling Menu
+        - 内容
+            - 当前节点同级兄弟项
+            - 当前项显示 Selected
+        - 点击兄弟项
+            - 直接导航至对应节点
+            - Breadcrumb 路径同步更新
+        - 用途
+            - 避免必须先返回父级再重新进入兄弟节点
+        - 原则
+            - 只展示同级节点
+            - 不在单个弹层中塞入完整树
+    - 折叠规则
+        - 触发
+            - Breadcrumb 总宽度超过可用宽度
+        - 优先保留
+            - Root
+            - 当前节点
+            - 当前节点最近的父级
+        - 优先折叠
+            - 中间较早层级
+        - 表现
+            - Ellipsis
+        - 例
+            - 项目
+                - …
+                    - 行政区
+                        - 广东省
+        - 点击 Ellipsis
+            - 显示被折叠的完整层级列表
+        - 原则
+            - 折叠不得改变真实导航层级
+            - 只改变显示方式
+    - 折叠菜单
+        - 内容
+            - 被隐藏的节点
+        - 顺序
+            - 保持真实路径顺序
+        - 点击任意节点
+            - 直接导航
+        - 当前路径
+            - 可使用层级缩进或 Separator
+        - 原则
+            - 不是普通命令菜单
+            - 只承载被折叠的路径节点
+    - 宽度策略
+        - Breadcrumb Container
+            - Width
+                - Fill
+        - BreadcrumbItem
+            - 按内容自适应
+        - 超长节点名称
+            - 使用 Ellipsis
+            - Tooltip 显示完整名称
+        - 路径总宽度不足
+            - 启动中间折叠
+        - 禁止
+            - 无限压缩每一级名称
+            - 把所有节点都缩成不可辨识短字
+    - Current Item
+        - 表现
+            - Active Text
+            - 可轻微加粗
+        - 默认行为
+            - 不重复导航
+        - 可选行为
+            - 点击展开当前节点兄弟项
+        - 原则
+            - 当前位置必须清晰
+            - 不能与上级节点视觉完全一致
+    - 交互
+        - Click 普通节点
+            - 返回对应层级
+        - Click Dropdown
+            - 展开兄弟节点菜单
+        - Click Ellipsis
+            - 展开隐藏路径
+        - Click Outside
+            - 关闭弹出层
+        - Esc
+            - 关闭弹出层
+        - 键盘
+            - Left / Right
+                - 切换 BreadcrumbItem Focus
+            - Enter
+                - 导航当前节点
+            - Down
+                - 存在兄弟节点时打开节点菜单
+            - Esc
+                - 关闭菜单
+    - 状态
+        - Default
+            - 无背景
+            - Secondary Text
+        - Hover
+            - 浅色背景
+        - Focus
+            - 明确 Focus 状态
+        - Current
+            - Active Text
+        - Expanded
+            - 保持 Hover / Active Segment
+        - Disabled
+            - 不可导航
+            - 低对比度
+    - 路径变化
+        - 用户导航到新位置
+            - Breadcrumb 自动重新生成
+        - 父级名称改变
+            - 对应路径同步更新
+        - 节点被删除
+            - 不得继续保留无效路径
+        - 原则
+            - Breadcrumb 不维护独立业务层级
+            - 始终来源于权威导航树
+    - 数据模型
+        - BreadcrumbPath
+            - Items
+        - BreadcrumbItem
+            - Id
+            - Label
+            - ParentId
+            - Route
+            - HasSiblings
+            - IsCurrent
+        - CollapsedRange
+            - StartIndex
+            - EndIndex
+        - 原则
+            - 路径顺序来源于导航模型
+            - UI 仅负责展示和折叠
+    - 颜色建议
+        - Background
+            - XY.Surface.Panel
+        - Default Text
+            - XY.Text.Secondary
+        - Active Text
+            - XY.Accent.Strong
+        - Hover Background
+            - XY.State.Color.Hover
+        - Expanded Background
+            - XY.Surface.Selected
+        - Separator
+            - XY.Divider.Default
+        - Border
+            - XY.Border.Color.Default
+    - 字体
+        - Default
+            - FontSize
+                - XY.FontSize.Auxiliary
+            - FontWeight
+                - XY.FontWeight.Regular
+        - Current
+            - FontWeight
+                - XY.FontWeight.Medium
+        - 原则
+            - 路径靠位置与 Separator 表达层级
+            - 不使用字号逐级变化
+    - 布局规范
+        - Height
+            - 建议 32～40 DIP
+        - Item Height
+            - 建议 28～32 DIP
+        - Horizontal Padding
+            - Hover Segment 约 6～10 DIP
+        - Item Gap
+            - 保持紧凑
+        - Separator Gap
+            - 约 4～8 DIP
+        - Radius
+            - XY.Radius.Control
+        - 原则
+            - 不占据过多纵向空间
+            - 适合作为 Toolbar / Content Header 的辅助导航
+    - 与其他 XYUI 控件关系
+        - Breadcrumb
+            - 可调用
+                - Menu
+                    - Sibling Menu
+                - Tooltip
+                - IconButton
+        - 可配合
+            - NavigationMenu
+            - Sidebar
+            - TreeNavigation
+            - Toolbar
+            - CommandBar
+        - 数据可来源于
+            - TreeNavigation
+            - Route
+            - Resource Hierarchy
+    - UI Tokens
+        - Breadcrumb.Height
+            - 36
+        - Breadcrumb.Item.Height
+            - 28
+        - Breadcrumb.Item.PaddingX
+            - 8
+        - Breadcrumb.Item.Radius
+            - XY.Radius.Control
+        - Breadcrumb.Text
+            - XY.Text.Secondary
+        - Breadcrumb.Current.Text
+            - XY.Accent.Strong
+        - Breadcrumb.Hover.Background
+            - XY.State.Color.Hover
+        - Breadcrumb.Expanded.Background
+            - XY.Surface.Selected
+        - Breadcrumb.Separator
+            - XY.Divider.Default
+    - UI代码
+        - Breadcrumb
+            - Height
+                - 36
+            - Orientation
+                - Horizontal
+            - Background
+                - XY.Surface.Panel
+            - OverflowMode
+                - CollapseMiddle
+        - BreadcrumbItem
+            - Height
+                - 28
+            - PaddingLeft
+                - 8
+            - PaddingRight
+                - 8
+            - FontSize
+                - XY.FontSize.Auxiliary
+            - FontWeight
+                - XY.FontWeight.Regular
+            - TextColor
+                - XY.Text.Secondary
+            - Background
+                - Transparent
+            - CornerRadius
+                - XY.Radius.Control
+        - BreadcrumbItem.Hover
+            - Background
+                - XY.State.Color.Hover
+            - TextColor
+                - XY.Accent.Strong
+        - BreadcrumbItem.Current
+            - TextColor
+                - XY.Accent.Strong
+            - FontWeight
+                - XY.FontWeight.Semibold
+        - BreadcrumbItem.Expanded
+            - Background
+                - XY.Surface.Selected
+        - BreadcrumbSeparator
+            - Icon
+                - ChevronRight
+            - Color
+                - XY.Divider.Default
+        - BreadcrumbCollapsedItem
+            - Label
+                - …
+            - Background
+                - XY.State.Color.Hover
+    - 适配规则
+        - Desktop
+            - 完整 Hover + Dropdown + Collapse
+        - Web
+            - 完整支持
+        - Tablet
+            - 扩大 Segment 热区
+        - Mobile
+            - 优先保留 Root + Ellipsis + Current
+            - 减少显示层级
+        - Compact
+            - 缩小 Padding
+            - 更早触发中间折叠
+    - 禁止项
+        - 禁止所有层级都做成胶囊按钮
+        - 禁止路径过长后横向无限撑出屏幕
+        - 禁止压缩所有节点导致文字无法识别
+        - 禁止 Dropdown 展开整个巨大树结构
+        - 禁止 Current Item 与普通上级节点完全无区别
+        - 禁止 Hover 导致路径位置移动
+        - 禁止中间折叠改变真实层级顺序
+        - 禁止 Breadcrumb 自己维护一套与真实导航不同的路径
+    - 最终结论
+        - 采用方案
+            - 方案 2 + 方案 3 + 方案 4
+            - 自适应可展开 Breadcrumb
+        - 核心机制
+            - Hover Segment
+            - Sibling Dropdown
+            - Middle Collapse
+        - 核心视觉语言
+            - 纯文字为主
+            - 轻 Hover
+            - Chevron 层级
+            - 当前项强调
+            - 深路径自动收缩
+        - 适合作为
+            - XYUI 标准 Breadcrumb
+            - 玄域项目 / 地图 / 数据 / 资源层级路径导航
+        - 后续衔接
+            - 3.12 · TreeNavigation
+    
+- 3.12 · TreeNavigation / 树形导航
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 组合导航组件
+        - 主要用途
+            - 以树状层级组织导航对象
+            - 表达父子关系
+            - 允许展开和折叠层级
+            - 允许通过节点切换当前位置或当前对象
+            - 支持深层复杂结构中的快速定位
+        - 核心语义
+            - 我当前处于树结构中的哪个节点
+            - 这个节点的父级与子级是什么
+        - 与普通 Tree 的区别
+            - Tree
+                - 侧重展示和操作树状数据
+            - TreeNavigation
+                - 侧重通过树结构进行位置和对象导航
+                - Selected 节点具有明确当前定位语义
+    - 使用场景
+        - 玄域引擎
+            - 项目结构
+            - 地图对象
+            - Dataset
+            - Layer
+            - 区域
+            - 道路
+            - 城镇
+            - 资源目录
+            - Entity Hierarchy
+        - 编辑器
+            - Hierarchy
+            - 文件树
+            - 资源树
+            - 对象树
+            - 节点图结构导航
+        - Web
+            - 复杂后台层级导航
+    - 最终方案
+        - 方案名称
+            - 轻层级线 + 动态祖先强化型
+        - 来源
+            - 方案 2
+                - 轻层级线
+            - 方案 4
+                - 动态祖先路径
+        - 组合原则
+            - 默认使用低对比度层级线提供基础结构
+            - 当前节点及其祖先路径使用更清晰层级线
+            - 非当前分支保持弱化
+            - 避免整棵树出现高对比度连线
+            - Selected 继续使用浅色背景 + Accent Bar
+    - 整体结构
+        - TreeNavigation
+            - TreeNode
+                - ExpandCollapseControl
+                - Optional Icon
+                - Label
+                - Optional Badge
+                - Optional Status
+                - Optional Trailing Action
+            - ChildRegion
+                - TreeNode
+                    - TreeNode
+            - HierarchyGuide
+                - Default Guide
+                - Active Ancestor Guide
+            - Selected Indicator
+    - 层级线
+        - Default Guide
+            - 用途
+                - 持续提供基础父子关系提示
+            - 颜色
+                - 极低对比度 Border 色
+            - 粗细
+                - 约 1 DIP
+            - 范围
+                - 只显示必要的纵向和短横向连接
+        - Active Ancestor Guide
+            - 用途
+                - 强化 Selected / Focused 节点的祖先链
+            - 颜色
+                - 比默认 Guide 更清晰
+                - 仍保持低饱和
+            - 粗细
+                - 约 1～1.5 DIP
+            - 范围
+                - 仅当前祖先路径
+        - 原则
+            - 默认线弱
+            - 焦点路径强
+            - 禁止整棵树使用高对比度连线
+    - 节点结构
+        - ExpandCollapseControl
+            - 存在子节点时显示
+            - 无子节点时预留或取消空间需保持整列对齐
+        - Icon
+            - 可选
+            - 用于表达对象类型
+        - Label
+            - 主要节点名称
+        - Badge
+            - 可选数量信息
+        - Status
+            - 可选状态提示
+        - Trailing Action
+            - 默认隐藏
+            - Hover 时可出现少量快捷操作
+    - 展开控制
+        - Collapsed
+            - ChevronRight
+        - Expanded
+            - ChevronDown
+        - Leaf
+            - 不显示 Chevron
+        - 点击 Chevron
+            - 只负责展开 / 折叠
+            - 默认不改变 Selected
+        - 点击 Label
+            - 选择 / 导航当前节点
+        - 原则
+            - 展开动作与选择动作语义分离
+        - 禁止
+            - 点击任何位置都同时展开和选择导致不可预测行为
+    - Selected 状态
+        - 表现
+            - 浅色 Selected Background
+            - 左侧 Accent Bar
+            - Active Text
+            - 当前祖先路径强化
+        - 同一 Navigation Tree
+            - 默认一个主 Selected 节点
+        - Selected 节点必须与当前内容同步
+        - 切换 Selected
+            - 旧祖先路径恢复弱 Guide
+            - 新祖先路径强化
+        - 禁止
+            - 只靠文字颜色表达 Selected
+            - Selected 后祖先关系仍难以追踪
+    - Hover
+        - 节点行显示轻量 Hover Background
+        - 可增强当前节点对应 Guide
+        - 不应像 Selected 一样强化整条祖先链
+        - Trailing Actions
+            - 可在 Hover 时显示
+        - 原则
+            - Hover 弱于 Selected
+            - 不得产生明显跳动
+    - Focus
+        - 键盘 Focus 与 Selected 分离
+        - Focus 节点
+            - 显示 Focus Outline 或相应焦点状态
+        - 若 Focus 节点不同于 Selected
+            - 不得覆盖 Selected
+        - 键盘移动时
+            - 可临时强化 Focus 节点祖先链
+    - 缩进规则
+        - 基础缩进
+            - Foundation Default = XY.Indent.PerLevel = 16 DIP
+        - Canonical
+            - XY.Indent.PerLevel = 16 DIP（Foundation 唯一真值）
+        - 深层树
+            - 不得无限使用固定大缩进导致内容被挤出
+        - 达到一定深度后
+            - 允许压缩后续缩进
+            - 或通过横向滚动处理特殊场景
+        - 原则
+            - 优先保持 Label 可读宽度
+            - 层级深度不能把文字区完全吃掉
+    - 深层级策略
+        - 浅层
+            - 标准缩进
+        - 中层
+            - 维持轻层级线
+        - 深层
+            - 允许逐步减少缩进增量
+            - Active Ancestor Guide 提供结构补偿
+        - 极深结构
+            - 考虑 Breadcrumb / Search / Flatten View
+        - 禁止
+            - 依靠几十级水平缩进无限延伸
+    - 展开与折叠
+        - 展开节点
+            - 显示直接子节点
+        - 折叠节点
+            - 隐藏所有后代
+        - 状态保持
+            - 允许记录展开状态
+        - 切换 Selected
+            - 不得无理由自动折叠其他分支
+        - 导航到隐藏深层节点
+            - 自动展开其祖先路径
+        - 原则
+            - 程序导航必须确保 Selected 节点可见
+    - 自动滚动
+        - Selected 节点不在可视区
+            - 自动滚动至可见
+        - 原则
+            - 最小必要滚动
+            - 不强制每次居中
+        - 展开节点后
+            - 保持当前视口尽量稳定
+        - 禁止
+            - 每次展开都大幅重置滚动位置
+    - 节点高度
+        - Compact
+            - 约 26～30 DIP
+        - Default
+            - 约 30～34 DIP
+        - Comfortable
+            - 约 36～40 DIP
+        - 推荐基础值
+            - 30～32 DIP
+        - 原则
+            - 根据密度模式自适应
+            - 不固定单一行高覆盖所有平台
+    - 图标规则
+        - 可选
+        - 用途
+            - 区分文件
+            - 区域
+            - 道路
+            - Layer
+            - Dataset
+            - Entity 类型
+        - 尺寸
+            - 约 14～16 DIP
+        - 颜色
+            - 默认低饱和
+        - Selected
+            - 允许 Accent 强调
+        - 禁止
+            - 每种类型使用大量高饱和颜色
+            - 图标成为主要层级表达手段
+    - Badge / Status
+        - 位置
+            - 优先 Label 右侧或 Trailing Area
+        - 用途
+            - 数量
+            - 锁定
+            - 隐藏
+            - 错误状态
+        - 原则
+            - 状态不可覆盖 Label
+            - 不得在每个节点堆满状态标记
+    - Trailing Actions
+        - 默认
+            - 隐藏或低存在感
+        - Hover
+            - 允许显示 1～2 个高频操作
+        - 例
+            - 可见
+            - 锁定
+            - More
+        - 原则
+            - 不能让 TreeNavigation 变成 Toolbar
+            - 操作过多进入 ContextMenu
+    - 右键操作
+        - Right Click
+            - 打开 ContextMenu
+        - Context Header
+            - 显示当前节点对象
+        - 常见操作
+            - 重命名
+            - 复制
+            - 移动
+            - 创建子项
+            - 删除
+        - 右键未选中节点
+            - 根据产品规则
+                - 可先将其设为 Context Target
+                - 不一定改变主 Selected
+    - 拖拽
+        - 可选能力
+            - 重新排序
+            - 改变父级
+            - 移动对象
+        - Dragging
+            - 显示 Drop Target
+        - Drop Position
+            - Before
+            - Inside
+            - After
+        - 原则
+            - Navigation 与结构编辑能力分离配置
+            - 只读 TreeNavigation 可禁用 Drag
+        - 禁止
+            - 所有 TreeNavigation 默认都可改变业务层级
+    - 搜索与过滤
+        - 可与 SearchField 配合
+        - 过滤结果
+            - 优先保持祖先路径
+            - 让用户知道命中节点属于哪里
+        - 搜索命中
+            - 允许 Highlight 文本
+        - 禁止
+            - 过滤后完全丢失结构上下文
+    - 键盘交互
+        - Up / Down
+            - 移动 Focus
+        - Right
+            - Collapsed Parent
+                - 展开
+            - Expanded Parent
+                - 进入第一个子节点
+        - Left
+            - Expanded Parent
+                - 折叠
+            - 其他节点
+                - 返回父节点
+        - Enter
+            - 激活当前节点
+        - Space
+            - 可由具体业务定义
+        - Home
+            - 跳至第一可见节点
+        - End
+            - 跳至最后可见节点
+        - * 可选
+            - 展开当前节点全部直接子级
+        - 原则
+            - 键盘行为符合成熟 Tree 导航习惯
+    - 状态模型
+        - TreeNavigationState
+            - SelectedNodeId
+            - FocusedNodeId
+            - ExpandedNodeIds
+            - HoveredNodeId
+        - Derived State
+            - SelectedAncestorIds
+            - FocusedAncestorIds
+        - 原则
+            - 祖先强化路径由 SelectedNodeId 推导
+            - 不单独保存一份视觉层级路径
+    - 数据建议
+        - TreeNode
+            - Id
+            - ParentId
+            - Label
+            - Icon
+            - Children
+            - HasChildren
+            - IsEnabled
+            - Badge
+            - Status
+            - Route
+        - 原则
+            - UI 树不复制业务实体完整数据
+            - 稳定 NodeId 作为导航引用
+    - 虚拟化
+        - 大型 Tree
+            - 必须支持 Virtualization
+        - 目标
+            - 只创建可见节点 UI
+        - 展开大量节点
+            - 避免一次生成所有视觉元素
+        - 原则
+            - TreeNavigation 不应因节点数量增长出现 O(N) 每帧布局或命中
+        - 特别适合
+            - 资源树
+            - Entity Hierarchy
+            - 大型地图对象树
+    - 颜色建议
+        - Background
+            - XY.Surface.Panel
+        - Text
+            - XY.Text.Primary
+        - Secondary Text
+            - XY.Text.Secondary
+        - Hover Background
+            - XY.State.Color.Hover
+        - Selected Background
+            - XY.Surface.Selected
+        - Selected Text
+            - XY.Accent.Strong
+        - Selected Accent
+            - XY.Accent.Default
+        - Default Guide
+            - XY.Border.Color.Subtle
+        - Active Ancestor Guide
+            - XY.Border.Color.Subtle
+        - Chevron
+            - XY.Text.Secondary
+        - Disabled
+            - XY.State.Disabled.Text
+    - 字体
+        - Node Label
+            - FontSize
+                - XY.FontSize.Auxiliary
+            - FontWeight
+                - XY.FontWeight.Regular
+        - Selected
+            - FontWeight
+                - XY.FontWeight.Medium
+        - 原则
+            - 不依赖字号变化表达层级
+            - 不同深度节点保持统一字体体系
+    - 与其他 XYUI 控件关系
+        - TreeNavigation
+            - 包含
+                - Text
+                - Icon
+                - StatusDot
+                - Badge
+                - IconButton
+                - Tooltip
+            - 可调用
+                - ContextMenu
+                - Breadcrumb
+            - 可承载于
+                - Sidebar
+                - Context Flyout
+                - NavigationDrawer
+        - 可与
+            - SearchField
+            - Toolbar
+            - CommandBar
+        - 共同组成
+            - Hierarchy / Resource Browser
+    - UI Tokens
+        - TreeNavigation.Row.Height
+            - DensityDriven
+            - Compact = XY.Density.Compact.TreeRow
+            - Comfortable = XY.Density.Comfortable.TreeRow
+        - TreeNavigation.Indent
+            - XY.Indent.PerLevel
+        - TreeNavigation.Chevron.Size
+            - XY.Icon.Size.S
+        - TreeNavigation.Icon.Size
+            - XY.Icon.Size.S
+        - TreeNavigation.Selected.AccentWidth
+            - 3
+        - TreeNavigation.Background
+            - XY.Surface.Panel
+        - TreeNavigation.Text
+            - XY.Text.Primary
+        - TreeNavigation.Hover.Background
+            - XY.State.Color.Hover
+        - TreeNavigation.Selected.Background
+            - XY.Surface.Selected
+        - TreeNavigation.Selected.Text
+            - XY.Accent.Strong
+        - TreeNavigation.Selected.Accent
+            - XY.Accent.Default
+        - TreeNavigation.Guide.Default
+            - XY.Border.Color.Subtle
+        - TreeNavigation.Guide.Active
+            - XY.Border.Color.Subtle
+    - UI代码
+        - TreeNavigation
+            - Background
+                - XY.Surface.Panel
+            - Virtualization
+                - Enabled
+        - TreeNode
+            - Height
+                - DensityDriven
+                - Compact = XY.Density.Compact.TreeRow
+                - Comfortable = XY.Density.Comfortable.TreeRow
+            - IndentPerLevel
+                - XY.Indent.PerLevel
+            - FontSize
+                - XY.FontSize.Auxiliary
+            - TextColor
+                - XY.Text.Primary
+            - Background
+                - Transparent
+        - TreeNode.Hover
+            - Background
+                - XY.State.Color.Hover
+        - TreeNode.Selected
+            - Background
+                - XY.Surface.Selected
+            - TextColor
+                - XY.Accent.Strong
+            - AccentPosition
+                - Left
+            - AccentWidth
+                - 3
+            - AccentColor
+                - XY.Accent.Default
+        - TreeHierarchyGuide
+            - StrokeWidth
+                - 1
+            - DefaultColor
+                - XY.Border.Color.Subtle
+            - ActiveAncestorColor
+                - XY.Border.Color.Subtle
+            - ActiveAncestorStrokeWidth
+                - 1.5
+        - TreeExpandControl
+            - ExpandedIcon
+                - ChevronDown
+            - CollapsedIcon
+                - ChevronRight
+            - IconColor
+                - XY.Text.Secondary
+    - 适配规则
+        - Desktop
+            - 完整层级线 + 动态祖先强化
+        - Web
+            - 完整支持
+            - 大型 Tree 启用虚拟化
+        - Tablet
+            - 扩大行高和展开按钮热区
+        - Mobile
+            - 减少同时显示的 Trailing Actions
+            - 必要时使用页面式层级导航
+        - Compact
+            - 降低 Row Height
+            - 缩进可下降至约 16
+        - Comfortable
+            - 增加 Row Height
+            - 保持层级线逻辑不变
+    - 禁止项
+        - 禁止整棵树使用高对比度粗连接线
+        - 禁止完全依靠缩进导致深层节点无法追踪
+        - 禁止层级越深无限消耗水平空间
+        - 禁止点击 Chevron 必然同时改变 Selected
+        - 禁止 Selected 与当前实际对象不同步
+        - 禁止大型树一次性创建所有节点 UI
+        - 禁止 Hover 强度超过 Selected
+        - 禁止每个节点塞入大量快捷按钮
+        - 禁止通过大量彩色图标表达层级
+        - 禁止搜索过滤后完全丢失祖先上下文
+    - 最终结论
+        - 采用方案
+            - 方案 2 + 方案 4
+            - 轻层级线 + 动态祖先强化型
+        - 核心视觉语言
+            - 默认弱层级线
+            - Selected 祖先路径强化
+            - 浅色 Selected
+            - 左侧 Accent Bar
+            - 紧凑层级
+        - 核心工程原则
+            - 结构始终可追踪
+            - 焦点路径优先
+            - 大型树必须支持虚拟化
+        - 适合作为
+            - XYUI 标准 TreeNavigation
+            - 玄域 Hierarchy / 地图对象 / Dataset / 资源树导航
+        - 后续衔接
+            - 3.13 · Pagination
+    
+- 3.13 · Pagination / 分页
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 组合导航组件
+        - 主要用途
+            - 在大量离散数据页面之间进行切换
+            - 提供当前页、邻近页、前后页与快速跳页能力
+            - 在数据视图中与总数量、每页数量等信息整合
+        - 核心语义
+            - 我现在位于数据结果的哪一页
+            - 我可以快速前往哪一页
+    - 使用场景
+        - 玄域引擎
+            - 资源搜索结果
+            - 日志历史
+            - 数据记录
+            - 调试事件
+        - 数据视图
+            - Table
+            - DataGrid
+            - List
+            - Search Results
+        - Web
+            - 后台管理
+            - 查询结果
+            - 项目列表
+            - 用户列表
+    - 最终方案
+        - 方案名称
+            - 邻近页快速跳转 + Footer 整合型
+        - 来源
+            - 方案 3
+                - 邻近页 + 快速跳转
+            - 方案 4
+                - 信息栏整合
+        - 组合原则
+            - Pagination 核心交互保持独立
+            - 默认显示当前页及有限邻近页
+            - 支持直接输入目标页
+            - 放入 Table / DataGrid 时整合为 Data Footer
+            - 不强制所有场景都显示总数量与每页数量
+    - 核心结构
+        - Pagination
+            - Previous Button
+            - Previous Neighbor Page
+            - Current Page
+            - Next Neighbor Page
+            - Next Button
+            - Jump Separator
+            - Jump Label
+            - Page Input
+            - Page Suffix
+            - Optional Total Pages
+        - DataFooter Variant
+            - Total Count
+            - Page Size Selector
+            - Flexible Spacer
+            - Pagination Compact
+    - 邻近页规则
+        - 默认显示
+            - 当前页
+            - 前一页
+            - 后一页
+        - 边界情况
+            - 第一页
+                - 显示 1
+                - 显示 2
+                - 可选显示 3
+            - 最后一页
+                - 显示最后一页
+                - 显示前一页
+                - 可选显示前两页
+        - 原则
+            - 保持当前页附近上下文
+            - 不显示长串连续数字
+            - 页数增加时组件宽度基本稳定
+    - Current Page
+        - 视觉
+            - 浅色 Selected Background
+            - Active Text
+            - 底部 Accent Line
+        - 交互
+            - 默认不可重复导航
+        - 必须与实际数据页同步
+        - 禁止
+            - 只靠 Bold 表达当前页
+            - 高饱和整块背景
+    - Previous / Next
+        - Previous
+            - 前往上一页
+        - Next
+            - 前往下一页
+        - 第一页
+            - Previous Disabled
+        - 最后一页
+            - Next Disabled
+        - 原则
+            - Disabled 状态明确
+            - 按钮不因 Disabled 改变尺寸
+    - 快速跳页
+        - 结构
+            - Jump Label
+                - 跳至
+            - Page Input
+            - Page Suffix
+                - 页
+        - 输入
+            - 只接受有效整数
+        - 范围
+            - 1 ～ TotalPages
+        - 提交方式
+            - Enter
+            - Input Commit
+        - 非法输入
+            - 不导航
+            - 显示轻量校验反馈
+        - 超范围输入
+            - 默认拒绝或限制到合法范围
+            - 具体策略保持一致
+        - 原则
+            - 不能静默跳到错误页
+            - 不能因为输入无效导致组件布局变化
+    - Total Pages
+        - 可选显示
+            - 共 N 页
+        - 位置
+            - 跳页区域右侧
+            - 或 Data Footer 信息区
+        - 原则
+            - 不是所有紧凑场景必须显示
+            - 当 Page Input 存在时建议提供总页数上下文
+    - Data Footer Variant
+        - 用途
+            - Table
+            - DataGrid
+            - 大型 List
+            - 搜索结果面板
+        - 结构
+            - Left Information Region
+                - Total Count
+                - Page Size Selector
+            - Flexible Spacer
+            - Right Pagination Region
+                - Previous
+                - Current Page / Total Pages
+                - Next
+                - Optional Jump
+        - 核心语义
+            - 左侧说明数据规模
+            - 右侧负责页面导航
+        - 原则
+            - Footer 是 Pagination 的布局变体
+            - 不是 Pagination 本体唯一表现
+    - Total Count
+        - 表现
+            - 共 N 条
+        - 字体
+            - Secondary Text
+        - 用途
+            - 帮助用户理解数据规模
+        - 原则
+            - 数据总数未知时允许隐藏
+            - 不显示虚假估算值
+    - Page Size Selector
+        - 表现
+            - 每页
+                - 25
+                - 50
+                - 100
+        - 组件
+            - Select / Dropdown
+        - 修改后
+            - 重新计算 TotalPages
+            - 尽量保持当前数据位置合理
+        - 推荐行为
+            - 以当前首条记录位置推导新页
+            - 避免无意义跳回第一页
+        - 具体业务无法稳定保持位置时
+            - 允许回第一页
+            - 但规则必须明确
+    - 布局规范
+        - Pagination Height
+            - 建议 32～36 DIP
+        - Button Size
+            - 约 32～36 DIP
+        - Page Number Width
+            - 约 32～40 DIP
+        - Page Input Width
+            - 约 48～64 DIP
+        - Gap
+            - 约 4～8 DIP
+        - Data Footer Height
+            - 建议 40～44 DIP
+        - 整体原则
+            - 紧凑
+            - 宽度稳定
+            - 当前页明显
+            - 跳页区域不抢夺主导航视觉
+    - 自适应
+        - Wide
+            - 显示邻近页
+            - 显示 Jump
+            - 可显示 Total Pages
+        - Medium
+            - 保留邻近页 + Jump
+            - 弱化辅助文字
+        - Narrow
+            - Previous
+            - Current / Total
+            - Next
+            - Jump 可进入附加操作
+        - Mobile
+            - 优先 Previous / Current / Next
+            - 避免长数字分页
+    - 交互
+        - Click Neighbor Page
+            - 直接跳转
+        - Click Previous / Next
+            - 相邻页切换
+        - Page Input Enter
+            - 跳转目标页
+        - Page Size Change
+            - 更新页面规模
+        - Keyboard
+            - Tab
+                - 依次进入可交互元素
+            - Enter
+                - 执行当前操作
+    - 状态
+        - Default
+            - 正常状态
+        - Hover
+            - 轻背景
+        - Pressed
+            - 短暂反馈
+        - Current
+            - Selected Background
+            - Accent Line
+        - Disabled
+            - 降低对比度
+            - 不可交互
+        - Loading
+            - 导航请求进行中
+            - 可暂时阻止重复提交
+    - Loading
+        - 分页切换需要异步加载时
+            - 保留当前页状态直到新数据提交成功
+        - 加载中
+            - 可在数据区显示 Loading
+            - Pagination 不应整块消失
+        - 失败
+            - 保持原页
+            - 显示错误反馈
+        - 原则
+            - 不能先切页码再加载失败导致状态不一致
+    - 状态模型
+        - PaginationState
+            - CurrentPage
+            - PageSize
+            - TotalItems
+            - TotalPages
+            - IsLoading
+        - Derived
+            - PreviousPage
+            - NextPage
+            - NeighborPages
+            - CanGoPrevious
+            - CanGoNext
+        - 原则
+            - CurrentPage 为唯一当前页状态
+            - TotalPages 根据数据计算
+            - UI 不维护独立页码副本
+    - 数据变化
+        - TotalItems 改变
+            - 重新计算 TotalPages
+        - CurrentPage 超出新范围
+            - 自动回到最后一个合法页
+        - 过滤条件变化
+            - 通常回到第一页
+            - 或由业务明确保持定位
+        - 排序变化
+            - 默认保持当前页或回第一页由业务规则决定
+        - 原则
+            - 行为必须稳定可预测
+    - 颜色建议
+        - Background
+            - XY.Surface.Panel
+        - Text
+            - XY.Text.Secondary
+        - Primary Text
+            - XY.Text.Primary
+        - Hover Background
+            - XY.State.Color.Hover
+        - Current Background
+            - XY.Surface.Selected
+        - Current Text
+            - XY.Accent.Strong
+        - Current Accent
+            - XY.Accent.Default
+        - Border
+            - XY.Border.Color.Default
+        - Disabled
+            - XY.State.Disabled.Text
+    - 字体
+        - Page Number
+            - FontSize
+                - XY.FontSize.Auxiliary
+        - Footer Information
+            - FontSize
+                - XY.FontSize.Auxiliary
+        - Current
+            - FontWeight
+                - XY.FontWeight.Medium
+        - 原则
+            - 不依赖大字号表达当前状态
+    - 与其他 XYUI 控件关系
+        - Pagination
+            - 包含
+                - IconButton
+                - Text
+                - NumberInput
+                - Select
+                - Divider
+        - 可嵌入
+            - Table Footer
+            - DataGrid Footer
+            - List Footer
+            - Search Results Footer
+    - UI Tokens
+        - Pagination.Height
+            - 34
+        - Pagination.Button.Size
+            - 34
+        - Pagination.Page.Width
+            - 36
+        - Pagination.Input.Width
+            - 52
+        - Pagination.Gap
+            - 6
+        - Pagination.Footer.Height
+            - 42
+        - Pagination.Background
+            - XY.Surface.Panel
+        - Pagination.Text
+            - XY.Text.Secondary
+        - Pagination.Current.Background
+            - XY.Surface.Selected
+        - Pagination.Current.Text
+            - XY.Accent.Strong
+        - Pagination.Current.Accent
+            - XY.Accent.Default
+        - Pagination.Border
+            - XY.Border.Color.Default
+    - UI代码
+        - Pagination
+            - Height
+                - 34
+            - Gap
+                - 6
+            - Background
+                - Transparent
+        - PaginationButton
+            - Width
+                - 34
+            - Height
+                - 34
+            - Background
+                - XY.Surface.Panel
+            - BorderColor
+                - XY.Border.Color.Default
+            - CornerRadius
+                - XY.Radius.Control
+        - PaginationButton.Hover
+            - Background
+                - XY.State.Color.Hover
+        - PaginationButton.Disabled
+            - TextColor
+                - XY.State.Disabled.Text
+            - PointerEnabled
+                - False
+        - PaginationPage.Current
+            - Background
+                - XY.Surface.Selected
+            - TextColor
+                - XY.Accent.Strong
+            - IndicatorPosition
+                - Bottom
+            - IndicatorHeight
+                - 3
+            - IndicatorColor
+                - XY.Accent.Default
+        - PaginationJumpInput
+            - Width
+                - 52
+            - Height
+                - 34
+        - DataPaginationFooter
+            - Height
+                - 42
+            - Background
+                - XY.Surface.Panel
+            - BorderTop
+                - 1
+            - BorderColor
+                - XY.Border.Color.Default
+            - LeftRegion
+                - TotalCount + PageSize
+            - RightRegion
+                - Pagination
+    - 适配规则
+        - Desktop
+            - 邻近页 + Jump
+            - DataGrid 使用 Footer Variant
+        - Web
+            - 完整支持
+        - Tablet
+            - 扩大按钮热区
+            - 可减少辅助文字
+        - Mobile
+            - Previous + Current / Total + Next
+            - Jump 可按需隐藏
+        - Compact
+            - 减小 Gap
+            - 保留点击热区
+    - 禁止项
+        - 禁止长串显示十几个连续页码
+        - 禁止页数越多组件无限变宽
+        - 禁止输入非法页码后静默跳转
+        - 禁止 Loading 失败后页码与数据不同步
+        - 禁止 Data Footer 所有信息挤成一团
+        - 禁止改变 PageSize 后出现不可解释的大幅跳转
+        - 禁止当前页仅靠粗体表达
+        - 禁止 Disabled Previous / Next 仍然响应
+        - 禁止 Pagination 本体强绑定 Table
+    - 最终结论
+        - 采用方案
+            - 方案 3 + 方案 4
+            - 邻近页快速跳转 + Footer 整合型
+        - 核心交互
+            - 邻近页
+            - Previous / Next
+            - 直接跳页
+        - 数据视图变体
+            - Total Count
+            - Page Size
+            - Compact Pagination Footer
+        - 核心视觉语言
+            - 紧凑
+            - 浅色
+            - 当前页 Accent
+            - 稳定宽度
+        - 适合作为
+            - XYUI 标准 Pagination
+            - Table / DataGrid 数据分页规范
+        - 后续衔接
+            - 3.14 · Steps
+    
+- 3.14 · Steps / 步骤导航
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 组合导航组件
+        - 主要用途
+            - 表达具有明确先后顺序的多步骤流程
+            - 显示当前步骤
+            - 显示已完成步骤
+            - 显示待执行步骤
+            - 帮助用户理解整体流程进度
+        - 核心语义
+            - 我现在进行到哪一步
+            - 之前完成了什么
+            - 后面还有什么
+        - 与 Tabs 的区别
+            - Tabs
+                - 多个平级内容之间切换
+            - Steps
+                - 多个具有先后顺序的流程阶段
+                - 通常存在完成状态
+                - 通常存在当前步骤
+    - 使用场景
+        - 玄域引擎
+            - 创建项目
+                - 地图设置
+                - 数据配置
+                - 验证
+                - 完成
+            - 导入资源
+                - 预处理
+                - 映射
+                - 验证
+                - 提交
+        - 桌面应用
+            - Wizard
+            - 复杂配置向导
+            - 导入导出流程
+            - 发布流程
+        - Web
+            - 注册流程
+            - 创建流程
+            - 配置流程
+        - Mobile
+            - 多步骤表单
+            - 引导流程
+    - 最终方案
+        - 方案名称
+            - 横向节点 + 纵向流程自适应型
+        - 来源
+            - 方案 1
+                - 圆点连接线型
+            - 方案 4
+                - 纵向流程型
+        - 组合原则
+            - 宽度充足时使用横向圆点连接线
+            - 窄宽度时切换为纵向流程
+            - 需要较长步骤描述时优先纵向
+            - 横向与纵向共用同一状态模型
+            - 切换布局不得改变实际流程状态
+    - 状态体系
+        - Completed
+            - 已完成
+        - Current
+            - 当前步骤
+        - Pending
+            - 尚未开始
+        - Optional
+            - 可选步骤
+        - Disabled
+            - 当前不可进入
+        - Error
+            - 步骤执行失败
+        - Warning
+            - 存在需要处理的问题
+    - 横向模式
+        - 适用
+            - Desktop Wide
+            - Web Wide
+            - 步骤数量较少
+            - 步骤名称较短
+        - 结构
+            - StepNode
+            - Connector
+            - StepNode
+            - Connector
+            - StepNode
+        - StepNode
+            - State Indicator
+            - Label
+            - Optional Number
+        - Connector
+            - 连接相邻步骤
+            - 表达流程方向与完成进度
+    - 纵向模式
+        - 适用
+            - Narrow
+            - Mobile
+            - Sidebar
+            - 步骤名称较长
+            - 需要辅助描述
+        - 结构
+            - StepNode
+                - Label
+                - Optional Description
+            - Vertical Connector
+            - StepNode
+                - Label
+                - Optional Description
+        - 特点
+            - 允许每一步显示更多说明
+            - 不受横向宽度限制
+    - Completed
+        - 节点
+            - 使用 Accent Fill
+        - 图标
+            - Check
+        - 文字
+            - Primary 或 Secondary Text
+        - Connector
+            - 当前步骤之前的连接线使用 Accent
+        - 交互
+            - 根据流程规则允许返回已完成步骤
+    - Current
+        - 节点
+            - Accent Border
+            - 浅色内部背景
+            - 中心 Accent Dot
+        - 文字
+            - Active Text
+            - 适度提高字重
+        - 描述
+            - 纵向模式下允许显示
+        - 原则
+            - 必须是最醒目的单个步骤
+            - 不得与 Completed 混淆
+    - Pending
+        - 节点
+            - Surface Background
+            - Secondary Border
+        - 文字
+            - Disabled / Secondary Text
+        - Connector
+            - Secondary Border Color
+        - 原则
+            - 可见但视觉弱化
+    - Error
+        - 用途
+            - 步骤执行失败
+            - 阻止继续流程
+        - 表现
+            - 低饱和 Error Border / Icon
+            - 避免大面积鲜红
+        - 文字
+            - 保持可读
+        - 交互
+            - 点击可返回错误步骤
+            - 或根据流程规则保持当前 Error
+    - Warning
+        - 用途
+            - 流程允许继续但存在异常
+        - 表现
+            - 低饱和 Warning 标记
+        - 原则
+            - 不能与 Current Accent 混淆
+    - 横向连接线
+        - 位置
+            - 相邻节点中心之间
+        - 高度
+            - 约 1～2 DIP
+        - Completed Segment
+            - Accent
+        - Pending Segment
+            - Border / Secondary
+        - 原则
+            - 连接线从节点边缘开始
+            - 不穿过节点本体
+            - 不使用粗重进度条
+    - 纵向连接线
+        - 位置
+            - 步骤节点中心纵向连接
+        - 宽度
+            - 约 1～2 DIP
+        - Completed Segment
+            - Accent
+        - Pending Segment
+            - Border
+        - 原则
+            - 与横向模式共享状态颜色
+    - 步骤编号
+        - Completed
+            - 优先显示 Check
+        - Current
+            - 可显示 Current Dot
+            - 或步骤编号
+        - Pending
+            - 可显示步骤编号
+        - 原则
+            - 编号主要帮助理解顺序
+            - 不强制所有流程显示数字
+    - 步骤名称
+        - 横向模式
+            - 保持简短
+            - 建议一行
+        - 纵向模式
+            - 允许较长名称
+        - 超长
+            - 允许合理换行
+        - 禁止
+            - 依赖 Tooltip 才知道主要步骤名称
+    - 步骤描述
+        - 横向模式
+            - 默认隐藏
+            - 必要时 Tooltip
+        - 纵向模式
+            - 允许直接显示
+        - 用途
+            - 说明该步骤需要完成什么
+        - 原则
+            - 描述弱于主 Label
+            - 避免长段说明
+    - 导航规则
+        - Current
+            - 表示当前活动步骤
+        - Completed
+            - 是否允许点击返回
+                - 由流程配置决定
+        - Pending
+            - 默认不可直接跳转
+            - 允许自由步骤流程可配置
+        - Disabled
+            - 不可导航
+        - 原则
+            - 视觉组件不自行决定业务跳转权限
+    - 顺序规则
+        - Steps 必须具有稳定顺序
+        - 流程运行过程中
+            - 不得随意重新排序已完成步骤
+        - 动态步骤
+            - 允许根据业务条件添加或跳过
+        - Skipped
+            - 可使用独立弱化状态
+        - 原则
+            - 最终状态应能解释用户实际经历的流程
+    - 返回规则
+        - Linear Flow
+            - 允许返回 Completed
+            - 返回后可能使后续步骤进入 Pending
+        - Nonlinear Review Flow
+            - 允许查看已完成步骤而不破坏流程
+        - 原则
+            - 必须由流程模型决定
+            - Steps 只负责表达
+    - 响应式切换
+        - Wide
+            - Horizontal
+        - Medium
+            - Horizontal
+            - 必要时减少描述和间距
+        - Narrow
+            - Vertical
+        - Mobile
+            - Vertical
+        - 切换条件
+            - 容器宽度
+            - 步骤数量
+            - 步骤标题长度
+            - 是否存在 Description
+        - 原则
+            - 自适应而不是固定单一方向
+            - 紧凑就紧凑
+            - 宽松就宽松
+    - 布局规范
+        - Horizontal Step Node
+            - 约 22～28 DIP
+        - Vertical Step Node
+            - 约 20～24 DIP
+        - Horizontal Gap
+            - 根据可用宽度自适应
+        - Vertical Gap
+            - 约 24～40 DIP
+        - Label Gap
+            - 约 8～12 DIP
+        - Current Node
+            - 可比普通节点增加约 1～2 DIP
+        - 原则
+            - 不靠巨大节点强调状态
+            - 优先保持整体流程紧凑
+    - 交互
+        - Mouse
+            - Hover 可导航 Completed
+                - 显示 Hover
+            - Click
+                - 根据流程权限进入步骤
+        - Keyboard
+            - Left / Right
+                - 横向切换 Focus
+            - Up / Down
+                - 纵向切换 Focus
+            - Enter / Space
+                - 进入允许导航的步骤
+        - Touch
+            - 扩大节点与 Label 的整体热区
+        - 原则
+            - 不能要求用户精确点击小圆点
+    - 状态模型
+        - StepsState
+            - Steps
+            - CurrentStepId
+        - StepState
+            - Id
+            - Label
+            - Description
+            - Order
+            - Status
+            - IsNavigable
+            - IsOptional
+        - Status
+            - Completed
+            - Current
+            - Pending
+            - Error
+            - Warning
+            - Skipped
+            - Disabled
+        - 原则
+            - CurrentStepId 为唯一当前步骤状态源
+            - 视觉状态根据流程状态推导
+    - 流程完成
+        - 最后步骤完成
+            - 所有 Connector 进入 Completed
+            - 最终 Step 显示 Completed
+        - 可选
+            - 显示整体 Completion 状态
+        - 原则
+            - 不额外制造与最后 Step 冲突的状态
+    - 颜色建议
+        - Background
+            - XY.Surface.Panel
+        - Completed
+            - XY.Accent.Default
+        - Current Border
+            - XY.Border.Color.Default
+        - Current Background
+            - XY.Surface.Selected
+        - Current Text
+            - XY.Accent.Strong
+        - Pending Border
+            - XY.Border.Color.Subtle
+        - Pending Text
+            - XY.State.Disabled.Text
+        - Completed Connector
+            - XY.Border.Color.Subtle
+        - Pending Connector
+            - XY.Border.Color.Subtle
+    - 字体
+        - Step Label
+            - FontSize
+                - XY.FontSize.Auxiliary
+        - Current
+            - FontWeight
+                - XY.FontWeight.Semibold
+        - Description
+            - FontSize
+                - XY.FontSize.Caption
+            - TextColor
+                - Secondary Text
+        - 原则
+            - 不通过巨大字体突出当前步骤
+    - 与其他 XYUI 控件关系
+        - Steps
+            - 包含
+                - Icon
+                - Text
+                - Status
+                - Connector
+            - 可控制
+                - Form
+                - Dialog
+                - Wizard Content
+            - 可配合
+                - Progress
+                - Button
+                - Navigation Controls
+        - 注意
+            - Steps 表达离散流程阶段
+            - Progress 表达连续完成比例
+    - UI Tokens
+        - Steps.Node.Size
+            - 24
+        - Steps.Node.CurrentSize
+            - 26
+        - Steps.Connector.Width
+            - 2
+        - Steps.Horizontal.LabelGap
+            - 10
+        - Steps.Vertical.Gap
+            - 32
+        - Steps.Completed
+            - XY.Accent.Default
+        - Steps.Current.Background
+            - XY.Surface.Selected
+        - Steps.Current.Text
+            - XY.Accent.Strong
+        - Steps.Pending.Border
+            - XY.Border.Color.Subtle
+        - Steps.Pending.Text
+            - XY.State.Disabled.Text
+        - Steps.Pending.Connector
+            - XY.Border.Color.Subtle
+    - UI代码
+        - Steps
+            - Orientation
+                - Adaptive
+            - WideOrientation
+                - Horizontal
+            - NarrowOrientation
+                - Vertical
+        - StepNode
+            - Size
+                - 24
+            - FontSize
+                - XY.FontSize.Auxiliary
+        - StepNode.Completed
+            - Background
+                - XY.Surface.Panel
+            - Icon
+                - Check
+            - IconColor
+                - COMPONENT_SPECIFIC_CONTRAST_FOREGROUND [GAP:XYUI3-GAP-001]
+        - StepNode.Current
+            - Size
+                - 26
+            - Background
+                - XY.Surface.Selected
+            - BorderWidth
+                - XY.Border.Width.Strong
+            - BorderColor
+                - XY.Border.Color.Default
+            - InnerIndicator
+                - Dot
+            - InnerIndicatorColor
+                - XY.Accent.Default
+            - TextColor
+                - XY.Accent.Strong
+        - StepNode.Pending
+            - Background
+                - XY.Surface.Panel
+            - BorderWidth
+                - XY.Border.Width.Default
+            - BorderColor
+                - XY.Border.Color.Subtle
+            - TextColor
+                - XY.State.Disabled.Text
+        - StepConnector.Completed
+            - Color
+                - XY.Border.Color.Subtle
+            - Width
+                - 2
+        - StepConnector.Pending
+            - Color
+                - XY.Border.Color.Subtle
+            - Width
+                - 2
+    - 适配规则
+        - Desktop Wide
+            - 横向圆点连接线
+        - Desktop Narrow
+            - 根据实际宽度转纵向
+        - Web
+            - Container Query 自适应方向
+        - Tablet
+            - 横向或纵向根据内容决定
+        - Mobile
+            - 优先纵向
+        - 步骤带 Description
+            - 优先纵向
+        - 步骤数量较多
+            - 优先纵向或压缩横向
+    - 禁止项
+        - 禁止所有场景固定使用横向导致标题挤成一团
+        - 禁止所有场景固定纵向浪费桌面空间
+        - 禁止 Completed / Current / Pending 只靠文字区分
+        - 禁止用巨大彩色圆点占据大量空间
+        - 禁止 Pending 默认可以随意跳过流程约束
+        - 禁止响应式方向切换导致 Current 状态丢失
+        - 禁止横向和纵向使用两套不同状态颜色
+        - 禁止错误状态使用大面积高饱和红色
+        - 禁止小圆点成为唯一点击热区
+    - 最终结论
+        - 采用方案
+            - 方案 1 + 方案 4
+            - 横向节点 + 纵向流程自适应型
+        - 桌面默认
+            - 圆点连接线横向 Steps
+        - 窄屏 / 移动端
+            - 纵向 Steps
+        - 核心状态
+            - Completed
+            - Current
+            - Pending
+        - 核心原则
+            - 流程语义统一
+            - 布局随空间变化
+            - 状态不随布局变化
+        - 适合作为
+            - XYUI 标准 Steps
+            - 创建项目 / 导入 / 配置 / 发布等流程导航
+        - 后续衔接
+            - 3.15 · Toolbar
+    
+- 3.15 · Toolbar / 工具栏
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 组合导航与命令组件
+        - 主要用途
+            - 常驻展示当前工作区最高频工具与命令
+            - 降低高频操作访问成本
+            - 组织工具模式、命令与快速设置
+        - 核心语义
+            - 当前工作区最常用的工具入口
+        - 与 CommandBar 的区别
+            - Toolbar
+                - 偏高频工具
+                - 大量 Icon Tool
+                - 可存在持续激活工具状态
+            - CommandBar
+                - 偏页面级主要命令
+                - 更强调操作名称与命令行为
+    - 使用场景
+        - 玄域引擎
+            - 选择
+            - 移动
+            - 旋转
+            - 缩放
+            - 区域
+            - 道路
+            - 吸附
+            - 网格
+        - 编辑器
+            - Viewport Tools
+            - Object Tools
+            - Document Tools
+            - Debug Tools
+        - DCC
+            - 建模工具
+            - 编辑工具
+            - 视图工具
+    - 最终方案
+        - 方案名称
+            - 极简连续 + 当前工具强化 + 自适应 Toolbar
+        - 来源
+            - 方案 1
+                - 极简连续型
+            - 方案 3
+                - 当前工具强化型
+            - 方案 4
+                - 自适应工具栏型
+        - 组合原则
+            - 默认视觉使用极简连续平面
+            - 不长期显示独立按钮边框
+            - 当前激活工具使用明确 Selected 状态
+            - 根据空间自动切换 Icon + Label / Icon Only / Overflow
+    - 默认方案
+        - Canonical Default
+            - 极简连续 Toolbar
+            - Icon 为主
+            - 少量必要文字
+            - 轻 Separator
+            - 当前工具 Selected Background + Accent Indicator
+    - Variants
+        - IconOnly
+            - 仅显示图标
+            - 适合高密度编辑器
+        - IconLabel
+            - 图标 + 文字
+            - 适合宽松空间与低学习成本场景
+        - Compact
+            - 缩小 Padding
+            - 保留完整热区
+        - Overflow
+            - 低优先级工具进入 More Menu
+        - Optional TextToolbar
+            - 适合文字语义强于图标的操作组
+    - Optional Slots
+        - LeadingArea
+            - 可放 Workspace / Mode 信息
+        - ToolGroups
+            - 一个或多个 ToolGroup
+        - Separator
+            - 可选
+        - InlineControl
+            - Select
+            - Toggle
+            - SplitButton
+            - Numeric Control
+        - OverflowButton
+            - 可选
+        - TrailingArea
+            - 可放辅助状态与全局操作
+    - Responsive Variants
+        - Wide
+            - Icon + Label 可同时显示
+            - 保留完整工具
+        - Medium
+            - 主要工具保留文字
+            - 次要工具转 Icon Only
+        - Compact
+            - 主要工具 Icon Only
+            - 低优先级进入 Overflow
+        - Narrow
+            - 仅保留关键工具
+            - 其余进入 More
+        - 原则
+            - 按优先级收缩
+            - 禁止简单从右向左随机隐藏
+    - 结构
+        - Toolbar
+            - ToolGroup
+                - ToolButton
+                    - Icon
+                    - Optional Label
+                - ToggleTool
+                    - Icon
+                    - Optional Label
+                - SplitTool
+                - Primary Action
+                - Dropdown Trigger
+            - Separator
+            - Inline Control
+            - Flexible Spacer
+            - Overflow
+    - Tool 类型
+        - Command Tool
+            - 点击后执行一次命令
+        - Mode Tool
+            - 激活后持续成为当前工具
+            - 例
+                - 选择
+                - 移动
+                - 旋转
+                - 缩放
+        - Toggle Tool
+            - 打开 / 关闭某项功能
+            - 例
+                - 网格
+                - 吸附
+        - Split Tool
+            - 主操作 + 更多选项
+        - Inline Control
+            - 直接嵌入 Select / Numeric / Toggle 等
+    - 当前工具状态
+        - 适用于
+            - Mode Tool
+        - 表现
+            - 浅色 Selected Background
+            - Accent Indicator
+            - Accent Icon
+            - 必要时 Active Text
+        - 原则
+            - 必须明显强于 Hover
+            - 不能只靠图标颜色
+            - 当前工具切换后立即同步
+        - 互斥 ToolGroup
+            - 同一时间通常只有一个 Mode Tool Active
+    - Hover
+        - 默认工具
+            - 轻 Hover Background
+        - Selected Tool
+            - 保持 Selected
+            - Hover 只做轻增强
+        - 禁止
+            - Hover 强于 Active
+            - Hover 导致尺寸变化
+    - Separator
+        - 用途
+            - 分隔不同 ToolGroup
+        - 视觉
+            - 1 DIP
+            - 高度低于 Toolbar
+        - 原则
+            - 优先使用 Separator
+            - 不为每个 Group 长期画大底板
+        - 大量 Group
+            - 交由 ToolGroup 规则进一步组织
+    - 工具标签
+        - Icon Only
+            - Tooltip 必须提供完整名称
+        - Icon + Label
+            - Label 保持短
+        - 禁止
+            - 强行显示很长工具名称
+            - 使用不明确单字缩写代替正式图标
+    - Overflow
+        - 触发
+            - 空间不足
+        - 内容
+            - 低优先级工具
+            - 低频命令
+        - 排序
+            - 保持原逻辑组关系
+        - 原则
+            - 不能随机隐藏
+            - 不能把当前 Active Tool 收入 Overflow
+            - 不能隐藏关键 Undo / Mode 等核心能力
+    - 工具优先级
+        - Critical
+            - 始终保留
+        - Primary
+            - 尽量保留
+        - Secondary
+            - 空间不足可进入 Overflow
+        - Contextual
+            - 仅特定模式显示
+        - 原则
+            - 响应式布局依据优先级
+    - 布局规范
+        - Toolbar Height
+            - 由 XY.Density.Compact.Toolbar / XY.Density.Comfortable.Toolbar 驱动
+        - Tool Hit Area
+            - 建议 32～36 DIP
+        - Icon Size
+            - XY.Icon.Size.M
+        - Horizontal Gap
+            - 约 2～4 DIP
+        - Group Gap
+            - 通过 Separator 控制
+        - Selected Radius
+            - XY.Radius.Toolbar
+        - 原则
+            - 高密度
+            - 连续
+            - 不制造按钮墙
+    - 交互
+        - Mouse
+            - Hover
+                - 显示反馈
+            - Click Command
+                - 执行
+            - Click Mode
+                - 激活工具
+            - Click Toggle
+                - 切换状态
+        - Keyboard
+            - 允许 Tab Focus
+            - 工具快捷键直接激活
+        - Touch
+            - 扩大命中区域
+            - 减少同时显示工具数量
+    - Tooltips
+        - Icon Only 模式
+            - 必须存在
+        - 内容
+            - 工具名称
+            - Optional Shortcut
+            - Optional 简短说明
+        - Delay
+            - 保持统一
+        - 原则
+            - Tooltip 不代替清晰图标设计
+    - 状态模型
+        - ToolbarState
+            - ActiveToolId
+            - VisibleTools
+            - OverflowTools
+            - Density
+        - ToolDefinition
+            - Id
+            - Label
+            - Icon
+            - Type
+            - GroupId
+            - Priority
+            - IsEnabled
+            - IsVisible
+            - Shortcut
+        - 原则
+            - ActiveToolId 为持续工具唯一状态源
+            - 响应式只改变展示位置
+            - 不能改变业务工具状态
+    - 与其他 XYUI 控件关系
+        - Toolbar
+            - 包含
+                - ToolGroup
+                - IconButton
+                - ToggleButton
+                - SplitButton
+                - Select
+                - Tooltip
+                - Separator
+        - 可配合
+            - Tabs
+            - Breadcrumb
+            - CommandBar
+            - Viewport
+        - Overflow 调用
+            - Menu
+            - CommandPalette
+    - UI Tokens
+        - Toolbar.Height
+            - DensityDriven
+            - Compact = XY.Density.Compact.Toolbar
+            - Comfortable = XY.Density.Comfortable.Toolbar
+        - Toolbar.Tool.Size
+            - 34
+        - Toolbar.Icon.Size
+            - XY.Icon.Size.M
+        - Toolbar.Gap
+            - 2
+        - Toolbar.Selected.Background
+            - XY.Surface.Selected
+        - Toolbar.Selected.Icon
+            - XY.Accent.Default
+        - Toolbar.Selected.Text
+            - XY.Accent.Strong
+        - Toolbar.Hover.Background
+            - XY.State.Color.Hover
+        - Toolbar.Separator
+            - XY.Divider.Default
+        - Toolbar.Background
+            - XY.Surface.Toolbar
+    - UI代码
+        - Toolbar
+            - Height
+                - DensityDriven
+                - Compact = XY.Density.Compact.Toolbar
+                - Comfortable = XY.Density.Comfortable.Toolbar
+            - Background
+                - XY.Surface.Toolbar
+            - Orientation
+                - Horizontal
+            - ResponsiveMode
+                - Adaptive
+        - ToolbarTool
+            - Width
+                - Auto
+            - MinHitWidth
+                - 34
+            - Height
+                - 34
+            - IconSize
+                - XY.Icon.Size.M
+            - Background
+                - Transparent
+            - CornerRadius
+                - XY.Radius.Toolbar
+        - ToolbarTool.Hover
+            - Background
+                - XY.State.Color.Hover
+        - ToolbarTool.Active
+            - Background
+                - XY.Surface.Selected
+            - IconColor
+                - XY.Accent.Default
+            - TextColor
+                - XY.Accent.Strong
+            - IndicatorColor
+                - XY.Accent.Default
+        - ToolbarSeparator
+            - Width
+                - 1
+            - Color
+                - XY.Divider.Default
+        - ToolbarOverflow
+            - Icon
+                - MoreHorizontal
+            - Visibility
+                - Adaptive
+    - 适配规则
+        - Desktop Wide
+            - Icon + Label / Icon 混合
+        - Desktop Default
+            - Icon 为主
+        - Desktop Compact
+            - Icon Only + Overflow
+        - Web
+            - 根据 Container Width 自适应
+        - Tablet
+            - 减少常驻工具
+            - 扩大热区
+        - Mobile
+            - 仅保留核心操作
+            - 其余进入 More / Bottom Tool Sheet
+    - 禁止项
+        - 禁止每个工具长期显示明显按钮边框
+        - 禁止所有工具无差别进入同一视觉层级
+        - 禁止窗口变窄时简单裁掉右侧工具
+        - 禁止当前 Active Tool 被放进 Overflow
+        - 禁止工具优先级完全由排列位置隐式决定
+        - 禁止 Icon Only 却没有 Tooltip
+        - 禁止 Selected 仅靠图标颜色表达
+        - 禁止大量 Group 使用大面积浅色卡片
+        - 禁止响应式变化导致 ActiveToolId 改变
+    - 最终结论
+        - 采用方案
+            - 方案 1 + 方案 3 + 方案 4
+            - 极简连续 + 当前工具强化 + 自适应 Toolbar
+        - Canonical Default
+            - 极简连续型
+        - 核心状态
+            - 当前 Mode Tool 明确强化
+        - 核心响应机制
+            - Icon + Label
+                - → Icon Only
+                    - → Overflow
+        - 适合作为
+            - XYUI 标准 Toolbar
+            - 玄域编辑器高频工具栏
+        - 后续衔接
+            - 3.16 · ToolGroup
+    
+- 3.16 · ToolGroup / 工具组
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 组合工具容器
+        - 主要用途
+            - 将语义相关的工具组织成稳定逻辑组
+            - 帮助用户快速扫描 Toolbar
+            - 控制工具之间的分隔、互斥与响应式收缩
+            - 在复杂工作区中允许部分工具组折叠
+        - 核心语义
+            - 这些工具属于同一功能类别
+        - 与 Toolbar 的区别
+            - Toolbar
+                - 负责整条工具栏布局
+                - 负责响应式与 Overflow
+            - ToolGroup
+                - 负责一组相关工具的内部关系
+                - 负责组边界
+                - 负责互斥状态
+                - 可负责组级折叠
+    - 使用场景
+        - 玄域引擎
+            - 变换
+                - 选择
+                - 移动
+                - 旋转
+                - 缩放
+            - 地图绘制
+                - 区域
+                - 道路
+                - 城镇
+            - 辅助
+                - 吸附
+                - 网格
+                - 测量
+        - 编辑器
+            - Viewport Tools
+            - Drawing Tools
+            - Debug Tools
+            - View Tools
+    - 最终方案
+        - 组件模型
+            - Canonical Default
+                - 方案 1 · Separator Group
+            - Default Interaction Enhancement
+                - 方案 2 · Hover Group Region
+            - Optional Variant
+                - 方案 4 · Collapsible ToolGroup
+            - 不纳入
+                - 方案 3 · Group Label 型
+        - 设计原则
+            - 默认不长期显示组底板
+            - 组与组之间通过轻量 Separator 区分
+            - Hover 某组时允许显示极淡 Group Region
+            - 工具数量特别多时允许切换 Collapsible Variant
+            - 不通过额外标题行增加 Toolbar 高度
+    - Canonical Default
+        - 名称
+            - Separator Group
+        - 结构
+            - Tool
+            - Tool
+            - Tool
+            - Separator
+            - Tool
+            - Tool
+        - 视觉
+            - 默认背景透明
+            - 组间使用 1 DIP Separator
+            - 保持 Toolbar 连续平面
+        - 适用
+            - 大多数桌面 Toolbar
+            - 高密度编辑器
+            - 玄域主工具栏
+    - Hover Group Region
+        - 类型
+            - 默认交互增强
+        - 触发
+            - Pointer 进入某个 ToolGroup
+        - 表现
+            - 整个 Group 显示极浅背景
+            - 轻微圆角
+        - 用途
+            - 临时强调该组范围
+            - 帮助用户理解相邻工具属于同一组
+        - Pointer 离开
+            - 背景恢复透明
+        - 原则
+            - Hover Region 不改变尺寸
+            - 不推动其他工具
+            - 弱于内部 Tool Hover / Active 状态
+        - 触屏
+            - 无 Hover 时不依赖该机制表达组结构
+            - Separator 仍提供基础分组
+    - Collapsible Variant
+        - 用途
+            - 工具数量非常多
+            - 专业工作区
+            - 用户需要主动管理 Toolbar 空间
+        - 状态
+            - Expanded
+            - Collapsed
+        - Expanded
+            - 显示组内工具
+            - 可显示轻量 Collapse Trigger
+        - Collapsed
+            - 整组缩为 Group Trigger
+            - 点击后通过 Flyout / Menu 显示组内工具
+        - 原则
+            - 不是所有 ToolGroup 默认可折叠
+            - 由 Toolbar / Workspace 配置决定
+            - 关键高频工具组默认保持展开
+        - 禁止
+            - 自动把当前 Active Tool 所在组折叠到不可见
+    - Collapsed Trigger
+        - 内容
+            - 代表性 Group Icon
+            - Optional Short Label
+            - Chevron / Disclosure Indicator
+        - 点击
+            - 打开组内容
+        - Tooltip
+            - 显示完整 Group 名称
+        - 若组内存在 Active Tool
+            - Trigger 必须体现 Active 状态
+        - 原则
+            - 折叠后仍能知道当前工具属于哪个组
+    - 工具组类型
+        - MutuallyExclusive
+            - 互斥工具组
+            - 例
+                - 选择
+                - 移动
+                - 旋转
+                - 缩放
+            - 同一时间一个 Active Tool
+        - IndependentCommands
+            - 多个独立命令
+            - 点击一次执行
+        - Toggles
+            - 多个可同时开启状态
+            - 例
+                - 网格
+                - 吸附
+        - Mixed
+            - 允许混合
+            - 但应谨慎使用
+        - 原则
+            - ToolGroup 类型必须由工具语义确定
+    - 互斥规则
+        - MutuallyExclusive
+            - 激活新工具
+                - 自动取消旧 Active Tool
+        - ActiveToolId
+            - 组内唯一状态源
+        - 当前 Active Tool
+            - 使用 Toolbar Active 视觉
+        - 禁止
+            - 视觉上出现两个互斥 Active Tool
+    - 组边界
+        - Default
+            - Separator
+        - Hover
+            - 可增加 Group Region
+        - Collapsed
+            - 通过独立 Trigger 表达
+        - Separator
+            - 宽度
+                - 1 DIP
+            - 高度
+                - 低于 Toolbar
+            - 颜色
+                - Border
+        - 原则
+            - 禁止使用粗边框
+            - 禁止每组长期显示卡片底板
+    - 内部间距
+        - 工具之间
+            - 约 2～4 DIP
+        - 组边缘 Padding
+            - 约 4～8 DIP
+        - 组与组
+            - Separator + Gap
+        - 原则
+            - 组内紧
+            - 组间稍松
+            - 通过空间而不是大色块表达结构
+    - Hover 优先级
+        - Toolbar Background
+            - 最低
+        - Group Hover Region
+            - 轻
+        - Tool Hover
+            - 更明确
+        - Active Tool
+            - 最高
+        - 原则
+            - 不能让 Group Hover 覆盖 Active Tool
+    - Responsive
+        - Wide
+            - 全部标准展开
+        - Medium
+            - 保持主要 ToolGroup
+            - 次要工具转 Icon Only
+        - Compact
+            - 允许部分低优先级 ToolGroup 使用 Collapsed Variant
+        - Narrow
+            - 低优先级 Group 可整体进入 Toolbar Overflow
+        - 原则
+            - 先压缩工具表达
+            - 再折叠组
+            - 最后才进入全局 Overflow
+    - 折叠优先级
+        - Critical Group
+            - 不得自动折叠
+        - Primary Group
+            - 尽量保持展开
+        - Secondary Group
+            - 可折叠
+        - Contextual Group
+            - 无关模式下直接隐藏
+        - 原则
+            - 不能简单从右往左折叠
+    - Active Tool 与响应式
+        - 当前 Active Tool
+            - 必须始终有可见入口
+        - 若其 Group 原本可折叠
+            - 可以
+                - 保持组展开
+                - 或在 Collapsed Trigger 上显示 Active 状态
+        - 进入 Toolbar Overflow
+            - 仅当产品明确允许
+            - 仍需外部显示当前工具状态
+        - 推荐
+            - Active Tool 所在 Group 优先保持可见
+    - Group Flyout
+        - 触发
+            - 点击 Collapsed Trigger
+        - 内容
+            - 组内完整工具
+        - 布局
+            - 紧凑 Tool Grid
+            - 或 Vertical Tool List
+        - 状态
+            - 当前 Active Tool 保持 Selected
+        - Click Tool
+            - 执行或激活
+            - 根据工具类型决定是否自动关闭 Flyout
+        - Esc
+            - 关闭
+        - Click Outside
+            - 关闭
+        - 原则
+            - 不复制另一套工具状态
+        - Optional Slots
+            - GroupLeading
+                - Optional Group Icon
+            - Tools
+                - 必需
+            - SeparatorAfter
+                - Optional
+            - CollapseTrigger
+                - Collapsible Variant
+            - OverflowIndicator
+                - Optional
+    - Variations
+        - Default
+            - Separator Group
+        - HoverAware
+            - Separator + Hover Region
+        - Collapsible
+            - Separator + Optional Group Collapse
+        - CompactCollapsed
+            - Group Trigger + Flyout
+        - 不提供
+            - 常驻 Group Label Header
+    - 状态模型
+        - ToolGroupState
+            - GroupId
+            - Type
+            - IsCollapsed
+            - ActiveToolId
+            - IsHovered
+        - ToolGroupDefinition
+            - Id
+            - Tools
+            - Priority
+            - IsCollapsible
+            - DefaultCollapsed
+            - RepresentativeIcon
+            - ShortLabel
+        - 原则
+            - 折叠状态与 ActiveToolId 分离
+            - 折叠不得取消当前工具
+    - 布局规范
+        - Group Height
+            - 继承 Toolbar
+        - Tool Gap
+            - 2～4 DIP
+        - Group PaddingX
+            - 4～6 DIP
+        - Separator Gap
+            - 6～8 DIP
+        - Hover Radius
+            - XY.Radius.Control
+        - Collapsed Trigger Height
+            - 与普通 Tool Hit Area 一致
+    - 颜色建议
+        - Group Background
+            - Transparent
+        - Group Hover Background
+            - XY.State.Color.Hover
+        - Separator
+            - XY.Divider.Default
+        - Active Background
+            - XY.Surface.Selected
+        - Active
+            - XY.Accent.Default
+        - Default Text / Icon
+            - XY.Text.Secondary
+        - Collapsed Trigger Background
+            - XY.Surface.PanelAlt
+    - 与其他 XYUI 控件关系
+        - ToolGroup
+            - 承载于
+                - Toolbar
+            - 包含
+                - ToolButton
+                - ToggleButton
+                - SplitButton
+                - IconButton
+                - Select
+            - 折叠时可调用
+                - Popup
+                - Menu
+                - Tooltip
+        - 响应式可进入
+            - Toolbar Overflow
+    - UI Tokens
+        - ToolGroup.ToolGap
+            - 2
+        - ToolGroup.PaddingX
+            - 4
+        - ToolGroup.Separator.Width
+            - 1
+        - ToolGroup.Separator.Color
+            - XY.Divider.Default
+        - ToolGroup.Hover.Background
+            - XY.State.Color.Hover
+        - ToolGroup.Hover.Radius
+            - XY.Radius.Control
+        - ToolGroup.Collapsed.Background
+            - XY.Surface.PanelAlt
+    - UI代码
+        - ToolGroup
+            - Orientation
+                - Horizontal
+            - ToolGap
+                - 2
+            - PaddingLeft
+                - 4
+            - PaddingRight
+                - 4
+            - Background
+                - Transparent
+        - ToolGroup.Separator
+            - Width
+                - 1
+            - Color
+                - XY.Divider.Default
+        - ToolGroup.Hover
+            - Background
+                - XY.State.Color.Hover
+            - CornerRadius
+                - XY.Radius.Control
+        - ToolGroup.Collapsible
+            - Enabled
+                - Configurable
+            - DefaultCollapsed
+                - False
+        - ToolGroup.Collapsed
+            - Display
+                - GroupTrigger
+            - Background
+                - XY.Surface.PanelAlt
+            - OpenBehavior
+                - Flyout
+    - 适配规则
+        - Desktop Wide
+            - Default / HoverAware
+        - Desktop Compact
+            - Secondary Groups 可 Collapsible
+        - Web
+            - 支持 Default / Hover / Collapse
+        - Tablet
+            - 弱化 Hover 依赖
+            - 扩大 Group Trigger 热区
+        - Mobile
+            - 优先使用 Collapsed / Overflow
+    - 禁止项
+        - 禁止所有 ToolGroup 长期显示独立浅色卡片
+        - 禁止为组名增加常驻第二行 Header
+        - 禁止每个组都默认可折叠
+        - 禁止自动折叠当前 Active Tool 后让其完全不可见
+        - 禁止 Group Hover 强于 Tool Active
+        - 禁止折叠状态改变工具业务状态
+        - 禁止组内工具顺序在展开与折叠后变化
+        - 禁止低优先级 Group 随机决定是否隐藏
+    - 最终结论
+        - Canonical Default
+            - 方案 1 · Separator Group
+        - Default Enhancement
+            - 方案 2 · Hover Group Region
+        - Official Variant
+            - 方案 4 · Collapsible ToolGroup
+        - 排除方案
+            - 方案 3 · Group Label
+        - 核心视觉语言
+            - 默认极简
+            - 组间轻 Separator
+            - Hover 临时强调范围
+            - 复杂场景允许整组折叠
+        - 适合作为
+            - XYUI 标准 ToolGroup
+            - 玄域 Toolbar 工具组织规则
+        - 后续衔接
+            - 3.17 · CommandBar
+    
+- 3.17 · CommandBar / 命令栏
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 组合命令容器
+        - 主要用途
+            - 承载当前页面、对象或工作区的重要一次性命令
+            - 建立主要命令、次要命令与上下文命令的视觉层级
+            - 降低高频业务操作访问成本
+        - 核心语义
+            - 我现在可以对当前页面或当前对象执行什么操作
+        - 与 Toolbar 的区别
+            - Toolbar
+                - 偏工具模式
+                - 可存在持续 Active Tool
+                - 图标密度较高
+            - CommandBar
+                - 偏一次性命令
+                - 文字语义更重要
+                - 强调 Primary / Secondary / Contextual Action
+    - 使用场景
+        - 玄域引擎
+            - 数据集
+                - 新建
+                - 导入
+                - 保存
+                - 验证
+            - 资源
+                - 导入资源
+                - 刷新
+                - 重命名
+                - 删除
+            - 对象选择后
+                - 编辑
+                - 验证
+                - 复制
+                - 解除注册
+        - 桌面应用
+            - 页面级命令
+            - 数据管理
+            - 对象管理
+        - Web
+            - 后台管理页
+            - 资源管理页
+            - 列表操作区
+    - 最终方案
+        - 组件模型
+            - Official Variant 1
+                - Standard · 左主右辅型
+            - Official Variant 2
+                - PrimaryAction · 主行动强化型
+            - Official Variant 3
+                - Contextual · 上下文命令型
+            - 不纳入
+                - Grouped Label 型
+                - 独立 Priority Collapse 型
+        - 设计原则
+            - 不要求 CommandBar 只有唯一外观
+            - 根据页面命令结构选择正式 Variant
+            - 不同 Variant 共享统一命令视觉与状态语言
+            - Variant 改变布局
+            - 不改变命令本身语义
+    - Variant · Standard
+        - 来源
+            - 方案 1
+        - 名称
+            - 左主右辅型
+        - 适用
+            - 存在一组常用业务操作
+            - 主要操作与辅助操作能够自然分区
+        - 结构
+            - Leading Commands
+                - Primary Commands
+                - Secondary Commands
+            - Flexible Spacer
+            - Trailing Commands
+                - Auxiliary Commands
+                - Optional More
+        - 例
+            - 左
+                - 新建
+                - 导入
+                - 保存
+            - 右
+                - 验证
+                - 更多
+        - 原则
+            - 工作流主操作优先放左侧
+            - 辅助操作可放右侧
+            - 不得为了对称而强行拆分
+    - Variant · PrimaryAction
+        - 来源
+            - 方案 2
+        - 名称
+            - 主行动强化型
+        - 适用
+            - 页面存在明确唯一主任务
+            - 创建
+            - 提交
+            - 发布
+            - 开始
+        - 结构
+            - Primary Action
+            - Secondary Commands
+            - Optional More
+        - Primary Action
+            - 允许使用 Accent Fill
+            - 建议最多一个
+        - Secondary Commands
+            - 保持轻量
+            - 不使用多个同等强度 Accent
+        - 原则
+            - 页面没有唯一主命令时不得强行使用
+            - 不能同时出现多个 Primary Accent Command
+    - Variant · Contextual
+        - 来源
+            - 方案 5
+        - 名称
+            - 上下文命令型
+        - 适用
+            - 对象选择
+            - 列表行选择
+            - 地图对象选择
+            - 资源选择
+            - Dataset / Layer 选择
+        - 结构
+            - Context Identity
+            - Separator
+            - Context Commands
+            - Optional More
+        - Context Identity
+            - 显示当前命令作用对象
+            - 例
+                - 已选择
+                    - roads
+                - 区域
+                    - 广东省
+        - Context Commands
+            - 只展示对当前对象有效的命令
+        - 原则
+            - 命令对象必须明确
+            - 选择变化后命令同步变化
+            - 不得执行旧 Selection 的残留命令
+    - Context Identity
+        - 内容
+            - Optional Type
+            - Primary Name
+            - Optional Status
+        - 视觉
+            - 浅色背景
+            - Secondary Type
+            - Primary Name
+        - 禁止
+            - 显示完整 UUID 作为默认主要文本
+            - 变成完整 Inspector
+    - 命令层级
+        - Primary
+            - 当前页面最重要操作
+        - Secondary
+            - 高频普通操作
+        - Auxiliary
+            - 低频辅助操作
+        - Danger
+            - 删除
+            - 解除注册
+            - 不可逆操作
+        - Contextual
+            - 仅特定选择或状态出现
+        - 原则
+            - 层级来自业务重要性
+            - 不由按钮位置随意决定
+    - Primary Command
+        - Standard Variant
+            - 允许浅 Selected / Emphasis Background
+        - PrimaryAction Variant
+            - 允许使用 Accent Fill
+        - 数量
+            - PrimaryAction Variant 建议最多 1 个
+        - 文字
+            - 必须明确动作
+        - 例
+            - 新建项目
+            - 创建数据集
+            - 提交
+        - 禁止
+            - 确定
+            - 执行
+            - 操作
+            - 等缺少具体语义的模糊名称
+    - Secondary Command
+        - 默认
+            - 轻背景或透明
+        - Hover
+            - 浅 Hover Background
+        - 视觉
+            - Primary Text
+        - 原则
+            - 不得与唯一 Primary Action 争夺视觉
+    - Danger Command
+        - 例
+            - 删除
+            - 解除注册
+            - 清空
+        - 默认
+            - 低饱和 Danger Text
+            - 不建议常态实心红色按钮
+        - Hover
+            - 允许轻 Danger Background
+        - 进入 More
+            - 仍必须保持 Danger 语义
+        - 不可逆
+            - 由确认机制处理
+        - 禁止
+            - 为了醒目长期使用高饱和大红块
+    - More
+        - 类型
+            - Optional
+        - 表现
+            - MoreHorizontal
+            - ⋯
+        - 内容
+            - 低频命令
+            - 附加命令
+        - 规则
+            - 保持原语义分组
+            - Danger 命令置于适当分隔区域
+        - 禁止
+            - 把主要工作流全部藏进 More
+    - Optional Slots
+        - Leading
+            - Primary Command
+            - Secondary Commands
+        - ContextIdentity
+            - Contextual Variant
+        - FlexibleSpacer
+            - Optional
+        - Trailing
+            - Auxiliary Commands
+            - More
+        - Status
+            - Optional
+        - Divider
+            - Optional
+    - 可选元素
+        - PrimaryAction
+            - 显示 / 隐藏
+        - ContextIdentity
+            - 显示 / 隐藏
+        - AuxiliaryActions
+            - 显示 / 隐藏
+        - More
+            - 显示 / 隐藏
+        - Status
+            - 显示 / 隐藏
+        - 原则
+            - 按场景组合
+            - 不是所有 CommandBar 必须拥有全部槽位
+    - 响应式
+        - 遵循
+            - XYUI 全局响应式规范
+        - Wide
+            - 可完整显示命令文本
+        - Medium
+            - 减少非必要间距
+            - 允许部分辅助命令进入 More
+        - Narrow
+            - 保留当前页面最重要命令
+            - 低频命令进入 More
+        - 原则
+            - 不把方案 4 定义为独立 CommandBar Variant
+            - 但组件仍必须响应可用空间
+            - Primary 和当前 Context 不得无解释消失
+        - Contextual 窄屏
+            - 允许缩短 Context Identity
+            - Tooltip / Detail 提供完整名称
+    - 状态
+        - Default
+            - 正常命令
+        - Hover
+            - 浅色反馈
+        - Pressed
+            - 短暂反馈
+        - Disabled
+            - 低对比度
+            - 不可执行
+        - Loading
+            - 异步命令处理中
+        - Success
+            - 通过 Notification / Status 等反馈
+        - Error
+            - 通过 Error Feedback 表达
+        - 原则
+            - CommandBar 不长期保存一次性 Success 视觉
+    - Loading
+        - 命令执行中
+            - 可禁用重复提交
+            - 对应命令显示 Loading
+        - 其他无冲突命令
+            - 可继续使用
+        - 禁止
+            - 一个命令 Loading 后冻结整条 CommandBar
+            - 除非业务存在全局事务锁
+    - Contextual 更新规则
+        - Selection Changed
+            - 重新计算有效命令
+            - 重新计算 Context Identity
+        - Selection Cleared
+            - 退出 Contextual 状态
+            - 恢复基础 CommandBar
+            - 或显示空上下文状态
+        - 原则
+            - 不能保留旧对象操作
+            - 不能让 Contextual Commands 与当前对象不同步
+    - 位置稳定性
+        - Contextual CommandBar 内容可变化
+        - 但应
+            - 固定 Context Identity 区域基础宽度
+            - 保持高频命令位置尽可能稳定
+            - 使用稳定排序
+        - 禁止
+            - 每次切换对象后所有命令随机重排
+    - 命令顺序
+        - 建议
+            - 创建 / 新建
+            - 编辑 / 修改
+            - 保存 / 提交
+            - 验证 / 刷新
+            - 辅助
+            - Danger
+        - 实际
+            - 依据工作流决定
+        - 原则
+            - 同类页面保持一致顺序
+    - 键盘交互
+        - Tab
+            - 移动 Focus
+        - Enter / Space
+            - 执行命令
+        - Shortcut
+            - 允许直接执行
+        - Disabled
+            - 不能通过快捷键绕过
+        - 原则
+            - Command 与快捷键必须消费同一 CanExecute 状态
+    - 状态模型
+        - CommandBarState
+            - Variant
+            - ContextId
+            - ContextType
+            - Commands
+        - CommandDefinition
+            - Id
+            - Label
+            - Icon
+            - Type
+            - Priority
+            - IsEnabled
+            - IsVisible
+            - Shortcut
+            - IsDanger
+            - IsPrimary
+        - 原则
+            - 命令视觉状态来源于统一 CommandDefinition
+            - Contextual Variant 不复制另一套命令系统
+    - 布局规范
+        - Height
+            - 建议 40～44 DIP
+        - Command Height
+            - 约 30～34 DIP
+        - PaddingX
+            - 约 10～14 DIP
+        - Command Gap
+            - 约 4～6 DIP
+        - Separator
+            - 1 DIP
+        - PrimaryAction Radius
+            - XY.Radius.Control
+        - 原则
+            - 保持单行紧凑
+            - 避免 Group Header 造成第二行高度
+    - 颜色建议
+        - Background
+            - XY.Surface.Toolbar
+        - Border
+            - XY.Border.Color.Default
+        - Text
+            - XY.Text.Primary
+        - Secondary
+            - XY.Text.Secondary
+        - Hover
+            - XY.State.Color.Hover
+        - Light Emphasis
+            - XY.Surface.Selected
+        - Accent
+            - XY.Accent.Default
+        - Active Text
+            - XY.Accent.Strong
+        - Context Background
+            - XY.Surface.Toolbar
+        - Danger Text
+            - XY.Semantic.Error.Text
+        - Disabled
+            - XY.State.Disabled.Text
+    - 字体
+        - Command
+            - FontSize
+                - XY.FontSize.Auxiliary
+        - Primary
+            - FontWeight
+                - XY.FontWeight.Medium
+        - Context Type
+            - FontSize
+                - XY.FontSize.Caption
+        - Context Name
+            - FontSize
+                - XY.FontSize.Auxiliary
+    - 与其他 XYUI 控件关系
+        - CommandBar
+            - 包含
+                - Button
+                - IconButton
+                - SplitButton
+                - Divider
+                - Status
+            - 可调用
+                - Menu
+                - ContextMenu
+                - Dialog
+                - Notification
+        - 可配合
+            - Toolbar
+            - Breadcrumb
+            - TreeNavigation
+            - Table
+            - DataGrid
+        - 可进一步调用
+            - CommandPalette
+    - UI Tokens
+        - CommandBar.Height
+            - 42
+        - CommandBar.Command.Height
+            - 32
+        - CommandBar.Command.PaddingX
+            - 12
+        - CommandBar.Command.Gap
+            - 4
+        - CommandBar.Background
+            - XY.Surface.Toolbar
+        - CommandBar.Border
+            - XY.Border.Color.Default
+        - CommandBar.Hover
+            - XY.State.Color.Hover
+        - CommandBar.Emphasis
+            - XY.Surface.Selected
+        - CommandBar.Accent
+            - XY.Accent.Default
+        - CommandBar.Danger
+            - XY.Semantic.Error.Text
+    - UI代码
+        - CommandBar
+            - Height
+                - 42
+            - Background
+                - XY.Surface.Toolbar
+            - Orientation
+                - Horizontal
+            - Variant
+                - Configurable
+        - CommandBar.Standard
+            - LeadingRegion
+                - Commands
+            - CenterRegion
+                - FlexibleSpacer
+            - TrailingRegion
+                - AuxiliaryCommands
+        - CommandBar.PrimaryAction
+            - PrimaryActionCount
+                - MaxOne
+            - PrimaryBackground
+                - XY.Surface.Toolbar
+            - PrimaryText
+                - XY.Text.Primary
+        - CommandBar.Contextual
+            - ContextIdentity
+                - Visible
+            - ContextBackground
+                - XY.Surface.Toolbar
+            - ContextCommands
+                - Dynamic
+        - CommandBar.Command
+            - Height
+                - 32
+            - PaddingX
+                - 12
+            - Background
+                - Transparent
+            - TextColor
+                - XY.Text.Primary
+            - CornerRadius
+                - XY.Radius.Control
+        - CommandBar.Command.Hover
+            - Background
+                - XY.State.Color.Hover
+        - CommandBar.Danger
+            - TextColor
+                - XY.Semantic.Error.Text
+    - 适配规则
+        - Desktop
+            - 三个 Variant 全部支持
+        - Web
+            - 三个 Variant 全部支持
+        - Tablet
+            - 减少辅助命令
+            - 扩大热区
+        - Mobile
+            - Primary / Context 优先
+            - 低频命令进入 More
+    - 禁止项
+        - 禁止所有页面强制使用唯一 CommandBar 结构
+        - 禁止没有唯一主要操作却强行显示 Accent Primary
+        - 禁止同时出现多个同等强度 Primary Action
+        - 禁止 Contextual Command 作用对象不明确
+        - 禁止选择变化后继续执行旧对象命令
+        - 禁止 Danger Command 进入 More 后失去危险语义
+        - 禁止使用额外 Group Header 把 CommandBar 做成两层
+        - 禁止为了视觉对称强行左右分区
+        - 禁止 Context 内容变化导致命令随机重排
+    - 最终结论
+        - Official Variants
+            - Standard
+                - 方案 1 · 左主右辅型
+            - PrimaryAction
+                - 方案 2 · 主行动强化型
+            - Contextual
+                - 方案 5 · 上下文命令型
+        - 核心原则
+            - 一个 CommandBar 控件
+            - 多种正式布局 Variant
+            - 共享命令语义与视觉状态
+        - 适合作为
+            - XYUI 标准 CommandBar
+            - 玄域页面级与对象级命令体系
+        - 后续衔接
+            - 3.18 · CommandPalette
+    
+- 3.18 · CommandPalette / 命令面板
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 全局快速导航与命令入口
+        - 主要用途
+            - 通过搜索快速执行命令
+            - 快速进入页面
+            - 快速定位对象
+            - 快速访问设置
+            - 快速访问最近操作
+        - 核心语义
+            - 无需逐层寻找入口即可直接到达目标操作或位置
+    - 使用场景
+        - 玄域引擎
+            - 创建区域
+            - 创建道路
+            - 打开地图设置
+            - 进入数据集
+            - 定位对象
+            - 验证当前地图
+            - 切换工作区
+        - IDE
+            - 执行命令
+            - 打开文件
+            - 跳转符号
+            - 设置
+        - 桌面生产力应用
+            - 全局操作入口
+            - 快速导航
+            - 最近任务
+    - 最终方案
+        - 组件模型
+            - Canonical Default
+                - 方案 1 · 中央搜索面板型
+            - Official Capability
+                - 方案 2 · Categorized Results
+                - 方案 4 · Scope Prefix
+                - 方案 5 · Recent / Empty State
+            - Optional Variant
+                - 方案 3 · Detailed Preview
+        - 设计原则
+            - 默认保持单栏紧凑
+            - 搜索结果复杂时允许分类
+            - 高级用户可使用范围前缀
+            - 未输入内容时显示最近和推荐
+            - 详情预览只在复杂场景启用
+    - Canonical Default
+        - 结构
+            - Overlay
+            - CommandPalette Panel
+                - Search Input
+                - Result List
+                - Footer Hint
+        - 位置
+            - 窗口上方中央
+        - 宽度
+            - 建议 420～560 DIP
+        - 高度
+            - 根据结果数量自适应
+            - 超过最大高度后内部滚动
+        - 视觉
+            - 浅色面板
+            - 轻边框
+            - 轻阴影
+            - Selected Result 使用浅 Accent Background
+    - Search Input
+        - 用途
+            - 输入搜索词
+            - 输入 Prefix
+        - 默认 Placeholder
+            - 输入命令或搜索...
+        - 自动 Focus
+            - 打开 CommandPalette 后立即聚焦
+        - 清空
+            - 显示 Empty State
+        - Esc
+            - 有文本时
+                - 可先清空
+            - 无文本时
+                - 关闭面板
+    - 结果项
+        - 结构
+            - Optional Icon
+            - Primary Label
+            - Optional Secondary Path
+            - Flexible Spacer
+            - Optional Shortcut
+            - Optional Type
+        - Selected
+            - 浅 Accent Background
+            - Active Text
+        - 执行
+            - Enter
+            - Click
+        - 原则
+            - 每项必须明确执行结果
+            - 不能只显示模糊名称
+    - Categorized Results
+        - 来源
+            - 方案 2
+        - 用途
+            - 结果来自多个类型
+        - 分类示例
+            - 命令
+            - 导航
+            - 对象
+            - 设置
+            - 最近
+        - 显示规则
+            - 结果种类较少
+                - 可不显示分类标题
+            - 多种结果混合
+                - 显示轻量 Category Header
+        - 原则
+            - 分类标题视觉弱化
+            - 不得把每一项都分成独立 Section
+    - Scope Prefix
+        - 来源
+            - 方案 4
+        - 定位
+            - 高级快速筛选能力
+        - 建议前缀
+            - >
+                - 命令
+            - @
+                - 对象
+            - #
+                - 页面 / 导航
+            - :
+                - 设置
+        - 示例
+            - > road
+            - @ guangdong
+            - # dataset
+            - : theme
+        - 默认行为
+            - 不输入 Prefix
+                - 全局混合搜索
+        - 原则
+            - Prefix 是加速器
+            - 不是使用 CommandPalette 的前置要求
+            - 普通用户无需学习前缀也能完整使用
+    - Prefix UI
+        - 输入 Prefix 后
+            - 显示当前 Scope
+        - 表现
+            - 输入框前方小型 Scope Tag
+            - 或辅助文字
+        - 切换
+            - 删除 Prefix
+                - 返回全局搜索
+            - 允许通过快捷入口选择范围
+        - 禁止
+            - 需要用户死记前缀才能发现功能
+    - Empty State
+        - 来源
+            - 方案 5
+        - 触发
+            - 搜索框为空
+        - 内容
+            - Recent
+            - Optional Recommended
+        - Recent
+            - 最近执行命令
+            - 最近访问页面
+            - 最近对象
+        - Recommended
+            - 可选
+            - 仅在有可靠上下文时提供
+        - 原则
+            - 空状态不能只是空白
+            - 最近项优先于算法推荐
+    - Recent
+        - 排序
+            - 最近使用优先
+        - 去重
+            - 同一命令只保留最近记录
+        - 数量
+            - 建议 5～10 项
+        - 隐私
+            - 本地敏感项目可只保留本地记录
+        - 可选
+            - 允许清除历史
+    - Recommended
+        - 类型
+            - Optional
+        - 来源
+            - 当前上下文
+            - 常用操作
+            - 明确工作流
+        - 禁止
+            - 无依据随机推荐
+            - 将广告或无关内容混入 CommandPalette
+    - Detailed Preview Variant
+        - 来源
+            - 方案 3
+        - 定位
+            - 正式可选 Variant
+        - 适用
+            - 命令复杂
+            - 命令名称容易混淆
+            - 需要解释参数或影响范围
+            - 新手模式
+        - 结构
+            - Left
+                - Result List
+            - Right
+                - Detail Preview
+        - Detail 内容
+            - 命令名称
+            - 说明
+            - 快捷键
+            - 分类
+            - Optional Context
+            - Optional Parameters
+        - 原则
+            - 默认 CommandPalette 不强制开启
+            - 简单项目保持单栏
+    - 搜索匹配
+        - 支持
+            - Exact Match
+            - Prefix Match
+            - Fuzzy Match
+            - Keyword Match
+        - 排序建议
+            - 精确匹配
+            - 前缀匹配
+            - 最近使用
+            - 高频命令
+            - 模糊匹配
+        - 原则
+            - 稳定排序
+            - 同样输入不应随机变化
+    - 高亮
+        - 搜索命中字符
+            - 允许轻量 Highlight
+        - 颜色
+            - Accent / Active Text
+        - 禁止
+            - 整行高饱和标色
+        - 禁止
+            - 高亮破坏文字可读性
+    - 命令执行
+        - Enter
+            - 执行 Selected Result
+        - 执行前
+            - 再次确认 CanExecute
+        - 执行成功
+            - 通常关闭 CommandPalette
+        - 执行失败
+            - 保持必要上下文
+            - 显示错误反馈
+        - 危险命令
+            - 不得因为从 CommandPalette 调用而跳过确认机制
+    - 导航结果
+        - 页面
+            - 进入目标页面
+        - 对象
+            - 定位目标对象
+            - 必要时展开树路径
+            - 必要时选中对象
+        - 设置
+            - 打开对应设置位置
+        - 原则
+            - 导航结果和正式导航系统共享状态
+    - 快捷键
+        - 打开
+            - 平台可配置
+            - 常见
+                - Ctrl+Shift+P
+                - Cmd+Shift+P
+        - Up / Down
+            - 移动 Selected
+        - Enter
+            - 执行
+        - Esc
+            - 关闭
+        - Tab
+            - 可用于补全或切换区域
+        - 原则
+            - 快捷键必须可配置
+    - 鼠标
+        - Hover
+            - 更新 Hover
+        - Click
+            - 执行或选择
+        - 滚轮
+            - 滚动结果
+        - 原则
+            - 鼠标和键盘共用同一 SelectedIndex
+    - 结果数量
+        - 少量
+            - 全部显示
+        - 大量
+            - 结果虚拟化
+            - 限制初始显示数量
+            - 继续输入缩小范围
+        - 原则
+            - 禁止一次创建数千条结果 UI
+    - 性能
+        - 搜索
+            - 允许异步
+        - 输入
+            - 建议轻量 Debounce
+        - 本地命令
+            - 优先即时返回
+        - 对象搜索
+            - 大型数据源必须使用索引
+        - 原则
+            - 禁止每次键入都全量扫描大型世界数据
+            - 禁止 CommandPalette 成为 O(N) 高频瓶颈
+    - 状态模型
+        - CommandPaletteState
+            - IsOpen
+            - Query
+            - Scope
+            - SelectedResultId
+            - Results
+            - RecentItems
+            - DisplayMode
+        - DisplayMode
+            - Default
+            - Categorized
+            - Detailed
+        - SearchScope
+            - All
+            - Command
+            - Object
+            - Navigation
+            - Settings
+        - 原则
+            - Scope 与 Query 分离
+            - Prefix 只改变 Scope
+    - 数据模型
+        - CommandPaletteItem
+            - Id
+            - Type
+            - Label
+            - Keywords
+            - Icon
+            - Shortcut
+            - SecondaryText
+            - CanExecute
+            - Action
+            - DetailProvider
+        - Type
+            - Command
+            - Navigation
+            - Object
+            - Setting
+        - 原则
+            - 统一搜索接口
+            - 不同类型自行提供执行行为
+    - Optional Slots
+        - SearchIcon
+            - Optional
+        - ScopeIndicator
+            - Optional
+        - CategoryHeader
+            - Optional
+        - Shortcut
+            - Optional
+        - SecondaryText
+            - Optional
+        - DetailPanel
+            - Detailed Variant
+        - FooterHint
+            - Optional
+    - Variations
+        - Default
+            - 单栏搜索 + 结果
+        - Categorized
+            - 结果分类
+        - Scoped
+            - 支持 Prefix Scope
+        - Recent
+            - 空输入时最近项
+        - Detailed
+            - 两栏结果 + 详情
+    - 颜色建议
+        - Overlay
+            - 低透明遮罩
+        - Panel
+            - XY.Surface.Overlay
+        - Input
+            - COMPONENT_SPECIFIC_CONTRAST_FOREGROUND [GAP:XYUI3-GAP-001]
+        - Border
+            - XY.Border.Color.Subtle
+        - Text
+            - XY.Text.Primary
+        - Secondary
+            - XY.Text.Secondary
+        - Selected Background
+            - XY.Surface.Selected
+        - Selected Text
+            - XY.Accent.Strong
+        - Accent
+            - XY.Accent.Default
+        - Divider
+            - XY.Divider.Default
+    - 字体
+        - Result Label
+            - FontSize
+                - XY.FontSize.Auxiliary
+        - Category
+            - FontSize
+                - XY.FontSize.Caption
+        - Secondary
+            - FontSize
+                - XY.FontSize.Caption
+        - Detail Title
+            - FontSize
+                - XY.FontSize.Body
+    - 与其他 XYUI 控件关系
+        - CommandPalette
+            - 搜索
+                - Command
+                - Navigation
+                - Object
+                - Settings
+            - 复用
+                - TextField
+                - List
+                - Tooltip
+                - Divider
+                - ShortcutText
+            - 可执行
+                - CommandBar Command
+                - Toolbar Command
+            - 可导航
+                - Sidebar
+                - TreeNavigation
+                - Tabs
+                - Workspace
+    - UI Tokens
+        - CommandPalette.Width
+            - 480
+        - CommandPalette.MaxHeight
+            - 420
+        - CommandPalette.Input.Height
+            - 44
+        - CommandPalette.Result.Height
+            - 38
+        - CommandPalette.Radius
+            - XY.Radius.Popup
+        - CommandPalette.Panel
+            - XY.Surface.Overlay
+        - CommandPalette.Input
+            - COMPONENT_SPECIFIC_CONTRAST_FOREGROUND [GAP:XYUI3-GAP-001]
+        - CommandPalette.Border
+            - XY.Border.Color.Subtle
+        - CommandPalette.Selected
+            - XY.Surface.Selected
+        - CommandPalette.Selected.Text
+            - XY.Accent.Strong
+        - CommandPalette.Accent
+            - XY.Accent.Default
+    - UI代码
+        - CommandPalette
+            - Width
+                - 480
+            - MaxHeight
+                - 420
+            - Background
+                - XY.Surface.Overlay
+            - BorderWidth
+                - XY.Border.Width.Default
+            - BorderColor
+                - XY.Border.Color.Subtle
+            - CornerRadius
+                - XY.Radius.Popup
+            - Mode
+                - Default
+        - CommandPaletteInput
+            - Height
+                - 44
+            - Background
+                - XY.Surface.Input
+            - AutoFocus
+                - True
+        - CommandPaletteResult
+            - Height
+                - 38
+            - TextColor
+                - XY.Text.Primary
+            - Background
+                - Transparent
+        - CommandPaletteResult.Selected
+            - Background
+                - XY.Surface.Selected
+            - TextColor
+                - XY.Accent.Strong
+        - CommandPalette.Scope
+            - Default
+                - All
+            - PrefixEnabled
+                - True
+        - CommandPalette.EmptyState
+            - ShowRecent
+                - True
+            - ShowRecommended
+                - Configurable
+        - CommandPalette.DetailPanel
+            - Visibility
+                - DetailedVariantOnly
+    - 适配规则
+        - Desktop
+            - 默认中央浮层
+            - 支持全部能力
+        - Web Desktop
+            - 支持全部能力
+        - Tablet
+            - 扩大宽度占比
+            - 保持单栏优先
+        - Mobile
+            - 转换为近全屏 Search / Command Sheet
+            - 默认不使用两栏 Detailed
+        - Compact
+            - 减少结果 SecondaryText
+            - 保持 Label 与 Scope
+    - 禁止项
+        - 禁止 CommandPalette 只能搜索 Command 而无法扩展其他类型
+        - 禁止要求普通用户必须使用 Prefix
+        - 禁止空输入时只显示空白面板
+        - 禁止推荐内容无依据随机变化
+        - 禁止危险命令绕过确认机制
+        - 禁止搜索对象时每次键入全量扫描大型世界
+        - 禁止同样 Query 的结果排序随机变化
+        - 禁止详细模式成为所有项目强制默认
+        - 禁止分类过细导致每个分类只有一项
+        - 禁止 CommandPalette 维护独立导航状态
+    - 最终结论
+        - Canonical Default
+            - 方案 1 · 中央搜索面板型
+        - Official Capabilities
+            - 方案 2 · Categorized Results
+            - 方案 4 · Scope Prefix
+            - 方案 5 · Recent / Empty State
+        - Optional Variant
+            - 方案 3 · Detailed Preview
+        - 核心原则
+            - 简单入口
+            - 能力可扩展
+            - 普通用户无需学习高级语法
+            - 高级用户可通过 Scope 加速
+            - 复杂场景按需启用详情预览
+        - 适合作为
+            - XYUI 标准 CommandPalette
+            - 玄域全局命令 / 导航 / 对象快速入口
+        - 后续衔接
+            - 3.19 · BackForwardNavigation
+    
+- 3.19 · BackForwardNavigation / 前进后退导航
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 导航历史组件
+        - 主要用途
+            - 在用户最近访问的位置之间前进和后退
+            - 允许快速返回之前的页面、对象或工作区位置
+            - 按需查看完整导航历史
+        - 核心语义
+            - 回到我刚才去过的位置
+        - 与 Undo / Redo 的区别
+            - Back / Forward
+                - 改变导航位置
+                - 不撤销业务数据
+            - Undo / Redo
+                - 改变编辑历史
+                - 不负责页面导航
+            - 原则
+                - 两套历史必须严格分离
+    - 使用场景
+        - 玄域引擎
+            - 地图环境
+                - 数据集
+                    - roads
+                        - 广东省
+            - 资源浏览
+            - 对象定位
+            - 设置页面
+        - IDE
+            - 文件跳转
+            - 符号跳转
+            - 页面访问历史
+    - 最终方案
+        - 组件模型
+            - Canonical Default
+                - 方案 1 · 极简双箭头型
+            - Optional Interaction
+                - 方案 2 · 长按 / 右键历史
+            - Optional Variant
+                - 方案 4 · 当前路径辅助型
+            - Optional Variant
+                - 方案 5 · 独立历史菜单
+            - 不纳入
+                - 方案 3 · Split History
+    - Canonical Default
+        - 结构
+            - Back Button
+            - Forward Button
+        - 视觉
+            - 极简 IconButton
+            - 不长期显示文字
+            - 不可用方向显示 Disabled
+        - 适用
+            - 所有基础场景
+    - Back
+        - Click
+            - 返回上一导航位置
+        - 不可用
+            - Disabled
+        - 执行后
+            - 当前位置进入 Forward History
+    - Forward
+        - Click
+            - 前往下一导航位置
+        - 不可用
+            - Disabled
+        - 执行后
+            - 更新 Back History
+    - 长按历史能力
+        - 来源
+            - 方案 2
+        - 触发
+            - Long Press
+            - Desktop Right Click
+        - 作用
+            - 显示对应方向历史
+        - Back Button
+            - 显示 Back History
+        - Forward Button
+            - 显示 Forward History
+        - 点击历史项
+            - 直接跨多个导航记录跳转
+        - 原则
+            - 基础 Click 行为保持一步导航
+            - 历史能力属于增强交互
+        - 可发现性
+            - Tooltip 可提示
+                - 长按查看历史
+            - 不能要求用户知道长按才能完成基础导航
+    - History Trigger Variant
+        - 来源
+            - 方案 5
+        - 结构
+            - Back
+            - Forward
+            - History Trigger
+        - History Trigger
+            - Icon
+                - ChevronDown
+                - History
+            - 打开
+                - 完整导航历史
+        - 适用
+            - 导航历史非常重要
+            - 用户经常跨多级跳转
+            - 长按发现性不足的产品
+        - 原则
+            - 不是所有场景强制显示第三个按钮
+    - 完整历史菜单
+        - 结构
+            - Back History
+            - Current
+            - Forward History
+        - 视觉
+            - Back 项显示向后方向
+            - Current 使用 Selected
+            - Forward 项显示向前方向
+        - 顺序
+            - 保持时间 / 导航序列清楚
+        - 点击任意历史
+            - 直接跳转
+            - 重新计算 Back / Forward 栈
+        - 原则
+            - 当前项必须明确
+            - 不能把导航历史做成普通无序最近列表
+    - Location Variant
+        - 来源
+            - 方案 4
+        - 结构
+            - Back
+            - Forward
+            - Divider
+            - Current Location
+        - Current Location
+            - Optional Context
+            - Primary Location
+        - 例
+            - 当前位置
+                - roads / 道路编辑
+        - 用途
+            - 在没有 Breadcrumb 的紧凑工具区域提供当前位置提示
+        - 适用
+            - 导航层级较浅
+            - 空间充足
+            - 需要明确位置但不值得独立 Breadcrumb
+        - 限制
+            - 若同一区域已有 Breadcrumb
+                - 默认隐藏 Current Location
+            - 避免重复表达当前位置
+    - Optional Slots
+        - Back
+            - 必需
+        - Forward
+            - 必需
+        - HistoryTrigger
+            - 可选
+        - CurrentLocation
+            - 可选
+        - Divider
+            - 按 Variant 可选
+    - 历史记录模型
+        - NavigationHistory
+            - Entries
+            - CurrentIndex
+        - HistoryEntry
+            - Id
+            - Location
+            - Label
+            - Optional SecondaryLabel
+            - Optional Icon
+            - Timestamp
+        - Derived
+            - CanGoBack
+            - CanGoForward
+            - BackEntries
+            - ForwardEntries
+        - 原则
+            - 使用线性历史索引
+            - 不分别维护无法同步的 BackStack / ForwardStack 副本
+    - 新导航
+        - 从历史中间位置打开新目标
+            - 清除当前位置之后的 Forward History
+            - 将新目标追加到历史
+        - 原则
+            - 行为符合浏览器式导航历史
+    - 重复位置
+        - 连续导航到完全相同位置
+            - 默认不重复追加
+        - 同页面不同对象
+            - 是否作为独立记录由 Location Identity 决定
+        - 例
+            - Dataset / roads
+            - Dataset / cities
+                - 可视为不同位置
+    - 历史容量
+        - 设置最大数量
+        - 建议
+            - 50～200 条按项目需求
+        - 超过容量
+            - 淘汰最旧记录
+        - 原则
+            - 不能无限增长
+            - 历史存储应轻量
+    - Navigation Location
+        - 应包含
+            - Route / Workspace
+            - Optional ObjectId
+            - Optional ViewState
+        - 不应默认包含
+            - 完整业务对象副本
+            - 巨大编辑状态
+        - ViewState
+            - 可选
+            - 例如 Scroll / Selection / Camera 状态
+            - 是否恢复由具体导航域决定
+        - 原则
+            - 历史记录引用位置
+            - 不复制业务数据
+    - 与 Breadcrumb 协作
+        - BackForwardNavigation
+            - 回答
+                - 我刚才在哪里
+        - Breadcrumb
+            - 回答
+                - 我当前在什么层级
+        - 可以同时存在
+            - Back / Forward Buttons
+            - Breadcrumb
+        - CurrentLocation Variant
+            - 已有 Breadcrumb 时默认关闭
+        - 禁止
+            - BackForward CurrentLocation 与 Breadcrumb 重复显示同一长路径
+    - 与 Undo / Redo 隔离
+        - Back
+            - 不得调用 Undo
+        - Forward
+            - 不得调用 Redo
+        - Undo
+            - 不得修改 NavigationHistory
+        - Redo
+            - 不得修改 NavigationHistory
+        - 快捷键
+            - 必须避免语义冲突
+    - 键盘
+        - Back Shortcut
+            - 平台可配置
+        - Forward Shortcut
+            - 平台可配置
+        - History Menu
+            - Up / Down
+                - 选择记录
+            - Enter
+                - 跳转
+            - Esc
+                - 关闭
+    - 状态
+        - Default
+            - 正常
+        - Hover
+            - 浅背景
+        - Pressed
+            - 短暂反馈
+        - Disabled
+            - 低对比度
+            - 不可执行
+        - HistoryOpen
+            - 对应 Trigger 显示 Active
+    - 颜色建议
+        - Background
+            - XY.Surface.Panel
+        - Icon
+            - XY.Text.Secondary
+        - Hover
+            - XY.State.Color.Hover
+        - Active
+            - XY.Surface.Selected
+        - Active Icon
+            - XY.Accent.Default
+        - Disabled
+            - XY.State.Disabled.Text
+        - Text
+            - XY.Text.Primary
+        - Secondary
+            - XY.Text.Secondary
+        - Border
+            - XY.Border.Color.Default
+    - 布局规范
+        - Button Size
+            - 约 32～36 DIP
+        - Gap
+            - 约 2～4 DIP
+        - Current Location
+            - 根据可用宽度自适应
+        - 超长位置
+            - Ellipsis
+            - Tooltip 显示完整信息
+        - 原则
+            - 基础双按钮保持极度紧凑
+    - 响应式
+        - Wide
+            - 允许 CurrentLocation Variant
+            - 允许 History Trigger
+        - Default
+            - Back + Forward
+            - 按需求 History Trigger
+        - Compact
+            - 优先只保留 Back + Forward
+        - Mobile
+            - 根据平台导航模式决定是否使用
+            - 避免与系统 Back 行为冲突
+    - 与其他 XYUI 控件关系
+        - BackForwardNavigation
+            - 包含
+                - IconButton
+            - 可调用
+                - Menu
+                - Tooltip
+            - 可配合
+                - Breadcrumb
+                - Toolbar
+                - CommandBar
+                - WorkspaceSwitcher
+    - UI Tokens
+        - BackForward.Button.Size
+            - 34
+        - BackForward.Gap
+            - 2
+        - BackForward.Background
+            - Transparent
+        - BackForward.Hover
+            - XY.State.Color.Hover
+        - BackForward.Active
+            - XY.Surface.Selected
+        - BackForward.Icon
+            - XY.Text.Secondary
+        - BackForward.ActiveIcon
+            - XY.Accent.Default
+        - BackForward.Disabled
+            - XY.State.Disabled.Text
+    - UI代码
+        - BackForwardNavigation
+            - Orientation
+                - Horizontal
+            - Gap
+                - 2
+            - ShowHistoryTrigger
+                - Configurable
+            - ShowCurrentLocation
+                - Configurable
+        - BackButton
+            - Width
+                - 34
+            - Height
+                - 34
+            - Icon
+                - ChevronLeft
+            - LongPressHistory
+                - Enabled
+        - ForwardButton
+            - Width
+                - 34
+            - Height
+                - 34
+            - Icon
+                - ChevronRight
+            - LongPressHistory
+                - Enabled
+        - HistoryTrigger
+            - Visibility
+                - Optional
+            - Icon
+                - ChevronDown
+        - CurrentLocation
+            - Visibility
+                - Optional
+            - HideWhenBreadcrumbPresent
+                - True
+            - Overflow
+                - Ellipsis
+    - 禁止项
+        - 禁止将 Back / Forward 当作 Undo / Redo
+        - 禁止基础导航依赖长按才能完成
+        - 禁止已有 Breadcrumb 时重复显示完整 Current Location
+        - 禁止 Forward History 在发生新分支导航后仍保留
+        - 禁止连续相同位置无限写入历史
+        - 禁止 NavigationHistory 保存巨大业务对象副本
+        - 禁止当前项在完整历史菜单中无法识别
+        - 禁止历史列表无限增长
+    - 最终结论
+        - Canonical Default
+            - 方案 1 · 极简双箭头
+        - Official Optional Capabilities
+            - 方案 2 · 长按 / 右键历史
+            - 方案 4 · Current Location Variant
+            - 方案 5 · History Trigger Variant
+        - 排除
+            - 方案 3 · Split History
+        - 核心原则
+            - 基础极简
+            - 历史能力按需增强
+            - 当前位置按场景显示
+            - 与 Breadcrumb 和 Undo / Redo 严格区分
+        - 后续衔接
+            - 3.20 · WorkspaceSwitcher
+    
+- 3.20 · WorkspaceSwitcher / 工作区切换器
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 应用级工作环境切换组件
+        - 主要用途
+            - 在多个 Workspace 之间切换
+            - 切换整套工作环境而不只是单一页面
+            - 允许 Workspace 绑定 Dock Layout、Toolbar、Sidebar、Viewport 等状态
+            - 支持少量工作区快速切换与大量工作区集中管理
+        - 核心语义
+            - 切换整套工作环境
+        - 与普通 Navigation 的区别
+            - Navigation
+                - 主要切换页面或模块
+            - WorkspaceSwitcher
+                - 切换完整工作上下文
+                - 可同时改变
+                    - Dock Layout
+                    - Sidebar
+                    - Toolbar
+                    - Panel State
+                    - Viewport Layout
+                    - 当前工作模式
+    - 使用场景
+        - 玄域引擎
+            - 地图编辑
+            - 数据编辑
+            - 战争实验
+            - 资源管理
+            - 脚本开发
+            - 调试分析
+        - IDE
+            - 代码工作区
+            - 调试工作区
+            - 测试工作区
+        - DCC
+            - 建模
+            - 材质
+            - 动画
+            - 渲染
+    - 最终方案
+        - 组件模型
+            - Canonical Default
+                - 方案 1 · Compact Dropdown
+            - Official Variant
+                - 方案 2 · Segmented Workspace
+            - Official Capability
+                - 方案 3 · Icon + Label
+            - Official Variant
+                - 方案 4 · Workspace + Layout State
+            - Official Variant
+                - 方案 5 · Workspace Panel
+        - 设计原则
+            - 一个 WorkspaceSwitcher
+            - 多个正式 Variant
+            - 所有 Variant 共用同一 WorkspaceState
+            - 图标能力作为可选 Slot
+            - 布局状态能力只在支持 Dock Layout 的应用启用
+    - Variant · Compact Dropdown
+        - 来源
+            - 方案 1
+        - 定位
+            - Canonical Default
+        - 结构
+            - Workspace Label
+            - Current Workspace Name
+            - Chevron
+            - Dropdown Menu
+        - 适用
+            - 通用桌面应用
+            - 工作区数量较多
+            - Header 空间有限
+        - 优点
+            - 占用空间最少
+            - Workspace 数量增加后仍稳定
+        - 原则
+            - 当前 Workspace 必须明确显示
+            - 菜单中当前项使用 Selected / Check
+    - Variant · Segmented Workspace
+        - 来源
+            - 方案 2
+        - 定位
+            - Few Workspaces Variant
+        - 适用
+            - 约 2～5 个高频 Workspace
+            - 用户需要频繁切换
+        - 结构
+            - Workspace Item
+            - Divider
+            - Workspace Item
+            - Optional Overflow
+        - Selected
+            - 浅色 Selected Background
+            - Active Text
+            - Accent Indicator
+        - 原则
+            - Workspace 数量增加后必须进入 Overflow 或切换其他 Variant
+            - 不能无限横向扩展
+    - Icon + Label Capability
+        - 来源
+            - 方案 3
+        - 定位
+            - Optional Capability
+        - 可用于
+            - Compact Dropdown
+            - Segmented
+            - Layout Variant
+            - Workspace Panel
+        - Workspace Icon
+            - 表达 Workspace 主语义
+        - 图标规则
+            - 高辨识度
+            - 统一线宽
+            - 统一尺寸
+            - 低饱和
+        - 响应式
+            - Wide
+                - Icon + Label
+            - Compact
+                - Icon Only
+                - Tooltip 显示名称
+        - 原则
+            - 图标是增强能力
+            - 不是所有 Workspace 强制拥有图标
+    - Variant · Workspace + Layout State
+        - 来源
+            - 方案 4
+        - 定位
+            - Editor Layout Variant
+        - 适用
+            - 支持 Dock Layout
+            - 大型编辑器
+            - 可保存用户布局
+        - 结构
+            - Workspace Name
+            - Layout Status
+            - Dropdown
+                - Workspace List
+                - Separator
+                - Save Layout
+                - Restore Default Layout
+                - Manage Workspace
+        - Layout Status
+            - Default
+            - Custom
+            - Modified
+            - Saved
+        - Modified
+            - 可使用小型 Dot / Asterisk
+        - 原则
+            - Workspace 与 Layout State 分离
+            - 用户修改布局不等于创建新 Workspace
+        - Save Layout
+            - 保存当前 Workspace Layout
+        - Restore Default
+            - 恢复 Workspace 默认布局
+        - 禁止
+            - 切换 Workspace 后丢失用户布局状态
+            - 未确认时覆盖已保存自定义布局
+    - Variant · Workspace Panel
+        - 来源
+            - 方案 5
+        - 定位
+            - Heavy / Advanced Variant
+        - 适用
+            - Workspace 数量较多
+            - 需要快捷键
+            - 需要最近布局
+            - 需要管理入口
+        - 结构
+            - Panel Header
+            - Workspace List
+            - Optional Shortcut
+            - Separator
+            - Recent Layouts
+            - Manage Workspace
+        - 特点
+            - 比普通 Menu 承载更多信息
+            - 允许显示快捷键
+            - 允许显示最近布局
+            - 允许 Workspace Search
+        - 原则
+            - 简单项目不默认使用
+            - 不能演变成第二个 CommandPalette
+    - Workspace Item
+        - 结构
+            - Optional Icon
+            - Label
+            - Optional Secondary Description
+            - Optional Shortcut
+            - Optional Status
+            - Selected Indicator
+        - Selected
+            - 浅色背景
+            - Active Text
+            - Optional Check
+        - Hover
+            - 轻背景
+        - Disabled
+            - 不可切换
+            - 显示 Disabled
+    - Workspace 数据模型
+        - WorkspaceDefinition
+            - Id
+            - Label
+            - Optional Icon
+            - Optional Shortcut
+            - DefaultLayoutId
+            - AvailableLayouts
+            - IsEnabled
+            - Order
+        - WorkspaceState
+            - CurrentWorkspaceId
+            - WorkspaceLayouts
+            - RecentWorkspaces
+        - WorkspaceLayoutState
+            - WorkspaceId
+            - LayoutId
+            - IsModified
+            - IsCustom
+        - 原则
+            - CurrentWorkspaceId 为唯一当前工作区状态源
+            - Variant 不维护独立 Current Workspace
+    - 切换行为
+        - 用户选择 Workspace
+            - 保存当前 Workspace 必要运行状态
+            - 加载目标 Workspace 状态
+            - 切换 Dock / Sidebar / Toolbar / Viewport
+            - 更新 CurrentWorkspaceId
+        - 原则
+            - 切换必须是完整事务
+            - 不能出现 Workspace 名称已变但布局未完成切换的半状态
+    - 切换中状态
+        - 复杂 Workspace 加载
+            - 允许 Loading
+        - Loading 时
+            - 保持当前 Workspace 可用直到目标准备完成
+            - 或显示明确 Transition
+        - 失败
+            - 保持原 Workspace
+            - 显示错误反馈
+        - 禁止
+            - 失败后 CurrentWorkspaceId 指向未成功加载目标
+    - 快捷键
+        - 允许
+            - Ctrl+1
+            - Ctrl+2
+            - Ctrl+3
+            - 或项目自定义
+        - Workspace Panel
+            - 可直接展示 Shortcut
+        - 原则
+            - 快捷键来源于 WorkspaceDefinition
+            - 不能和全局核心快捷键冲突
+    - 最近工作区
+        - 可选
+        - 用途
+            - Workspace Panel
+            - CommandPalette
+        - 排序
+            - 最近使用
+        - 原则
+            - 不取代正式 Workspace 顺序
+    - 最近布局
+        - 只适用于
+            - 支持 Layout History 的编辑器
+        - 内容
+            - Workspace
+            - Layout Name
+            - Timestamp
+        - 原则
+            - 可选能力
+            - 不强制基础 WorkspaceSwitcher 实现
+    - 管理工作区
+        - 可选入口
+        - 用途
+            - 新建 Workspace
+            - 重命名
+            - 复制
+            - 删除
+            - 排序
+            - 编辑快捷键
+        - 原则
+            - 管理操作不得塞入基础切换流程
+        - Optional
+            - 打开独立 Workspace Manager
+    - 响应式
+        - Wide
+            - Segmented / Icon + Label
+            - Layout Status 可完整显示
+        - Default
+            - Compact Dropdown
+        - Compact
+            - Icon + Label
+                - → Icon Only
+            - 或 Compact Dropdown
+        - Narrow
+            - Dropdown / Panel
+        - Mobile
+            - 使用全屏 Sheet / Drawer
+            - 不使用长 Segmented Workspace
+        - 原则
+            - 根据 Workspace 数量和空间选择 Variant
+            - 不是固定单一布局
+    - Workspace 数量建议
+        - 1
+            - 通常隐藏 WorkspaceSwitcher
+        - 2～5
+            - 可优先 Segmented
+        - 5～10
+            - 优先 Compact Dropdown
+        - 10+
+            - 优先 Workspace Panel
+            - 可增加 Search
+        - 原则
+            - 数量是选择 Variant 的重要因素
+            - 不是绝对硬阈值
+    - Optional Slots
+        - WorkspaceIcon
+            - Optional
+        - WorkspaceLabel
+            - Required
+        - LayoutStatus
+            - Optional
+        - Shortcut
+            - Optional
+        - RecentLayouts
+            - Optional
+        - ManageEntry
+            - Optional
+        - Overflow
+            - Optional
+    - 视觉规则
+        - Background
+            - XY.Surface.Panel
+        - Hover
+            - XY.State.Color.Hover
+        - Selected
+            - XY.Surface.Selected
+        - Selected Text
+            - XY.Accent.Strong
+        - Accent
+            - XY.Accent.Default
+        - Border
+            - XY.Border.Color.Default
+        - Secondary
+            - XY.Text.Secondary
+        - Modified Indicator
+            - XY.Accent.Default
+    - 字体
+        - Workspace Label
+            - FontSize
+                - XY.FontSize.Auxiliary
+        - Selected
+            - FontWeight
+                - XY.FontWeight.Medium
+        - Layout Status
+            - FontSize
+                - XY.FontSize.Caption
+        - Panel Section
+            - FontSize
+                - XY.FontSize.Caption
+    - 布局规范
+        - Compact Height
+            - 34～38 DIP
+        - Segmented Height
+            - 38～42 DIP
+        - Workspace Item
+            - 约 32～38 DIP
+        - Panel Item
+            - 约 36～42 DIP
+        - Icon
+            - 14～18 DIP
+        - 原则
+            - 保持紧凑
+            - 不使用大型 Workspace 卡片作为默认
+    - 与其他 XYUI 控件关系
+        - WorkspaceSwitcher
+            - 可控制
+                - Sidebar
+                - Toolbar
+                - DockTabs
+                - ViewSwitcher
+                - Viewport Layout
+            - 可调用
+                - Menu
+                - Popup
+                - CommandPalette
+            - 可嵌入
+                - App Header
+                - Sidebar Header
+                - CommandBar
+    - UI Tokens
+        - WorkspaceSwitcher.Height
+            - 36
+        - WorkspaceSwitcher.Icon.Size
+            - XY.Icon.Size.M
+        - WorkspaceSwitcher.Item.Height
+            - 34
+        - WorkspaceSwitcher.Panel.Item.Height
+            - 40
+        - WorkspaceSwitcher.Background
+            - XY.Surface.Panel
+        - WorkspaceSwitcher.Hover
+            - XY.State.Color.Hover
+        - WorkspaceSwitcher.Selected
+            - XY.Surface.Selected
+        - WorkspaceSwitcher.Selected.Text
+            - XY.Accent.Strong
+        - WorkspaceSwitcher.Accent
+            - XY.Accent.Default
+        - WorkspaceSwitcher.Border
+            - XY.Border.Color.Default
+    - UI代码
+        - WorkspaceSwitcher
+            - Variant
+                - Configurable
+            - CurrentWorkspaceId
+                - Bound
+            - Height
+                - 36
+        - WorkspaceSwitcher.Compact
+            - Display
+                - CurrentWorkspace + Chevron
+        - WorkspaceSwitcher.Segmented
+            - MaxVisibleItems
+                - Adaptive
+            - Overflow
+                - Enabled
+        - WorkspaceSwitcher.Icon
+            - Visibility
+                - Optional
+            - Size
+                - 16
+        - WorkspaceSwitcher.LayoutVariant
+            - ShowLayoutStatus
+                - True
+            - ShowSaveLayout
+                - True
+            - ShowRestoreDefault
+                - True
+        - WorkspaceSwitcher.Panel
+            - ShowShortcuts
+                - Configurable
+            - ShowRecentLayouts
+                - Configurable
+            - ShowManageEntry
+                - Configurable
+    - 适配规则
+        - Desktop
+            - 全部 Variant
+        - Web
+            - 全部 Variant
+        - Tablet
+            - Compact / Panel 优先
+        - Mobile
+            - Sheet / Drawer
+        - 大型编辑器
+            - Layout Variant 推荐
+    - 禁止项
+        - 禁止把 Workspace 当作普通 Tab 简单替代
+        - 禁止所有项目强制显示 WorkspaceSwitcher
+        - 禁止只有一个 Workspace 时仍占据明显空间
+        - 禁止 Workspace 切换失败后留下半切换状态
+        - 禁止 Layout Modified 与 Workspace Selected 混为同一状态
+        - 禁止 Workspace 数量很多仍全部使用 Segmented
+        - 禁止 Workspace Panel 变成全局 CommandPalette 的复制品
+        - 禁止不同 Variant 各自维护独立 CurrentWorkspaceId
+        - 禁止图标成为必须条件
+    - 最终结论
+        - Canonical Default
+            - 方案 1 · Compact Dropdown
+        - Official Variants
+            - 方案 2 · Segmented Workspace
+            - 方案 4 · Workspace + Layout State
+            - 方案 5 · Workspace Panel
+        - Official Capability
+            - 方案 3 · Icon + Label
+        - 核心原则
+            - Workspace 是整套工作环境
+            - 不是单一页面
+            - 根据数量、空间和布局能力选择正式 Variant
+            - 所有 Variant 共用统一 WorkspaceState
+        - 适合作为
+            - XYUI 标准 WorkspaceSwitcher
+            - 玄域编辑器工作环境切换系统
+        - 后续衔接
+            - 3.21 · ViewSwitcher
+    
+- 3.21 · ViewSwitcher / 视图切换器
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 内容视图切换组件
+        - 主要用途
+            - 在同一份数据或内容的不同展示方式之间切换
+            - 保持数据对象不变
+            - 仅改变观察、布局或表现方式
+        - 核心语义
+            - 内容不变
+            - 只改变怎么看
+        - 与 WorkspaceSwitcher 的区别
+            - WorkspaceSwitcher
+                - 切换整套工作环境
+                - 可改变 Dock Layout
+                - 可改变 Sidebar
+                - 可改变 Toolbar
+                - 可改变工作模式
+            - ViewSwitcher
+                - 只切换当前内容的 View
+                - 数据源与业务对象保持不变
+    - 使用场景
+        - 玄域引擎
+            - 2D
+            - 3D
+            - 分屏
+            - 正交
+            - 透视
+            - 线框
+        - 资源浏览器
+            - 列表
+            - 网格
+            - 缩略图
+            - 详细信息
+        - 日志
+            - 表格
+            - 时间线
+            - 图表
+        - 数据页面
+            - Table
+            - Card
+            - Grid
+    - 最终方案
+        - 组件模型
+            - Canonical Default
+                - 方案 1 · Icon Segmented
+            - Official Variant
+                - 方案 2 · Icon + Label Segmented
+            - Official Variant
+                - 方案 3 · Dropdown ViewSwitcher
+            - Official Variant
+                - 方案 4 · Primary Views + More
+            - Official Variant
+                - 方案 5 · View + Secondary Settings
+        - 设计原则
+            - 全部 Variant 共用同一 ViewState
+            - Variant 只改变展示与入口密度
+            - 切换 View 不改变业务数据
+            - 根据 View 数量、空间和专业程度选择形态
+    - Variant · Icon Segmented
+        - 来源
+            - 方案 1
+        - 定位
+            - Canonical Default
+        - 适用
+            - View 数量少
+            - 图标语义明确
+            - 高频切换
+        - 结构
+            - View Item
+                - Icon
+            - View Item
+                - Icon
+            - View Item
+                - Icon
+        - Selected
+            - 浅色 Selected Background
+            - Accent Icon
+            - Accent Indicator
+        - Tooltip
+            - 显示完整 View 名称
+        - 原则
+            - 图标必须具有明确语义
+            - 不能用难以理解的抽象图标强行替代文字
+    - Variant · Icon + Label Segmented
+        - 来源
+            - 方案 2
+        - 定位
+            - Labeled Variant
+        - 适用
+            - 宽度充足
+            - 新用户
+            - View 名称比图标更重要
+        - 结构
+            - Icon
+            - Label
+        - Selected
+            - 浅色背景
+            - Active Text
+            - Accent Indicator
+        - 响应式
+            - 空间不足时可退化为 Icon Segmented
+        - 原则
+            - 文字是增强
+            - 不是所有 ViewSwitcher 强制显示
+    - Variant · Dropdown
+        - 来源
+            - 方案 3
+        - 定位
+            - Many Views Variant
+        - 适用
+            - View 数量较多
+            - View 名称抽象
+            - 空间有限
+        - 结构
+            - View Label
+            - Current View
+            - Chevron
+            - View Menu
+        - 菜单
+            - 显示所有可用 View
+            - Current View 使用 Selected / Check
+        - 原则
+            - View 数量增加时宽度保持稳定
+            - 切换多一步但保持清晰
+    - Variant · Primary Views + More
+        - 来源
+            - 方案 4
+        - 定位
+            - Primary + Overflow Variant
+        - 适用
+            - 少量高频 View
+            - 同时存在较多低频 View
+        - 结构
+            - Primary View
+            - Primary View
+            - Primary View
+            - More
+        - More
+            - 低频 View
+            - 高级 View
+            - Optional Custom View
+        - Primary 判定
+            - 由业务配置
+            - 不由组件随机决定
+        - 原则
+            - 当前 Selected View 不应被无解释隐藏
+            - 若当前 View 属于 More
+                - More Trigger 必须体现当前状态
+    - Variant · View + Secondary Settings
+        - 来源
+            - 方案 5
+        - 定位
+            - Viewport / Professional Variant
+        - 适用
+            - Viewport
+            - 地图
+            - 3D 编辑
+            - 专业数据视图
+        - 结构
+            - ViewSwitcher
+            - Separator
+            - Secondary View Settings
+        - Secondary Settings 示例
+            - 透视 / 正交
+            - 网格
+            - 线框
+            - Overlay
+            - 显示标记
+        - 原则
+            - 只允许当前 View 直接相关配置
+            - 不得把所有 Toolbar 工具塞入 ViewSwitcher
+            - 通用工具继续归 Toolbar
+        - View 切换后
+            - Secondary Settings 根据当前 View 更新
+    - View Item
+        - 结构
+            - Optional Icon
+            - Optional Label
+            - Optional Shortcut
+            - Optional Status
+        - Selected
+            - 浅色 Selected Background
+            - Active Text / Icon
+            - Accent Indicator
+        - Hover
+            - 浅 Hover Background
+        - Disabled
+            - 不可切换
+        - 原则
+            - 同一 ViewGroup 默认一个 Selected
+    - View 数量规则
+        - 1
+            - 通常隐藏 ViewSwitcher
+        - 2～4
+            - Icon Segmented / Icon + Label
+        - 5～8
+            - Primary + More
+            - 或 Dropdown
+        - 8+
+            - 优先 Dropdown
+            - 必要时 Search
+        - 原则
+            - 数量是 Variant 选择参考
+            - 不是绝对硬阈值
+    - ViewState
+        - CurrentViewId
+        - AvailableViews
+        - ViewSettings
+        - ViewDefinition
+            - Id
+            - Label
+            - Optional Icon
+            - Optional Shortcut
+            - Priority
+            - IsEnabled
+            - SupportsSecondarySettings
+        - 原则
+            - CurrentViewId 为唯一当前视图状态源
+            - 所有 Variant 共用
+            - 不能每种 Variant 各自维护 Selected
+    - 切换行为
+        - 用户选择新 View
+            - 验证目标 View 可用
+            - 保存必要当前 View 表现状态
+            - 切换渲染 / 布局
+            - 更新 CurrentViewId
+        - 原则
+            - 数据模型保持不变
+            - 仅改变 View Representation
+        - 失败
+            - 保持原 View
+            - 显示错误反馈
+        - 禁止
+            - 先更新 Selected 再切换失败导致状态不同步
+    - View 状态保持
+        - 允许每个 View 保留
+            - Scroll Position
+            - Zoom
+            - Camera
+            - Column Layout
+            - Thumbnail Size
+        - 原则
+            - 这些属于 ViewState
+            - 不改变业务实体数据
+        - 切换回来
+            - 可恢复之前 View 状态
+    - Secondary Settings
+        - 类型
+            - Toggle
+            - Select
+            - Segmented
+            - Compact Numeric
+        - 显示
+            - 按当前 View 动态决定
+        - 例
+            - 3D
+                - 透视
+                - 网格
+                - Overlay
+            - 列表
+                - 紧凑模式
+                - 列密度
+            - 缩略图
+                - 缩略图大小
+        - 原则
+            - 配置数量必须克制
+            - 复杂设置进入独立 Settings / Popover
+    - Icon 规则
+        - 尺寸
+            - 建议 14～18 DIP
+        - 语义
+            - 必须可区分
+        - 风格
+            - 统一线宽
+            - 低饱和
+        - Icon Only
+            - 必须提供 Tooltip
+        - 禁止
+            - 使用无意义单字缩写作为默认图标
+    - Label 规则
+        - 保持简短
+        - 例
+            - 列表
+            - 网格
+            - 3D
+            - 分屏
+        - 长名称
+            - Ellipsis
+            - Tooltip 完整显示
+    - 快捷键
+        - 可选
+        - 例
+            - 1
+            - 2
+            - 3
+            - 或项目自定义
+        - 原则
+            - 快捷键来源于 ViewDefinition
+            - 切换行为与点击共用同一逻辑
+    - 响应式
+        - Wide
+            - Icon + Label
+            - Secondary Settings 可完整显示
+        - Default
+            - Icon Segmented
+        - Medium
+            - Icon Segmented
+            - 部分低频 View 进入 More
+        - Compact
+            - Primary + More
+            - 或 Dropdown
+        - Mobile
+            - Dropdown
+            - Bottom Sheet
+            - 少量 View 可 Segmented
+        - 原则
+            - 不固定唯一形态
+            - 根据空间和数量自动选择正式 Variant
+    - Optional Slots
+        - Icon
+            - Optional
+        - Label
+            - Optional
+        - Shortcut
+            - Optional
+        - Status
+            - Optional
+        - More
+            - Optional
+        - SecondarySettings
+            - Optional
+        - Divider
+            - Optional
+    - 颜色建议
+        - Background
+            - XY.Surface.Panel
+        - Hover
+            - XY.State.Color.Hover
+        - Selected Background
+            - XY.Surface.Selected
+        - Selected Text
+            - XY.Accent.Strong
+        - Selected Icon
+            - XY.Accent.Default
+        - Accent
+            - XY.Accent.Default
+        - Border
+            - XY.Border.Color.Default
+        - Secondary
+            - XY.Text.Secondary
+    - 字体
+        - Label
+            - FontSize
+                - XY.FontSize.Auxiliary
+        - Selected
+            - FontWeight
+                - XY.FontWeight.Medium
+        - Secondary Settings
+            - FontSize
+                - XY.FontSize.Auxiliary
+    - 布局规范
+        - Height
+            - 34～40 DIP
+        - Icon Item Width
+            - 约 36～42 DIP
+        - Icon + Label Item
+            - 按内容自适应
+        - Gap
+            - 2～4 DIP
+        - Selected Radius
+            - XY.Radius.Control
+        - 原则
+            - 保持紧凑
+            - 不使用大胶囊
+    - 与其他 XYUI 控件关系
+        - ViewSwitcher
+            - 可包含
+                - IconButton
+                - Segmented Control
+                - Select
+                - Toggle
+                - Divider
+            - 可配合
+                - Toolbar
+                - CommandBar
+                - WorkspaceSwitcher
+                - DockTabs
+            - 可控制
+                - List View
+                - Grid View
+                - Thumbnail View
+                - 2D View
+                - 3D View
+                - Split View
+    - UI Tokens
+        - ViewSwitcher.Height
+            - 36
+        - ViewSwitcher.Item.Height
+            - 32
+        - ViewSwitcher.Icon.Size
+            - XY.Icon.Size.M
+        - ViewSwitcher.Gap
+            - 2
+        - ViewSwitcher.Background
+            - XY.Surface.Panel
+        - ViewSwitcher.Hover
+            - XY.State.Color.Hover
+        - ViewSwitcher.Selected
+            - XY.Surface.Selected
+        - ViewSwitcher.Selected.Text
+            - XY.Accent.Strong
+        - ViewSwitcher.Selected.Icon
+            - XY.Accent.Default
+        - ViewSwitcher.Accent
+            - XY.Accent.Default
+    - UI代码
+        - ViewSwitcher
+            - Variant
+                - Configurable
+            - CurrentViewId
+                - Bound
+            - Height
+                - 36
+        - ViewSwitcher.IconSegmented
+            - ShowIcon
+                - True
+            - ShowLabel
+                - False
+        - ViewSwitcher.IconLabel
+            - ShowIcon
+                - True
+            - ShowLabel
+                - True
+        - ViewSwitcher.Dropdown
+            - Display
+                - CurrentView + Chevron
+        - ViewSwitcher.PrimaryMore
+            - ShowPrimaryViews
+                - True
+            - ShowMore
+                - Adaptive
+        - ViewSwitcher.SecondarySettings
+            - Visibility
+                - Configurable
+            - ContextBound
+                - CurrentViewId
+        - ViewItem
+            - Height
+                - 32
+            - Background
+                - Transparent
+            - CornerRadius
+                - XY.Radius.Control
+        - ViewItem.Hover
+            - Background
+                - XY.State.Color.Hover
+        - ViewItem.Selected
+            - Background
+                - XY.Surface.Selected
+            - TextColor
+                - XY.Accent.Strong
+            - IconColor
+                - XY.Accent.Default
+            - IndicatorColor
+                - XY.Accent.Default
+    - 适配规则
+        - Desktop
+            - 全部 Variant
+        - Web
+            - 全部 Variant
+        - Tablet
+            - Icon / Dropdown / PrimaryMore
+        - Mobile
+            - Dropdown / Bottom Sheet
+            - 少量 View 可 Segmented
+        - Viewport
+            - 优先 View + Secondary Settings
+    - 禁止项
+        - 禁止将 ViewSwitcher 当 WorkspaceSwitcher 使用
+        - 禁止切 View 时改变业务数据
+        - 禁止每个 Variant 各自维护 CurrentViewId
+        - 禁止图标难以理解时仍强制 Icon Only
+        - 禁止 View 很多仍全部平铺
+        - 禁止当前 View 被收入 More 后完全没有状态提示
+        - 禁止 Secondary Settings 演变成第二条 Toolbar
+        - 禁止一个 View 时仍占据明显切换区域
+        - 禁止切换失败后视觉 Selected 与实际 View 不一致
+    - 最终结论
+        - Canonical Default
+            - 方案 1 · Icon Segmented
+        - Official Variants
+            - 方案 2 · Icon + Label
+            - 方案 3 · Dropdown
+            - 方案 4 · Primary + More
+            - 方案 5 · View + Secondary Settings
+        - 核心原则
+            - 同一内容
+            - 不同观察方式
+            - Variant 根据数量、空间和场景选择
+            - 所有 Variant 共用统一 ViewState
+        - 适合作为
+            - XYUI 标准 ViewSwitcher
+            - 玄域资源视图 / Viewport / 数据视图切换体系
+        - 后续衔接
+            - 3.22 · TableOfContents
+    
+- 3.22 · TableOfContents / 目录导航
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 页面内部锚点导航组件
+        - 主要用途
+            - 在长页面、长文档、设置页、报告与 Inspector 中快速定位章节
+            - 表达当前所在章节
+            - 支持一级和有限二级目录
+            - 在窄屏环境下转换为折叠目录
+        - 核心语义
+            - 同一个页面内部
+            - 我当前位于哪个章节
+            - 我可以快速跳到哪个章节
+        - 与 TreeNavigation 的区别
+            - TreeNavigation
+                - 主要导航业务对象或层级实体
+                - 节点结构可动态展开
+                - 可以具有对象选择语义
+            - TableOfContents
+                - 主要导航当前页面内部 Section
+                - 节点来自页面标题结构
+                - 不承担业务对象树编辑
+        - 与 Steps 的区别
+            - Steps
+                - 表达具有先后顺序的流程状态
+                - 存在 Completed / Current / Pending
+            - TableOfContents
+                - 表达页面章节位置
+                - 没有完成 / 未完成流程语义
+    - 使用场景
+        - XYUI 文档
+            - 基础信息
+            - 颜色
+            - 字体
+            - 布局
+            - 交互
+            - 状态
+            - 响应式
+        - 玄域引擎
+            - 地图设置
+            - 环境设置
+            - 渲染设置
+            - 导航设置
+            - 性能设置
+            - 调试设置
+        - Inspector
+            - 基础
+            - 变换
+            - 渲染
+            - 数据
+            - 高级
+        - 报告
+            - 摘要
+            - 分析
+            - 结果
+            - 附录
+    - 最终方案
+        - 组件模型
+            - Official Variant
+                - 方案 1 · Strong Selected Sidebar
+            - Official Variant
+                - 方案 3 · Hierarchical TOC
+            - Official Variant
+                - 方案 5 · Compact / Mobile
+            - 排除
+                - 方案 2 · Minimal Accent Tick
+                - 方案 4 · ScrollSpy Progress Rail
+        - 设计原则
+            - 当前章节必须具有明确 Selected
+            - 允许有限层级目录
+            - 窄屏不长期占用侧栏
+            - 不引入 Steps 式阅读进度轨
+    - Variant · Strong Selected Sidebar
+        - 来源
+            - 方案 1
+        - 定位
+            - 桌面常驻 TOC
+        - 结构
+            - TOC Item
+            - TOC Item
+            - TOC Item
+        - Selected
+            - 浅色 Selected Background
+            - 左侧 Accent Bar
+            - Active Text
+        - 适用
+            - 设置页
+            - Inspector
+            - 文档页面
+            - 长配置页
+        - 特点
+            - 当前章节辨识度高
+            - 与 NavigationMenu / TreeNavigation 视觉语言统一
+        - 原则
+            - Selected 背景保持轻
+            - 不做高饱和整块按钮
+    - Variant · Hierarchical TOC
+        - 来源
+            - 方案 3
+        - 定位
+            - 多层章节目录
+        - 适用
+            - 文档章节较多
+            - 页面存在一级和二级 Section
+        - 结构
+            - Level 1 Item
+                - Level 2 Item
+                - Level 2 Item
+            - Level 1 Item
+                - Level 2 Item
+        - 最大推荐层级
+            - 2
+            - 特殊场景最多 3
+        - 原则
+            - TOC 不是 TreeNavigation
+            - 禁止无限递归
+            - 复杂层级应重新拆分文档结构
+        - Selected
+            - 当前子章节
+                - 浅色背景
+                - 左侧 Accent Bar
+            - 当前父章节
+                - 可使用 Active / Primary Text
+                - 不与当前子章节同强度
+    - 层级线
+        - 二级目录
+            - 允许显示极浅纵向 Guide
+        - 作用
+            - 帮助识别子章节所属父级
+        - 颜色
+            - Border
+        - 原则
+            - 只辅助结构
+            - 不做复杂树连接线
+    - Variant · Compact / Mobile
+        - 来源
+            - 方案 5
+        - 定位
+            - 窄屏 / 小窗口 / Mobile
+        - 结构
+            - Current Section
+            - Chevron
+            - Dropdown / Sheet
+        - 表现
+            - 本页目录
+                - 当前章节
+                    - Chevron
+        - 展开
+            - 显示完整 TOC
+        - Selected
+            - 浅色背景
+            - Active Text
+            - Check
+        - 适用
+            - Mobile
+            - Tablet Narrow
+            - 窄 Inspector
+            - 小型浮动窗口
+        - 原则
+            - 不长期占用横向空间
+            - 当前章节始终可见
+    - 章节来源
+        - 来源
+            - Page Section Model
+            - Heading Structure
+        - TOCItem
+            - Id
+            - Label
+            - AnchorId
+            - Level
+            - ParentId
+        - 原则
+            - TOC 不维护独立章节内容
+            - 只引用页面真实 Section
+    - 当前位置同步
+        - 用户点击目录
+            - 滚动至对应 Anchor
+            - 更新 CurrentSectionId
+        - 用户滚动正文
+            - CurrentSectionId 根据可视 Section 更新
+        - 原则
+            - 目录 Selected 与实际页面位置必须同步
+            - 不得只在点击目录后更新
+    - Current Section 判定
+        - 推荐
+            - 当前视口主要章节
+            - 或最接近顶部 Anchor
+        - 避免
+            - 多个 Section 同时闪烁 Selected
+        - 滚动边界
+            - 使用稳定阈值
+        - 原则
+            - CurrentSectionId 同一时间只有一个主值
+    - 点击导航
+        - Click Item
+            - 滚动至 Anchor
+        - 滚动方式
+            - 允许 Smooth
+            - 大型编辑器可使用 Instant
+            - 由平台和体验规则决定
+        - 滚动后
+            - 章节顶部不得被 Sticky Header 遮挡
+        - 原则
+            - 需要考虑 Scroll Margin / Header Offset
+    - 二级目录
+        - 默认
+            - 直接显示
+        - 可选
+            - 仅当前父章节展开子目录
+        - 适用
+            - 目录较长
+        - 原则
+            - 展开规则保持稳定
+            - 不能用户滚动时频繁展开折叠导致布局剧烈跳动
+    - 目录过长
+        - TOC 自身
+            - 允许独立滚动
+        - 当前章节不可见
+            - 自动最小滚动至可见
+        - 禁止
+            - 目录滚动影响正文滚动
+            - 正文滚动导致 TOC 大幅跳动
+    - Sticky
+        - Desktop Sidebar Variant
+            - 允许 Sticky
+        - 位置
+            - 保持在页面可视区域
+        - 最大高度
+            - 不超过可视区域
+        - Overflow
+            - Auto
+        - 原则
+            - 不遮挡 Footer 或其他固定区域
+    - 宽度规则
+        - Desktop
+            - 建议 180～260 DIP
+        - Narrow
+            - 转 Compact Variant
+        - Label 过长
+            - Ellipsis
+            - Tooltip 显示完整标题
+        - 原则
+            - 不能无限撑宽正文布局
+    - Optional Slots
+        - SectionIcon
+            - Optional
+        - SectionLabel
+            - Required
+        - SecondaryCount
+            - Optional
+        - Chevron
+            - Hierarchical Variant Optional
+        - CurrentCheck
+            - Compact Variant Optional
+    - 状态
+        - Default
+            - Secondary Text
+        - Hover
+            - 浅色 Hover Background
+        - Selected
+            - 浅色 Selected Background
+            - Accent Bar
+            - Active Text
+        - ParentActive
+            - Primary Text
+        - Disabled
+            - 低对比度
+            - 不可导航
+    - 键盘
+        - Up / Down
+            - 移动 Focus
+        - Enter
+            - 跳转
+        - Right
+            - 可展开父章节
+        - Left
+            - 可收起父章节
+        - Esc
+            - Compact Variant 关闭目录
+    - 状态模型
+        - TableOfContentsState
+            - CurrentSectionId
+            - FocusedSectionId
+            - ExpandedSectionIds
+            - DisplayVariant
+        - 原则
+            - CurrentSectionId 来源于页面滚动位置
+            - Variant 不维护独立 Current 状态
+    - 响应式
+        - Desktop Wide
+            - Strong Selected Sidebar
+            - 或 Hierarchical
+        - Desktop Medium
+            - 缩窄 Sidebar TOC
+        - Desktop Narrow
+            - Compact Dropdown
+        - Tablet
+            - Compact 或 Hierarchical Sheet
+        - Mobile
+            - 顶部 Current Section + Sheet
+        - 原则
+            - 目录在窄屏不长期挤压正文
+    - 颜色建议
+        - Background
+            - XY.Surface.Panel
+        - Text
+            - XY.Text.Secondary
+        - Primary Text
+            - XY.Text.Primary
+        - Hover
+            - XY.State.Color.Hover
+        - Selected
+            - XY.Surface.Selected
+        - Selected Text
+            - XY.Accent.Strong
+        - Accent
+            - XY.Accent.Default
+        - Guide
+            - XY.Border.Color.Subtle
+        - Border
+            - XY.Border.Color.Default
+    - 字体
+        - Level 1
+            - FontSize
+                - XY.FontSize.Auxiliary
+        - Level 2
+            - FontSize
+                - XY.FontSize.Caption
+        - Selected
+            - FontWeight
+                - XY.FontWeight.Medium
+    - 布局规范
+        - Item Height
+            - 30～34 DIP
+        - Level 1 PaddingX
+            - 10～12 DIP
+        - Level 2 Indent
+            - 16～20 DIP
+        - Accent Width
+            - 3 DIP
+        - Radius
+            - XY.Radius.Control
+        - 原则
+            - 保持高密度
+            - 不浪费纵向空间
+    - 与其他 XYUI 控件关系
+        - TableOfContents
+            - 可包含
+                - Text
+                - Icon
+                - Chevron
+            - 可调用
+                - Tooltip
+                - Dropdown
+                - Sheet
+            - 可配合
+                - ScrollContainer
+                - PageHeader
+                - Inspector
+            - 不替代
+                - TreeNavigation
+                - Steps
+                - Breadcrumb
+    - UI Tokens
+        - TOC.Item.Height
+            - 32
+        - TOC.Level2.Indent
+            - XY.Indent.PerLevel
+        - TOC.Accent.Width
+            - 3
+        - TOC.Background
+            - XY.Surface.Panel
+        - TOC.Text
+            - XY.Text.Secondary
+        - TOC.Hover
+            - XY.State.Color.Hover
+        - TOC.Selected
+            - XY.Surface.Selected
+        - TOC.Selected.Text
+            - XY.Accent.Strong
+        - TOC.Accent
+            - XY.Accent.Default
+        - TOC.Guide
+            - XY.Border.Color.Subtle
+    - UI代码
+        - TableOfContents
+            - Variant
+                - Configurable
+            - CurrentSectionId
+                - Bound
+            - MaxLevel
+                - 2
+        - TOCItem
+            - Height
+                - 32
+            - Background
+                - Transparent
+            - TextColor
+                - XY.Text.Secondary
+            - CornerRadius
+                - XY.Radius.Control
+        - TOCItem.Hover
+            - Background
+                - XY.State.Color.Hover
+        - TOCItem.Selected
+            - Background
+                - XY.Surface.Selected
+            - TextColor
+                - XY.Accent.Strong
+            - AccentPosition
+                - Left
+            - AccentWidth
+                - 3
+            - AccentColor
+                - XY.Accent.Default
+        - TOC.Hierarchical
+            - Level2Indent
+                - XY.Indent.PerLevel
+            - GuideColor
+                - XY.Border.Color.Subtle
+        - TOC.Compact
+            - Display
+                - CurrentSection + Chevron
+            - OpenBehavior
+                - DropdownOrSheet
+    - 适配规则
+        - Desktop
+            - 方案 1 / 3
+        - Web
+            - 方案 1 / 3 / 5
+        - Tablet
+            - 方案 5 优先
+        - Mobile
+            - 方案 5
+        - 长文档
+            - 方案 3
+        - 简单设置页
+            - 方案 1
+    - 禁止项
+        - 禁止采用极弱 Accent Tick 作为标准 Selected
+        - 禁止采用 Steps 风格阅读进度轨
+        - 禁止 TOC 表达 Completed / Pending 流程状态
+        - 禁止目录无限递归成为 TreeNavigation
+        - 禁止 Current Section 与实际页面滚动位置不同步
+        - 禁止二级目录滚动时频繁开合导致明显跳动
+        - 禁止 Sticky TOC 超出窗口高度
+        - 禁止窄屏仍长期占用大块左侧空间
+        - 禁止 TOC 自己维护与页面不同的 Section 顺序
+    - 最终结论
+        - Official Variants
+            - 方案 1 · Strong Selected Sidebar
+            - 方案 3 · Hierarchical TOC
+            - 方案 5 · Compact / Mobile
+        - 排除
+            - 方案 2 · Minimal Tick
+            - 方案 4 · ScrollSpy Progress Rail
+        - 核心原则
+            - 当前章节明确
+            - 有限层级
+            - 桌面常驻
+            - 窄屏折叠
+        - 适合作为
+            - XYUI 标准 TableOfContents
+            - 长文档 / Inspector / 设置页内部目录导航
+        - 后续衔接
+            - 3.23 · BottomNavigation
+    
+- 3.23 · BottomNavigation / 底部导航
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 移动端一级导航组件
+        - 主要用途
+            - 在少量核心一级目的地之间切换
+            - 为触控环境提供稳定、持续可见的主导航入口
+            - 按需表达导航项的未读、数量和状态
+        - 核心语义
+            - 切换应用的一级主要目的地
+        - 与 Bottom Toolbar 的区别
+            - BottomNavigation
+                - 用于 Navigation Destination
+                - 切换一级页面或模块
+            - Bottom Toolbar
+                - 用于 Command
+                - 执行当前页面操作
+        - 原则
+            - 导航与命令语义必须分离
+    - 使用场景
+        - 玄域移动端辅助应用
+            - 地图
+            - 数据
+            - 实验
+            - 日志
+            - 设置
+        - Web Mobile
+            - 首页
+            - 项目
+            - 消息
+            - 个人
+        - Tablet
+            - 少量一级核心模块
+    - 最终方案
+        - 组件模型
+            - Canonical Default
+                - 方案 1 · Icon + Label
+            - Official Variant
+                - 方案 3 · Selected Emphasis
+            - Official Capability
+                - 方案 4 · Badge / Status
+            - Official Composition
+                - 方案 5 · BottomNavigation + Primary Action
+            - 排除
+                - 方案 2 · Icon Only
+        - 设计原则
+            - 默认一级导航同时显示 Icon + Label
+            - 当前项允许更明确强化
+            - 状态能力作为 Optional Slot
+            - 中央主操作若存在必须与 Navigation Item 语义分离
+    - Canonical Default
+        - 来源
+            - 方案 1
+        - 名称
+            - Icon + Label 标准型
+        - 结构
+            - NavigationItem
+                - Icon
+                - Label
+            - NavigationItem
+                - Icon
+                - Label
+        - 适用
+            - 绝大多数移动端主导航
+            - 首次使用用户
+            - 图标不能完全替代文字的模块
+        - Selected
+            - Accent Icon
+            - Active Label
+            - 浅色 Selected Background
+        - 原则
+            - Icon 和 Label 同时参与语义表达
+            - 不依赖用户记住图标
+    - Variant · Selected Emphasis
+        - 来源
+            - 方案 3
+        - 定位
+            - 当前项强化 Variant
+        - 表现
+            - 未选中项
+                - Icon + Optional Label
+            - Selected
+                - Icon + Label
+                - 浅色 Selected Region
+                - Active Text
+        - 推荐
+            - 保持每个 Navigation Slot 固定宽度
+        - 原则
+            - 选中前后不能导致整个导航栏左右跳动
+            - Selected 强化不能改变 Item 基础占位
+        - 可选模式
+            - 所有项保持 Label
+            - 仅 Current Label 强化
+            - 非当前 Label 可弱化但不建议完全消失
+    - Badge / Status Capability
+        - 来源
+            - 方案 4
+        - 定位
+            - Optional Capability
+        - 用途
+            - 未读
+            - 消息数量
+            - 错误数量
+            - 任务数量
+            - 状态提醒
+        - 类型
+            - Dot
+            - Count Badge
+            - Status Badge
+        - Dot
+            - 表达存在新状态
+            - 不显示具体数量
+        - Count Badge
+            - 显示小数量
+            - 大数量允许显示 99+
+        - Status Badge
+            - 仅用于明确业务状态
+        - 位置
+            - Icon 右上附近
+        - 原则
+            - 不得遮挡主 Icon
+            - 不得每个 Item 同时堆多个 Badge
+            - Badge 不能改变 Navigation Item 布局尺寸
+    - 状态优先级
+        - Selected
+            - 表达当前位置
+        - Badge
+            - 表达目标内部状态
+        - Danger / Error Badge
+            - 表达需要注意
+        - 原则
+            - Selected 与 Badge 是两个独立维度
+            - 不能用 Badge 颜色代替 Selected 状态
+    - Composition · BottomNavigation + Primary Action
+        - 来源
+            - 方案 5
+        - 定位
+            - 组合布局
+        - 适用
+            - 存在极高频全局创建操作
+            - 移动端以创建为核心的产品
+        - 结构
+            - Navigation Items
+            - Primary Action
+            - Navigation Items
+        - Primary Action
+            - 不是 Navigation Item
+            - 属于 Command
+        - 例
+            - 新建
+            - 添加
+            - 创建实验
+            - 扫描
+        - 触发
+            - 执行 Command
+            - 或打开 Create Sheet
+        - 原则
+            - Primary Action 不参与 CurrentDestinationId
+            - 点击 Primary Action 不改变一级导航 Selected
+            - 视觉上可位于中间
+            - 语义层必须与 Navigation Item 分离
+        - 禁止
+            - 把 + 当成第五个 Navigation Destination
+    - Primary Action 视觉
+        - 允许
+            - 比 Navigation Item 更明显
+            - 使用 Accent Fill
+        - 尺寸
+            - 可以稍大于普通 Item Icon
+        - 限制
+            - 不能巨大到破坏 BottomNavigation 整体平衡
+            - 不能遮挡正文交互区域
+    - Navigation Item 数量
+        - 推荐
+            - 3～5
+        - 2
+            - 通常考虑 Segmented / Tabs 等其他组件
+        - 6+
+            - 不建议全部放 BottomNavigation
+            - 应重新梳理一级信息架构
+            - 或部分进入 Drawer / More
+        - 原则
+            - BottomNavigation 只承载最高层核心目的地
+    - Navigation Item
+        - 结构
+            - Icon
+            - Label
+            - Optional Badge
+        - 属性
+            - Id
+            - Label
+            - Icon
+            - Route
+            - IsEnabled
+            - Optional Badge
+        - Selected
+            - 由 CurrentDestinationId 推导
+        - 禁止
+            - 每个 Item 独立保存 Selected Bool
+    - 导航状态
+        - NavigationState
+            - CurrentDestinationId
+            - AvailableDestinations
+        - 原则
+            - CurrentDestinationId 为唯一当前一级导航状态源
+            - BottomNavigation 与 Sidebar / Drawer 可映射同一导航状态
+    - 点击行为
+        - 点击未选中 Item
+            - 进入对应 Destination
+            - 更新 CurrentDestinationId
+        - 点击当前 Item
+            - 默认不重复导航
+        - 可选行为
+            - 回到该页面顶部
+            - 恢复该模块 Root
+        - 原则
+            - 重复点击行为由产品明确配置
+            - 不能不同 Item 随机采用不同逻辑
+    - 页面状态保持
+        - 切换一级 Destination
+            - 可保留各 Destination 内部状态
+        - 例
+            - Scroll Position
+            - Selected Tab
+            - Filter
+        - 原则
+            - 属于各页面状态
+            - 不塞入 BottomNavigation 本体
+    - Disabled
+        - 不建议一级核心导航频繁 Disabled
+        - 确需 Disabled
+            - Icon / Label 降低对比度
+            - 不可点击
+        - 若功能尚不可用
+            - 可考虑隐藏
+            - 或明确说明原因
+        - 原则
+            - 避免用户看到核心目的地却长期无法进入
+    - 触控规范
+        - Navigation Item
+            - 整个 Slot 都是点击热区
+        - 不能
+            - 要求用户只点击 Icon
+        - 建议最小热区
+            - 约 44～48 DIP
+        - 底部安全区
+            - 必须考虑 Safe Area
+        - SafeAreaInsetBottom
+            - 应计入容器高度
+    - 布局规范
+        - 基础内容高度
+            - 约 56～64 DIP
+        - 含 Safe Area
+            - 最终高度自适应设备
+        - Item
+            - 等宽分配
+        - Icon
+            - 约 20～24 DIP
+        - Label
+            - 约 10～12 DIP
+        - IconLabelGap
+            - 约 3～5 DIP
+        - Selected Region Radius
+            - XY.Radius.Control
+        - 原则
+            - 分区尽量填满宽度
+            - 不留无意义大空白
+    - 宽度
+        - Fill
+        - Item
+            - Equal Width
+        - Primary Action Composition
+            - 中间 Action Slot 可独立定义宽度
+            - 其余 Navigation Item 仍尽量等宽
+        - 原则
+            - 整体视觉重心稳定
+    - Label
+        - 必须
+            - Canonical Default
+        - 可以较短
+        - 推荐
+            - 2～4 个中文字符
+        - 超长
+            - 不建议换两行
+            - 应缩短导航名称
+        - 禁止
+            - 大量 Ellipsis 一级导航
+    - Icon
+        - 必须高辨识度
+        - 同一 BottomNavigation
+            - 统一尺寸
+            - 统一线宽
+            - 统一视觉重量
+        - Selected
+            - Accent
+        - Unselected
+            - Secondary
+        - 禁止
+            - 用 Emoji 作为正式导航图标
+    - 键盘与桌面兼容
+        - Web / Tablet Keyboard
+            - Tab
+                - 移动 Focus
+            - Enter / Space
+                - 切换 Destination
+        - 原则
+            - 虽以触控为主
+            - 仍保持标准 Accessibility
+    - Accessibility
+        - Navigation Landmark
+            - 应具有语义
+        - Item
+            - 提供 Accessible Label
+            - 暴露 Selected 状态
+        - Badge
+            - 数量状态需要辅助描述
+        - Primary Action
+            - 暴露为 Button
+            - 不能暴露为 Navigation Item
+    - 响应式
+        - Mobile
+            - Canonical Default
+            - Selected Emphasis
+            - Badge
+            - Primary Action Composition
+        - Tablet Narrow
+            - 可使用 BottomNavigation
+        - Tablet Wide
+            - 可转换为 NavigationRail / Sidebar
+        - Desktop
+            - 通常不使用 BottomNavigation 作为主导航
+            - 特殊触控应用除外
+        - 原则
+            - 与 NavigationRail / Sidebar 共享导航模型
+    - Optional Slots
+        - Icon
+            - Required
+        - Label
+            - Canonical Required
+        - Badge
+            - Optional
+        - SelectedBackground
+            - Optional Variant
+        - PrimaryActionSlot
+            - Composition Only
+        - TopDivider
+            - Optional
+        - SafeArea
+            - Required On Supported Platforms
+    - 颜色建议
+        - Background
+            - XY.Surface.Panel
+        - Border
+            - XY.Border.Color.Default
+        - Icon
+            - XY.Text.Secondary
+        - Label
+            - XY.Text.Secondary
+        - Selected Background
+            - XY.Surface.Selected
+            - 或 XY.Surface.Selected
+        - Selected Icon
+            - XY.Accent.Default
+        - Selected Text
+            - XY.Accent.Strong
+        - Badge Background
+            - 根据 Status Token
+        - Primary Action
+            - XY.Accent.Default
+        - Primary Action Text / Icon
+            - XY.Text.Primary
+    - 字体
+        - Label
+            - FontSize
+                - XY.FontSize.Caption
+        - Selected
+            - FontWeight
+                - XY.FontWeight.Medium
+        - Badge
+            - FontSize
+                - XY.FontSize.Caption
+    - 与其他 XYUI 控件关系
+        - BottomNavigation
+            - 共享导航状态
+                - Sidebar
+                - NavigationRail
+                - NavigationDrawer
+            - 可包含
+                - Icon
+                - Text
+                - Badge
+            - Primary Action Composition
+                - 组合
+                    - Button
+                    - BottomNavigation
+            - 不替代
+                - Toolbar
+                - CommandBar
+    - UI Tokens
+        - BottomNavigation.ContentHeight
+            - 60
+        - BottomNavigation.Item.MinHeight
+            - 48
+        - BottomNavigation.Icon.Size
+            - XY.Icon.Size.L
+        - BottomNavigation.Label.Size
+            - 11
+        - BottomNavigation.IconLabelGap
+            - 4
+        - BottomNavigation.Background
+            - XY.Surface.Panel
+        - BottomNavigation.Border
+            - XY.Border.Color.Default
+        - BottomNavigation.Selected.Background
+            - XY.Surface.Selected
+        - BottomNavigation.Selected.Icon
+            - XY.Accent.Default
+        - BottomNavigation.Selected.Text
+            - XY.Accent.Strong
+    - UI代码
+        - BottomNavigation
+            - Width
+                - Fill
+            - ContentHeight
+                - 60
+            - IncludeSafeArea
+                - True
+            - CurrentDestinationId
+                - Bound
+        - BottomNavigationItem
+            - Width
+                - Equal
+            - MinHeight
+                - 48
+            - IconSize
+                - XY.Icon.Size.L
+            - LabelFontSize
+                - XY.FontSize.Caption
+            - Background
+                - Transparent
+        - BottomNavigationItem.Selected
+            - Background
+                - XY.Surface.Selected
+            - IconColor
+                - XY.Accent.Default
+            - TextColor
+                - XY.Accent.Strong
+        - BottomNavigationItem.Badge
+            - Visibility
+                - Optional
+            - AffectsLayout
+                - False
+        - BottomNavigation.PrimaryActionComposition
+            - Enabled
+                - Configurable
+            - PrimaryActionIsDestination
+                - False
+    - 适配规则
+        - Mobile
+            - 方案 1 / 3 / 4 / 5
+        - Tablet Narrow
+            - 可使用
+        - Tablet Wide
+            - 可转 NavigationRail
+        - Desktop
+            - 通常转 Sidebar / NavigationRail
+    - 禁止项
+        - 禁止采用 Icon Only 作为 XYUI 标准 BottomNavigation Variant
+        - 禁止把 Command 当作 Navigation Destination
+        - 禁止 Primary Action 改变 CurrentDestinationId
+        - 禁止一级导航超过大量 Item 仍全部平铺
+        - 禁止 Selected Item 改变宽度导致其他 Item 左右跳动
+        - 禁止 Badge 改变 Item 基础布局
+        - 禁止 Badge 堆叠多个状态
+        - 禁止导航只允许点击小 Icon
+        - 禁止忽略移动设备 Safe Area
+        - 禁止 Desktop 与 Mobile 各自维护一套不同 CurrentDestinationId
+    - 最终结论
+        - Canonical Default
+            - 方案 1 · Icon + Label
+        - Official Variant
+            - 方案 3 · Selected Emphasis
+        - Official Capability
+            - 方案 4 · Badge / Status
+        - Official Composition
+            - 方案 5 · BottomNavigation + Primary Action
+        - 排除
+            - 方案 2 · Icon Only
+        - 核心原则
+            - 一级导航语义纯净
+            - Icon + Label 优先可理解性
+            - 状态按需增加
+            - 主操作可组合但不得冒充导航
+        - 适合作为
+            - XYUI 标准移动端一级导航
+            - 玄域移动端 / 触控端导航体系
+        - 后续衔接
+            - 3.24 · NavigationDrawer
+    
+- 3.24 · NavigationDrawer / 抽屉导航
+    - 控件定位
+        - 类型
+            - Navigation / 导航与切换
+        - 层级
+            - 响应式临时导航容器
+        - 主要用途
+            - 在空间不足时临时承载 Sidebar 或当前模块 Context Navigation
+            - 作为 Desktop Sidebar / NavigationRail 在窄屏环境下的响应式替代形态
+            - 在移动端与 BottomNavigation 协同组织一级与二级导航
+        - 核心语义
+            - 导航仍然存在
+            - 只是从常驻区域转移到临时抽屉中
+        - 与 Sidebar 的关系
+            - Sidebar
+                - 宽屏常驻导航容器
+            - NavigationDrawer
+                - 窄屏临时导航容器
+            - 两者
+                - 共享导航结构
+                - 共享 Selected 状态
+                - 共享 Context Navigation
+                - 不维护两套独立导航树
+        - 与 NavigationRail 的关系
+            - Wide
+                - Sidebar
+            - Medium
+                - NavigationRail
+            - Narrow
+                - NavigationDrawer
+        - 与 BottomNavigation 的关系
+            - BottomNavigation
+                - 适合少量一级 Destination
+            - NavigationDrawer
+                - 适合完整导航
+                - 或当前模块二级 Context Navigation
+            - 两者可组合
+                - BottomNavigation 管一级
+                - Context Drawer 管二级
+    - 使用场景
+        - 玄域移动端
+            - 地图
+                - 地图基础
+                - 地图环境
+                - 数据集
+                - 区域
+                - 道路
+        - 玄域窄窗口
+            - 完整 Sidebar 临时展开
+        - Tablet
+            - 临时完整导航
+        - Web Mobile
+            - 应用导航
+            - Context Navigation
+    - 最终方案
+        - 组件模型
+            - Official Variant
+                - 方案 2 · Full Sidebar Mirror
+            - Official Variant
+                - 方案 6 · Context Drawer
+            - Official Capability
+                - 方案 5 · Edge Peek
+            - 排除
+                - 方案 1 · 一级导航标准 Overlay Variant
+                - 方案 3 · Drill-In Drawer
+                - 方案 4 · Push Drawer
+        - 设计原则
+            - Drawer 内容优先复用既有 Sidebar 导航模型
+            - 允许只承载当前模块 Context Navigation
+            - Edge Peek 作为可发现性增强能力
+            - Drawer 的 Modal / Overlay 行为属于基础表现机制
+            - 不要求采用方案 1 的一级导航内容结构
+    - Variant · Full Sidebar Mirror
+        - 来源
+            - 方案 2
+        - 定位
+            - 完整导航 Drawer
+        - 用途
+            - 将 Desktop Sidebar 的完整信息架构映射到 Drawer
+        - 结构
+            - Primary Navigation
+            - Context Region
+            - Optional Search
+            - Optional Tool Region
+            - Footer
+        - 原则
+            - 桌面端和移动端复用同一 Navigation Model
+            - 移动端不能因为转换 Drawer 就无理由减少核心导航功能
+            - Sidebar 当前 Selected 必须在 Drawer 中保持一致
+    - Primary Navigation
+        - 来源
+            - Sidebar Primary Navigation
+        - 内容
+            - 应用一级模块
+        - Selected
+            - 浅色 Selected Background
+            - 左侧 Accent Bar
+            - Active Text
+        - 点击
+            - 切换 Primary Destination
+            - 同步全局 CurrentDestinationId
+    - Context Region
+        - 来源
+            - Sidebar Context Region
+        - 用途
+            - 显示当前一级模块内部导航
+        - 内容可包含
+            - NavigationMenu
+            - TreeNavigation
+            - Search
+            - Context Tools
+        - 原则
+            - 填充 Drawer 剩余高度
+            - 避免大量无意义留白
+        - 滚动
+            - Context 内容过长时内部滚动
+    - Variant · Context Drawer
+        - 来源
+            - 方案 6
+        - 定位
+            - 当前模块二级导航 Drawer
+        - 适用
+            - 一级导航已经由 BottomNavigation 提供
+            - 一级导航已经由 NavigationRail 提供
+            - 只需要临时展开 Context Region
+        - 结构
+            - Context Header
+                - Current Module
+            - Context Navigation
+            - Optional Context Search
+            - Optional Footer
+        - 例
+            - 当前模块
+                - 地图
+            - 地图内容
+                - 地图基础
+                - 地图环境
+                - 数据集
+                - 区域
+                - 道路
+        - 原则
+            - 只展示当前模块相关内容
+            - 不重复整个一级导航
+            - Current Module 来源于统一 NavigationState
+    - Context Header
+        - 内容
+            - Optional Module Icon
+            - Module Name
+            - Optional Close Button
+        - 视觉
+            - 轻量
+            - 不做大型 Header
+        - 原则
+            - 只用于说明 Context
+            - 不变成第二个 App Header
+    - Context Drawer 与 BottomNavigation
+        - BottomNavigation
+            - 切换 Primary Destination
+        - Context Drawer
+            - 显示对应 Destination 的二级导航
+        - 切换 BottomNavigation Item
+            - Context Drawer 内容同步更新
+        - Drawer 打开时切换一级模块
+            - 更新 Context 内容
+        - 原则
+            - 两者共享 CurrentDestinationId
+            - 不得维护两套 Selected
+    - Edge Peek Capability
+        - 来源
+            - 方案 5
+        - 定位
+            - Optional Discovery Capability
+        - 用途
+            - 让收起后的 Drawer 保持可发现
+            - 为无手势桌面环境提供显式入口
+        - 表现
+            - 极窄 Edge Handle
+            - 或小型 Chevron Handle
+        - 位置
+            - Drawer 所在屏幕边缘
+        - 宽度
+            - 保持极小
+        - 点击
+            - 打开 Drawer
+        - 原则
+            - 不长期占据明显正文空间
+            - 不抢夺主内容视觉
+            - 默认不是所有平台强制开启
+    - Edge Peek 状态
+        - Default
+            - 低对比度
+        - Hover
+            - 轻 Background
+            - Accent Chevron
+        - Drawer Open
+            - 隐藏 Edge Peek
+        - Disabled
+            - 不可打开 Drawer 时隐藏
+        - 原则
+            - 不能同时显示展开 Drawer 和 Edge Peek
+    - 手势冲突
+        - Mobile
+            - 需要检测系统边缘 Back Gesture
+        - 若发生冲突
+            - 关闭 Edge Swipe Open
+            - 保留显式 Navigation Trigger
+        - 原则
+            - 不能为了 Drawer 手势破坏系统返回行为
+    - 基础 Drawer 表现机制
+        - 说明
+            - 以下属于 Drawer 基础能力
+            - 不属于方案 1 专属 Variant
+        - Presentation
+            - Overlay
+            - Modal
+            - 平台允许时可使用非 Modal 临时层
+        - Backdrop
+            - 移动端 Modal Drawer 可使用低透明遮罩
+        - Open
+            - 从边缘进入
+        - Close
+            - Close Button
+            - Click Outside
+            - Esc
+            - Swipe Close
+            - Navigation Commit 后按配置关闭
+        - 原则
+            - 内容 Variant 与 Presentation Mode 分离
+    - Presentation Mode
+        - Modal
+            - 适用
+                - Mobile
+                - 窄屏
+            - 打开后
+                - 正文暂时不可交互
+        - NonModal Temporary
+            - 适用
+                - 部分 Desktop / Tablet
+            - 打开后
+                - 允许根据产品需求与正文共存
+        - 原则
+            - 不采用 Push Drawer 作为正式 Variant
+            - 不要求内容区因 Drawer 打开而重新布局
+    - Drawer Width
+        - Mobile
+            - 约屏幕宽度 78%～88%
+        - Tablet
+            - 约 280～360 DIP
+        - Desktop Narrow
+            - 约 240～340 DIP
+        - Maximum
+            - 避免覆盖几乎整个桌面
+        - 原则
+            - 根据设备自适应
+            - 不是固定 300 DIP
+    - Drawer Height
+        - 默认
+            - Fill
+        - 考虑
+            - Safe Area Top
+            - Safe Area Bottom
+        - 原则
+            - 完整利用可用高度
+            - Context Region 尽量填满
+    - Footer
+        - 位置
+            - 底部
+        - 内容可包含
+            - 设置
+            - 账户
+            - Workspace
+            - 帮助
+        - 原则
+            - 固定底部
+            - 不因为 Context 内容较少而漂浮在中间
+    - 打开入口
+        - 可来自
+            - App Header Menu Button
+            - Navigation Button
+            - Edge Peek
+            - Gesture
+            - Context Trigger
+        - 原则
+            - 至少存在一个明确可发现入口
+            - 不能只依赖隐藏边缘手势
+    - 关闭行为
+        - Close Button
+            - 关闭
+        - Click Backdrop
+            - Modal 模式关闭
+        - Esc
+            - Desktop / Keyboard 模式关闭
+        - Swipe
+            - 支持平台可关闭
+        - Select Final Destination
+            - Mobile 默认可关闭
+        - Select Expandable Parent
+            - 保持打开
+        - 原则
+            - 中间导航动作不能无意义关闭 Drawer
+    - 导航提交
+        - 点击最终 Destination
+            - 更新统一 NavigationState
+            - 更新内容区域
+            - 移动端默认关闭 Drawer
+        - 点击当前 Destination
+            - 默认不重复导航
+            - 可关闭 Drawer
+        - 原则
+            - 关闭动画不能先于导航状态确认造成闪烁
+    - Drawer 状态
+        - NavigationDrawerState
+            - IsOpen
+            - Variant
+            - PresentationMode
+            - Edge
+            - CurrentContextId
+        - Derived
+            - Content
+            - SelectedDestination
+        - 原则
+            - IsOpen 只表达 Drawer 展开状态
+            - 不得与 Navigation Selected 混合
+    - 共享导航状态
+        - NavigationState
+            - CurrentDestinationId
+            - CurrentContextId
+            - ExpandedNodeIds
+        - Sidebar
+            - 绑定同一 NavigationState
+        - NavigationRail
+            - 绑定同一 NavigationState
+        - BottomNavigation
+            - 绑定同一 CurrentDestinationId
+        - NavigationDrawer
+            - 绑定同一 NavigationState
+        - 原则
+            - 响应式切换只改变容器
+            - 不改变导航状态源
+    - 响应式迁移
+        - Wide
+            - Sidebar
+        - Medium
+            - NavigationRail
+            - Optional Context Flyout
+        - Narrow
+            - NavigationDrawer
+        - Mobile
+            - BottomNavigation + Context Drawer
+            - 或 Full Sidebar Drawer
+        - 迁移时
+            - 保持 CurrentDestinationId
+            - 保持合理 Expanded 状态
+            - 保持 Workspace
+        - 原则
+            - 窗口改变宽度不能让用户突然跳到别的模块
+    - Full Sidebar 与 Context Drawer 选择
+        - 应用没有独立一级移动导航
+            - 优先 Full Sidebar Mirror
+        - 已有 BottomNavigation
+            - 优先 Context Drawer
+        - 已有 NavigationRail
+            - 可使用 Context Drawer
+        - 需要完整 Navigation Tree
+            - Full Sidebar Mirror
+        - 原则
+            - 根据已有导航入口选择
+            - 避免一级导航重复
+    - Optional Slots
+        - PrimaryNavigation
+            - Full Sidebar Variant
+        - ContextHeader
+            - Context Variant
+        - ContextRegion
+            - Required
+        - Search
+            - Optional
+        - Footer
+            - Optional
+        - CloseButton
+            - Optional
+        - EdgePeek
+            - Optional
+        - Backdrop
+            - Presentation Dependent
+    - 层级规则
+        - 不采用
+            - Drill-In Drawer 作为标准 Variant
+        - 因此
+            - 层级主要通过现有 NavigationMenu / TreeNavigation 表达
+        - 过深层级
+            - 应重新审视移动端信息架构
+            - 或进入独立页面
+        - 原则
+            - Drawer 不自行发明另一套层级导航逻辑
+    - 滚动
+        - Primary Region
+            - 必要时可固定
+        - Context Region
+            - 可滚动
+        - Footer
+            - 固定底部
+        - 原则
+            - 滚动区域必须明确
+            - 避免整个 Drawer Header / Footer 一起滚走
+    - 焦点管理
+        - Modal 打开
+            - Focus 移入 Drawer
+        - Keyboard
+            - Focus Trap
+        - 关闭
+            - Focus 返回打开 Trigger
+        - Esc
+            - 关闭
+        - 原则
+            - 符合无障碍 Modal 行为
+    - Accessibility
+        - Drawer
+            - 暴露 Navigation / Dialog 语义
+        - Close
+            - 提供 Accessible Label
+        - Selected Item
+            - 暴露 Current / Selected
+        - Edge Peek
+            - 提供明确 Open Navigation Label
+        - 原则
+            - 不能只靠图标视觉表达
+    - 颜色建议
+        - Background
+            - XY.Surface.Panel
+        - Text
+            - XY.Text.Primary
+        - Secondary
+            - XY.Text.Secondary
+        - Hover
+            - XY.State.Color.Hover
+        - Selected
+            - XY.Surface.Selected
+        - Selected Text
+            - XY.Accent.Strong
+        - Accent
+            - XY.Accent.Default
+        - Border
+            - XY.Border.Color.Default
+        - Backdrop
+            - 低透明深蓝灰
+        - Edge Peek
+            - XY.Surface.PanelAlt
+    - 布局规范
+        - Primary Item Height
+            - 34～36 DIP
+        - Context Item Height
+            - 30～34 DIP
+        - Header
+            - 约 40～48 DIP
+        - Horizontal Padding
+            - 12～16 DIP
+        - Selected Accent
+            - 3 DIP
+        - Edge Peek Width
+            - 约 12～20 DIP
+        - 原则
+            - 高密度
+            - 充分利用垂直空间
+            - 不制造大块空白
+    - 动画
+        - Open
+            - 短距离边缘滑入
+        - Close
+            - 反向滑出
+        - Backdrop
+            - 同步淡入淡出
+        - 原则
+            - 动画短
+            - 不拖慢导航
+            - Reduced Motion 时减少或关闭位移动画
+    - 与其他 XYUI 控件关系
+        - NavigationDrawer
+            - 可复用
+                - Sidebar Navigation Model
+                - NavigationMenu
+                - TreeNavigation
+                - WorkspaceSwitcher
+                - Search
+            - 可配合
+                - BottomNavigation
+                - NavigationRail
+                - App Header
+            - 共享
+                - NavigationState
+        - 不替代
+            - 普通 Content Drawer
+            - Inspector Drawer
+            - Command Sheet
+    - UI Tokens
+        - NavigationDrawer.Mobile.WidthRatio
+            - 0.84
+        - NavigationDrawer.Tablet.Width
+            - 320
+        - NavigationDrawer.Desktop.Width
+            - 280
+        - NavigationDrawer.Background
+            - XY.Surface.Panel
+        - NavigationDrawer.Border
+            - XY.Border.Color.Default
+        - NavigationDrawer.Hover
+            - XY.State.Color.Hover
+        - NavigationDrawer.Selected
+            - XY.Surface.Selected
+        - NavigationDrawer.Selected.Text
+            - XY.Accent.Strong
+        - NavigationDrawer.Accent
+            - XY.Accent.Default
+        - NavigationDrawer.Selected.AccentWidth
+            - 3
+        - NavigationDrawer.EdgePeek.Width
+            - 18
+    - UI代码
+        - NavigationDrawer
+            - Variant
+                - Configurable
+            - PresentationMode
+                - Adaptive
+            - IsOpen
+                - Bound
+            - Edge
+                - Left
+            - Width
+                - Adaptive
+            - Background
+                - XY.Surface.Panel
+        - NavigationDrawer.FullSidebar
+            - ShowPrimaryNavigation
+                - True
+            - ShowContextRegion
+                - True
+            - ShowFooter
+                - Configurable
+        - NavigationDrawer.Context
+            - ShowPrimaryNavigation
+                - False
+            - ShowContextHeader
+                - True
+            - ShowContextRegion
+                - True
+        - NavigationDrawer.EdgePeek
+            - Enabled
+                - Configurable
+            - Width
+                - 18
+            - HideWhenDrawerOpen
+                - True
+        - NavigationDrawer.Modal
+            - Backdrop
+                - Enabled
+            - CloseOnBackdrop
+                - True
+            - CloseOnEsc
+                - True
+        - NavigationDrawer.SelectedItem
+            - Background
+                - XY.Surface.Selected
+            - TextColor
+                - XY.Accent.Strong
+            - AccentPosition
+                - Left
+            - AccentWidth
+                - 3
+            - AccentColor
+                - XY.Accent.Default
+    - 适配规则
+        - Desktop Wide
+            - 通常使用 Sidebar
+            - Drawer 可不启用
+        - Desktop Narrow
+            - Full Sidebar Drawer
+            - 或 Context Drawer
+        - Tablet
+            - Full Sidebar Drawer / Context Drawer
+        - Mobile
+            - 已有 BottomNavigation
+                - Context Drawer 优先
+            - 没有 BottomNavigation
+                - Full Sidebar Drawer 优先
+        - Edge Peek
+            - Desktop / Tablet 可选
+            - Mobile 需检查系统边缘手势
+    - 禁止项
+        - 禁止 Drawer 与 Sidebar 各自维护独立导航树
+        - 禁止响应式切换后 Selected Destination 丢失
+        - 禁止移动端无理由删掉 Desktop Sidebar 的核心功能
+        - 禁止 Context Drawer 重复 BottomNavigation 已经承担的一级导航
+        - 禁止只靠边缘手势作为唯一打开方式
+        - 禁止 Edge Peek 与系统返回手势发生明显冲突
+        - 禁止 Drawer 打开后留下大量无意义空白
+        - 禁止 Drawer 自行创造一套与 TreeNavigation 不同的层级规则
+        - 禁止把 Push Layout 作为 XYUI 标准 NavigationDrawer Variant
+        - 禁止关闭 Drawer 时改变 CurrentDestinationId
+        - 禁止 Modal Drawer 关闭后 Focus 丢失
+    - 最终结论
+        - Official Variant
+            - 方案 2 · Full Sidebar Mirror
+            - 方案 6 · Context Drawer
+        - Official Capability
+            - 方案 5 · Edge Peek
+        - 排除
+            - 方案 1 · Standard Primary-only Drawer
+            - 方案 3 · Drill-In Drawer
+            - 方案 4 · Push Drawer
+        - 基础机制保留
+            - Overlay / Modal
+            - Backdrop
+            - Outside Close
+            - Esc Close
+            - Swipe Close
+        - 核心原则
+            - NavigationDrawer 是现有导航体系的响应式容器
+            - 不是另一套独立导航
+            - 完整 Sidebar 与 Context Drawer 按信息架构选择
+            - Edge Peek 按需提高可发现性
+        - 适合作为
+            - XYUI 标准 NavigationDrawer
+            - Sidebar / NavigationRail / BottomNavigation 的窄屏补充
+        - 后续衔接
+            - 第 3 部分 Navigation / 导航与切换完成
