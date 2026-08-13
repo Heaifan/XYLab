@@ -14,7 +14,8 @@ XYLab/
 │  └─ experiment.schema.json        ← 协议机器校验（draft-07，R1 冻结，一字节不动）
 │
 ├─ examples/
-│  └─ fatigue-basic.json            ← XYLab Hello World（R1-09）
+│  ├─ fatigue-basic.json            ← XYLab Hello World（R1-09）
+│  └─ battle-metrics.json           ← F2 验收样例（12 watch 混单位：人/分/%/吨/m·s + threshold + boolean）
 │
 ├─ docs/
 │  ├─ experiment-protocol-0.1.md    ← 人类可读协议契约（R1 冻结，§10 错误码目录）
@@ -34,6 +35,7 @@ XYLab/
 │  ├─ decisions/ui-responsive-shell.md       ← 决策：FE-A-R2 权威版（三断点新组合/Tap Lock 联动/实验循环合同/数值格式规范）
 │  ├─ decisions/r2-light-consumer-workbench.md ← 决策：B 类 Light 消费层 + 结构化状态禁解析表达式 + 可视化消费规则 + Save Run V1
 │  ├─ decisions/xyui-consumer-intake.md      ← 决策：XYUI 权威批准 + vendor 只读 + A/B 分类 + 消费流程
+│  ├─ decisions/f2-monitoring-ui-close.md    ← 决策：F2 图标层权宜边界 + MetricRow 唯一模型 + ViewState 语义 + 图表双模式冻结规则
 │  ├─ patterns/test-dir-layering.md          ← 模式：测试按领域分目录 + helpers 复用
 │  └─ pitfalls/ajv-strictRequired-if-then.md ← 陷阱：if/then 条件必填 vs ajv strictRequired
 │  └─ pitfalls/float-assertions.md           ← 陷阱：浮点断言用 toBeCloseTo
@@ -52,11 +54,14 @@ XYLab/
 │     └─ audit/cross-audit.md       ←   上游交叉审计结论（0 重复 owner / 0 broken ref / 12 GAP NON-BLOCKING / READY）
 │
 ├─ src/                             ← 全部源码 ≤100 行/文件，实现目录 ≤5 文件
-│  ├─ ui/                           ← React 投影层（模拟核心零依赖；FE-A-R2 Light 工作台）
+│  ├─ ui/                           ← React 投影层（模拟核心零依赖；FE-A-R2 Light 工作台 + F2 Monitoring UX）
 │  │  ├─ main.tsx                   ←   入口（styles + visualization.css + history.css）
-│  │  ├─ App.tsx                    ←   句柄权威持有 + 草稿/重建 + tab/锁定/保存/历史状态装配
-│  │  ├─ styles.css                 ←   Light 全局样式（全引 --xylab-* 变量 + 三断点布局 + Sheet）
+│  │  ├─ App.tsx                    ←   句柄 + ViewState 权威持有 + 草稿/重建 + tab/锁定/保存/历史装配
+│  │  ├─ styles.css                 ←   Light 全局样式（全引 --xylab-* 变量 + 三断点布局 + Sheet + Metric Row）
 │  │  ├─ format.ts                  ←   数值显示纠偏（integer 0 位/float ≤4 位，仅显示层不取整底层）
+│  │  ├─ viewState.ts               ←   F2 视图状态纯函数（聚焦/对比/固定≤6/隐藏/绝对·相对模式）
+│  │  ├─ icons/                     ←   F2 图标层（glyph 注册表 = XYUI1-GAP-001 权宜，不立命名权威）
+│  │  │  └─ Icons.tsx               ←     18 内联 SVG（Foundation.Icon 冻结风格：Outline/1.5/round/16）
 │  │  ├─ theme/                     ←   FE-A-R2 Light 消费层
 │  │  │  └─ light-consumer.css      ←     B 类 --xylab-* 冻结值（非 canonical；GAP 权宜注释登记）
 │  │  ├─ shell/                     ←   响应式壳
@@ -75,10 +80,10 @@ XYLab/
 │  │  │  ├─ clipboard.ts            ←     copyText（clipboard API + execCommand 兜底）+ definitionJson
 │  │  │  └─ ExperimentActions.tsx   ←     [复制 JSON][保存结果]（生效 Definition，轻重反馈）
 │  │  ├─ visualization/             ←   FE-A-R2 XYUI-8 可视化（数据源唯一 MonitorSnapshot，纯 SVG）
-│  │  │  ├─ VisualizationPanel.tsx  ←     图表目标解析（output.charts 优先→numeric watch 回退≤4）
-│  │  │  ├─ MetricStrip.tsx         ←     Metric 卡（statistics 投影；仅结构化 threshold 判 warning）
-│  │  │  ├─ LineChart.tsx           ←     实时曲线（弱网格/自动量程/Tap 锁定/事件 marker/结构化阈值线）
-│  │  │  ├─ InspectorSheet.tsx      ←     锁定时刻检查器（Bottom Sheet / 侧栏面板双形态）
+│  │  │  ├─ VisualizationPanel.tsx  ←     目标解析（output.charts 优先→numeric 回退≤4）+ Focus/Compare 编排 + 绝对/相对切换
+│  │  │  ├─ MetricStrip.tsx         ←     Pinned Cards（≤6 横滚，点击聚焦；模型 = metricModel.buildRows）
+│  │  │  ├─ LineChart.tsx           ←     实时曲线（弱网格/自动量程/Tap 锁定/事件 marker/阈值线仅绝对）+ 相对模式（起点=100%，0 基线跳过）
+│  │  │  ├─ InspectorSheet.tsx      ←     锁定时刻检查器（Bottom Sheet / 侧栏面板双形态；零横向滚动）
 │  │  │  └─ visualization.css       ←     Metric/图表/Inspector 样式（色板=XYUI8-GAP-001 权宜）
 │  │  ├─ history/                   ←   FE-A-R2 实验闭环（Save Run V1，手动触发，localStorage）
 │  │  │  ├─ types.ts                ←     SavedRun V1（definitionSnapshot + monitorSnapshot 必含）
@@ -88,8 +93,9 @@ XYLab/
 │  │  │  └─ history.css             ←     历史/保存样式
 │  │  └─ monitor/                   ←   监控投影
 │  │     ├─ useMonitor.ts           ←     纯投影器 readBridge + 100ms 轮询（diff 日志已废除）
-│  │     ├─ RunPanel.tsx            ←     运行区（状态/时间/Tick/全控制 + 联合 Reset，Compact 主次分层）
-│  │     ├─ ValuesPanel.tsx         ←     监控值 + 统计明细（桌面细节位：Wide 右栏/Medium 主区，手机不显示）
+│  │     ├─ RunPanel.tsx            ←     运行区（状态/时间/Tick/全控制 + 联合 Reset，Compact 主次分层；图标 = Icons 层）
+│  │     ├─ ValuesPanel.tsx         ←     F2 监控值 Compact Metric Row（label 优先三层优先级/Dense/Detail/行点击聚焦；三断点均可见）
+│  │     ├─ metricModel.ts          ←     F2 MetricRow 唯一模型（valueAtTime/nearestTime/metricStatus/buildRows/resolveMetrics）
 │  │     └─ EventLog.tsx            ←     协议事件日志（消费 snap.logs 结构化字段）
 │  ├─ monitor/                      ← R3 监控核心（Observer Only，绝不回写 Runtime）
 │  │  ├─ types.ts                   ←   SeriesPoint/MonitorLogEntry/WatchRecord/Statistics/Snapshot
@@ -209,16 +215,19 @@ XYLab/
    │     └─ r2-03d-evaluator-errors.test.ts    ← D12~D13、D31~D35 运行期安全
    ├─ governance/                   ← GOV-01 专项
    │  └─ governance-guard.test.ts   ←   底线位回归（5/100/Guard 自身）
-   ├─ ui/                           ← UI 断点（3）+ R4-F1 草稿（5）+ FE-A-R1 监控桥（14）+ FE-A-R2 工作台（21）
+   ├─ ui/                           ← UI 断点（3）+ R4-F1 草稿（5）+ FE-A-R1 监控桥（14）+ FE-A-R2 工作台（21）+ F2（9）
    │  ├─ breakpoints.test.ts        ←   Wide/Medium/Compact 边界
    │  ├─ r4-f1-draft.test.ts        ←   草稿守卫/不可变/重建边界集成
    │  ├─ r1-monitor-bridge.test.ts  ←   Handle 生命周期（T01/T02/T04/T09~T15 语义）
    │  ├─ r1-monitor-projection.test.ts ← MonitorSnapshot 投影（T03/T05~T08 语义）
-   │  └─ r2/                        ←   FE-A-R2 子域（21 用例）
-   │     ├─ r2-format.test.ts       ←     浮点噪音消除/格式分层/安全直通（5）
-   │     ├─ r2-chart-model.test.ts  ←     图表目标解析/valueAtTime·nearestTime/结构化 Metric 状态（5）
-   │     ├─ r2-run-store.test.ts    ←     SavedRun 快照完整/备注往返/排序/失败反馈（5）
-   │     └─ r2-workflow.test.ts     ←     Metric+Chart 非空/冻结-连续/Reset/Apply/复制 JSON（6）
+   │  ├─ r2/                        ←   FE-A-R2 子域（21 用例）
+   │  │  ├─ r2-format.test.ts       ←     浮点噪音消除/格式分层/安全直通（5）
+   │  │  ├─ r2-chart-model.test.ts  ←     图表目标解析/valueAtTime·nearestTime/结构化 Metric 状态（5）
+   │  │  ├─ r2-run-store.test.ts    ←     SavedRun 快照完整/备注往返/排序/失败反馈（5）
+   │  │  └─ r2-workflow.test.ts     ←     Metric+Chart 非空/冻结-连续/Reset/Apply/复制 JSON（6）
+   │  └─ f2/                        ←   F2 子域（9 用例）
+   │     ├─ f2-view-model.test.ts   ←     ViewState 纯函数 + MetricRow 三层信息/锁定读取（7）
+   │     └─ f2-samples.test.ts      ←     examples 两件真实 Loader 加载取证（2）
    └─ monitor/                      ← R3 监控专项（21 用例）
       ├─ r3-watch-series.test.ts    ←   G1~G4 黄金案例/模式/防御/threshold 触发
       ├─ r3-events.test.ts          ←   E1~E5 边缘触发/重武装/防御/失败日志
@@ -238,5 +247,8 @@ XYLab/
 | 底线怎么守？ | `npm run verify` 第一步 `scripts/governance-guard.mjs` |
 | UI 设计依据在哪？ | `vendor/xyui/`（只读权威；消费从 `packs/core-0.1/AGENT-GUIDE.md` 开始；来源锁定见 `UPSTREAM-PIN.json`） |
 | 曲线/Metric 从哪来？ | `src/ui/visualization/`（数据源唯一 = MonitorSnapshot；目标解析 output.charts 优先；禁解析事件表达式） |
+| 操作图标从哪来？ | `src/ui/icons/Icons.tsx`（Foundation.Icon 冻结风格内联 SVG；glyph 注册表缺失 = XYUI1-GAP-001 权宜，禁建第二套 IconFont） |
+| 监控值行模型在哪？ | `src/ui/monitor/metricModel.ts`（MetricRow 唯一模型；Pinned 卡与监控值列表共用） |
+| Focus/Compare/相对规则？ | `src/ui/viewState.ts`（纯函数）+ `src/ui/visualization/VisualizationPanel.tsx`（编排）；绝对值对比只许同单位，相对模式运行开始值 = 100% |
 | 保存的 Run 在哪？ | 浏览器 localStorage `xylab.runs.v1`（读写仅 `src/ui/history/runStore.ts`；SavedRun 必含 definitionSnapshot） |
 | Light 色值在哪？ | `src/ui/theme/light-consumer.css`（B 类消费层 `--xylab-*`，非 canonical；GAP 权宜有注释登记） |

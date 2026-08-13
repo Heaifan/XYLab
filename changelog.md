@@ -25,6 +25,26 @@
 - **遗留问题**：R2-03B Parser+AST 冻结解除后启动；UI Constitution 未批准，任何轮次禁止自行设计
 - **决策**：5 规则适用范围 = src/tests/scripts 下全部职责目录（tests 按领域分目录后同样合规，不设豁免）；100 规则覆盖含测试与脚本的全部手写源码；SRP 为人工硬门禁写入每轮报告；Knowledge 入库判断每轮必做
 
+## XYLAB-UI-F2 · Monitoring UI 收口（图标接管 + Metric Row 重排 + 图表 Focus/Compare/相对） —— IMPLEMENTED（自动门全绿 · 待用户真机验收，未 CLOSED）
+
+- **阶段**：XYLAB-UI-F2 单轮（用户裁定：一轮一次解决三件事不拆轮；FE-A-R1/R2 保持 IMPLEMENTED，其真机验收并入本轮验收清单）
+- **任务**：① 图标正式接管操作图标（Unicode ▶ ⏸ → ■ ↺ 换 Foundation.Icon 冻结风格内联 SVG，不造第二套 IconFont）② 监控值 Inspector 重排（废三列表格 → Compact Metric Row）③ 多指标不同量纲挤同一 Y 轴（Focus 默认 + Compare + 相对变化）
+- **变更**：
+  - 新增 `src/ui/icons/Icons.tsx`（18 个内联 SVG：Outline / stroke 1.5 / round cap·join / viewBox 16，即 Foundation.Icon 0.15 冻结风格；glyph 注册表上游缺失 = XYUI1-GAP-001 消费层权宜，不立 glyph 命名权威）；RunPanel 六个操作按钮全部换图标、保持 Icon+Text
+  - 新增 `src/ui/monitor/metricModel.ts`（MetricRow 唯一模型：valueAtTime/nearestTime/metricStatus/buildRows/resolveMetrics 收敛于此；锁定值与实时值统一 formatMetric，Tap Lock 切换不再跳格式）
+  - 新增 `src/ui/viewState.ts`（纯函数层：selected/pinned≤6/hidden/绝对·相对 mode；状态本体 App 持有，Load/Apply/Reset 重置）
+  - 重写 ValuesPanel = Compact Metric Row（label 优先三层优先级：值→变化→统计；Detail 展开才有初值 + 聚焦/对比/固定/隐藏操作；>8 行 Dense 单行；行点击 = 图表聚焦；零横向滚动硬门）
+  - 重写 MetricStrip = Pinned Cards（≤6，移动端横滚，点击聚焦；与全量 Watch 列表分工明确）；重写 LineChart = Focus 默认 + Compare（绝对值只许同单位，异单位排除并提示改用相对变化）+ 相对变化（运行开始值 = 100%，基线 0/非数值跳过并提示；threshold 线仅绝对模式绘制）
+  - InspectorSheet：valueAtTime/WarnIcon 改用共享层与图标层；行 grid minmax(0,1fr)+ellipsis；values 列表进入 Compact/Medium 监控屏（此前仅 Wide 可见）；Wide 右栏 minmax(280,420)
+  - 新增 `examples/battle-metrics.json`（12 watch 混单位验收样例：人/分/%/吨/m·s + threshold + boolean）
+  - 核心四层（protocol/expression/runtime/monitor）零改动；vendor/xyui/ 零改动；MonitorSnapshot 数据合同零改动；无新依赖
+- **冻结语义**：继承 R1/R2 —— MonitorSnapshot 唯一数据合同（Second Truth 禁令）；状态只认结构化 threshold，绝不解析事件表达式；Tap Lock 语义不变（锁定读数/跟随实时）；移动端不依赖 Hover；零横向滚动为本轮硬门
+- **验证**：`npm run verify` 全绿（GOVERNANCE PASS + tsc 0 error + 298/298 = 289 零回退 + 9 新增）；`npm run build` PASS；Guard 本轮真实拦截 App.tsx（107 行）与 LineChart（107/102 行）两次并压缩至合规；dev server HTTP 200；真机验收清单待用户执行
+- **测试**：9 项新增（tests/ui/f2/）= f2-view-model 7（Focus 默认首个解析目标 / Compare 增删·hidden 只隐藏不删 watch / 同单位限制排除 / Pin 上限与 resolved 过滤 / MetricRow 三层信息与统计块 / boolean 变化次数不伪造统计 / 锁定时刻读取）+ f2-samples 2（examples 两件经真实 Loader 加载成功；battle 样例 12 watch、≥4 单位、含 threshold 与 boolean）
+- **Commit**：`a121b9c`（实现）+ 本条目补记提交（单一正式轮，≤2）
+- **遗留问题**：真机验收（fatigue-basic 单指标 + battle-metrics 12 指标 × 三断点 × Focus/Compare/相对/Tap Lock/Dense 行/Pinned 横滚）通过后才可 CLOSED；图表 Pan/Zoom、Run Compare、Threshold Band 继续推迟
+- **Knowledge**：UPDATED —— 新 decisions/f2-monitoring-ui-close.md（图标层权宜边界 / MetricRow 唯一模型 / ViewState 语义 / 图表双模式三冻结规则）；ui-responsive-shell.md F2 修订（监控值行三断点均可见 + Wide 右栏 280~420 + 零横向滚动硬门）
+
 ## FE-A-R2 · Mobile-first XYUI Experiment Workbench —— IMPLEMENTED（自动门全绿 · 待用户真机验收，未 CLOSED）
 
 - **阶段**：FE-A 第二轮（用户裁定：R1 保持 IMPLEMENTED 待验收但不再阻塞 R2；原「R2 换皮 → R3 可视化工作区」合并为本轮一次交付，下一轮必须一次出现肉眼可见的成果；R2-A → R2-B → R2-C 三块连续执行）
