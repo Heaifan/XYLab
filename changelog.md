@@ -25,6 +25,18 @@
 - **遗留问题**：R2-03B Parser+AST 冻结解除后启动；UI Constitution 未批准，任何轮次禁止自行设计
 - **决策**：5 规则适用范围 = src/tests/scripts 下全部职责目录（tests 按领域分目录后同样合规，不设豁免）；100 规则覆盖含测试与脚本的全部手写源码；SRP 为人工硬门禁写入每轮报告；Knowledge 入库判断每轮必做
 
+## UI-F1 · Responsive Web Shell —— CLOSED
+
+- **阶段**：R4 第一轮（按用户裁定：R2 CLOSED 后直接进入 UI，TypeScript+React+Vite）
+- **任务**：可运行响应式 Shell——Wide/Medium/Compact 三模式，覆盖 PC 横屏/平板横竖屏/手机横竖屏；React 只做 UI/状态投影，模拟核心零语义改动
+- **变更**：新增 `src/ui/`（shell 4 / experiment 4 / monitor 3 / 根 3 文件）+ index.html + vite.config.ts；tsconfig 加 jsx/resolveJsonModule/DOM lib；scripts 加 dev/build；tests/ui/breakpoints 3 用例；Knowledge 入库 decisions/ui-responsive-shell.md + pitfalls/vite-dev-ipv4-bind.md
+- **前置兼容修复**：protocol/validator.ts 的 Schema 加载由 node:fs 改为打包器 JSON 内联（字节不变；R2-01 原注释已预告 R4 需此改动）——src 现无 node:* 依赖，Loader Node/浏览器同行为
+- **验证**：`npm run verify` 全绿（GOVERNANCE PASS 101 文件 + tsc 0 error + 228/228）+ `npm run build` 产物正常 + 真实浏览器冒烟：加载内置示例 → 参数面板自动生成（滑杆/数值/单位标签）→ MAX 运行 600 Tick → completed，time=600，fatigue=150（5×0.05×600），日志含变化行与状态行
+- **决策**：三断点冻结（Wide≥1024/Medium≥640/Compact<640，纯函数单测）；轮询投影合同（100ms 轮询 + UI 层 diff，Run Loop 不发事件）；参数编辑 = ready 态直写 state.variables（R2-02 mutable 合同），运行中只读；按钮可用性由 transitions 守卫投影；单一 Controller 权威持有；组件按实际需求拆分不提前建 XYUI 组件库；视觉仅基础暗色不扩展新规范
+- **Commit**：`0d0f611`（实现）+ 本条目补记提交
+- **遗留问题**：图表区为占位（R3/R4 后续接入）；MAX 速度下轮询日志只呈现首末状态（x1/x10 可见增量，未来 R3 快照历史解决）；Medium/Compact 断点已单测但未真机浏览器尺寸验证（R6 验证轮）
+- **Knowledge**：UPDATED —— 新 decisions/ui-responsive-shell.md（UI/Runtime 投影边界合同）+ pitfalls/vite-dev-ipv4-bind.md（Windows vite IPv6 绑定坑）
+
 ## R2-06 · Seeded Random —— CLOSED（R2 · Simulation Runtime 整体 CLOSED）
 
 - **阶段**：R2 最后一轮（R2-01 Loader → R2-02 State → R2-03 Expression → R2-04 Tick → R2-05 状态机+控制 → R2-06 随机，全部关闭）
