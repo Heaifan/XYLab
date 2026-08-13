@@ -25,6 +25,18 @@
 - **遗留问题**：R2-03B Parser+AST 冻结解除后启动；UI Constitution 未批准，任何轮次禁止自行设计
 - **决策**：5 规则适用范围 = src/tests/scripts 下全部职责目录（tests 按领域分目录后同样合规，不设豁免）；100 规则覆盖含测试与脚本的全部手写源码；SRP 为人工硬门禁写入每轮报告；Knowledge 入库判断每轮必做
 
+## R2-06 · Seeded Random —— CLOSED（R2 · Simulation Runtime 整体 CLOSED）
+
+- **阶段**：R2 最后一轮（R2-01 Loader → R2-02 State → R2-03 Expression → R2-04 Tick → R2-05 状态机+控制 → R2-06 随机，全部关闭）
+- **任务**：seed 合同 + 确定性 PRNG + Runtime random 状态 + random() 内置 + Reset seed 恢复 + 错误边界 + 四档速度联合确定性
+- **变更**：新增 `src/runtime/random/prng.ts`（mulberry32，DEFAULT_SEED=1，禁 Math.random）；RuntimeState 增加 rng 域（Reset 经重建回 seed 初始态）；random() 进入 03C 白名单（0 参 → number）；EvaluationContext 增加 random 注入；Tick 层 rng 草稿拷贝 + Batch Commit 原子写回；tests/runtime/random 4 文件 13 用例；Knowledge 入库 decisions/seeded-random.md
+- **验证**：`npm run verify` 全绿（GOVERNANCE PASS 85 文件 + tsc 0 error + 225/225）；grep 确认 src 无 Math.random（仅注释提及）；Guard 拦截 2 个超线文件并压缩（evaluator 收紧、integration 拆分 atomic）；git diff --check PASS
+- **测试**：13 项新增 = PRNG 5（同 seed 同序列/异 seed 异序列/[0,1) 范围/重跑一致/DEFAULT_SEED）+ 集成 3（两次独立运行一致/异 seed 不同/Reset 回 seed 初态重跑一致）+ 原子与边界 3（random(1) 语义拒绝/失败 Tick 随机域零推进/未消费不推进）+ 四档联合确定性 2（x1=x10=x100=max、Reset 重跑 max 与首次 x1 一致）
+- **Commit**：`2ee4f3e`（实现）+ 本条目补记提交
+- **决策**：随机域属于 Batch Commit 原子域（草稿推进、成功才提交）；PRNG 按调用序列推进与速度档解耦；Reset 的随机语义 = 回到 seed 初始态；random() 上下文注入保持求值器纯函数（详见 knowledge/decisions/seeded-random.md）
+- **R2 整体**：`R2 · Simulation Runtime CLOSED` —— JSON → Loader → RuntimeState → Expression Engine → Seeded Random → Tick Engine → Controller（Run/Pause/Resume/Step/Stop/Reset + x1/x10/x100/MAX）。按用户冻结顺序，下一步直接进入 UI/Frontend，不再新增任何 R2 阶段。
+- **Knowledge**：UPDATED —— 新 decisions/seeded-random.md（确定性随机合同）
+
 ## R2-05BC · Runtime Controls Complete —— CLOSED
 
 - **阶段**：R2-05 完整关闭（按用户裁定不再拆 B/C，一次完成）
