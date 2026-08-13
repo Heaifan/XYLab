@@ -55,7 +55,7 @@ XYLab/
 │
 ├─ src/                             ← 全部源码 ≤100 行/文件，实现目录 ≤5 文件
 │  ├─ ui/                           ← React 投影层（模拟核心零依赖；FE-A-R2 Light 工作台 + F2 Monitoring UX + UA1 可视化选择器）
-│  │  ├─ main.tsx                   ←   入口（styles + visualization.css + history.css）
+│  │  ├─ main.tsx                   ←   入口（styles + visualization.css + history.css + 启动兜底必显异常不留白屏）
 │  │  ├─ App.tsx                    ←   句柄 + ViewState 权威持有 + 草稿/重建 + tab/锁定/保存/历史装配 + UA1 toast 轻提示（Load 初始化选择/Apply 保留/Reset 仅清锁）
 │  │  ├─ styles.css                 ←   Light 全局样式（全引 --xylab-* 变量 + 三断点布局 + Sheet + Metric Row）
 │  │  ├─ format.ts                  ←   数值显示纠偏（integer 0 位/float ≤4 位，仅显示层不取整底层）
@@ -98,7 +98,7 @@ XYLab/
 │  │  │  └─ misc.tsx                ←     Timeline 事件点击 → 锁定（联动合同）+ Advanced Table 五列采样
 │  │  ├─ history/                   ←   FE-A-R2 实验闭环（Save Run V1，手动触发，localStorage）
 │  │  │  ├─ types.ts                ←     SavedRun V1（definitionSnapshot + monitorSnapshot 必含）
-│  │  │  ├─ runStore.ts             ←     buildRun + 持久化（xylab.runs.v1；失败明确报错不假装成功）
+│  │  │  ├─ runStore.ts             ←     buildRun + 持久化（xylab.runs.v1；失败明确报错不假装成功；safeStorage 存储被禁降级内存不白屏）
 │  │  │  ├─ SaveRunSheet.tsx        ←     保存 Bottom Sheet（备注 + 保存 / 保存并复制 JSON）
 │  │  │  ├─ RunHistory.tsx          ←     历史列表（最新在前，详情展开，复制该 Run JSON）
 │  │  │  └─ history.css             ←     历史/保存样式
@@ -226,15 +226,15 @@ XYLab/
    │     └─ r2-03d-evaluator-errors.test.ts    ← D12~D13、D31~D35 运行期安全
    ├─ governance/                   ← GOV-01 专项
    │  └─ governance-guard.test.ts   ←   底线位回归（5/100/Guard 自身）
-   ├─ ui/                           ← UI 断点（3）+ R4-F1 草稿（5）+ FE-A-R1 监控桥（14）+ FE-A-R2 工作台（21）+ F2（9）+ UA1（23）
+   ├─ ui/                           ← UI 断点（3）+ R4-F1 草稿（5）+ FE-A-R1 监控桥（14）+ FE-A-R2 工作台（22）+ F2（9）+ UA1（23）
    │  ├─ breakpoints.test.ts        ←   Wide/Medium/Compact 边界
    │  ├─ r4-f1-draft.test.ts        ←   草稿守卫/不可变/重建边界集成
    │  ├─ r1-monitor-bridge.test.ts  ←   Handle 生命周期（T01/T02/T04/T09~T15 语义）
    │  ├─ r1-monitor-projection.test.ts ← MonitorSnapshot 投影（T03/T05~T08 语义）
-   │  ├─ r2/                        ←   FE-A-R2 子域（21 用例）
+   │  ├─ r2/                        ←   FE-A-R2 子域（22 用例）
    │  │  ├─ r2-format.test.ts       ←     浮点噪音消除/格式分层/安全直通（5）
    │  │  ├─ r2-chart-model.test.ts  ←     图表目标解析/valueAtTime·nearestTime/结构化 Metric 状态（5）
-   │  │  ├─ r2-run-store.test.ts    ←     SavedRun 快照完整/备注往返/排序/失败反馈（5）
+   │  │  ├─ r2-run-store.test.ts    ←     SavedRun 快照完整/备注往返/排序/失败反馈/safeStorage 降级（6）
    │  │  └─ r2-workflow.test.ts     ←     Metric+Chart 非空/冻结-连续/Reset/Apply/复制 JSON（6）
    │  ├─ f2/                        ←   F2 子域（9 用例）
    │  │  ├─ f2-view-model.test.ts   ←     ViewState 纯函数（UA1 语义更新）+ MetricRow 三层信息/锁定读取（7）
@@ -268,5 +268,5 @@ XYLab/
 | 选择/可视化状态在哪？ | `src/ui/viewState.ts`（VisualizationSelectionState 纯函数：selected Set/mode/viz/scatter 指派；Inspector/Legend/Chart/监控值行同源消费）；仅 Load 重置，运行控制不清 |
 | 可视化可用性谁裁决？ | `src/ui/viz/compat.ts`（Compatibility Engine + recommend）；目录注册在 `src/ui/viz/catalog.ts`（21 类，禁 UI 散落 if chart===，不可用 = Disabled+Reason 不删入口） |
 | Bar/Gauge/Table 读哪个时刻？ | 统一 Temporal Cursor = `lockTime ?? 实时`（Timeline 事件点击 = 锁定；「跟随实时」解锁） |
-| 保存的 Run 在哪？ | 浏览器 localStorage `xylab.runs.v1`（读写仅 `src/ui/history/runStore.ts`；SavedRun 必含 definitionSnapshot） |
+| 保存的 Run 在哪？ | 浏览器 localStorage `xylab.runs.v1`（读写仅 `src/ui/history/runStore.ts`，经 `safeStorage()` 获取——存储被禁降级内存；SavedRun 必含 definitionSnapshot） |
 | Light 色值在哪？ | `src/ui/theme/light-consumer.css`（B 类消费层 `--xylab-*`，非 canonical；GAP 权宜有注释登记） |

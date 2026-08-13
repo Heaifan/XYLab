@@ -1,7 +1,7 @@
 // FE-A-R2 focused test：Run 持久化 V1（R2-T09~T14）。storage 可注入；成功/失败明确，不假装成功。
 import { describe, expect, it } from 'vitest';
 import { createMonitoredRuntime } from '../../../src/monitor/session';
-import { buildRun, loadRuns, nextRunNumber, RUNS_KEY, runLabel, saveRun, sortRuns } from '../../../src/ui/history/runStore';
+import { buildRun, loadRuns, nextRunNumber, RUNS_KEY, runLabel, safeStorage, saveRun, sortRuns } from '../../../src/ui/history/runStore';
 import type { RunStorage } from '../../../src/ui/history/runStore';
 import { makeTickDef } from '../../runtime/fixtures';
 
@@ -68,5 +68,10 @@ describe('FE-A-R2 · Run 持久化', () => {
     expect(nextRunNumber([])).toBe(1);
     expect(nextRunNumber([fixtureRun('a', 1, 17)])).toBe(18);
     expect(runLabel(18)).toBe('Run #018');
+  });
+  it('safeStorage：localStorage 不可用（无 window/被禁）时降级内存 storage，不抛不白屏', () => {
+    const st = safeStorage(); // vitest node 环境无 window → 必走 memStore 降级路
+    expect(saveRun(st, fixtureRun('降级保存', 3000, 3))).toEqual({ ok: true });
+    expect(loadRuns(st).map((r) => r.note)).toContain('降级保存');
   });
 });

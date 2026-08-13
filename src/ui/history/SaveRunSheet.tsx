@@ -5,7 +5,7 @@ import type { ExperimentDefinition } from '../../protocol/types';
 import type { MonitorSnapshot } from '../../monitor/types';
 import { copyText, definitionJson } from '../actions/clipboard';
 import { resolveMetrics } from '../monitor/metricModel';
-import { buildRun, loadRuns, nextRunNumber, runLabel, saveRun } from './runStore';
+import { buildRun, loadRuns, nextRunNumber, runLabel, safeStorage, saveRun } from './runStore';
 
 interface Props {
   open: boolean;
@@ -26,10 +26,10 @@ export function SaveRunSheet({ open, definition, snap, runtimeStatus, time, tick
   const s = snap;
   const metrics = resolveMetrics(def, s, null);
   const warnCount = s.logs.filter((l) => l.kind === 'event' && (l.level === 'warning' || l.level === 'critical')).length;
-  const num = nextRunNumber(loadRuns(window.localStorage));
+  const num = nextRunNumber(loadRuns(safeStorage()));
 
   async function persist(copyJson: boolean) {
-    const res = saveRun(window.localStorage, buildRun(def, s, runtimeStatus, time, tickIndex, num, note.trim(), Date.now()));
+    const res = saveRun(safeStorage(), buildRun(def, s, runtimeStatus, time, tickIndex, num, note.trim(), Date.now()));
     if (!res.ok) {
       setFeedback({ text: `保存失败：${res.error}`, ok: false });
       return;

@@ -19,7 +19,7 @@ import { VisualizationPanel, resolveChartTargets } from './visualization/Visuali
 import { InspectorSheet } from './visualization/InspectorSheet';
 import { SaveRunSheet } from './history/SaveRunSheet';
 import { RunHistory } from './history/RunHistory';
-import { loadRuns } from './history/runStore';
+import { loadRuns, safeStorage } from './history/runStore';
 import type { SavedRun } from './history/types';
 import { VIEW_INIT, initSelection, selectToggle, viewClearSelect, viewFocus, viewToggleHide, viewTogglePin, type ViewState } from './viewState';
 
@@ -32,7 +32,7 @@ export function App() {
   const [tab, setTab] = useState<LabTab>('monitor');
   const [lockTime, setLockTime] = useState<number | null>(null);
   const [saveOpen, setSaveOpen] = useState(false);
-  const [runs, setRuns] = useState<SavedRun[]>(() => loadRuns(window.localStorage));
+  const [runs, setRuns] = useState<SavedRun[]>(() => loadRuns(safeStorage()));
   const [view, setView] = useState<ViewState>(VIEW_INIT);
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef(0);
@@ -88,7 +88,7 @@ export function App() {
         history={<RunHistory runs={runs} />}
       />
       <SaveRunSheet open={saveOpen} definition={definition} snap={bridge.snap} runtimeStatus={bridge.status} time={bridge.time} tickIndex={bridge.tickIndex}
-        onClose={() => setSaveOpen(false)} onSaved={() => setRuns(loadRuns(window.localStorage))} />
+        onClose={() => setSaveOpen(false)} onSaved={() => setRuns(loadRuns(safeStorage()))} />
     </div>
   );
 }

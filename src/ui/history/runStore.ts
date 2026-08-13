@@ -55,3 +55,23 @@ export function runLabel(n: number): string {
 export function sortRuns(runs: SavedRun[]): SavedRun[] {
   return [...runs].sort((a, b) => b.savedAt - a.savedAt);
 }
+
+// file:// WebView / 隐私模式 / 存储被禁时，访问 window.localStorage 本身即抛——
+// 探测失败降级内存 storage（Run 历史随页面关闭丢失，但应用可用，绝不白屏）。
+const mem: Record<string, string> = {};
+const memStore: RunStorage = {
+  getItem: (k) => (k in mem ? mem[k] : null),
+  setItem: (k, v) => {
+    mem[k] = v;
+  },
+};
+
+export function safeStorage(): RunStorage {
+  try {
+    const s = window.localStorage;
+    s.getItem(RUNS_KEY);
+    return s;
+  } catch {
+    return memStore;
+  }
+}
