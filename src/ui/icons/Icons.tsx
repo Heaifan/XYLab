@@ -87,3 +87,11 @@ export const IconWarn = make(
 );
 export const IconDeltaUp = make(<path d="M8 3.8 12.8 11.8H3.2L8 3.8Z" />);
 export const IconDeltaDown = make(<path d="M8 12.2 3.2 4.2h9.6L8 12.2Z" />);
+/* UA1 · 可视化目录分类图标（Picker 用；同一冻结风格的权宜 glyph，XYUI1-GAP-001 语义延续） */
+export const IconBars = make(<path d="M3.4 13V7.4M8 13V3.4M12.6 13v-4" />);
+export const IconScatter = make(<><path d="M2.6 2.6v10.8h10.8" /><circle cx="6.2" cy="9.4" r="1" /><circle cx="9" cy="6.4" r="1" /><circle cx="11.6" cy="4.4" r="1" /></>);
+export const IconGauge = make(<><path d="M2.8 11.6a5.4 5.4 0 1 1 10.4 0" /><path d="M8 11.6 10.6 7" /></>);
+export const IconPie = make(<><circle cx="8" cy="8" r="5.4" /><path d="M8 2.6V8l4.6 2.6" /></>);
+export const IconGrid = make(<><path d="M3 3h10v10H3Z" /><path d="M3 8h10M8 3v10" /></>);
+export const IconClock = make(<><circle cx="8" cy="8" r="5.4" /><path d="M8 5v3.2l2.2 1.4" /></>);
+export const IconTable = make(<><path d="M2.8 3.6h10.4v8.8H2.8Z" /><path d="M2.8 6.6h10.4M6.6 3.6v8.8" /></>);

@@ -1,6 +1,5 @@
-// F2 · Chart Inspector：时间锁定联动 / Series 读值 / 锁定时间文字必显（Tap Lock 语义不变）。
-// 移动端不依赖 Hover：Tap 锁定 → 读目标时间 series；「跟随实时」解锁回到 Live。
-// 零横向滚动硬门：行 grid 用 minmax(0,1fr)，label 省略号收缩。
+// UA1 · Chart Inspector：与 Legend/Chart 同源消费 Selection（点击行 = Toggle 选择）；时间锁定联动 / 锁定时间文字必显。
+// 移动端不依赖 Hover：Tap 锁定 → 读目标时间 series；「跟随实时」解锁。零横向滚动硬门（minmax(0,1fr) + 省略号）。
 import type { ExperimentDefinition } from '../../protocol/types';
 import type { MonitorSnapshot } from '../../monitor/types';
 import { formatNumber, formatValue } from '../format';
@@ -13,9 +12,11 @@ interface Props {
   lockTime: number | null;
   onUnlock: () => void;
   variant: 'sheet' | 'panel';
+  selected: string[];
+  onToggleSelect: (t: string) => void;
 }
 
-export function InspectorSheet({ snap, definition, lockTime, onUnlock, variant }: Props) {
+export function InspectorSheet({ snap, definition, lockTime, onUnlock, variant, selected, onToggleSelect }: Props) {
   if (!snap) {
     return variant === 'panel' ? (
       <section className="panel">
@@ -43,8 +44,10 @@ export function InspectorSheet({ snap, definition, lockTime, onUnlock, variant }
         </h2>
         {lockTime !== null && <button onClick={onUnlock}>跟随实时</button>}
       </div>
+      <p className="muted">点击行 = 加入/移出图表（与图例同源）</p>
       {rows.map((r) => (
-        <div className="inspector-row" key={r.target}>
+        <div className={`inspector-row${selected.includes(r.target) ? ' sel' : ''}`} key={r.target} role="button" tabIndex={0} onClick={() => onToggleSelect(r.target)}
+          onKeyDown={(e) => e.key === 'Enter' && onToggleSelect(r.target)}>
           <span className="inspector-label">{r.label}</span>
           <b>{r.value}</b>
           <span className="muted">{r.detail}</span>

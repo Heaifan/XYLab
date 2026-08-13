@@ -1,25 +1,27 @@
-// F2 focused test：视图状态纯函数（聚焦/对比/固定/隐藏/模式）+ MetricRow 模型（buildRows 三层信息）。
+// F2 focused test（UA1 语义更新）：ViewState 纯函数（Set 多选/聚焦/隐藏/固定/同单位组）+ MetricRow 模型。
 import { describe, expect, it } from 'vitest';
 import { createMonitoredRuntime } from '../../../src/monitor/session';
 import { buildRows } from '../../../src/ui/monitor/metricModel';
-import { VIEW_INIT, effectivePinned, focusTargets, sameUnitGroup, viewFocus, viewToggleCompare, viewToggleHide, viewTogglePin } from '../../../src/ui/viewState';
+import { VIEW_INIT, effectivePinned, sameUnitGroup, selectToggle, selectedTargets, viewClearSelect, viewFocus, viewToggleHide, viewTogglePin } from '../../../src/ui/viewState';
 import { defOf, makeTickDef } from '../../runtime/fixtures';
 
 const resolved = ['a', 'b', 'c'];
 
-describe('F2 · ViewState 纯函数', () => {
-  it('Focus 默认：selected 空 → 聚焦首个解析目标；点行聚焦单选', () => {
-    expect(focusTargets(VIEW_INIT, resolved)).toEqual(['a']);
-    expect(focusTargets(viewFocus(VIEW_INIT, 'c'), resolved)).toEqual(['c']);
+describe('F2→UA1 · ViewState 纯函数', () => {
+  it('选择 = Set 语义：普通点击 Toggle 增删、立即生效；空选择不再回退首个', () => {
+    expect(selectedTargets(VIEW_INIT, resolved)).toEqual([]);
+    let v = selectToggle(VIEW_INIT, null, 'a').view;
+    v = selectToggle(v, null, 'b').view;
+    expect(selectedTargets(v, resolved)).toEqual(['a', 'b']);
+    v = selectToggle(v, null, 'a').view; // 再次点击 = 移出
+    expect(selectedTargets(v, resolved)).toEqual(['b']);
+    expect(selectedTargets(viewClearSelect(v), resolved)).toEqual([]);
   });
-  it('Compare = selected 增删；hidden 只从图表隐藏不删 watch', () => {
-    let v = viewToggleCompare(viewToggleCompare(VIEW_INIT, 'a'), 'b');
-    expect(focusTargets(v, resolved)).toEqual(['a', 'b']);
-    v = viewToggleHide(v, 'a');
-    expect(focusTargets(v, resolved)).toEqual(['b']);
-    expect(v.hidden).toEqual(['a']);
-    v = viewToggleCompare(v, 'a'); // 移出对比
-    expect(v.selected).toEqual(['b']);
+  it('聚焦单选与 hidden 过滤：hidden 只从图表隐藏不删 watch', () => {
+    expect(selectedTargets(viewFocus(VIEW_INIT, 'c'), resolved)).toEqual(['c']);
+    const v = viewToggleHide(viewFocus(VIEW_INIT, 'c'), 'c');
+    expect(selectedTargets(v, resolved)).toEqual([]);
+    expect(v.hidden).toEqual(['c']);
   });
   it('绝对值对比只许同单位：与首个目标单位不同者被排除', () => {
     const def = makeTickDef({

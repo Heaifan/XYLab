@@ -1,11 +1,13 @@
-// F2 · Visualization 容器：Pinned Cards + Focus/Compare 曲线（XYUI-8 VisualizationContainer 组合）。
-// Series 解析规则不变：output.charts 声明优先（x 必须 = time）；无声明 → fallback Watch 前 2~4 个 Numeric Series。
-// Focus 默认（selected 空 → 首个解析目标）；Compare = selected ≥2；绝对值只许同单位，异单位提示改用相对变化。
+// UA1 · Visualization Container（XYUI-8 8-01 消费组合）：Pinned Cards(SnapshotRail) + Toolbar(Picker+模式+计数) + Canvas(VizHost)。
+// Inspector/Legend/Chart 同源消费 VisualizationSelectionState（App 持有）；候选解析规则不变（output.charts 优先）。
 import type { ExperimentDefinition } from '../../protocol/types';
 import type { MonitorSnapshot } from '../../monitor/types';
-import { effectivePinned, focusTargets, sameUnitGroup, type ViewState } from '../viewState';
+import type { Breakpoint } from '../shell/breakpoints';
+import { effectivePinned, mixedUnits, selectedTargets, type ViewState } from '../viewState';
 import { MetricStrip } from './MetricStrip';
-import { LineChart } from './LineChart';
+import { VizHost } from '../viz/VizHost';
+import { VizPicker } from '../viz/picker';
+import type { VizCtx } from '../viz/compat';
 
 export function resolveChartTargets(definition: ExperimentDefinition | null, snap: MonitorSnapshot | null): string[] {
   if (!snap) return [];
@@ -23,10 +25,14 @@ interface Props {
   view: ViewState;
   setView: (v: ViewState) => void;
   resolved: string[];
+  breakpoint: Breakpoint;
+  toast: string | null;
+  onToggleSelect: (t: string) => void;
+  onClear: () => void;
 }
 
-export function VisualizationPanel({ definition, snap, lockTime, onLock, view, setView, resolved }: Props) {
-  if (!snap) {
+export function VisualizationPanel(p: Props) {
+  if (!p.snap) {
     return (
       <section className="panel">
         <h2>可视化</h2>
@@ -34,27 +40,29 @@ export function VisualizationPanel({ definition, snap, lockTime, onLock, view, s
       </section>
     );
   }
-  const pinned = effectivePinned(view, resolved);
-  const focus = focusTargets(view, resolved);
-  const group = focus.length > 1 && view.mode === 'absolute' ? sameUnitGroup(definition, focus) : { shown: focus, excluded: [] };
-  const emphasis = view.selected.length > 0 && group.shown.includes(view.selected[view.selected.length - 1]) ? view.selected[view.selected.length - 1] : group.shown[0] ?? null;
-  const focusOne = (t: string) => setView({ ...view, selected: [t] });
+  const pinned = effectivePinned(p.view, p.resolved);
+  const targets = selectedTargets(p.view, p.resolved);
+  const ctx: VizCtx = {
+    count: targets.length,
+    mixedUnits: mixedUnits(p.definition, targets),
+    mode: p.view.mode,
+    hasThreshold: p.snap.watches.some((w) => targets.includes(w.target) && w.mode === 'threshold'),
+    hasEvents: p.snap.logs.some((l) => l.kind === 'event'),
+  };
   return (
     <section className="panel viz-panel">
-      <MetricStrip def={definition} snap={snap} lockTime={lockTime} pinned={pinned} onFocus={focusOne} />
+      <MetricStrip def={p.definition} snap={p.snap} lockTime={p.lockTime} pinned={pinned} onToggle={p.onToggleSelect} />
       <div className="viz-toolbar">
+        <VizPicker ctx={ctx} current={p.view.viz} compact={p.breakpoint === 'compact'} onPick={(id) => p.setView({ ...p.view, viz: id })} />
         <div className="seg" role="radiogroup" aria-label="比较模式">
-          <button className={view.mode === 'absolute' ? 'on' : ''} onClick={() => setView({ ...view, mode: 'absolute' })}>绝对值</button>
-          <button className={view.mode === 'relative' ? 'on' : ''} onClick={() => setView({ ...view, mode: 'relative' })}>相对变化</button>
+          <button className={p.view.mode === 'absolute' ? 'on' : ''} disabled={ctx.mixedUnits} title={ctx.mixedUnits ? '单位不一致，请使用相对变化' : ''} onClick={() => p.setView({ ...p.view, mode: 'absolute' })}>绝对值</button>
+          <button className={p.view.mode === 'relative' ? 'on' : ''} onClick={() => p.setView({ ...p.view, mode: 'relative' })}>相对变化</button>
         </div>
-        {focus.length > 1 ? <span className="muted">对比 {group.shown.length} 项</span> : <span className="muted">聚焦</span>}
+        <span className="muted">已选 {targets.length} / {p.resolved.length}</span>
+        <button onClick={p.onClear} disabled={targets.length === 0}>清空</button>
       </div>
-      {group.excluded.length > 0 && <p className="muted hint">单位不同：{group.excluded.join(', ')}——建议改用「相对变化」</p>}
-      {group.shown.length > 0 ? (
-        <LineChart series={snap.series} targets={group.shown} mode={view.mode} watches={snap.watches} events={snap.logs} emphasis={emphasis} lockTime={lockTime} onLock={onLock} onFocus={focusOne} />
-      ) : (
-        <p className="muted">无可绘制的数值 Series。</p>
-      )}
+      {p.toast !== null && <p className="viz-toast" role="status">{p.toast}</p>}
+      <VizHost def={p.definition} snap={p.snap} view={p.view} targets={targets} ctx={ctx} lockTime={p.lockTime} onLock={p.onLock} onToggleSelect={p.onToggleSelect} setView={p.setView} />
     </section>
   );
 }

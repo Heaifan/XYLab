@@ -23,7 +23,7 @@ export function nearestTime(ptsLists: SeriesPoint[][], t: number): number | null
   return best;
 }
 
-function cmp(a: number, op: ComparisonOperator, b: number): boolean {
+export function cmp(a: number, op: ComparisonOperator, b: number): boolean {
   if (op === '>=') return a >= b;
   if (op === '>') return a > b;
   if (op === '<=') return a <= b;
