@@ -16,7 +16,7 @@ describe('R2-05A Controller · 转换守卫', () => {
     const out = controller.step();
     expect(out.ok).toBe(false);
     if (out.ok) throw new Error('expected failure');
-    expect(out.code).toBe('ILLEGAL_TRANSITION');
+    expect(out.code).toBe('INVALID_RUNTIME_TRANSITION');
     expect(controller.status).toBe('completed'); // 状态未被破坏
   });
 
@@ -39,11 +39,11 @@ describe('R2-05A Controller · 转换守卫', () => {
     const out = controller.step();
     expect(out.ok).toBe(false);
     if (out.ok) throw new Error('expected failure');
-    expect(out.code).toBe('ILLEGAL_TRANSITION');
+    expect(out.code).toBe('INVALID_RUNTIME_TRANSITION');
     expect(controller.state.lastError).toBe(first); // 未被覆盖
   });
 
-  it('A17 非法转换明确失败：code=ILLEGAL_TRANSITION 且 message 非空', () => {
+  it('A17 非法转换明确失败：code=INVALID_RUNTIME_TRANSITION 且 message 非空', () => {
     const { controller } = makeController({
       variables: { a: { type: 'number', value: 0 } },
       formulas: [{ id: 'f', target: 'a', expression: 'a + 1' }],
@@ -54,8 +54,8 @@ describe('R2-05A Controller · 转换守卫', () => {
     const out = controller.step();
     expect(out.ok).toBe(false);
     if (out.ok) throw new Error('expected failure');
-    expect(out.code).toBe('ILLEGAL_TRANSITION');
-    if (out.code !== 'ILLEGAL_TRANSITION') throw new Error('expected ILLEGAL_TRANSITION');
+    expect(out.code).toBe('INVALID_RUNTIME_TRANSITION');
+    if (out.code !== 'INVALID_RUNTIME_TRANSITION') throw new Error('expected INVALID_RUNTIME_TRANSITION');
     expect(out.message.length).toBeGreaterThan(0);
   });
 });

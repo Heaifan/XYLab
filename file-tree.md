@@ -54,10 +54,12 @@ XYLab/
 │  │     ├─ evaluate-batch.ts       ←     快照 + 公式批量求值（全读快照）
 │  │     ├─ commit.ts               ←     原子提交 + 运行时值守卫（integer 严格）
 │  │     └─ tick.ts                 ←     executeTick 编排 + canAdvance 边界（R2-05A 共用）
-│  │  └─ controller/                ←   R2-05A 状态机 + Step/Reset 子层
-│  │     ├─ types.ts                ←     StepOutcome（ILLEGAL_TRANSITION/TICK_FAILED）
-│  │     ├─ transitions.ts          ←     canStep 守卫（Step 仅 ready/paused）
-│  │     └─ controller.ts           ←     createController（status 唯一写入者）
+│  │  └─ controller/                ←   R2-05A 状态机 + R2-05BC 控制子层
+│  │     ├─ types.ts                ←     StepOutcome/ControlOutcome/RunSpeed（x1/x10/x100/max）
+│  │     ├─ transitions.ts          ←     六守卫（Step/Run/Pause/Resume/Stop）+ deniedOutcome
+│  │     ├─ advance.ts              ←     tickOnce 单一推进点（step/loop 共用）
+│  │     ├─ loop.ts                 ←     runLoop（代际取消+批量 yield）+ speedProfile（Speed≠dt）
+│  │     └─ controller.ts           ←     createController（status 唯一写入者 + 控制 API）
 │  │
 │  └─ expression/                   ← 受限表达式语言（R2-03A 词法 / R2-03B 语法）
 │     ├─ token.ts                   ←   TokenType / Token（span 保留位置）
@@ -103,6 +105,11 @@ XYLab/
    │     ├─ r2-05a-step-boundary.test.ts ← A06/A07/A18 completed 边界与 Definition 不可变
    │     ├─ r2-05a-reset-safety.test.ts  ← A08~A13 失败与 Reset
    │     └─ r2-05a-guard.test.ts         ← A14~A17 转换守卫
+   │  └─ controls/                  ←   R2-05BC 控制子域（17 用例）
+   │     ├─ helpers.ts              ←     瞬时/手动调度器 + drain
+   │     ├─ r2-05bc-controls-transitions.test.ts  ← B01~B05/B07/B10/B11 转换与 Resume 连续性
+   │     ├─ r2-05bc-controls-stale-loop.test.ts   ← B06 单循环 + S01~S04 三危险场景
+   │     └─ r2-05bc-controls-speed.test.ts        ← D01~D04 四档确定性与自动停
    ├─ expression/                   ← R2-03A（21 用例）+ R2-03B（32 用例）
    │  ├─ tokenizer/                 ←   词法子域
    │  │  ├─ helpers.ts              ←     共享工具 types/pairs

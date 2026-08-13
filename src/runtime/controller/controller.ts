@@ -1,24 +1,39 @@
-// R2-05A · Runtime Controller（A3/A4/A5/A6）。
-// 只组织 R2-04 Tick Engine，绝不复制 Tick 逻辑；status 的唯一写入者是本模块（落在 state.status，state == 唯一真相）。
-// Reset = resetRuntimeState 完整重建（time=0 / tickIndex=0 / ready / lastError=null），Definition 永不修改。
+// R2-05BC · Runtime Controller（05A Step/Reset + 05BC Run/Pause/Resume/Stop/速度）。
+// 只组织 R2-04 Tick Engine（advance.tickOnce 单一推进点）；status 唯一写入者 = 本模块（state == 唯一真相）。
+// Reset = resetRuntimeState 完整重建 + 代际递增（旧循环即使苏醒也不得修改新 Runtime）。
 
 import { resetRuntimeState } from '../state';
-import { canAdvance, executeTick } from '../tick/tick';
+import { tickOnce } from './advance';
+import { defaultScheduler, runLoop } from './loop';
+import type { Scheduler } from './loop';
 import type { ExperimentDefinition } from '../../protocol/types';
 import type { RuntimeState } from '../types';
-import type { StepOutcome } from './types';
-import { canStep } from './transitions';
+import type { ControlOutcome, RunResult, RunSpeed, StepOutcome } from './types';
+import { canPause, canResume, canRun, canStep, canStop, deniedOutcome } from './transitions';
+
+export interface ControllerOptions { scheduler?: Scheduler; }
 
 export interface Controller {
   readonly definition: ExperimentDefinition;
   readonly state: RuntimeState;
   readonly status: RuntimeState['status'];
+  readonly speed: RunSpeed;
   step(): StepOutcome;
+  run(speed?: RunSpeed): RunResult;
+  pause(): ControlOutcome;
+  resume(): ControlOutcome;
+  stop(): ControlOutcome;
+  setSpeed(speed: RunSpeed): void;
   reset(): void;
 }
 
-export function createController(definition: ExperimentDefinition): Controller {
+export function createController(definition: ExperimentDefinition, options: ControllerOptions = {}): Controller {
+  const scheduler = options.scheduler ?? defaultScheduler;
   let state: RuntimeState = resetRuntimeState(definition);
+  let generation = 0; // 运行代际：Pause/Stop/Reset/新 Run/Resume 递增 → 旧循环永久失效
+  let speed: RunSpeed = 'x1';
+
+  const isCurrent = (gen: number): boolean => gen === generation && state.status === 'running';
 
   return {
     definition,
@@ -28,35 +43,58 @@ export function createController(definition: ExperimentDefinition): Controller {
     get status() {
       return state.status;
     },
+    get speed() {
+      return speed;
+    },
     step(): StepOutcome {
       if (!canStep(state.status)) {
-        return {
-          ok: false,
-          code: 'ILLEGAL_TRANSITION',
-          message: `当前状态 '${state.status}' 不允许 Step（仅 ready/paused 可 Step）`,
-          status: state.status,
-        };
+        return deniedOutcome(state.status, 'Step（仅 ready/paused）');
       }
-
-      const outcome = executeTick(definition, state); // 只调用一次 R2-04
-
-      if (outcome.status === 'success') {
-        state.status = canAdvance(definition, state) ? 'paused' : 'completed';
-        return { ok: true, status: state.status, result: outcome.result };
+      const progress = tickOnce(definition, state);
+      if (progress.status === 'advanced') {
+        state.status = 'paused';
+        return { ok: true, status: 'paused', result: progress.result };
       }
-
-      if (outcome.status === 'duration-reached') {
-        state.status = 'completed';
-        return { ok: true, status: 'completed', result: null };
+      if (progress.status === 'completed') {
+        return { ok: true, status: 'completed', result: progress.result };
       }
-
-      // 原子失败：state/time/tickIndex 由 R2-04 保证零变化，这里只落状态与错误
-      state.status = 'failed';
-      state.lastError = outcome.error;
-      return { ok: false, code: 'TICK_FAILED', error: outcome.error, status: 'failed' };
+      return { ok: false, code: 'TICK_FAILED', error: progress.error, status: 'failed' };
+    },
+    run(initial?: RunSpeed): RunResult {
+      if (!canRun(state.status)) return deniedOutcome(state.status, 'Run（仅 ready；重复 Run 会产生双循环）');
+      if (initial) speed = initial;
+      generation += 1;
+      const gen = generation;
+      state.status = 'running';
+      const done = runLoop({ isCurrent, tickOnce: () => tickOnce(definition, state) }, gen, speed, definition.timeline.tick, scheduler);
+      return { ok: true, status: 'running', done };
+    },
+    pause(): ControlOutcome {
+      if (!canPause(state.status)) return deniedOutcome(state.status, 'Pause');
+      generation += 1; // Pause 生效后不得产生新的尾随 Tick
+      state.status = 'paused';
+      return { ok: true, status: 'paused' };
+    },
+    resume(): ControlOutcome {
+      if (!canResume(state.status)) return deniedOutcome(state.status, 'Resume');
+      generation += 1;
+      const gen = generation;
+      state.status = 'running';
+      void runLoop({ isCurrent, tickOnce: () => tickOnce(definition, state) }, gen, speed, definition.timeline.tick, scheduler);
+      return { ok: true, status: 'running' };
+    },
+    stop(): ControlOutcome {
+      if (!canStop(state.status)) return deniedOutcome(state.status, 'Stop');
+      generation += 1;
+      state.status = 'stopped';
+      return { ok: true, status: 'stopped' };
+    },
+    setSpeed(next: RunSpeed): void {
+      speed = next;
     },
     reset(): void {
-      state = resetRuntimeState(definition); // 全新对象
+      generation += 1; // 旧循环即使苏醒也不得修改新 Runtime
+      state = resetRuntimeState(definition);
     },
   };
 }
