@@ -43,8 +43,8 @@ export function executeTick(definition: ExperimentDefinition, state: RuntimeStat
     return { status: 'failed', error: batch.error, time: state.time, tickIndex: state.tickIndex };
   }
 
-  // Batch Commit（先全量校验后应用，原子）
-  const committed = commitBatch(definition, state, batch.writes);
+  // Batch Commit（先全量校验后应用，原子；随机域随 batch 一起提交）
+  const committed = commitBatch(definition, state, batch.writes, batch.rngState);
   if ('error' in committed) {
     return { status: 'failed', error: committed.error, time: state.time, tickIndex: state.tickIndex };
   }

@@ -5,6 +5,7 @@
 
 import type { ExperimentDefinition } from '../protocol/types';
 import type { RuntimeEntity, RuntimeState, RuntimeValue } from './types';
+import { DEFAULT_SEED } from './random/prng';
 
 export function createRuntimeState(definition: ExperimentDefinition): RuntimeState {
   const variables: Record<string, RuntimeValue> = {};
@@ -17,9 +18,12 @@ export function createRuntimeState(definition: ExperimentDefinition): RuntimeSta
     entities[e.id] = { id: e.id, state: structuredClone(e.state) };
   }
 
+  const seed = definition.random?.seed ?? DEFAULT_SEED;
+
   return {
     status: 'ready',
     lastError: null, // R2-05A：初始无错误，Reset 通过重建清零
+    rng: { seed, state: seed >>> 0 }, // R2-06：Reset = 重建 = PRNG 回到 seed 初始态
     time: 0, // 冻结：第一个 Tick 之后才变为 tick（影响事件日志/曲线时间轴）
     tickIndex: 0,
     variables,

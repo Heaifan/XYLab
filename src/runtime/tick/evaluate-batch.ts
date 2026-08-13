@@ -12,6 +12,7 @@ import { ExpressionEvaluationError } from '../../expression/evaluation/errors';
 import { ExpressionTokenizeError } from '../../expression/errors';
 import type { EvaluationContext, EvalValue } from '../../expression/evaluation/types';
 import type { ExperimentDefinition } from '../../protocol/types';
+import { nextRandom } from '../random/prng';
 import type { RuntimeState, RuntimeValue } from '../types';
 import type { TickError } from './types';
 
@@ -23,6 +24,7 @@ export interface PendingWrite {
 
 export interface BatchResult {
   writes: PendingWrite[];
+  rngState?: number; // R2-06：成功求值后的 PRNG 下一状态（失败时不返回，rng 不推进 = 原子）
   error?: TickError;
 }
 
@@ -48,7 +50,14 @@ export function evaluateFormulaBatch(definition: ExperimentDefinition, state: Ru
   for (const [k, v] of Object.entries(snapshotVars)) {
     if (typeof v === 'number' || typeof v === 'boolean') ctxVars[k] = v;
   }
-  const ctx: EvaluationContext = { variables: ctxVars, builtins: { dt: definition.timeline.tick } };
+  // R2-06：rng 草稿拷贝——random() 消费只推进本地草稿；只有全部成功提交才写回 state（原子 Tick 含随机域）
+  let rngState = state.rng.state;
+  const random = (): number => {
+    const draw = nextRandom(rngState);
+    rngState = draw.nextState;
+    return draw.value;
+  };
+  const ctx: EvaluationContext = { variables: ctxVars, builtins: { dt: definition.timeline.tick }, random };
 
   const writes: PendingWrite[] = [];
   for (const f of definition.formulas) {
@@ -72,5 +81,5 @@ export function evaluateFormulaBatch(definition: ExperimentDefinition, state: Ru
       return { writes, error: wrapError(f.id, f.target, e) };
     }
   }
-  return { writes };
+  return { writes, rngState };
 }

@@ -12,13 +12,14 @@ export function defOf(raw: RawExperiment | string): ExperimentDefinition {
   return r.definition;
 }
 
-// R2-04 共享夹具：可定制变量初值 / 实体 / 公式 / 时间线（经真实 Loader）
+// R2-04 共享夹具：可定制变量初值 / 实体 / 公式 / 时间线 / 随机种子（经真实 Loader）
 export function makeTickDef(opts: {
   variables?: Record<string, { type: VariableType; value?: number | boolean }>;
   entities?: RawEntity[];
   formulas?: Array<{ id: string; target: string; expression: string }>;
   tick?: number;
   duration?: number;
+  random?: { seed: number };
 }): ExperimentDefinition {
   const variables: Record<string, RawVariable> = {};
   for (const [name, d] of Object.entries(opts.variables ?? {})) {
@@ -30,6 +31,7 @@ export function makeTickDef(opts: {
     variables,
     entities: opts.entities ?? [],
     ...(opts.formulas ? { formulas: opts.formulas } : {}),
+    ...(opts.random ? { random: opts.random } : {}),
     timeline: { mode: 'fixed_tick', tick: opts.tick ?? 1, duration: opts.duration ?? 10 },
   });
 }

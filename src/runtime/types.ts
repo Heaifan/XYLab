@@ -31,6 +31,7 @@ export interface RuntimeMetadata {
 export interface RuntimeState {
   status: RuntimeStatus;
   lastError: RuntimeFailure | null; // R2-05A：Tick 失败时保存，Reset 清空
+  rng: { seed: number; state: number }; // R2-06：PRNG 状态（uint32）；Reset 经重建回到 seed 初始态
   time: number; // 模拟时间（秒）。冻结：初始 0，第一个 Tick 之后才变为 tick
   tickIndex: number; // 已执行 tick 数。冻结：初始 0
   variables: Record<string, RuntimeValue>; // 只存值，不复制 UI 定义（label/min/max 留在 Definition）

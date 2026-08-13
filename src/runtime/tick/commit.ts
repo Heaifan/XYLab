@@ -10,7 +10,12 @@ import type { PendingWrite } from './evaluate-batch';
 
 export type CommitResult = { changes: Change[] } | { error: TickError };
 
-export function commitBatch(definition: ExperimentDefinition, state: RuntimeState, writes: PendingWrite[]): CommitResult {
+export function commitBatch(
+  definition: ExperimentDefinition,
+  state: RuntimeState,
+  writes: PendingWrite[],
+  rngState?: number, // R2-06：随机域随 Batch 一起原子提交（先校验后应用）
+): CommitResult {
   for (const w of writes) {
     const def = definition.variables[w.target]; // 存在性由 evaluate-batch 保证
     const err = validateValue(def.type, w);
@@ -23,6 +28,9 @@ export function commitBatch(definition: ExperimentDefinition, state: RuntimeStat
       changes.push({ target: w.target, previousValue: previous, currentValue: w.value });
     }
     state.variables[w.target] = w.value;
+  }
+  if (rngState !== undefined && rngState !== state.rng.state) {
+    state.rng.state = rngState;
   }
   return { changes };
 }

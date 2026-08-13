@@ -1,6 +1,6 @@
-// R2-03C · C1 符号表 + C4 函数白名单/签名。
+// R2-03C/R2-06 · C1 符号表 + C4 函数白名单/签名。
 // SemanticContext = variables + builtins + functions（表达式可见内容的唯一语义环境）。
-// 克制原则：builtin 当前只有 dt；random 属 R2-06，禁止提前进入表达式语义。
+// 克制原则：builtin 当前只有 dt；random 于 R2-06 作为 0 参内置函数进入（值经 EvaluationContext 注入）。
 
 import type { ExperimentDefinition } from '../../protocol/types';
 import type { FunctionSignature, SemanticContext, SymbolType, SemanticType } from './types';
@@ -19,6 +19,7 @@ export const FUNCTIONS: ReadonlyMap<string, FunctionSignature> = new Map([
   ['round', { minArgs: 1, maxArgs: 1, paramType: 'number', returnType: 'number' }],
   ['sqrt', { minArgs: 1, maxArgs: 1, paramType: 'number', returnType: 'number' }],
   ['pow', { minArgs: 2, maxArgs: 2, paramType: 'number', returnType: 'number' }],
+  ['random', { minArgs: 0, maxArgs: 0, paramType: 'number', returnType: 'number' }], // R2-06
 ]);
 
 export function buildSemanticContext(definition: ExperimentDefinition): SemanticContext {

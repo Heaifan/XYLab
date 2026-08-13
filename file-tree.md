@@ -49,6 +49,8 @@ XYLab/
 │  │  ├─ types.ts                   ←   RuntimeState/RuntimeValue/RuntimeEntity
 │  │  ├─ create-runtime-state.ts    ←   Definition → RuntimeState（structuredClone 深隔离）
 │  │  ├─ state.ts                   ←   resetRuntimeState（Reset 基础能力）
+│  │  ├─ random/                    ←   R2-06 确定性随机子层
+│  │  │  └─ prng.ts                 ←     mulberry32 + DEFAULT_SEED + nextRandom（禁 Math.random）
 │  │  └─ tick/                      ←   R2-04 单次确定性 Tick 子层
 │  │     ├─ types.ts                ←     TickResult/Change/TickError/TickOutcome
 │  │     ├─ evaluate-batch.ts       ←     快照 + 公式批量求值（全读快照）
@@ -110,6 +112,11 @@ XYLab/
    │     ├─ r2-05bc-controls-transitions.test.ts  ← B01~B05/B07/B10/B11 转换与 Resume 连续性
    │     ├─ r2-05bc-controls-stale-loop.test.ts   ← B06 单循环 + S01~S04 三危险场景
    │     └─ r2-05bc-controls-speed.test.ts        ← D01~D04 四档确定性与自动停
+   │  └─ random/                    ←   R2-06 随机子域（13 用例）
+   │     ├─ r2-06-random-prng.test.ts         ← P01~P05 PRNG 单元
+   │     ├─ r2-06-random-integration.test.ts  ← I01~I03 Tick 集成与 Reset 重跑
+   │     ├─ r2-06-random-atomic.test.ts       ← I04~I06 错误边界与原子性
+   │     └─ r2-06-random-determinism.test.ts  ← D01~D02 四档速度联合确定性
    ├─ expression/                   ← R2-03A（21 用例）+ R2-03B（32 用例）
    │  ├─ tokenizer/                 ←   词法子域
    │  │  ├─ helpers.ts              ←     共享工具 types/pairs

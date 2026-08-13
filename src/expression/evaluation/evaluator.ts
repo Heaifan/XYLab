@@ -1,8 +1,6 @@
-// R2-03D · 求值器：ValidatedExpression + EvaluationContext → EvalValue。
-// 纯函数：绝不修改 context / RuntimeState / AST / ValidatedExpression。
-// 目标写回（target = result）是 R2-04 Tick Engine 的权威职责，本层只产出结果。
-// 冻结：除零/模零硬失败；一切数值结果必须 finite；== 为严格相等（=== 语义，无 JS coercion）；
-// && / || 短路求值（保证 hp > 0 && 100 / hp > 2 在 hp=0 时不触发除零）。
+// R2-03D/R2-06 · 求值器：ValidatedExpression + EvaluationContext → EvalValue。
+// 纯函数：绝不修改 context / RuntimeState / AST；目标写回是 R2-04 Tick Engine 的职责。
+// 冻结：除零/模零硬失败；数值结果必须 finite；== 严格相等；&& / || 短路；random() 由上下文注入。
 
 import type { ExpressionNode, SourceSpan } from '../syntax/ast';
 import type { EvalValue, EvaluationContext } from './types';
@@ -10,16 +8,12 @@ import { ExpressionEvaluationError } from './errors';
 import { applyBuiltin, finite } from './builtins';
 
 function num(v: EvalValue, span: SourceSpan): number {
-  if (typeof v !== 'number') {
-    throw new ExpressionEvaluationError('RUNTIME_TYPE_MISMATCH', `期望 number，得到 ${typeof v}`, span);
-  }
+  if (typeof v !== 'number') throw new ExpressionEvaluationError('RUNTIME_TYPE_MISMATCH', `期望 number，得到 ${typeof v}`, span);
   return v;
 }
 
 function bool(v: EvalValue, span: SourceSpan): boolean {
-  if (typeof v !== 'boolean') {
-    throw new ExpressionEvaluationError('RUNTIME_TYPE_MISMATCH', `期望 boolean，得到 ${typeof v}`, span);
-  }
+  if (typeof v !== 'boolean') throw new ExpressionEvaluationError('RUNTIME_TYPE_MISMATCH', `期望 boolean，得到 ${typeof v}`, span);
   return v;
 }
 
@@ -87,6 +81,11 @@ export function evaluate(node: ExpressionNode, ctx: EvaluationContext): EvalValu
       }
     }
     case 'CallExpression': {
+      // R2-06：random() 是上下文注入调用（非纯数学内置）；PRNG 推进由 Tick 层草稿拷贝管理
+      if (node.callee === 'random') {
+        if (!ctx.random) throw new ExpressionEvaluationError('MISSING_RUNTIME_VALUE', '缺少随机源（random() 需要 Seeded Random 上下文）', node.span);
+        return finite(ctx.random(), node.span);
+      }
       const args = node.arguments.map((a) => evaluate(a, ctx));
       return applyBuiltin(node.callee, args, node.span);
     }

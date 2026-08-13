@@ -8,6 +8,7 @@ export type EvalValue = number | boolean;
 export interface EvaluationContext {
   variables: Readonly<Record<string, EvalValue>>;
   builtins: Readonly<Record<string, EvalValue>>;
+  random?: () => number; // R2-06：Seeded PRNG 注入（求值层保持无副作用，PRNG 推进由 Tick 层草稿管理）
 }
 
 export type EvaluationErrorCode =
