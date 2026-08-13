@@ -25,6 +25,18 @@
 - **遗留问题**：R2-03B Parser+AST 冻结解除后启动；UI Constitution 未批准，任何轮次禁止自行设计
 - **决策**：5 规则适用范围 = src/tests/scripts 下全部职责目录（tests 按领域分目录后同样合规，不设豁免）；100 规则覆盖含测试与脚本的全部手写源码；SRP 为人工硬门禁写入每轮报告；Knowledge 入库判断每轮必做
 
+## R2-05BC · Runtime Controls Complete —— CLOSED
+
+- **阶段**：R2-05 完整关闭（按用户裁定不再拆 B/C，一次完成）
+- **任务**：Run/Pause/Resume/Stop + 单 active loop + stale-loop cancellation + x1/x10/x100/MAX
+- **变更**：controller 子层扩展为 5 文件（types/transitions/advance/loop/controller）；新增 tickOnce 单一推进点与 generation 代际取消 runLoop；错误码统一 INVALID_RUNTIME_TRANSITION（05A 的 ILLEGAL_TRANSITION 按新规范改名，05A 测试同步）；tests/runtime/controls 4 文件 17 用例；Knowledge 入库 decisions/run-loop-cancellation.md
+- **验证**：`npm run verify` 全绿（GOVERNANCE PASS 81 文件 + tsc 0 error + 212/212）；Guard 拦截 2 个超线文件并 SRP 拆分/压缩（deniedOutcome 下沉 transitions、ControllerOptions 单行、测试 helper 内联）；git diff --check PASS
+- **测试**：17 项新增 = 转换 8（Run/Pause/Resume/Stop×2、ready 三禁、stopped 全禁+Reset 复活、Resume 连续性 100 tick）+ stale-loop 5（单循环拒绝、Pause 零尾随 Tick、Reset 后旧循环苏醒零写入、Pause→Resume 无双循环旧循环贡献 0、Stop 取消循环）+ 速度 4（四档最终结果完全一致、Speed≠dt、completed 自动停、failed 自动停+lastError 保留）
+- **Commit**：`a3c6813`（实现）+ 本条目补记提交
+- **决策**：运行代际取消（每次 Run/Resume/Pause/Stop/Reset 递增 generation，loop 每 Tick 检查）；单 active loop（Run 仅 ready）；Speed ≠ dt 铁律（速度只改 batchSize/delayMs）；MAX batch 1000 + delay 0 仍走 setTimeout 主动 yield；x1/x10/x100 的 delay = tick×1000ms；Run 返回 done Promise；调度器可注入（测试用手动/瞬时调度器精确控制苏醒时机）
+- **遗留问题**：Seeded Random（R2-06）；UI 未开工
+- **Knowledge**：UPDATED —— 新 decisions/run-loop-cancellation.md（代际取消 + Speed≠dt 调度合同）
+
 ## R2-05A · Runtime State Machine + Step/Reset —— CLOSED
 
 - **阶段**：R2-05 第一子轮（05B Run Loop / 05C 速度档未开工）
