@@ -1,0 +1,18 @@
+{
+  "name": "XYLab · 玄域机制公式实验台",
+  "short_name": "XYLab",
+  "description": "玄域机制公式 Web 实验台：实验装载 / 参数 / 运行 / 监控 / 可视化 / 实验闭环。",
+  "id": "xylab-workbench",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F3F6F8",
+  "theme_color": "#F3F6F8",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
