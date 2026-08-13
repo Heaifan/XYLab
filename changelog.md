@@ -25,6 +25,18 @@
 - **遗留问题**：R2-03B Parser+AST 冻结解除后启动；UI Constitution 未批准，任何轮次禁止自行设计
 - **决策**：5 规则适用范围 = src/tests/scripts 下全部职责目录（tests 按领域分目录后同样合规，不设豁免）；100 规则覆盖含测试与脚本的全部手写源码；SRP 为人工硬门禁写入每轮报告；Knowledge 入库判断每轮必做
 
+## R3 · Monitoring —— CLOSED（一次整轮完成，不拆子阶段）
+
+- **阶段**：R3 数据监控核心（路线：R2 ✅ → UI-F1 ✅ → R4-F1 ✅ → R3 ← → R4-F2 Monitoring UI → Mobile/Deploy）
+- **任务**：Watch Registry + bounded Series/History + 统一 Event/Change Log + Statistics + Monitoring Session Lifecycle 五能力一次完成
+- **变更**：新增 `src/monitor/` 5 文件（types/registry/accumulators/events/session）；Controller 新增 `observer?: TickObserver` 观察钩子（advance 单一推进点后同步回调 TickObservation——纯输出投影，零语义变化，on/off 不影响模拟）；tests/monitor 5 文件 21 用例；Knowledge 入库 2 决策（monitoring-observer-only + event-edge-trigger）
+- **冻结语义**：Observer Only（监控绝不回写 RuntimeState，Event 条件不注入 PRNG）；false→true 边缘触发（持续 true 不重复、回落重武装可再触发、repeat 字段 R3 不产生行为差异）；Bounded Series 默认 10000 点保最新（log 同 10000 封顶）；Reset = Runtime + Session 一起重建（清系列/日志/统计/edge-state 并重记 time=0 初始点）；Pause/Resume/Stop/Completed/Failed 全保留证据；Runtime Failure 入统一日志（kind runtime / level critical）；未知 watch target 与非法事件条件构建期警告 + 禁用（不静默，Loader 为第一道、registry/compile 为第二道）
+- **验证**：`npm run verify` 全绿（GOVERNANCE PASS 110 文件 + tsc 0 error + 254/254 = 233 零回退 + 21 新增）；Guard 拦截并压缩 session（106→100）与 3 个测试文件；`npm run build` PASS；diff-check PASS
+- **测试**：21 项 = G1 黄金案例（Series(0,10)(1,10.4)(2,10.8)(3,11.2) + change 日志 + 统计 initial 10/current 11.2/delta 1.2/avg 10.6/sampleCount 4）+ G2 value 模式 + G3 未知 target 第二道防御 + G4 threshold watch 边缘触发（tickIndex 2/4）+ E1~E5（单次触发不刷屏/重武装再触发/未知标识符与非布尔条件防御/失败日志）+ S1~S3（数值全统计/布尔 changeCount/string 仅 series）+ H1 cap=5 保最新（16~20）+ H2 Reset 重建初始点 + L1~L5（Completed/Failed/Pause-Resume 连续 101 点/Stop 零追加/Reset 事件再触发）+ D1 on/off 模拟一致 + D2 四档监控一致
+- **Commit**：`a09428d`（实现）+ 本条目补记提交
+- **遗留问题**：Watch/Log/Chart/Statistics UI、Export、Recent、Downsampling、Event cooldown/once、entity.hp 全部移交后续轮次（R3 明确禁止）；React 暂不消费 MonitorSnapshot（R4-F2 接线）
+- **Knowledge**：UPDATED —— 新 decisions/monitoring-observer-only.md（单向数据流 + on/off 与四档确定性）+ decisions/event-edge-trigger.md（边缘触发语义 + repeat 未来扩展）
+
 ## R4-F1 · Experiment Workflow & Runtime Bridge —— CLOSED
 
 - **阶段**：R4 功能轮（按用户裁定跳过 R3；路线冻结 R2 ✅ → UI-F1 ✅ → R4-F1 ← → R3 Monitoring → R4-F2 → Mobile/Deploy）
