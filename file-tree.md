@@ -67,6 +67,11 @@ XYLab/
 │        ├─ context.ts              ←     符号表 + 函数白名单/签名（dt 唯一 builtin）
 │        ├─ infer.ts                ←     类型推导（禁隐式转换）
 │        └─ validator.ts            ←     validateExpression/validateFormula 入口
+│     └─ evaluation/                ←   R2-03D 求值子层（纯函数）
+│        ├─ types.ts                ←     EvalValue(number/boolean) + EvaluationContext
+│        ├─ errors.ts               ←     ExpressionEvaluationError（九类错误码）
+│        ├─ builtins.ts             ←     九函数实现（finite/domain/clamp 保护）
+│        └─ evaluator.ts            ←     evaluate 递归求值（短路、无副作用）
 │
 └─ tests/                           ← 验证层（按领域分目录，每文件 ≤100 行）
    ├─ loader/                       ← R2-01（13 用例：T01~T12 + 聚合）
@@ -95,6 +100,12 @@ XYLab/
    │     ├─ r2-03c-semantic-operators.test.ts  ← C05~C19 运算符类型规则
    │     ├─ r2-03c-semantic-functions.test.ts  ← C20~C26 函数白名单与签名
    │     └─ r2-03c-semantic-formula.test.ts    ← C27~C31 target 兼容 + 黄金样例
+   │  └─ evaluation/                ←   求值子域（R2-03D，38 用例）
+   │     ├─ helpers.ts              ←     共享工具 evalExpr/expectEvalError
+   │     ├─ r2-03d-evaluator-basic.test.ts     ← D01~D11 基础 + 黄金 D36~D38
+   │     ├─ r2-03d-evaluator-logic.test.ts     ← D14~D19 逻辑与短路
+   │     ├─ r2-03d-evaluator-functions.test.ts ← D20~D30 内置函数
+   │     └─ r2-03d-evaluator-errors.test.ts    ← D12~D13、D31~D35 运行期安全
    └─ governance/                   ← GOV-01 专项
       └─ governance-guard.test.ts   ←   底线位回归（5/100/Guard 自身）
 ```
@@ -106,5 +117,5 @@ XYLab/
 | JSON 进哪里？ | `src/protocol/loader.ts`（唯一入口） |
 | 哪些字段可信？ | Loader 输出的 `ExperimentDefinition`（`types.ts`） |
 | 运行时可变状态在哪？ | `src/runtime/`（与 Definition 深隔离） |
-| 表达式怎么解析？ | `src/expression/`（Tokenizer → Parser → 语义 → Evaluator(R2-03D)） |
+| 表达式怎么解析？ | `src/expression/`（Tokenizer → Parser → 语义 → Evaluator，R2-03 闭环） |
 | 底线怎么守？ | `npm run verify` 第一步 `scripts/governance-guard.mjs` |
