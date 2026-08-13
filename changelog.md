@@ -25,6 +25,20 @@
 - **遗留问题**：R2-03B Parser+AST 冻结解除后启动；UI Constitution 未批准，任何轮次禁止自行设计
 - **决策**：5 规则适用范围 = src/tests/scripts 下全部职责目录（tests 按领域分目录后同样合规，不设豁免）；100 规则覆盖含测试与脚本的全部手写源码；SRP 为人工硬门禁写入每轮报告；Knowledge 入库判断每轮必做
 
+## R2-03C · Expression Semantic Validation —— CLOSED
+
+- **阶段**：R2
+- **任务**：建立 AST → ValidatedExpression 的静态语义验证层（C1 符号表 / C2 标识符 / C3 运算符类型 / C4 函数白名单与签名 / C5 target 兼容）
+- **目标**：公式错误尽量在运行前暴露；未知标识符绝不默认值；禁一切隐式类型转换
+- **变更**：新增 `src/expression/semantic/`（types / errors / context / infer / validator）；tests/expression 新增 semantic 子域，36 项专项（C01~C31 + 黄金样例）
+- **原因**：03B 判断「语法对不对」，03C 判断「这句话在这个实验里有没有意义」——banana(a) 03B PASS 而 03C 必须 UNKNOWN_FUNCTION，层次互不越界
+- **验证**：`npm run verify` 全绿（GOVERNANCE PASS + tsc 0 error + 115/115）；git diff --check PASS
+- **测试**：36 项新增 = 符号表 7（dt 唯一 builtin、string/enum → UNSUPPORTED_SYMBOL_TYPE）+ 运算符 15（含 !number 拒绝、跨类型相等拒绝）+ 函数 7（min 变参、clamp/abs 数量错误、abs(boolean) 类型错误）+ Formula 7（boolean↔boolean 成立、integer target 只要求 numeric、string/enum target 明确拒绝、两个黄金样例）
+- **Commit**：`611087c`（实现）+ 本条目补记提交
+- **遗留问题**：实体路径 target（entityId.stateKey）的结果类型兼容需实体表达式协议扩展后再做静态检查（本轮跳过不报错，存在性已由 Loader 保证）；Evaluator 属 R2-03D
+- **决策**：语义类型仅 number/boolean/unsupported（number+integer 统一为 number；integer target 静态只要求 numeric，不假装能证明整数值）；builtin 仅 dt（random 属 R2-06 禁止提前进入）；函数白名单 min/max/clamp/abs/floor/ceil/round/sqrt/pow，min/max 变参 ≥2；相等仅同类型，逻辑仅 boolean×boolean，无 truthy/falsy；Validator 只读 AST（不 constant fold/不重写/不计算）；SemanticError 统一 code/message/span/identifier
+- **Knowledge**：N/A —— 本轮设计全部来自冻结规格，无新事故、根因或跨轮可复用模式
+
 ## R2-03B · Expression Parser + AST —— CLOSED
 
 - **阶段**：R2
