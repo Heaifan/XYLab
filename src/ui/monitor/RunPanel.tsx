@@ -1,10 +1,12 @@
-// FE-A-R1 · 运行区：状态/时间/Tick + 全部 Controller 操作（Wide/Medium 面板，Compact 顶部紧凑控制条）。
+// F2 · 运行区：状态/时间/Tick + 全部 Controller 操作（Wide/Medium 面板，Compact 顶部紧凑控制条）。
 // 行为权威 = Controller（Start/Pause/Resume/Stop/Speed/守卫）；Reset = handle.reset()（Runtime + MonitorSession 联合重置）。
+// 图标 = F2 内联 SVG（Foundation.Icon 冻结风格；glyph 注册表 GAP 权宜），Icon+Text，禁 Unicode 符号。
 // Compact 主次层级（XYUI 主次规则）：Run/Pause/Resume + 速度直显；Step/Stop/Reset 收入「更多」。
 import { useState } from 'react';
 import { canPause, canResume, canRun, canStep, canStop } from '../../runtime/controller/transitions';
 import type { RunSpeed } from '../../runtime/controller/types';
 import type { Breakpoint } from '../shell/breakpoints';
+import { IconPause, IconPlay, IconReset, IconResume, IconStepForward, IconStop } from '../icons/Icons';
 import type { MonitorBridge, MonitoredRuntime } from './useMonitor';
 
 const SPEEDS: RunSpeed[] = ['x1', 'x10', 'x100', 'max'];
@@ -29,13 +31,13 @@ export function RunPanel({ runtime, bridge, breakpoint, refresh }: Props) {
   const primary = (
     <>
       <button disabled={st === null || !canRun(st)} onClick={() => act(() => runtime!.controller.run())}>
-        ▶ Run
+        <IconPlay /> Run
       </button>
       <button disabled={st === null || !canPause(st)} onClick={() => act(() => runtime!.controller.pause())}>
-        ⏸ Pause
+        <IconPause /> Pause
       </button>
       <button disabled={st === null || !canResume(st)} onClick={() => act(() => runtime!.controller.resume())}>
-        ▶ Resume
+        <IconResume /> Resume
       </button>
       <select
         value={runtime?.controller.speed ?? 'x1'}
@@ -55,13 +57,13 @@ export function RunPanel({ runtime, bridge, breakpoint, refresh }: Props) {
   const secondary = (
     <>
       <button disabled={st === null || !canStep(st)} onClick={() => act(() => runtime!.controller.step())}>
-        → Step
+        <IconStepForward /> Step
       </button>
       <button disabled={st === null || !canStop(st)} onClick={() => act(() => runtime!.controller.stop())}>
-        ■ Stop
+        <IconStop /> Stop
       </button>
       <button disabled={runtime === null} onClick={() => act(() => runtime!.reset())} title="Runtime 与 MonitorSession 联合重置">
-        ↺ Reset
+        <IconReset /> Reset
       </button>
     </>
   );

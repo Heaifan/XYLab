@@ -1,0 +1,73 @@
+{
+  "schema": "xylab-experiment@0.1",
+  "experiment": {
+    "id": "battle-metrics-001",
+    "name": "双方阵消耗战多指标观测",
+    "description": "F2 验收样例：12 个 watch、混单位（人/分/%/吨/m·s），用于 Dense 行、相对变化与同单位对比限制",
+    "category": "combat",
+    "version": "0.1.0",
+    "tags": ["combat", "attrition", "f2-acceptance"],
+    "author": "Heaifan"
+  },
+  "variables": {
+    "red_troops": { "type": "number", "value": 1000, "unit": "人", "label": "红军兵力" },
+    "blue_troops": { "type": "number", "value": 980, "unit": "人", "label": "蓝军兵力" },
+    "red_casualties": { "type": "number", "value": 0, "unit": "人", "label": "红军伤亡" },
+    "blue_casualties": { "type": "number", "value": 0, "unit": "人", "label": "蓝军伤亡" },
+    "red_morale": { "type": "number", "value": 80, "min": 0, "max": 100, "unit": "分", "label": "红军士气" },
+    "blue_morale": { "type": "number", "value": 76, "min": 0, "max": 100, "unit": "分", "label": "蓝军士气" },
+    "red_fatigue": { "type": "number", "value": 0, "min": 0, "max": 100, "unit": "%", "label": "红军疲劳" },
+    "blue_fatigue": { "type": "number", "value": 0, "min": 0, "max": 100, "unit": "%", "label": "蓝军疲劳" },
+    "red_supply": { "type": "number", "value": 120, "unit": "吨", "label": "红军补给" },
+    "blue_supply": { "type": "number", "value": 110, "unit": "吨", "label": "蓝军补给" },
+    "advance_speed": { "type": "number", "value": 4, "unit": "m/s", "label": "推进速度" },
+    "red_wavering": { "type": "boolean", "value": false, "label": "红军动摇" }
+  },
+  "formulas": [
+    { "id": "red-loss", "target": "red_troops", "expression": "red_troops - 3.5 * dt" },
+    { "id": "blue-loss", "target": "blue_troops", "expression": "blue_troops - 2.8 * dt" },
+    { "id": "red-cas", "target": "red_casualties", "expression": "red_casualties + 3.5 * dt" },
+    { "id": "blue-cas", "target": "blue_casualties", "expression": "blue_casualties + 2.8 * dt" },
+    { "id": "red-morale-decay", "target": "red_morale", "expression": "red_morale - 0.15 * dt" },
+    { "id": "blue-morale-decay", "target": "blue_morale", "expression": "blue_morale - 0.1 * dt" },
+    { "id": "red-fatigue-grow", "target": "red_fatigue", "expression": "red_fatigue + 0.4 * dt" },
+    { "id": "blue-fatigue-grow", "target": "blue_fatigue", "expression": "blue_fatigue + 0.3 * dt" },
+    { "id": "supply-burn", "target": "red_supply", "expression": "red_supply - 0.8 * dt" },
+    { "id": "blue-supply-burn", "target": "blue_supply", "expression": "blue_supply - 0.6 * dt" },
+    { "id": "speed-decay", "target": "advance_speed", "expression": "advance_speed - 0.005 * dt" },
+    { "id": "wavering-check", "target": "red_wavering", "expression": "red_morale < 40" }
+  ],
+  "timeline": { "mode": "fixed_tick", "tick": 1, "duration": 300 },
+  "watch": [
+    { "target": "red_troops", "mode": "value" },
+    { "target": "blue_troops", "mode": "value" },
+    { "target": "red_casualties", "mode": "value" },
+    { "target": "blue_casualties", "mode": "value" },
+    { "target": "red_morale", "mode": "threshold", "threshold": 30, "operator": "<=" },
+    { "target": "blue_morale", "mode": "value" },
+    { "target": "red_fatigue", "mode": "threshold", "threshold": 70, "operator": ">=" },
+    { "target": "blue_fatigue", "mode": "value" },
+    { "target": "red_supply", "mode": "value" },
+    { "target": "blue_supply", "mode": "value" },
+    { "target": "advance_speed", "mode": "value" },
+    { "target": "red_wavering", "mode": "change" }
+  ],
+  "events": [
+    { "id": "red-fatigue-high", "when": "red_fatigue >= 70", "message": "红军进入高疲劳状态", "level": "warning" },
+    { "id": "red-morale-low", "when": "red_morale <= 30", "message": "红军士气濒临崩溃", "level": "critical" }
+  ],
+  "output": {
+    "summary": ["red_troops", "blue_troops", "red_morale"],
+    "charts": [
+      { "x": "time", "y": "red_troops" },
+      { "x": "time", "y": "blue_troops" },
+      { "x": "time", "y": "red_morale" },
+      { "x": "time", "y": "blue_morale" },
+      { "x": "time", "y": "red_fatigue" },
+      { "x": "time", "y": "blue_fatigue" },
+      { "x": "time", "y": "red_supply" },
+      { "x": "time", "y": "blue_supply" },
+      { "x": "time", "y": "advance_speed" }
+    ]
+  }
+}

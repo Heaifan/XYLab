@@ -2,8 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { createMonitoredRuntime } from '../../../src/monitor/session';
 import type { ExperimentDefinition } from '../../../src/protocol/types';
-import { nearestTime, valueAtTime } from '../../../src/ui/visualization/LineChart';
-import { metricStatus, resolveMetrics } from '../../../src/ui/visualization/MetricStrip';
+import { metricStatus, nearestTime, resolveMetrics, valueAtTime } from '../../../src/ui/monitor/metricModel';
 import { resolveChartTargets } from '../../../src/ui/visualization/VisualizationPanel';
 import { makeTickDef } from '../../runtime/fixtures';
 

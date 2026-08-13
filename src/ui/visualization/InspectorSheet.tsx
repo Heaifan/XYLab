@@ -1,9 +1,11 @@
-// FE-A-R2 · Chart Inspector（XYUI-8 ChartInspector 语义：时间锁定联动 / Series 读值 / 锁定时间文字必显）。
-// 移动端不依赖 Hover：Tap 锁定 → 本检查器读目标时间 series；「跟随实时」解锁回到 Live。
+// F2 · Chart Inspector：时间锁定联动 / Series 读值 / 锁定时间文字必显（Tap Lock 语义不变）。
+// 移动端不依赖 Hover：Tap 锁定 → 读目标时间 series；「跟随实时」解锁回到 Live。
+// 零横向滚动硬门：行 grid 用 minmax(0,1fr)，label 省略号收缩。
 import type { ExperimentDefinition } from '../../protocol/types';
 import type { MonitorSnapshot } from '../../monitor/types';
 import { formatNumber, formatValue } from '../format';
-import { valueAtTime } from './LineChart';
+import { IconWarn } from '../icons/Icons';
+import { valueAtTime } from '../monitor/metricModel';
 
 interface Props {
   snap: MonitorSnapshot | null;
@@ -11,15 +13,6 @@ interface Props {
   lockTime: number | null;
   onUnlock: () => void;
   variant: 'sheet' | 'panel';
-}
-
-function WarnIcon() {
-  return (
-    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" aria-hidden="true">
-      <path d="M8 2.2 14.6 13.4H1.4L8 2.2Z" />
-      <path d="M8 6.4v3.2M8 11.6v.2" strokeLinecap="round" />
-    </svg>
-  );
 }
 
 export function InspectorSheet({ snap, definition, lockTime, onUnlock, variant }: Props) {
@@ -52,14 +45,14 @@ export function InspectorSheet({ snap, definition, lockTime, onUnlock, variant }
       </div>
       {rows.map((r) => (
         <div className="inspector-row" key={r.target}>
-          <span>{r.label}</span>
+          <span className="inspector-label">{r.label}</span>
           <b>{r.value}</b>
           <span className="muted">{r.detail}</span>
         </div>
       ))}
       {alert && (
         <div className={`inspector-alert level-${alert.level}`}>
-          <WarnIcon />
+          <IconWarn size={14} />
           <span>
             [{formatNumber(alert.time)}s] {alert.message}
           </span>

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import type { ExperimentDefinition } from '../../protocol/types';
 import type { MonitorSnapshot } from '../../monitor/types';
 import { copyText, definitionJson } from '../actions/clipboard';
-import { resolveMetrics } from '../visualization/MetricStrip';
+import { resolveMetrics } from '../monitor/metricModel';
 import { buildRun, loadRuns, nextRunNumber, runLabel, saveRun } from './runStore';
 
 interface Props {

@@ -1,7 +1,7 @@
-// FE-A-R2 · 三模式响应式组合（组件不换、语义不换，只改组合位置）。
-// Compact（<640 主设计）：单栏 + Bottom Nav（监控首屏=动作条/运行/Metric/曲线/Inspector）；
-// Medium（640~1023）：实验/参数辅助栏 + 主工作区（Inspector 并入主区侧）；
-// Wide（≥1024）：左(实验+参数) 中(动作+运行+Visualization) 右(Inspector+明细表) 底(事件日志)。
+// F2 · 三模式响应式组合（组件不换、语义不换，只改组合位置）。
+// Compact（<640 主设计）：单栏 + Bottom Nav（监控首屏=动作条/运行/可视化/监控值行/Inspector）；
+// Medium（640~1023）：实验/参数辅助栏 + 主工作区（监控值行 + Inspector 并入主区）；
+// Wide（≥1024）：左(实验+参数) 中(动作+运行+可视化) 右(Inspector+监控值行) 底(事件日志)。
 import type { ReactNode } from 'react';
 import type { Breakpoint } from './breakpoints';
 import { BottomNav } from './BottomNav';
@@ -63,6 +63,7 @@ export function Layout(p: Props) {
           {p.actions}
           {p.run}
           {p.viz}
+          {p.values}
           {p.inspector}
         </main>
         <footer className="col bottom">{p.log}</footer>
@@ -77,6 +78,7 @@ export function Layout(p: Props) {
             {p.actions}
             {p.run}
             {p.viz}
+            {p.values}
             {p.inspector}
           </>
         )}

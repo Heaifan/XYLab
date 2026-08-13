@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { createMonitoredRuntime } from '../../../src/monitor/session';
 import { definitionJson } from '../../../src/ui/actions/clipboard';
 import { withInitialValues } from '../../../src/ui/experiment/draft';
-import { resolveMetrics } from '../../../src/ui/visualization/MetricStrip';
+import { resolveMetrics } from '../../../src/ui/monitor/metricModel';
 import { resolveChartTargets } from '../../../src/ui/visualization/VisualizationPanel';
 import { drain, manualScheduler } from '../../runtime/controls/helpers';
 import { makeTickDef } from '../../runtime/fixtures';

@@ -1,6 +1,5 @@
-// FE-A-R2 · App：MonitoredRuntime 句柄权威持有 + 移动优先四页签工作台（实验/监控/日志/历史）装配。
-// Load/Apply → createMonitoredRuntime 全新重建；Reset = handle.reset() 联合重置并清时间锁；
-// 数据合同仍只有 MonitorSnapshot；页签/锁定/保存均为纯 UI 编排，不产生第二套状态。
+// F2 · App：MonitoredRuntime 句柄 + ViewState（聚焦/对比/固定/隐藏/模式）权威持有 + 移动优先四页签装配。
+// Load/Apply/Reset → 全新重建或联合重置并清视图状态与时间锁；数据合同仍只有 MonitorSnapshot。
 import { useCallback, useState } from 'react';
 import { createMonitoredRuntime } from '../monitor/session';
 import type { ExperimentDefinition } from '../protocol/types';
@@ -16,12 +15,13 @@ import { ValuesPanel } from './monitor/ValuesPanel';
 import { EventLog } from './monitor/EventLog';
 import { useMonitor, type MonitoredRuntime } from './monitor/useMonitor';
 import { ExperimentActions } from './actions/ExperimentActions';
-import { VisualizationPanel } from './visualization/VisualizationPanel';
+import { VisualizationPanel, resolveChartTargets } from './visualization/VisualizationPanel';
 import { InspectorSheet } from './visualization/InspectorSheet';
 import { SaveRunSheet } from './history/SaveRunSheet';
 import { RunHistory } from './history/RunHistory';
 import { loadRuns } from './history/runStore';
 import type { SavedRun } from './history/types';
+import { VIEW_INIT, viewFocus, viewToggleCompare, viewToggleHide, viewTogglePin, type ViewState } from './viewState';
 
 export function App() {
   const breakpoint = useBreakpoint();
@@ -33,30 +33,24 @@ export function App() {
   const [lockTime, setLockTime] = useState<number | null>(null);
   const [saveOpen, setSaveOpen] = useState(false);
   const [runs, setRuns] = useState<SavedRun[]>(() => loadRuns(window.localStorage));
+  const [view, setView] = useState<ViewState>(VIEW_INIT);
   const [, setTick] = useState(0);
   const refresh = useCallback(() => setTick((t) => t + 1), []);
   const bridge = useMonitor(runtime);
+  const resolved = resolveChartTargets(definition, bridge.snap);
 
-  function load(next: ExperimentDefinition) {
+  function rebuild(next: ExperimentDefinition) {
     setDefinition(next);
-    setRuntime(createMonitoredRuntime(next));
+    setRuntime(createMonitoredRuntime(next)); // Load/Apply = 全新重建（监控历史同时重新开始）
     setOverrides({});
     setLockTime(null);
-    setTab('monitor');
+    setView(VIEW_INIT);
     refresh();
   }
 
-  function applyParams() {
-    if (!definition || !runtime) return;
-    const next = withInitialValues(definition, overrides);
-    setDefinition(next);
-    setRuntime(createMonitoredRuntime(next)); // 参数 Apply = 实验重新初始化（监控历史同时重新开始）
-    setOverrides({});
-    setLockTime(null);
-    refresh();
-  }
-
-  const handle = runtime ? { controller: runtime.controller, session: runtime.session, reset: () => { runtime.reset(); setLockTime(null); refresh(); } } : null;
+  const handle = runtime
+    ? { controller: runtime.controller, session: runtime.session, reset: () => { runtime.reset(); setLockTime(null); setView(VIEW_INIT); refresh(); } }
+    : null;
 
   return (
     <div className="app">
@@ -67,21 +61,22 @@ export function App() {
         onTab={setTab}
         collapsed={collapsed}
         onToggle={() => setCollapsed(!collapsed)}
-        experiment={<ExperimentPanel onLoaded={load} definition={definition} />}
+        experiment={<ExperimentPanel onLoaded={(next) => { rebuild(next); setTab('monitor'); }} definition={definition} />}
         variables={
           definition && handle ? (
-            <VariablesPanel definition={definition} controller={handle.controller} overrides={overrides} onOverride={(n, v) => setOverrides({ ...overrides, [n]: v })} onApply={applyParams} />
+            <VariablesPanel definition={definition} controller={handle.controller} overrides={overrides} onOverride={(n, v) => setOverrides({ ...overrides, [n]: v })} onApply={() => rebuild(withInitialValues(definition, overrides))} />
           ) : (
             <section className="panel"><h2>参数</h2><p className="muted">加载实验后显示。</p></section>
           )
         }
         actions={<ExperimentActions definition={definition} onSave={() => setSaveOpen(true)} />}
         run={<RunPanel runtime={handle} bridge={bridge} breakpoint={breakpoint} refresh={refresh} />}
-        viz={<VisualizationPanel definition={definition} snap={bridge.snap} lockTime={lockTime} onLock={setLockTime} />}
-        inspector={
-          <InspectorSheet snap={bridge.snap} definition={definition} lockTime={lockTime} onUnlock={() => setLockTime(null)} variant={breakpoint === 'compact' ? 'sheet' : 'panel'} />
+        viz={<VisualizationPanel definition={definition} snap={bridge.snap} lockTime={lockTime} onLock={setLockTime} view={view} setView={setView} resolved={resolved} />}
+        inspector={<InspectorSheet snap={bridge.snap} definition={definition} lockTime={lockTime} onUnlock={() => setLockTime(null)} variant={breakpoint === 'compact' ? 'sheet' : 'panel'} />}
+        values={
+          <ValuesPanel def={definition} snap={bridge.snap} lockTime={lockTime} view={view} resolved={resolved} onFocus={(t) => setView(viewFocus(view, t))}
+            onToggleCompare={(t) => setView(viewToggleCompare(view, t))} onTogglePin={(t) => setView(viewTogglePin(view, t, resolved))} onToggleHide={(t) => setView(viewToggleHide(view, t))} />
         }
-        values={<ValuesPanel snap={bridge.snap} />}
         log={<EventLog snap={bridge.snap} />}
         history={<RunHistory runs={runs} />}
       />
