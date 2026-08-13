@@ -50,11 +50,17 @@ XYLab/
 │  │  ├─ create-runtime-state.ts    ←   Definition → RuntimeState（structuredClone 深隔离）
 │  │  └─ state.ts                   ←   resetRuntimeState（Reset 基础能力）
 │  │
-│  └─ expression/                   ← 受限表达式语言（R2-03A 词法层）
+│  └─ expression/                   ← 受限表达式语言（R2-03A 词法 / R2-03B 语法）
 │     ├─ token.ts                   ←   TokenType / Token（span 保留位置）
 │     ├─ lexical-rules.ts           ←   运算符表 + 字符分类（词法规则）
 │     ├─ tokenizer.ts               ←   tokenizeExpression（扫描算法，无 eval）
-│     └─ errors.ts                  ←   ExpressionTokenizeError
+│     ├─ errors.ts                  ←   ExpressionTokenizeError
+│     └─ syntax/                    ←   R2-03B Parser 子层
+│        ├─ ast.ts                  ←     AST 六类节点（span 全程传播）
+│        ├─ parse-error.ts          ←     ExpressionParseError（五类错误码）
+│        ├─ parse-operators.ts      ←     优先级爬升 + 一元前缀（左结合）
+│        ├─ parse-primary.ts        ←     字面量/标识符/分组/函数调用
+│        └─ parser.ts               ←     parseExpression 入口（纯语法）
 │
 └─ tests/                           ← 验证层（按领域分目录，每文件 ≤100 行）
    ├─ loader/                       ← R2-01（13 用例：T01~T12 + 聚合）
@@ -66,10 +72,17 @@ XYLab/
    │  ├─ fixtures.ts                ←   共享夹具 defOf/defWithEntities
    │  ├─ r2-02-runtime-state.test.ts     ← T01~T06 初始化
    │  └─ r2-02-runtime-isolation.test.ts ← T07~T10 隔离与 Reset
-   ├─ expression/                   ← R2-03A（21 用例：A01~A21）
-   │  ├─ helpers.ts                 ←   共享工具 types/pairs
-   │  ├─ r2-03a-tokenizer-lexical.test.ts ← A01~A12 词法基础
-   │  └─ r2-03a-tokenizer-numbers.test.ts ← A13~A21 数字边界与序列
+   ├─ expression/                   ← R2-03A（21 用例）+ R2-03B（32 用例）
+   │  ├─ tokenizer/                 ←   词法子域
+   │  │  ├─ helpers.ts              ←     共享工具 types/pairs
+   │  │  ├─ r2-03a-tokenizer-lexical.test.ts ← A01~A12 词法基础
+   │  │  └─ r2-03a-tokenizer-numbers.test.ts ← A13~A21 数字边界与序列
+   │  └─ parser/                    ←   语法子域
+   │     ├─ helpers.ts              ←     共享工具 ast/expectParseError
+   │     ├─ r2-03b-parser-structure.test.ts  ← B01~B07 结构
+   │     ├─ r2-03b-parser-precedence.test.ts ← B08~B12 优先级与 span
+   │     ├─ r2-03b-parser-calls.test.ts      ← C01~C09 调用与黄金样例
+   │     └─ r2-03b-parser-errors.test.ts     ← E01~E11 错误边界
    └─ governance/                   ← GOV-01 专项
       └─ governance-guard.test.ts   ←   底线位回归（5/100/Guard 自身）
 ```
@@ -81,5 +94,5 @@ XYLab/
 | JSON 进哪里？ | `src/protocol/loader.ts`（唯一入口） |
 | 哪些字段可信？ | Loader 输出的 `ExperimentDefinition`（`types.ts`） |
 | 运行时可变状态在哪？ | `src/runtime/`（与 Definition 深隔离） |
-| 表达式怎么解析？ | `src/expression/`（Tokenizer → Parser(R2-03B) → 语义(R2-03C) → Evaluator(R2-03D)） |
+| 表达式怎么解析？ | `src/expression/`（Tokenizer → Parser → 语义(R2-03C) → Evaluator(R2-03D)） |
 | 底线怎么守？ | `npm run verify` 第一步 `scripts/governance-guard.mjs` |

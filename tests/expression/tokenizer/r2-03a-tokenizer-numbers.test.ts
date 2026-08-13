@@ -1,7 +1,7 @@
 // R2-03A Tokenizer 测试（数字边界与完整序列）：A13~A21。词法基础见 r2-03a-tokenizer-lexical.test.ts。
 import { describe, expect, it } from 'vitest';
-import { tokenizeExpression } from '../../src/expression/tokenizer';
-import { ExpressionTokenizeError } from '../../src/expression/errors';
+import { tokenizeExpression } from '../../../src/expression/tokenizer';
+import { ExpressionTokenizeError } from '../../../src/expression/errors';
 import { pairs } from './helpers';
 
 function expectError(src: string, code: 'INVALID_CHARACTER' | 'INVALID_NUMBER', position: number): void {

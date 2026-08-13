@@ -1,6 +1,6 @@
 // R2-03A Tokenizer 测试（词法基础）：A01~A12。数字边界用例见 r2-03a-tokenizer-numbers.test.ts。
 import { describe, expect, it } from 'vitest';
-import { tokenizeExpression } from '../../src/expression/tokenizer';
+import { tokenizeExpression } from '../../../src/expression/tokenizer';
 import { pairs, types } from './helpers';
 
 describe('R2-03A Tokenizer · 词法基础', () => {
