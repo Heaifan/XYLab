@@ -25,6 +25,27 @@
 - **遗留问题**：R2-03B Parser+AST 冻结解除后启动；UI Constitution 未批准，任何轮次禁止自行设计
 - **决策**：5 规则适用范围 = src/tests/scripts 下全部职责目录（tests 按领域分目录后同样合规，不设豁免）；100 规则覆盖含测试与脚本的全部手写源码；SRP 为人工硬门禁写入每轮报告；Knowledge 入库判断每轮必做
 
+## XYLAB-XYUI-CONSUMER-INTAKE · XYUI 消费引入与宪法修订 —— CLOSED
+
+- **阶段**：治理轮（执行用户 2026-08-13 Consumer Intake 裁定；FE-A-R1 保持 IMPLEMENTED 待真机验收不受本轮影响；FE-A-R2 待正式实现令）
+- **任务**：批准 XYUI Core Pack 为 XYLab UI 设计权威；把未跟踪的根目录 `xyui/`（70 件建设过程物料）裁剪为 Consumer Pack 迁入 `vendor/xyui/`；锁定上游 provenance 与实测 SHA；宪法解除 UI Constitution RESERVED
+- **变更**：
+  - 新增 `vendor/xyui/` 33 件 = packs/core-0.1/**（manifest/AGENT-GUIDE/README/gaps）+ registry/foundation/foundation-registry.json + tokens/architecture/{token-canonical-map.json, token-architecture.json} + specs/XYUI1~8 ×（canonical/mapping/gaps）24 件 + audit/cross-audit.md + 新建 UPSTREAM-PIN.json
+  - 排除项（不入 vendor，随根目录 xyui/ 移出仓库）：source/**、audit/XYUI*/**、governance/**、registry 辅助件（examples/schema/identity-map/relationship-map/validation-report/README）、tokens/architecture/token-architecture.md、tokens/audit/**
+  - UPSTREAM-PIN.json：XuanYuEngine-XYUI / feat/XYUI-A / 5f288e6 / pack 0.1.0 / manifest SHA `c0ebe74b…4bf3a` / localMutation=0；含全部 33 件实测 SHA256 与 9 处上游 manifest SHA 不符的如实登记（原因未知，UPSTREAM-UNKNOWN）
+  - 宪法 Article 5：RESERVED → RATIFIED（XYUI Core Pack = 批准 UI 设计权威；Foundation/组件/可视化冲突以 vendored Canonical 为准；vendor 只读，变更经 XYUI_GAP 回流上游；XYLab 只做项目组合不私设第二套视觉规范；Light/Dark Token Source 暂停期禁止伪造 canonical，缺失 Light 标量走 B 类消费层/GAP）；同步术语行与 Article 13 报告块
+  - 根目录 `xyui/` 移出仓库至 QoderWork 工作区 `.trash/XYLab-root-xyui-20260813`（本环境系统回收站对目录不可用，已验证 70 件完整可恢复）
+- **原因**：未跟踪的 xyui/ 建设过程物料不可原样入库；消费侧只需权威契约（Canonical/Registry/Token Map/Manifest/GAP），且来源可溯、内容可校验、永久只读
+- **验证**：`npm run verify` 全绿（GOVERNANCE PASS 116 文件 + tsc 0 error + 268/268 零回退）；`npm run build` PASS；`git diff --check` PASS；vendored 文件与交付件逐字节一致（逐件实测 SHA256）
+- **测试**：268/268 零变化（本轮无源码改动，vendor/ 在 governance-guard 扫描根之外）
+- **Commit**：`97d6aa6`（vendor + 宪法 + knowledge）+ 本条目补记提交（单一正式轮，≤2）
+- **遗留问题**：上游 manifest 9 处 SHA 与交付件不符已登记 UPSTREAM-PIN.manifest_sha_discrepancies，待上游解释；FE-A-R2（Light Consumer Token 层 + 手机竖屏实验工作台 + XYUI-8 可视化 + Save Run/Note/Copy JSON）等待正式实现令
+- **决策**（用户裁定，长期生效）：
+  - 产品方向冻结：Light First · Mobile Portrait First · 低饱和 · 紧凑/高信息密度 · XYUI-8 Visualization First；Mobile Portrait = Primary Design Target，Desktop/Tablet = Adaptive Expansion；移动核心工作流 = JSON → 参数 → Run → 可视化 → Save Run → Note → History → Copy JSON；一等操作 = 复制当前生效 JSON / 保存运行结果 / 备注 / 历史
+  - Dark 档参考值不是 XYLab 目标皮肤（用户纠偏：不得把 Dark Foundation 色当新主题）
+  - 标准消费流程（后续每轮必经）：读 AGENT-GUIDE → 读 Manifest → 读 Foundation → 按当前任务读相关 Canonical → 查 Mapping/GAP → 实现；移动端层级映射 = 主规范 XYUI-8 / 布局 XYUI-5 / 输入 XYUI-2 / 状态 XYUI-4 / 文本 XYUI-1 / 数据 XYUI-6 / 导航 XYUI-3 / 浮层 XYUI-7 / 基础 XYUI-0
+- **Knowledge**：UPDATED —— 新 decisions/xyui-consumer-intake.md（UI 权威批准 + vendor 只读纪律 + A/B 分类 + 消费流程）
+
 ## FE-A-R1 · Monitoring Bridge —— IMPLEMENTED（自动门全绿 · 待用户真机验收，未 CLOSED）
 
 - **阶段**：FE-A 第一轮（XYUI Integration & Monitoring Workspace；路线：R1 Monitoring Bridge ← → R2 XYUI Foundation Integration → R3 Visualization Workspace）

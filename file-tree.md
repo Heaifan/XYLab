@@ -24,10 +24,30 @@ XYLab/
 ├─ knowledge/                       ← 经验位
 │  ├─ README.md                     ← 分类/入库门槛/条目模板
 │  ├─ decisions/loader-trust-boundary.md     ← 决策：可信边界/Runtime 无 UI/深隔离
+│  ├─ decisions/runtime-state-machine.md     ← 决策：六态状态机合同 + Step/Reset 转换规则
+│  ├─ decisions/run-loop-cancellation.md     ← 决策：Run Loop 代际取消 + Speed ≠ dt 调度合同
+│  ├─ decisions/tick-batch-commit.md         ← 决策：Tick 快照批量求值 + 原子提交
+│  ├─ decisions/seeded-random.md             ← 决策：mulberry32 确定性随机（禁 Math.random）
+│  ├─ decisions/monitoring-observer-only.md  ← 决策：R3 Observer Only（监控绝不回写 Runtime）
+│  ├─ decisions/event-edge-trigger.md        ← 决策：事件边缘触发语义
+│  ├─ decisions/ui-responsive-shell.md       ← 决策：FE-A-R1 权威版（MonitorSnapshot 唯一合同/联合 Reset/Second Truth 废除）
+│  ├─ decisions/xyui-consumer-intake.md      ← 决策：XYUI 权威批准 + vendor 只读 + A/B 分类 + 消费流程
+│  ├─ patterns/test-dir-layering.md          ← 模式：测试按领域分目录 + helpers 复用
 │  └─ pitfalls/ajv-strictRequired-if-then.md ← 陷阱：if/then 条件必填 vs ajv strictRequired
+│  └─ pitfalls/float-assertions.md           ← 陷阱：浮点断言用 toBeCloseTo
+│  └─ pitfalls/vite-dev-ipv4-bind.md         ← 陷阱：Windows vite dev 需显式 --host 127.0.0.1
 │
 ├─ scripts/
 │  └─ governance-guard.mjs          ← 底线位自动门禁（5 + 100；SRP 人工）
+│
+├─ vendor/                          ← 外部权威物料（只读；不在 guard 扫描根 src/tests/scripts 内）
+│  └─ xyui/                         ← XYUI Core Pack Consumer Pack（UI 设计权威，宪法 Article 5 批准）
+│     ├─ UPSTREAM-PIN.json          ←   上游锁定：XuanYuEngine-XYUI / feat/XYUI-A / 5f288e6 / 0.1.0 / manifest SHA / localMutation=0 + 33 件实测 SHA + 9 处上游差异登记
+│     ├─ packs/core-0.1/            ←   消费入口：AGENT-GUIDE（消费法）→ manifest（包锁）→ gaps（12 非阻塞 GAP）→ README
+│     ├─ registry/foundation/       ←   foundation-registry.json（44 Foundation 项，JSON = 唯一 Source of Truth）
+│     ├─ tokens/architecture/       ←   token-canonical-map.json（426 canonical token）+ token-architecture.json（层级结构）
+│     ├─ specs/XYUI1~8/             ←   canonical.md + mapping.json + gaps.json ×8（文本/视觉/导航/状态反馈/布局/集合/浮层/可视化）
+│     └─ audit/cross-audit.md       ←   上游交叉审计结论（0 重复 owner / 0 broken ref / 12 GAP NON-BLOCKING / READY）
 │
 ├─ src/                             ← 全部源码 ≤100 行/文件，实现目录 ≤5 文件
 │  ├─ ui/                           ← R4/UI-F1 React 投影层（模拟核心零依赖）
@@ -190,3 +210,4 @@ XYLab/
 | 运行时可变状态在哪？ | `src/runtime/`（与 Definition 深隔离；Tick 见 `src/runtime/tick/`；状态机见 `src/runtime/controller/`） |
 | 表达式怎么解析？ | `src/expression/`（Tokenizer → Parser → 语义 → Evaluator，R2-03 闭环） |
 | 底线怎么守？ | `npm run verify` 第一步 `scripts/governance-guard.mjs` |
+| UI 设计依据在哪？ | `vendor/xyui/`（只读权威；消费从 `packs/core-0.1/AGENT-GUIDE.md` 开始；来源锁定见 `UPSTREAM-PIN.json`） |
