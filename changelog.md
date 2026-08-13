@@ -25,6 +25,20 @@
 - **遗留问题**：R2-03B Parser+AST 冻结解除后启动；UI Constitution 未批准，任何轮次禁止自行设计
 - **决策**：5 规则适用范围 = src/tests/scripts 下全部职责目录（tests 按领域分目录后同样合规，不设豁免）；100 规则覆盖含测试与脚本的全部手写源码；SRP 为人工硬门禁写入每轮报告；Knowledge 入库判断每轮必做
 
+## R2-04 · Tick Engine —— CLOSED
+
+- **阶段**：R2（单次确定性 Tick；运行循环属 R2-05）
+- **任务**：实现一次 Tick 到底发生什么，并把公式结果权威地提交进 RuntimeState（T1 输入 / T2 快照 / T3 批量求值 / T4 原子提交 / T5 时间推进）
+- **目标**：XYLab 从「表达式计算器」变成「模拟器」——公式会算了，现在会按 Tick 驱动整个实验
+- **变更**：新增 `src/runtime/tick/`（types / evaluate-batch / commit / tick）；tests/runtime 新增 tick 子域 5 文件 24 用例；Knowledge 入库 decisions/tick-batch-commit.md
+- **原因**：同 Tick 公式必须观察同一世界状态，否则公式排列顺序会悄悄影响所有机制结果
+- **验证**：`npm run verify` 全绿（GOVERNANCE PASS + tsc 0 error + 177/177）；Guard 拦截 2 个超线测试文件并 SRP 拆分（basic/batch/safety/values/duration）；git diff --check PASS
+- **测试**：24 项新增 = 基础 4（黄金 fatigue 10→10.4 + dt 接 timeline）+ 批量与快照 5（交换 A/B、后公式读旧值、ChangeSet、无变化不产生 change）+ 原子失败 7（A 不得变 100、time/tickIndex 零变化、Definition 不变、就地提交合同、实体 target 拒绝、语义错误包装）+ 值守卫 5（boolean/integer 接受、小数拒绝、重复 target）+ 边界 3（第 11 次拒绝、直接构造 10/6 拒绝、非整除无 partial tick）
+- **Commit**：`3aab4cd`（实现）+ 本条目补记提交
+- **遗留问题**：Run/Pause/Step/Stop/Reset 控制与状态机属 R2-05；实体路径 target 写回随实体表达式协议扩展
+- **决策**：Snapshot Read → Evaluate All → Batch Commit + Atomic Tick（详见 knowledge/decisions/tick-batch-commit.md）；dt 唯一取自 timeline.tick；不自动 clamp（min/max 是 UI 约束非模拟规则）；integer target 不接受小数；changes 只含实际变化；成功就地提交同一 state（遵守 R2-02 mutable 合同）
+- **Knowledge**：UPDATED —— 新 decisions/tick-batch-commit.md（此后所有模拟机制依赖的核心语义）
+
 ## R2-03D · Expression Evaluator —— CLOSED（R2-03 Expression Engine 整体 CLOSED）
 
 - **阶段**：R2（Expression Engine 最后一段：03A Tokenizer → 03B Parser → 03C Semantic → 03D Evaluator 全部关闭）
