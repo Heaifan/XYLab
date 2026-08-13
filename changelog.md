@@ -25,6 +25,24 @@
 - **遗留问题**：R2-03B Parser+AST 冻结解除后启动；UI Constitution 未批准，任何轮次禁止自行设计
 - **决策**：5 规则适用范围 = src/tests/scripts 下全部职责目录（tests 按领域分目录后同样合规，不设豁免）；100 规则覆盖含测试与脚本的全部手写源码；SRP 为人工硬门禁写入每轮报告；Knowledge 入库判断每轮必做
 
+## XYLAB-UI-F2-UA1 · Multi-Series + Visualization Picker（选择集 / 21 类目录 / 兼容引擎 / 11 类实现） —— IMPLEMENTED（自动门全绿 · 待用户真机验收，未 CLOSED）
+
+- **阶段**：XYLAB-UI-F2-UA1 单轮（用户裁定「最后一轮」：A 多序列监控选择 + B XYUI-8 可视化选择器一次交付；F2/R1/R2 保持 IMPLEMENTED，真机验收并入本轮清单）
+- **任务**：① Metric Row 普通点击 = Selection Toggle（Set 多选，无 Ctrl/Shift；Detail 展开与选择解耦）② 选中指标→兼容裁决→Picker→可视化；绝对值/相对变化按量纲自动仲裁 ③ 21 类目录全量注册，可用性由 Compatibility Engine 裁决，不支持 = Disabled+Reason（不删入口不伪造数据）④ Line/Area/Step/Bar/HBar/Delta/Scatter/Gauge/Range/Timeline/Table 共 11 类真实实现
+- **变更**：
+  - 重写 `src/ui/viewState.ts` = VisualizationSelectionState 纯函数层（selected Set / pinned≠selected / hidden / mode / viz / scatter 指派；仅 Load 重置并按 output.charts 初始化；Pause/Resume/Step/Stop/Reset/锁定一律不清；异量纲加入 → 绝对自动切相对 + 一次轻提示）
+  - 新增 `src/ui/viz/` 5 文件：catalog.ts（21 类 × 8 分类 + XYUI-8 编号可追溯）/ compat.ts（Compatibility Engine + recommend 推荐规则）/ picker.tsx（桌面下拉 + Compact Bottom Sheet；推荐置顶 + 分类分组）/ VizHost.tsx（画布调度 + Legend 统一渲染 = Selection Toggle 单源 + Temporal Cursor）/ shared.ts（画布常量/宽度观测/相对基线/范围钳制）
+  - 新增 `src/ui/charts/` 5 文件（LineChart 替代删除）：trend.tsx（line/area/step 三变体 + 双模式 + Tap Lock）/ bars.tsx（垂直柱/横向条/Delta 中心零线；读取时间点 = lockTime??实时）/ scatter.tsx（X/Y 指派 + ⇄ 交换 + 同 Tick 配对）/ state.tsx（gauge 阈值带 + range 区间 + tband 仅 threshold；线性语义禁仪表盘）/ misc.tsx（Timeline 事件点击 → 锁定 + Advanced Table 五列采样）
+  - 重写 ValuesPanel（行点击 = Toggle；Detail chevron 与选择解耦；已选计数 + 清空头）/ VisualizationPanel（Picker + 模式 seg + 已选计数 + toast + ctx 构建）/ InspectorSheet（行点击 = toggle 选择，与图例同源）/ MetricStrip（卡片点击 = toggle；Pinned≠Selected）/ App.tsx（toast 轻提示 + Load 初始化选择 + Apply 保留选择 + Reset 仅清时间锁）
+  - Icons.tsx 新增 7 个分类图标（18→25，同一冻结风格权宜 glyph，XYUI1-GAP-001 语义延续）；metricModel.cmp 导出（threshold 判定单源，State 族消费）；visualization.css UA1 样式块（89 行内：Picker/Sheet/toast/area 填充/hbar-Delta 零线/gauge 轨道/vtable/timeline/选中态统一 inset 2px accent）
+  - 核心四层（protocol/expression/runtime/monitor）零改动；vendor/xyui/ 零改动；experiment.schema.json / xylab-experiment@0.1 / MonitorSnapshot 数据合同零改动；无新依赖；无第二套 XYUI 可视化规范、无第二套 IconFont
+- **冻结语义**：选择 = UI 工作状态（仅新实验 Load 重置；运行控制/锁定/跟随实时绝不清空）；绝对值只许同单位；相对模式起始值 = 100%，基线 0/非数值一律跳过并提示（禁 NaN/Infinity/假 100%）；Bar/State/Table 统一消费 Temporal Cursor（Locked → 锁定 Tick 值）；Timeline 事件点击 = 锁定（XYUI-8 联动合同）；当前可视化不可用时画布如实显示 Disabled+Reason，绝不自动切换、绝不伪造数据
+- **验证**：`npm run verify` 全绿（GOVERNANCE PASS 153 文件 + tsc 0 error + 321/321 = 298 零回退 + 23 新增）；`npm run build` PASS；Guard 本轮真实拦截 ValuesPanel.tsx（103 行）并压缩至 99 行；dev server HTTP 200；真机验收清单待用户执行（场景 A~G × 三断点）
+- **测试**：23 项新增（tests/ui/ua1/ 4 文件）= selection 5（初始化 output.charts 优先 / fallback / Set toggle / 纯函数组 / hidden 过滤）+ arbitration 5（同单位不切换 / 异量纲自动相对 + toast / 不重复提示不移出回切 / 显式回切再触发 / 无单位不误切）+ catalog 7（21 类完整性 / data≠series Disabled / 数量上下限与 tband / 混单位提示 / 相对模式限制 / 推荐规则四组）+ chart-model 6（barRows 时间点/相对/Delta / Zero Baseline 三重防护 / relSkipped / scatterPairs 同 Tick 配对）；f2-view-model 7 项更新至 UA1 语义（focusTargets/viewToggleCompare 废除 → selectToggle/selectedTargets，断言编号不变）
+- **Commit**：`929e0a1`（实现）+ 本条目补记提交（单一正式轮，≤2）
+- **遗留问题**：真机验收（A 双部队同单位绝对值 / B 多 % 指标 / C 异量纲自动相对 / D Scatter 疲劳 vs 战力 / E 锁定 44s + Bar 读点 / F 取消选择立即生效 / G battle-metrics 12 watch 全目录 × 三断点 × Picker Sheet）通过后才可 CLOSED；目录中其余条目（组成/分布/热力/Event Track/依赖图）保持 Disabled+Reason，待数据形态升级后按 Catalog 接入而非另起炉灶
+- **决策**：选择与可视化解耦为唯一状态源（Inspector/Legend/Chart/监控值行同源消费 VisualizationSelectionState）；可视化可用性集中在 compat.ts 裁决，禁止 UI 散落 if chart===；Pinned 与 Selected 两概念不绑死；Scatter X/Y 自动指派 + 显式改派 + 交换共存
+
 ## XYLAB-UI-F2 · Monitoring UI 收口（图标接管 + Metric Row 重排 + 图表 Focus/Compare/相对） —— IMPLEMENTED（自动门全绿 · 待用户真机验收，未 CLOSED）
 
 - **阶段**：XYLAB-UI-F2 单轮（用户裁定：一轮一次解决三件事不拆轮；FE-A-R1/R2 保持 IMPLEMENTED，其真机验收并入本轮验收清单）

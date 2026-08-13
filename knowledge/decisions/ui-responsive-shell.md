@@ -1,8 +1,8 @@
-# UI 投影边界合同（UI-F1 建立，R4-F1 修订，FE-A-R1 修订，FE-A-R2 修订，F2 修订）
+# UI 投影边界合同（UI-F1 建立，R4-F1 修订，FE-A-R1 修订，FE-A-R2 修订，F2 修订，UA1 修订）
 
 - 类别：decisions
 - 入库条件：③ 重要架构决策
-- 日期：2026-08-14（F2 修订）
+- 日期：2026-08-14（UA1 修订）
 
 ## 背景
 
@@ -18,7 +18,7 @@ Medium  ≥640   → 辅助栏(实验+参数,可折叠) | 主区(动作+运行+�
 Compact <640   → 单栏 + Bottom Nav（实验/监控/日志/历史），监控屏 = 动作+运行+可视化+监控值行+Inspector；手机竖屏 = 主设计目标（390×844 冻结）
 ```
 
-组件不换、语义不换，只改组合位置。参数不再独占一级导航（归入「实验」页签）。F2：监控值 Compact Metric Row 三断点均可见（此前仅 Wide）；零横向滚动为硬门。
+组件不换、语义不换，只改组合位置。参数不再独占一级导航（归入「实验」页签）。F2：监控值 Compact Metric Row 三断点均可见（此前仅 Wide）；零横向滚动为硬门。UA1：可视化区增 Picker/模式/已选计数工具条，监控值行点击升级为 Selection Toggle（组件与布局位置不变，语义在 View State 层升级）。
 
 **UI/Runtime 投影边界（FE-A-R1 建立，继续有效）**：
 
@@ -34,6 +34,13 @@ Compact <640   → 单栏 + Bottom Nav（实验/监控/日志/历史），监控
 7. **实验闭环**：一级动作 [复制 JSON][保存结果] 手机/PC 直显，禁藏菜单。复制 = 当前有效 Definition（JSON.stringify，含 Apply 后新参数；草稿永不入 JSON）。Save Run V1 = Definition Snapshot + MonitorSnapshot 全量落盘 localStorage，只手动保存、成败明确不假装；History newest first。
 8. **数值显示格式化**：整数 0 位 / 一般浮点 ≤4 位（去尾零）/ Metric 强调值固定 2 位；只格式化显示，底层值不 Round。
 9. **Light Consumer Layer（B 类消费层）**：视觉值集中于 theme/light-consumer.css（色值冻结自用户裁定），组件禁散落硬编码。Series 色板 = XYUI8-GAP-001 消费层临时回答；OnAccent = XYUI3-GAP-001 消费层临时回答——回流 XYUI 前不得私扩。Dark 档不是目标皮肤。
+
+**FE-A-R2-UA1 新增合同**：
+
+10. **选择唯一状态源**：VisualizationSelectionState（viewState.ts）的 Set 多选是唯一选择状态；监控值行 / Inspector 行 / Legend / Pinned 卡四处点击全部路由同一 selectToggle。选择 = UI 工作状态——仅新实验 Load 重置（按 output.charts 初始化），Pause/Resume/Step/Stop/Reset/锁定/Apply 一律不清。Pinned ≠ Selected，两概念不绑死。
+11. **Catalog 与裁决分离**：src/ui/viz/catalog.ts 注册 21 类（XYUI-8 编号可追溯）；可用性由 src/ui/viz/compat.ts 集中裁决，UI 禁散落 if chart===。不可用 = Disabled+Reason：不删入口、不伪造数据、不自动切换可视化。
+12. **量纲仲裁 + Zero Baseline**：绝对值下加入异量纲 → 自动切相对 + 一次轻 toast（移出不切回、不重复提示）；绝对值永远只许同单位。相对基线 = 起始首个数值点 = 100%，基线 0/非数值 → 跳过 + 提示（Trend/Bar/Delta 统一，禁 NaN/Infinity/假 100%）。
+13. **Temporal Cursor 统一**：Bar/State/Table 读 `lockTime ?? 实时`；Timeline 事件点击 = 锁定该时刻（XYUI-8 联动合同），「跟随实时」解锁。
 
 ## 影响
 

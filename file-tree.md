@@ -54,14 +54,14 @@ XYLab/
 │     └─ audit/cross-audit.md       ←   上游交叉审计结论（0 重复 owner / 0 broken ref / 12 GAP NON-BLOCKING / READY）
 │
 ├─ src/                             ← 全部源码 ≤100 行/文件，实现目录 ≤5 文件
-│  ├─ ui/                           ← React 投影层（模拟核心零依赖；FE-A-R2 Light 工作台 + F2 Monitoring UX）
+│  ├─ ui/                           ← React 投影层（模拟核心零依赖；FE-A-R2 Light 工作台 + F2 Monitoring UX + UA1 可视化选择器）
 │  │  ├─ main.tsx                   ←   入口（styles + visualization.css + history.css）
-│  │  ├─ App.tsx                    ←   句柄 + ViewState 权威持有 + 草稿/重建 + tab/锁定/保存/历史装配
+│  │  ├─ App.tsx                    ←   句柄 + ViewState 权威持有 + 草稿/重建 + tab/锁定/保存/历史装配 + UA1 toast 轻提示（Load 初始化选择/Apply 保留/Reset 仅清锁）
 │  │  ├─ styles.css                 ←   Light 全局样式（全引 --xylab-* 变量 + 三断点布局 + Sheet + Metric Row）
 │  │  ├─ format.ts                  ←   数值显示纠偏（integer 0 位/float ≤4 位，仅显示层不取整底层）
-│  │  ├─ viewState.ts               ←   F2 视图状态纯函数（聚焦/对比/固定≤6/隐藏/绝对·相对模式）
+│  │  ├─ viewState.ts               ←   UA1 VisualizationSelectionState 纯函数（selected Set/pinned≠selected/hidden/mode/viz/scatter 指派；异量纲仲裁）
 │  │  ├─ icons/                     ←   F2 图标层（glyph 注册表 = XYUI1-GAP-001 权宜，不立命名权威）
-│  │  │  └─ Icons.tsx               ←     18 内联 SVG（Foundation.Icon 冻结风格：Outline/1.5/round/16）
+│  │  │  └─ Icons.tsx               ←     25 内联 SVG（Foundation.Icon 冻结风格：Outline/1.5/round/16；UA1 增 7 个目录分类图标）
 │  │  ├─ theme/                     ←   FE-A-R2 Light 消费层
 │  │  │  └─ light-consumer.css      ←     B 类 --xylab-* 冻结值（非 canonical；GAP 权宜注释登记）
 │  │  ├─ shell/                     ←   响应式壳
@@ -79,12 +79,23 @@ XYLab/
 │  │  ├─ actions/                   ←   FE-A-R2 一等操作
 │  │  │  ├─ clipboard.ts            ←     copyText（clipboard API + execCommand 兜底）+ definitionJson
 │  │  │  └─ ExperimentActions.tsx   ←     [复制 JSON][保存结果]（生效 Definition，轻重反馈）
-│  │  ├─ visualization/             ←   FE-A-R2 XYUI-8 可视化（数据源唯一 MonitorSnapshot，纯 SVG）
-│  │  │  ├─ VisualizationPanel.tsx  ←     目标解析（output.charts 优先→numeric 回退≤4）+ Focus/Compare 编排 + 绝对/相对切换
-│  │  │  ├─ MetricStrip.tsx         ←     Pinned Cards（≤6 横滚，点击聚焦；模型 = metricModel.buildRows）
-│  │  │  ├─ LineChart.tsx           ←     实时曲线（弱网格/自动量程/Tap 锁定/事件 marker/阈值线仅绝对）+ 相对模式（起点=100%，0 基线跳过）
-│  │  │  ├─ InspectorSheet.tsx      ←     锁定时刻检查器（Bottom Sheet / 侧栏面板双形态；零横向滚动）
-│  │  │  └─ visualization.css       ←     Metric/图表/Inspector 样式（色板=XYUI8-GAP-001 权宜）
+│  │  ├─ visualization/             ←   UA1 可视化容器（数据源唯一 MonitorSnapshot；选择同源消费 ViewState）
+│  │  │  ├─ VisualizationPanel.tsx  ←     目标解析（output.charts 优先→numeric 回退）+ Picker/模式/计数工具条 + ctx 构建
+│  │  │  ├─ MetricStrip.tsx         ←     Pinned Cards（≤6 横滚，点击 = Selection Toggle；Pinned≠Selected）
+│  │  │  ├─ InspectorSheet.tsx      ←     锁定时刻检查器（行点击 = toggle 选择与图例同源；零横向滚动）
+│  │  │  └─ visualization.css       ←     Metric/图表/Picker/新图表族样式（色板=XYUI8-GAP-001 权宜）
+│  │  ├─ viz/                       ←   UA1 XYUI-8 Catalog 消费层（语义 REF vendor/xyui XYUI-8 canonical）
+│  │  │  ├─ catalog.ts              ←     21 类 × 8 分类注册 + XYUI-8 编号可追溯（不删入口不伪造）
+│  │  │  ├─ compat.ts               ←     Compatibility Engine 裁决 + recommend 推荐规则（禁 UI 散落 if chart===）
+│  │  │  ├─ picker.tsx              ←     桌面下拉 / Compact Bottom Sheet（推荐置顶 + 分组 + Disabled+Reason）
+│  │  │  ├─ VizHost.tsx             ←     画布调度 + Legend 统一渲染（点击 = Selection Toggle 单源）+ Temporal Cursor
+│  │  │  └─ shared.ts               ←     画布常量/宽度观测/相对基线/范围钳制/标签（各图表统一消费）
+│  │  ├─ charts/                    ←   UA1 图表实现族（纯 SVG/DOM，11 类真实实现）
+│  │  │  ├─ trend.tsx               ←     line/area/step 三变体（双模式/Tap Lock/阈值线仅绝对/0 基线跳过）
+│  │  │  ├─ bars.tsx                ←     垂直柱/横向条/Delta 中心零线（读取时间点 = lockTime??实时）
+│  │  │  ├─ scatter.tsx             ←     X/Y 指派 + ⇄ 交换 + 同 Tick 配对（不做趋势线因果解释）
+│  │  │  ├─ state.tsx               ←     gauge 阈值带/range 区间/tband 仅 threshold（线性语义，禁汽车仪表盘）
+│  │  │  └─ misc.tsx                ←     Timeline 事件点击 → 锁定（联动合同）+ Advanced Table 五列采样
 │  │  ├─ history/                   ←   FE-A-R2 实验闭环（Save Run V1，手动触发，localStorage）
 │  │  │  ├─ types.ts                ←     SavedRun V1（definitionSnapshot + monitorSnapshot 必含）
 │  │  │  ├─ runStore.ts             ←     buildRun + 持久化（xylab.runs.v1；失败明确报错不假装成功）
@@ -94,8 +105,8 @@ XYLab/
 │  │  └─ monitor/                   ←   监控投影
 │  │     ├─ useMonitor.ts           ←     纯投影器 readBridge + 100ms 轮询（diff 日志已废除）
 │  │     ├─ RunPanel.tsx            ←     运行区（状态/时间/Tick/全控制 + 联合 Reset，Compact 主次分层；图标 = Icons 层）
-│  │     ├─ ValuesPanel.tsx         ←     F2 监控值 Compact Metric Row（label 优先三层优先级/Dense/Detail/行点击聚焦；三断点均可见）
-│  │     ├─ metricModel.ts          ←     F2 MetricRow 唯一模型（valueAtTime/nearestTime/metricStatus/buildRows/resolveMetrics）
+│  │     ├─ ValuesPanel.tsx         ←     UA1 监控值 Compact Metric Row（行点击 = Selection Toggle/Detail 与选择解耦/已选计数+清空；三断点均可见）
+│  │     ├─ metricModel.ts          ←     F2 MetricRow 唯一模型（valueAtTime/nearestTime/metricStatus/buildRows/resolveMetrics；cmp 导出供 State 族）
 │  │     └─ EventLog.tsx            ←     协议事件日志（消费 snap.logs 结构化字段）
 │  ├─ monitor/                      ← R3 监控核心（Observer Only，绝不回写 Runtime）
 │  │  ├─ types.ts                   ←   SeriesPoint/MonitorLogEntry/WatchRecord/Statistics/Snapshot
@@ -215,7 +226,7 @@ XYLab/
    │     └─ r2-03d-evaluator-errors.test.ts    ← D12~D13、D31~D35 运行期安全
    ├─ governance/                   ← GOV-01 专项
    │  └─ governance-guard.test.ts   ←   底线位回归（5/100/Guard 自身）
-   ├─ ui/                           ← UI 断点（3）+ R4-F1 草稿（5）+ FE-A-R1 监控桥（14）+ FE-A-R2 工作台（21）+ F2（9）
+   ├─ ui/                           ← UI 断点（3）+ R4-F1 草稿（5）+ FE-A-R1 监控桥（14）+ FE-A-R2 工作台（21）+ F2（9）+ UA1（23）
    │  ├─ breakpoints.test.ts        ←   Wide/Medium/Compact 边界
    │  ├─ r4-f1-draft.test.ts        ←   草稿守卫/不可变/重建边界集成
    │  ├─ r1-monitor-bridge.test.ts  ←   Handle 生命周期（T01/T02/T04/T09~T15 语义）
@@ -225,9 +236,14 @@ XYLab/
    │  │  ├─ r2-chart-model.test.ts  ←     图表目标解析/valueAtTime·nearestTime/结构化 Metric 状态（5）
    │  │  ├─ r2-run-store.test.ts    ←     SavedRun 快照完整/备注往返/排序/失败反馈（5）
    │  │  └─ r2-workflow.test.ts     ←     Metric+Chart 非空/冻结-连续/Reset/Apply/复制 JSON（6）
-   │  └─ f2/                        ←   F2 子域（9 用例）
-   │     ├─ f2-view-model.test.ts   ←     ViewState 纯函数 + MetricRow 三层信息/锁定读取（7）
-   │     └─ f2-samples.test.ts      ←     examples 两件真实 Loader 加载取证（2）
+   │  ├─ f2/                        ←   F2 子域（9 用例）
+   │  │  ├─ f2-view-model.test.ts   ←     ViewState 纯函数（UA1 语义更新）+ MetricRow 三层信息/锁定读取（7）
+   │  │  └─ f2-samples.test.ts      ←     examples 两件真实 Loader 加载取证（2）
+   │  └─ ua1/                       ←   UA1 子域（23 用例）
+   │     ├─ ua1-selection.test.ts   ←     选择初始化 output.charts 优先/fallback + Set 多选模型（5）
+   │     ├─ ua1-arbitration.test.ts ←     异量纲自动切相对 + 一次轻提示/同单位不误切（5）
+   │     ├─ ua1-catalog.test.ts     ←     21 类完整性/兼容裁决/推荐规则（7）
+   │     └─ ua1-chart-model.test.ts ←     barRows 时间点/相对/Delta/Zero Baseline + scatterPairs（6）
    └─ monitor/                      ← R3 监控专项（21 用例）
       ├─ r3-watch-series.test.ts    ←   G1~G4 黄金案例/模式/防御/threshold 触发
       ├─ r3-events.test.ts          ←   E1~E5 边缘触发/重武装/防御/失败日志
@@ -247,8 +263,10 @@ XYLab/
 | 底线怎么守？ | `npm run verify` 第一步 `scripts/governance-guard.mjs` |
 | UI 设计依据在哪？ | `vendor/xyui/`（只读权威；消费从 `packs/core-0.1/AGENT-GUIDE.md` 开始；来源锁定见 `UPSTREAM-PIN.json`） |
 | 曲线/Metric 从哪来？ | `src/ui/visualization/`（数据源唯一 = MonitorSnapshot；目标解析 output.charts 优先；禁解析事件表达式） |
-| 操作图标从哪来？ | `src/ui/icons/Icons.tsx`（Foundation.Icon 冻结风格内联 SVG；glyph 注册表缺失 = XYUI1-GAP-001 权宜，禁建第二套 IconFont） |
-| 监控值行模型在哪？ | `src/ui/monitor/metricModel.ts`（MetricRow 唯一模型；Pinned 卡与监控值列表共用） |
-| Focus/Compare/相对规则？ | `src/ui/viewState.ts`（纯函数）+ `src/ui/visualization/VisualizationPanel.tsx`（编排）；绝对值对比只许同单位，相对模式运行开始值 = 100% |
+| 操作图标从哪来？ | `src/ui/icons/Icons.tsx`（25 个 Foundation.Icon 冻结风格内联 SVG；glyph 注册表缺失 = XYUI1-GAP-001 权宜，禁建第二套 IconFont） |
+| 监控值行模型在哪？ | `src/ui/monitor/metricModel.ts`（MetricRow 唯一模型；Pinned 卡与监控值列表共用；cmp = threshold 判定单源） |
+| 选择/可视化状态在哪？ | `src/ui/viewState.ts`（VisualizationSelectionState 纯函数：selected Set/mode/viz/scatter 指派；Inspector/Legend/Chart/监控值行同源消费）；仅 Load 重置，运行控制不清 |
+| 可视化可用性谁裁决？ | `src/ui/viz/compat.ts`（Compatibility Engine + recommend）；目录注册在 `src/ui/viz/catalog.ts`（21 类，禁 UI 散落 if chart===，不可用 = Disabled+Reason 不删入口） |
+| Bar/Gauge/Table 读哪个时刻？ | 统一 Temporal Cursor = `lockTime ?? 实时`（Timeline 事件点击 = 锁定；「跟随实时」解锁） |
 | 保存的 Run 在哪？ | 浏览器 localStorage `xylab.runs.v1`（读写仅 `src/ui/history/runStore.ts`；SavedRun 必含 definitionSnapshot） |
 | Light 色值在哪？ | `src/ui/theme/light-consumer.css`（B 类消费层 `--xylab-*`，非 canonical；GAP 权宜有注释登记） |
