@@ -1,0 +1,57 @@
+/* FE-A-R2 · XYLab Light Consumer Layer（B 类消费层 —— 不是新的 XYUI Canonical）。
+   依据：宪法 Article 5（Light Token Source 暂停期，缺失 Light 标量走消费层，禁止伪造 canonical）；
+   色值冻结自用户 2026-08-14 R2 正式裁定；全部组件只引用本层变量，禁止散落硬编码色值。
+   GAP 消费层临时回答（回流 XYUI 前不得私扩）：
+   - Series 色板 = XYUI8-GAP-001 临时回答；- OnAccent 前景 = XYUI3-GAP-001 临时回答（#fff）。 */
+:root {
+  /* 表面五级（app → panel → surface） */
+  --xylab-app: #f3f6f8;
+  --xylab-panel: #f8fafb;
+  --xylab-surface: #ffffff;
+  --xylab-border: #d5dee4;
+  /* 文本 */
+  --xylab-text: #243744;
+  --xylab-text-secondary: #6f828c;
+  /* 强调 */
+  --xylab-accent: #326f8a;
+  --xylab-accent-soft: #e7f0f3;
+  /* 状态（文字+颜色双通道的颜色通道；文字通道由组件承担，ColorOnlyState Forbidden） */
+  --xylab-ok: #2f7d5b;
+  --xylab-ok-soft: #e3f1e9;
+  --xylab-warning: #96690a;
+  --xylab-warning-soft: #f7eed4;
+  --xylab-critical: #b03a3a;
+  --xylab-critical-soft: #f8e4e4;
+  --xylab-focus: #5c93b8;
+  /* Series 色板（XYUI8-GAP-001 消费层临时回答，低饱和） */
+  --xylab-series-1: #326f8a;
+  --xylab-series-2: #a8763e;
+  --xylab-series-3: #5d8a6a;
+  --xylab-series-4: #8a5d75;
+  /* 字号（XYUI-0 字号域 12~24 内取值） */
+  --xylab-fs-xs: 12px;
+  --xylab-fs-sm: 13px;
+  --xylab-fs-md: 14px;
+  --xylab-fs-lg: 16px;
+  --xylab-fs-xl: 20px;
+  /* 间距（XY.Space 4~48 档位内取值） */
+  --xylab-sp-1: 4px;
+  --xylab-sp-2: 8px;
+  --xylab-sp-3: 12px;
+  --xylab-sp-4: 16px;
+  --xylab-sp-5: 20px;
+  --xylab-sp-6: 24px;
+  /* 圆角（XYUI-0：Button 4 / Popup 6 / Panel 0） */
+  --xylab-radius-button: 4px;
+  --xylab-radius-popup: 6px;
+  --xylab-radius-panel: 0px;
+  /* 动效（XYUI-0 Motion 80/140/220ms，只承担职责性过渡） */
+  --xylab-motion-fast: 80ms;
+  --xylab-motion-base: 140ms;
+  --xylab-motion-slow: 220ms;
+  /* 控件度量（XYUI-0 控件高度域 + HitTarget ≥44 触控） */
+  --xylab-control-h: 32px;
+  --xylab-button-h: 34px;
+  --xylab-nav-h: 56px;
+  --xylab-chart-h: 220px;
+}

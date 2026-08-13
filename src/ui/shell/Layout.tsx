@@ -1,75 +1,95 @@
-// R4-F1 · 三模式响应式布局：Wide 左(实验/参数)中(运行区)右(当前值)底(日志)；
-// Medium 双栏 + 辅助面板折叠；Compact 顶部运行条 + 页签（参数/当前值/日志）。
+// FE-A-R2 · 三模式响应式组合（组件不换、语义不换，只改组合位置）。
+// Compact（<640 主设计）：单栏 + Bottom Nav（监控首屏=动作条/运行/Metric/曲线/Inspector）；
+// Medium（640~1023）：实验/参数辅助栏 + 主工作区（Inspector 并入主区侧）；
+// Wide（≥1024）：左(实验+参数) 中(动作+运行+Visualization) 右(Inspector+明细表) 底(事件日志)。
 import type { ReactNode } from 'react';
 import type { Breakpoint } from './breakpoints';
+import { BottomNav } from './BottomNav';
+import type { LabTab } from './BottomNav';
 
 interface Props {
   breakpoint: Breakpoint;
-  section: 'params' | 'values' | 'log';
-  onSection: (s: 'params' | 'values' | 'log') => void;
+  tab: LabTab;
+  onTab: (t: LabTab) => void;
   collapsed: boolean;
   onToggle: () => void;
   experiment: ReactNode;
   variables: ReactNode;
   run: ReactNode;
+  actions: ReactNode;
+  viz: ReactNode;
+  inspector: ReactNode;
   values: ReactNode;
   log: ReactNode;
+  history: ReactNode;
 }
 
-export function Layout({ breakpoint, section, onSection, collapsed, onToggle, experiment, variables, run, values, log }: Props) {
-  if (breakpoint === 'wide') {
+export function Layout(p: Props) {
+  if (p.breakpoint === 'wide') {
     return (
       <div className="layout wide">
         <aside className="col left">
-          {experiment}
-          {variables}
+          {p.experiment}
+          {p.variables}
         </aside>
-        <main className="col center">{run}</main>
-        <aside className="col right">{values}</aside>
-        <footer className="col bottom">{log}</footer>
+        <main className="col center">
+          {p.actions}
+          {p.run}
+          {p.viz}
+        </main>
+        <aside className="col right">
+          {p.inspector}
+          {p.values}
+        </aside>
+        <footer className="col bottom">{p.log}</footer>
       </div>
     );
   }
-  if (breakpoint === 'medium') {
+  if (p.breakpoint === 'medium') {
     return (
       <div className="layout medium">
-        <aside className={`col aux${collapsed ? ' collapsed' : ''}`}>
-          <button className="aux-toggle" onClick={onToggle}>
-            {collapsed ? '▶ 面板' : '◀ 面板'}
+        <aside className={`col aux${p.collapsed ? ' collapsed' : ''}`}>
+          <button className="aux-toggle" onClick={p.onToggle}>
+            {p.collapsed ? '展开面板' : '收起面板'}
           </button>
-          {!collapsed && (
-            <div className="aux-body">
-              {experiment}
-              {variables}
-            </div>
+          {!p.collapsed && (
+            <>
+              {p.experiment}
+              {p.variables}
+            </>
           )}
         </aside>
         <main className="col main">
-          {run}
-          {values}
+          {p.actions}
+          {p.run}
+          {p.viz}
+          {p.inspector}
         </main>
-        <footer className="col bottom">{log}</footer>
+        <footer className="col bottom">{p.log}</footer>
       </div>
     );
   }
   return (
     <div className="layout compact">
-      <div className="col strip">{run}</div>
-      <nav className="tabs">
-        {(['params', 'values', 'log'] as const).map((s) => (
-          <button key={s} className={section === s ? 'active' : ''} onClick={() => onSection(s)}>
-            {s === 'params' ? '参数' : s === 'values' ? '当前值' : '日志'}
-          </button>
-        ))}
-      </nav>
-      {section === 'params' && (
-        <div className="col">
-          {experiment}
-          {variables}
-        </div>
-      )}
-      {section === 'values' && <div className="col">{values}</div>}
-      {section === 'log' && <div className="col">{log}</div>}
+      <div className="compact-scroll">
+        {p.tab === 'monitor' && (
+          <>
+            {p.actions}
+            {p.run}
+            {p.viz}
+            {p.inspector}
+          </>
+        )}
+        {p.tab === 'experiment' && (
+          <>
+            {p.experiment}
+            {p.variables}
+          </>
+        )}
+        {p.tab === 'log' && p.log}
+        {p.tab === 'history' && p.history}
+      </div>
+      <BottomNav tab={p.tab} onTab={p.onTab} />
     </div>
   );
 }
