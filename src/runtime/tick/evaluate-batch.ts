@@ -1,0 +1,76 @@
+// R2-04 · T2/T3：Tick 快照 + 公式批量求值。
+// 冻结语义：同一 Tick 内所有公式读取同一个 Tick-start Snapshot，互不可见写入；
+// 全部求值成功后由 commit 统一提交（Snapshot Read → Evaluate All → Batch Commit）。
+
+import { tokenizeExpression } from '../../expression/tokenizer';
+import { parseExpression } from '../../expression/syntax/parser';
+import { ExpressionParseError } from '../../expression/syntax/parse-error';
+import { validateFormula } from '../../expression/semantic/validator';
+import { ExpressionSemanticError } from '../../expression/semantic/errors';
+import { evaluate } from '../../expression/evaluation/evaluator';
+import { ExpressionEvaluationError } from '../../expression/evaluation/errors';
+import { ExpressionTokenizeError } from '../../expression/errors';
+import type { EvaluationContext, EvalValue } from '../../expression/evaluation/types';
+import type { ExperimentDefinition } from '../../protocol/types';
+import type { RuntimeState, RuntimeValue } from '../types';
+import type { TickError } from './types';
+
+export interface PendingWrite {
+  formulaId: string;
+  target: string;
+  value: EvalValue;
+}
+
+export interface BatchResult {
+  writes: PendingWrite[];
+  error?: TickError;
+}
+
+function wrapError(formulaId: string, target: string, e: unknown): TickError {
+  const any = e as { code?: string; span?: { start: number; end: number }; message?: string };
+  const semantic =
+    e instanceof ExpressionSemanticError || e instanceof ExpressionParseError || e instanceof ExpressionTokenizeError;
+  return {
+    code: semantic ? 'FORMULA_SEMANTIC_ERROR' : 'FORMULA_EVALUATION_ERROR',
+    message: any.message ?? String(e),
+    formulaId,
+    target,
+    causeCode: any.code,
+    span: any.span,
+  };
+}
+
+export function evaluateFormulaBatch(definition: ExperimentDefinition, state: RuntimeState): BatchResult {
+  // Snapshot：Tick 开始时的完整状态（variables 值复制；entities 本轮公式不可访问）
+  const snapshotVars: Record<string, RuntimeValue> = { ...state.variables };
+
+  const ctxVars: Record<string, EvalValue> = {};
+  for (const [k, v] of Object.entries(snapshotVars)) {
+    if (typeof v === 'number' || typeof v === 'boolean') ctxVars[k] = v;
+  }
+  const ctx: EvaluationContext = { variables: ctxVars, builtins: { dt: definition.timeline.tick } };
+
+  const writes: PendingWrite[] = [];
+  for (const f of definition.formulas) {
+    // v0.1 只写变量；实体路径 target（协议允许但表达式未实现属性访问）→ 明确失败，绝不静默跳过
+    if (!definition.variables[f.target]) {
+      return {
+        writes,
+        error: {
+          code: 'UNSUPPORTED_TARGET_KIND',
+          message: `公式 target '${f.target}' 不是变量（v0.1 Tick 不支持实体路径写回）`,
+          formulaId: f.id,
+          target: f.target,
+        },
+      };
+    }
+    try {
+      const validated = validateFormula(f, definition); // 03C：语义 + target 类型兼容
+      const value = evaluate(validated.ast, ctx); // 03D：纯求值，只读快照
+      writes.push({ formulaId: f.id, target: f.target, value });
+    } catch (e) {
+      return { writes, error: wrapError(f.id, f.target, e) };
+    }
+  }
+  return { writes };
+}

@@ -48,7 +48,12 @@ XYLab/
 │  ├─ runtime/                      ← 可变世界（R2-02，不依赖 UI）
 │  │  ├─ types.ts                   ←   RuntimeState/RuntimeValue/RuntimeEntity
 │  │  ├─ create-runtime-state.ts    ←   Definition → RuntimeState（structuredClone 深隔离）
-│  │  └─ state.ts                   ←   resetRuntimeState（Reset 基础能力）
+│  │  ├─ state.ts                   ←   resetRuntimeState（Reset 基础能力）
+│  │  └─ tick/                      ←   R2-04 单次确定性 Tick 子层
+│  │     ├─ types.ts                ←     TickResult/Change/TickError/TickOutcome
+│  │     ├─ evaluate-batch.ts       ←     快照 + 公式批量求值（全读快照）
+│  │     ├─ commit.ts               ←     原子提交 + 运行时值守卫（integer 严格）
+│  │     └─ tick.ts                 ←     executeTick 编排（duration 边界/重复 target）
 │  │
 │  └─ expression/                   ← 受限表达式语言（R2-03A 词法 / R2-03B 语法）
 │     ├─ token.ts                   ←   TokenType / Token（span 保留位置）
@@ -79,10 +84,16 @@ XYLab/
    │  ├─ r2-01-loader-load.test.ts       ← T01~T03 加载
    │  ├─ r2-01-loader-targets.test.ts    ← T04~T08 目标引用
    │  └─ r2-01-loader-semantic.test.ts   ← T09~T12 类型语义 + 聚合
-   ├─ runtime/                      ← R2-02（10 用例：T01~T10）
-   │  ├─ fixtures.ts                ←   共享夹具 defOf/defWithEntities
+   ├─ runtime/                      ← R2-02（10 用例）+ R2-04（24 用例）
+   │  ├─ fixtures.ts                ←   共享夹具 defOf/defWithEntities/makeTickDef/runOnce
    │  ├─ r2-02-runtime-state.test.ts     ← T01~T06 初始化
-   │  └─ r2-02-runtime-isolation.test.ts ← T07~T10 隔离与 Reset
+   │  ├─ r2-02-runtime-isolation.test.ts ← T07~T10 隔离与 Reset
+   │  └─ tick/                      ←   Tick 子域
+   │     ├─ r2-04-tick-basic.test.ts     ← T01~T04 单 Tick 基础与 dt
+   │     ├─ r2-04-tick-batch.test.ts     ← T05~T07、T11~T12 批量/快照/ChangeSet
+   │     ├─ r2-04-tick-safety.test.ts    ← T08~T10、T21~T22 原子失败与不可变
+   │     ├─ r2-04-tick-values.test.ts    ← T13~T17 值守卫与重复 target
+   │     └─ r2-04-tick-duration.test.ts  ← T18~T20 duration 边界
    ├─ expression/                   ← R2-03A（21 用例）+ R2-03B（32 用例）
    │  ├─ tokenizer/                 ←   词法子域
    │  │  ├─ helpers.ts              ←     共享工具 types/pairs
@@ -116,6 +127,6 @@ XYLab/
 | --- | --- |
 | JSON 进哪里？ | `src/protocol/loader.ts`（唯一入口） |
 | 哪些字段可信？ | Loader 输出的 `ExperimentDefinition`（`types.ts`） |
-| 运行时可变状态在哪？ | `src/runtime/`（与 Definition 深隔离） |
+| 运行时可变状态在哪？ | `src/runtime/`（与 Definition 深隔离；Tick 见 `src/runtime/tick/`） |
 | 表达式怎么解析？ | `src/expression/`（Tokenizer → Parser → 语义 → Evaluator，R2-03 闭环） |
 | 底线怎么守？ | `npm run verify` 第一步 `scripts/governance-guard.mjs` |
