@@ -22,10 +22,11 @@ describe('UA1 · Compatibility Engine（T11/T12）', () => {
     for (const id of ['pie', 'hist', 'heatmap', 'etrack', 'depgraph']) expect(checkVizById(id, ctx({ count: 3 })).ok, id).toBe(false);
     expect(checkVizById('hist', ctx()).reason).toContain('多 Run');
   });
-  it('数量上下限：scatter 恰 2 项；bar 上限 8；tband 需 threshold watch', () => {
+  it('数量上下限：scatter 至少 2 项且允许多指标候选；bar 上限 8；tband 需 threshold watch', () => {
     expect(checkVizById('scatter', ctx({ count: 1 })).ok).toBe(false);
-    expect(checkVizById('scatter', ctx({ count: 3 })).ok).toBe(false);
     expect(checkVizById('scatter', ctx({ count: 2 })).ok).toBe(true);
+    expect(checkVizById('scatter', ctx({ count: 3 })).ok).toBe(true);
+    expect(checkVizById('scatter', ctx({ count: 12 })).ok).toBe(true);
     expect(checkVizById('bar', ctx({ count: 9 })).reason).toContain('最多');
     expect(checkVizById('tband', ctx()).ok).toBe(false);
     expect(checkVizById('tband', ctx({ hasThreshold: true })).ok).toBe(true);
