@@ -1,5 +1,5 @@
-// 运行区：状态/时间/Tick + 动态速度 + 本轮模拟次数。
-import { useState } from 'react';
+// 运行区：状态/时间/Tick + 动态速度 + 独立本轮模拟次数。
+import { useEffect, useState } from 'react';
 import { canPause, canResume, canRun, canStep, canStop } from '../../runtime/controller/transitions';
 import type { RunSpeed } from '../../runtime/controller/types';
 import type { Breakpoint } from '../shell/breakpoints';
@@ -11,13 +11,18 @@ interface Props { runtime: MonitoredRuntime | null; bridge: MonitorBridge; break
 
 export function RunPanel({ runtime, bridge, breakpoint, refresh }: Props) {
   const [more, setMore] = useState(false);
+  const [count, setCount] = useState(1000);
   const st = runtime ? runtime.controller.status : null;
   const compact = breakpoint === 'compact';
-  const total = runtime?.controller.definition.timeline.totalTicks ?? 1;
-  const [count, setCount] = useState(total);
+  useEffect(() => {
+    if (!runtime) return;
+    const initial = runtime.controller.definition.timeline.totalTicks;
+    setCount(initial);
+    runtime.controller.setTickLimit(initial);
+  }, [runtime]);
   function act(fn: () => unknown) { fn(); refresh(); }
   function applyCount(raw: number) {
-    const next = Math.max(1, Math.min(total, Math.floor(raw || 1)));
+    const next = Math.max(1, Math.min(Number.MAX_SAFE_INTEGER, Math.floor(raw || 1)));
     setCount(next);
     runtime?.controller.setTickLimit(next);
   }
@@ -46,11 +51,12 @@ export function RunPanel({ runtime, bridge, breakpoint, refresh }: Props) {
     <div className="row controls">{primary}{compact ? <button onClick={() => setMore(!more)}>{more ? '收起' : '更多'}</button> : secondary}</div>
     <div className="row controls run-count">
       <label htmlFor="run-count">模拟次数</label>
-      <input id="run-count" type="number" inputMode="numeric" min={1} max={total} step={1} value={count}
+      <input id="run-count" type="number" inputMode="numeric" min={1} step={1} value={count}
         disabled={!runtime || st === 'running'} onChange={(e) => applyCount(Number(e.target.value))} />
       <button disabled={!runtime || st === 'running'} onClick={() => applyCount(100)}>100</button>
       <button disabled={!runtime || st === 'running'} onClick={() => applyCount(1000)}>1000</button>
-      <span className="muted">上限 {total}</span>
+      <button disabled={!runtime || st === 'running'} onClick={() => applyCount(10000)}>1万</button>
+      <span className="muted">独立于 JSON 总 Tick</span>
     </div>
     {compact && more && <div className="row controls">{secondary}</div>}
   </section>;
