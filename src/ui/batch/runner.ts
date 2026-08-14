@@ -25,18 +25,18 @@ export async function runBatchScenario(
   runtime.controller.setTickLimit(tickLimit);
   const started = runtime.controller.run('max');
   if (!started.ok) {
-    return { scenarioId: scenario.id, name: scenario.name, status: started.status, values: {}, error: started.message };
+    return {
+      scenarioId: scenario.id, name: scenario.name, status: started.status, values: {},
+      snapshot: runtime.session.snapshot(), error: started.message,
+    };
   }
   await started.done;
   const values: Record<string, RuntimeValue | null> = {};
   for (const target of scenarioTargets(next)) values[target] = readTarget(runtime.controller.state, target);
   const failure = runtime.controller.state.lastError;
   return {
-    scenarioId: scenario.id,
-    name: scenario.name,
-    status: runtime.controller.status,
-    values,
-    error: failure?.message,
+    scenarioId: scenario.id, name: scenario.name, status: runtime.controller.status, values,
+    snapshot: runtime.session.snapshot(), error: failure?.message,
   };
 }
 

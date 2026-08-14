@@ -1,4 +1,4 @@
-/* Batch Experiment V1 · XYUI Consumer：仅结构，全部颜色/间距引用现有 Light Consumer token。 */
+/* Batch Experiment V1-F1 · XYUI Consumer：结构层；颜色/间距继续消费现有 Light token。 */
 .batch-panel { display: flex; flex-direction: column; gap: var(--xylab-sp-2); }
 .batch-title, .batch-result-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--xylab-sp-2); }
 .batch-title h2 { margin: 0; }
@@ -13,14 +13,19 @@
 .batch-override { display: grid; grid-template-columns: minmax(110px, 1fr) minmax(80px, 120px) auto; gap: var(--xylab-sp-1); }
 .batch-override select, .batch-override input { min-width: 0; width: 100%; }
 .batch-add { align-self: flex-start; }
-.batch-results { display: flex; flex-direction: column; gap: var(--xylab-sp-2); margin-top: var(--xylab-sp-1); }
+.batch-results, .batch-detail { display: flex; flex-direction: column; gap: var(--xylab-sp-2); margin-top: var(--xylab-sp-1); }
+.batch-detail { border-top: 1px solid var(--xylab-border); padding-top: var(--xylab-sp-2); }
+.batch-detail .viz-panel { margin: 0; }
 .batch-table-wrap { width: 100%; overflow-x: auto; }
-.batch-table { min-width: 520px; }
+.batch-table { min-width: 680px; }
 .batch-table td b { display: block; font-weight: 600; }
 .batch-table td small { display: block; font-size: 10px; font-variant-numeric: tabular-nums; }
+.batch-table td:nth-child(2) { max-width: 240px; white-space: normal; }
+.batch-result-head .row { justify-content: flex-end; }
 @media (max-width: 639px) {
   .batch-title, .batch-result-head { align-items: flex-start; flex-direction: column; }
   .batch-card-head { grid-template-columns: minmax(0, 1fr) auto; }
   .batch-card-head button:last-child { grid-column: 2; }
   .batch-override { grid-template-columns: minmax(0, 1fr) 92px auto; }
+  .batch-result-head .row { justify-content: flex-start; width: 100%; }
 }
