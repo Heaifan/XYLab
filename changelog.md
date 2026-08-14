@@ -25,6 +25,24 @@
 - **遗留问题**：R2-03B Parser+AST 冻结解除后启动；UI Constitution 未批准，任何轮次禁止自行设计
 - **决策**：5 规则适用范围 = src/tests/scripts 下全部职责目录（tests 按领域分目录后同样合规，不设豁免）；100 规则覆盖含测试与脚本的全部手写源码；SRP 为人工硬门禁写入每轮报告；Knowledge 入库判断每轮必做
 
+## XYLAB-AUDIT-BACKFILL-2026-08-14 · PWA / Runtime / Scatter / Batch Experiment —— IMPLEMENTED（审计补记）
+
+- **阶段**：XYLAB-UI-F2-UA1 审计同步 `5c5431d` 之后的快速迭代补记；本条只恢复审计事实，不把未做用户验收的能力伪标为 CLOSED。
+- **范围**：`5c5431d..c8b8f21`，Git 对比确认 `main` 前进 24 个提交；最早为 `c352ec4` PWA Packaging，当前最新为 `c8b8f21` Scatter Compatibility Test。
+- **任务**：把 2026-08-14 实际已经落库、但未同步进 changelog 的手机部署、表达式/Runtime 控制、JSON 操作、散点图与 Batch Experiment 能力补回正式时间轴。
+- **变更**：
+  - PWA / Mobile：新增 manifest、service worker、应用图标与 GitHub Pages workflow；SW 导航改 network-first；localStorage 被禁用或抛错时降级为内存存储，并增加启动错误可见面与 noscript 提示，避免 hostile environment 白屏。
+  - Expression / Runtime：加入 `sin` / `cos` / `PI`；PI 注入 Tick 表达式上下文；运行速度与 Tick 上限实时生效；模拟次数从实验 timeline horizon 解耦，并在 UI 支持任意模拟运行次数；新增速度与模拟次数需求文档。
+  - JSON 工作流：实验面板增加清空与恢复 JSON 操作，降低手机端反复复制粘贴实验定义的成本。
+  - Scatter：增加坐标辅助线与参考圆；参考圆不再依赖当前指标选择；修复二维散布可视化与 sigma 校验；兼容性与 X/Y 轴选择改为支持从多指标集合中显式选轴，并补对应测试。
+  - Batch Experiment：新增 XYUI 风格 BatchPanel / ScenarioEditor / runner / types / batch.css；支持多方案比较、场景结果检查与移动端场景可视化；`knowledge/decisions/batch-experiment-v1.md` 已落库。
+  - CI：Pages 构建链保留 XYLab `dist` 构建产物。
+- **审计证据**：Git Compare 对 `5c5431d..main` 返回 `ahead_by=24 / behind_by=0`；变更涉及 PWA、expression、runtime、batch UI、scatter、tests、requirements、file-tree 与 knowledge；当前远端 tip 为 `c8b8f21`。
+- **验证事实**：`56226c1` 提交信息记录当时测试为 322/322；其后继续新增/修改 expression、runtime、batch runner、scatter catalog/chart-model 测试，最新 `c8b8f21` 专门补 Scatter compatibility 与 axis-selection 对齐测试。当前 GitHub 未返回独立 combined-status，故本次补记不伪造“最新全量 verify 已跑”的结论。
+- **三位一体对账**：`file-tree.md` 已在该 24 提交范围内同步；经验位已有 `knowledge/decisions/batch-experiment-v1.md`；本次缺口集中在审计位 `changelog.md`，因此只补时间轴，不重复制造第二份事实源。
+- **遗留问题**：本条为审计补记，不代替这些快速迭代各自的用户真机验收；Batch 多距离方案、Scatter 二维散布与手机工作流仍以后续用户验收结果决定是否进入正式 CLOSED。
+- **Commit 范围**：`c352ec4` → `c8b8f21`（24 commits）+ 本条审计补记提交。
+
 ## XYLAB-UI-F2-UA1 · Multi-Series + Visualization Picker（选择集 / 21 类目录 / 兼容引擎 / 11 类实现） —— IMPLEMENTED（自动门全绿 · 待用户真机验收，未 CLOSED）
 
 - **阶段**：XYLAB-UI-F2-UA1 单轮（用户裁定「最后一轮」：A 多序列监控选择 + B XYUI-8 可视化选择器一次交付；F2/R1/R2 保持 IMPLEMENTED，真机验收并入本轮清单）
