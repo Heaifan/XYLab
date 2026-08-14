@@ -1,4 +1,4 @@
-/* Batch Experiment V1-F1 · XYUI Consumer：结构层；颜色/间距继续消费现有 Light token。 */
+/* Batch Experiment V1-F2 · XYUI Consumer：移动端结果入口直达；结构层继续消费现有 Light token。 */
 .batch-panel { display: flex; flex-direction: column; gap: var(--xylab-sp-2); }
 .batch-title, .batch-result-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--xylab-sp-2); }
 .batch-title h2 { margin: 0; }
@@ -14,18 +14,21 @@
 .batch-override select, .batch-override input { min-width: 0; width: 100%; }
 .batch-add { align-self: flex-start; }
 .batch-results, .batch-detail { display: flex; flex-direction: column; gap: var(--xylab-sp-2); margin-top: var(--xylab-sp-1); }
-.batch-detail { border-top: 1px solid var(--xylab-border); padding-top: var(--xylab-sp-2); }
+.batch-detail { border-top: 1px solid var(--xylab-border); padding-top: var(--xylab-sp-2); scroll-margin-top: var(--xylab-sp-3); }
 .batch-detail .viz-panel { margin: 0; }
 .batch-table-wrap { width: 100%; overflow-x: auto; }
-.batch-table { min-width: 680px; }
+.batch-table { min-width: 560px; }
 .batch-table td b { display: block; font-weight: 600; }
 .batch-table td small { display: block; font-size: 10px; font-variant-numeric: tabular-nums; }
 .batch-table td:nth-child(2) { max-width: 240px; white-space: normal; }
 .batch-result-head .row { justify-content: flex-end; }
+.batch-result-link { min-height: 26px; padding: 2px var(--xylab-sp-1); border: 0; background: transparent; color: var(--xylab-accent); font: inherit; font-weight: 600; text-align: left; cursor: pointer; }
+.batch-result-link:hover, .batch-result-link:focus-visible { text-decoration: underline; }
 @media (max-width: 639px) {
   .batch-title, .batch-result-head { align-items: flex-start; flex-direction: column; }
   .batch-card-head { grid-template-columns: minmax(0, 1fr) auto; }
   .batch-card-head button:last-child { grid-column: 2; }
   .batch-override { grid-template-columns: minmax(0, 1fr) 92px auto; }
   .batch-result-head .row { justify-content: flex-start; width: 100%; }
+  .batch-table { min-width: 520px; }
 }
