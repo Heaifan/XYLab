@@ -1,0 +1,9 @@
+/* XYUI-4 Feedback + XYUI-7 7.01 Compact Confirm；只消费现有 Light tokens。 */
+.xy-dialog { width: min(420px, calc(100% - 24px)); margin: auto; color: var(--xylab-text); background: var(--xylab-surface); border: 1px solid var(--xylab-border); border-radius: var(--xylab-radius-popup); padding: var(--xylab-sp-4); box-shadow: 0 8px 24px color-mix(in srgb, var(--xylab-text) 14%, transparent); }
+.xy-dialog::backdrop { background: color-mix(in srgb, var(--xylab-text) 28%, transparent); }
+.xy-dialog h2 { margin-bottom: var(--xylab-sp-2); font-size: var(--xylab-fs-lg); }
+.xy-dialog p { color: var(--xylab-text-secondary); font-size: var(--xylab-fs-sm); }
+.xy-dialog-actions { display: flex; justify-content: flex-end; gap: var(--xylab-sp-2); margin-top: var(--xylab-sp-4); }
+button.danger { color: var(--xylab-critical); border-color: var(--xylab-critical); }
+.batch-json-preview { border: 1px solid var(--xylab-border); background: var(--xylab-accent-soft); border-radius: var(--xylab-radius-panel); padding: var(--xylab-sp-2); font-size: var(--xylab-fs-sm); }
+.batch-preview-items { display: flex; flex-wrap: wrap; gap: var(--xylab-sp-1) var(--xylab-sp-2); margin-top: var(--xylab-sp-1); color: var(--xylab-text-secondary); font-size: var(--xylab-fs-xs); }
