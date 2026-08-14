@@ -1,4 +1,4 @@
-# PWA 打包 · 部署 dist/ 到 GitHub Pages（HTTPS → 手机可安装）。
+# PWA 打包 · 验证、构建、保留 dist 产物并部署 GitHub Pages。
 name: Deploy XYLab to GitHub Pages
 
 on:
@@ -28,6 +28,12 @@ jobs:
       - run: npm run verify
       - run: npm run build
       - run: touch dist/.nojekyll
+      - name: Preserve dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: xylab-dist
+          path: dist
+          if-no-files-found: error
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
