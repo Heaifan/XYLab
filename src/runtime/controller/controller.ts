@@ -1,4 +1,4 @@
-// R2-05BC · Runtime Controller：单一 Tick 推进、运行代际取消、动态速度与本轮 Tick 上限。
+// R2-05BC · Runtime Controller：单一 Tick 推进、运行代际取消、动态速度与独立本轮模拟次数。
 import { resetRuntimeState } from '../state';
 import { tickOnce, toObservation, type TickProgress } from './advance';
 import { defaultScheduler, runLoop } from './loop';
@@ -9,7 +9,6 @@ import type { ControlOutcome, RunResult, RunSpeed, StepOutcome, TickObserver } f
 import { canPause, canResume, canRun, canStep, canStop, deniedOutcome } from './transitions';
 
 export interface ControllerOptions { scheduler?: Scheduler; observer?: TickObserver; }
-
 export interface Controller {
   readonly definition: ExperimentDefinition;
   readonly state: RuntimeState;
@@ -33,6 +32,10 @@ export function createController(definition: ExperimentDefinition, options: Cont
   let speed: RunSpeed = 'x1';
   let tickLimit = definition.timeline.totalTicks;
   const isCurrent = (gen: number): boolean => gen === generation && state.status === 'running';
+  const runDefinition = (): ExperimentDefinition => ({
+    ...definition,
+    timeline: { ...definition.timeline, duration: tickLimit * definition.timeline.tick, totalTicks: tickLimit },
+  });
   const advance = (): TickProgress => {
     if (state.tickIndex >= tickLimit) {
       state.status = 'completed';
@@ -40,7 +43,7 @@ export function createController(definition: ExperimentDefinition, options: Cont
       if (observer) observer(toObservation(done, state));
       return done;
     }
-    const p = tickOnce(definition, state);
+    const p = tickOnce(runDefinition(), state);
     if (observer) observer(toObservation(p, state));
     return p;
   };
@@ -81,17 +84,8 @@ export function createController(definition: ExperimentDefinition, options: Cont
       if (!canStop(state.status)) return deniedOutcome(state.status, 'Stop');
       generation += 1; state.status = 'stopped'; return { ok: true, status: 'stopped' };
     },
-    setSpeed(next: RunSpeed): void {
-      speed = next;
-      if (state.status === 'running') void launch();
-    },
-    setTickLimit(ticks: number): void {
-      if (!Number.isInteger(ticks) || ticks < 1 || ticks > definition.timeline.totalTicks) return;
-      tickLimit = ticks;
-    },
-    reset(): void {
-      generation += 1;
-      state = resetRuntimeState(definition);
-    },
+    setSpeed(next: RunSpeed): void { speed = next; if (state.status === 'running') void launch(); },
+    setTickLimit(ticks: number): void { if (Number.isSafeInteger(ticks) && ticks >= 1) tickLimit = ticks; },
+    reset(): void { generation += 1; state = resetRuntimeState(definition); },
   };
 }
