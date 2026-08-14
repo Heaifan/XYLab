@@ -24,7 +24,7 @@ export interface PendingWrite {
 
 export interface BatchResult {
   writes: PendingWrite[];
-  rngState?: number; // R2-06：成功求值后的 PRNG 下一状态（失败时不返回，rng 不推进 = 原子）
+  rngState?: number;
   error?: TickError;
 }
 
@@ -43,25 +43,27 @@ function wrapError(formulaId: string, target: string, e: unknown): TickError {
 }
 
 export function evaluateFormulaBatch(definition: ExperimentDefinition, state: RuntimeState): BatchResult {
-  // Snapshot：Tick 开始时的完整状态（variables 值复制；entities 本轮公式不可访问）
   const snapshotVars: Record<string, RuntimeValue> = { ...state.variables };
-
   const ctxVars: Record<string, EvalValue> = {};
   for (const [k, v] of Object.entries(snapshotVars)) {
     if (typeof v === 'number' || typeof v === 'boolean') ctxVars[k] = v;
   }
-  // R2-06：rng 草稿拷贝——random() 消费只推进本地草稿；只有全部成功提交才写回 state（原子 Tick 含随机域）
+
   let rngState = state.rng.state;
   const random = (): number => {
     const draw = nextRandom(rngState);
     rngState = draw.nextState;
     return draw.value;
   };
-  const ctx: EvaluationContext = { variables: ctxVars, builtins: { dt: definition.timeline.tick }, random };
+
+  const ctx: EvaluationContext = {
+    variables: ctxVars,
+    builtins: { dt: definition.timeline.tick, PI: Math.PI },
+    random,
+  };
 
   const writes: PendingWrite[] = [];
   for (const f of definition.formulas) {
-    // v0.1 只写变量；实体路径 target（协议允许但表达式未实现属性访问）→ 明确失败，绝不静默跳过
     if (!definition.variables[f.target]) {
       return {
         writes,
@@ -74,8 +76,8 @@ export function evaluateFormulaBatch(definition: ExperimentDefinition, state: Ru
       };
     }
     try {
-      const validated = validateFormula(f, definition); // 03C：语义 + target 类型兼容
-      const value = evaluate(validated.ast, ctx); // 03D：纯求值，只读快照
+      const validated = validateFormula(f, definition);
+      const value = evaluate(validated.ast, ctx);
       writes.push({ formulaId: f.id, target: f.target, value });
     } catch (e) {
       return { writes, error: wrapError(f.id, f.target, e) };
