@@ -1,4 +1,4 @@
-// R2-04 Tick 测试（单 Tick 基础）：T01~T04。
+// R2-04 Tick 测试（单 Tick 基础）。
 import { describe, expect, it } from 'vitest';
 import { runOnce } from '../fixtures';
 
@@ -40,5 +40,21 @@ describe('R2-04 Tick · 基础', () => {
     });
     expect(state.variables.x).toBeCloseTo(0.5, 10);
     expect(state.time).toBeCloseTo(0.5, 10);
+  });
+
+  it('T05 PI / sin / cos 可穿过完整 Tick 管线', () => {
+    const { state, last } = runOnce({
+      variables: {
+        x: { type: 'number', value: 0 },
+        y: { type: 'number', value: 0 },
+      },
+      formulas: [
+        { id: 'fx', target: 'x', expression: 'cos(PI) * 10' },
+        { id: 'fy', target: 'y', expression: 'sin(PI / 2) * 10' },
+      ],
+    });
+    expect(last?.status).toBe('success');
+    expect(state.variables.x).toBeCloseTo(-10, 10);
+    expect(state.variables.y).toBeCloseTo(10, 10);
   });
 });
