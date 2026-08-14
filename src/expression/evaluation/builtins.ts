@@ -1,5 +1,5 @@
-// R2-03D · 内置函数实现（白名单由 03C 冻结并已校验数量/类型，此处实现数学语义）。
-// 数值结果一律 finite 检查；sqrt 负定义域、clamp 下限>上限 明确失败，绝不静默修正。
+// R2-03D · 内置数学函数实现。
+// 数值结果一律 finite 检查；非法定义域明确失败，绝不静默修正。
 
 import type { SourceSpan } from '../syntax/ast';
 import type { EvalValue } from './types';
@@ -31,7 +31,7 @@ export function applyBuiltin(name: string, args: EvalValue[], span: SourceSpan):
     case 'clamp': {
       const v = n[0];
       const lo = n[1];
-      const hi = n[2]; // 03C 已保证恰好 3 参数
+      const hi = n[2];
       if (lo > hi) {
         throw new ExpressionEvaluationError('INVALID_CLAMP_RANGE', `clamp 下限 ${lo} 大于上限 ${hi}（不自动交换，避免掩盖实验定义错误）`, span);
       }
@@ -54,7 +54,11 @@ export function applyBuiltin(name: string, args: EvalValue[], span: SourceSpan):
     }
     case 'pow':
       return finite(Math.pow(n[0], n[1]), span);
+    case 'sin':
+      return finite(Math.sin(n[0]), span);
+    case 'cos':
+      return finite(Math.cos(n[0]), span);
     default:
-      throw new ExpressionEvaluationError('INTERNAL_EVALUATION_ERROR', `内置函数 '${name}' 无实现（03C 白名单应已拦截）`, span);
+      throw new ExpressionEvaluationError('INTERNAL_EVALUATION_ERROR', `内置函数 '${name}' 无实现（语义白名单应已拦截）`, span);
   }
 }
