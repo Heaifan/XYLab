@@ -1,0 +1,26 @@
+/* Batch Experiment V1 · XYUI Consumer：仅结构，全部颜色/间距引用现有 Light Consumer token。 */
+.batch-panel { display: flex; flex-direction: column; gap: var(--xylab-sp-2); }
+.batch-title, .batch-result-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--xylab-sp-2); }
+.batch-title h2 { margin: 0; }
+.batch-actions label { display: inline-flex; align-items: center; gap: var(--xylab-sp-1); font-size: var(--xylab-fs-sm); }
+.batch-actions input { width: 96px; }
+.batch-list { display: flex; flex-direction: column; gap: var(--xylab-sp-2); }
+.batch-card { border: 1px solid var(--xylab-border); background: var(--xylab-surface); border-radius: var(--xylab-radius-panel); padding: var(--xylab-sp-2); display: flex; flex-direction: column; gap: var(--xylab-sp-2); }
+.batch-card.baseline { background: var(--xylab-accent-soft); box-shadow: inset 2px 0 0 var(--xylab-accent); }
+.batch-card-head { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: var(--xylab-sp-1); align-items: center; }
+.batch-card-head input { min-width: 0; width: 100%; font-weight: 600; }
+.batch-card-head button, .batch-override button, .batch-add { min-height: 26px; padding: 2px var(--xylab-sp-2); font-size: var(--xylab-fs-xs); }
+.batch-override { display: grid; grid-template-columns: minmax(110px, 1fr) minmax(80px, 120px) auto; gap: var(--xylab-sp-1); }
+.batch-override select, .batch-override input { min-width: 0; width: 100%; }
+.batch-add { align-self: flex-start; }
+.batch-results { display: flex; flex-direction: column; gap: var(--xylab-sp-2); margin-top: var(--xylab-sp-1); }
+.batch-table-wrap { width: 100%; overflow-x: auto; }
+.batch-table { min-width: 520px; }
+.batch-table td b { display: block; font-weight: 600; }
+.batch-table td small { display: block; font-size: 10px; font-variant-numeric: tabular-nums; }
+@media (max-width: 639px) {
+  .batch-title, .batch-result-head { align-items: flex-start; flex-direction: column; }
+  .batch-card-head { grid-template-columns: minmax(0, 1fr) auto; }
+  .batch-card-head button:last-child { grid-column: 2; }
+  .batch-override { grid-template-columns: minmax(0, 1fr) 92px auto; }
+}

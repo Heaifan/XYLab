@@ -21,6 +21,7 @@ import { SaveRunSheet } from './history/SaveRunSheet';
 import { RunHistory } from './history/RunHistory';
 import { loadRuns, safeStorage } from './history/runStore';
 import type { SavedRun } from './history/types';
+import { BatchPanel } from './batch/BatchPanel';
 import { VIEW_INIT, initSelection, selectToggle, viewClearSelect, viewFocus, viewToggleHide, viewTogglePin, type ViewState } from './viewState';
 
 export function App() {
@@ -77,7 +78,7 @@ export function App() {
           )
         }
         actions={<ExperimentActions definition={definition} onSave={() => setSaveOpen(true)} />}
-        run={<RunPanel runtime={handle} bridge={bridge} breakpoint={breakpoint} refresh={refresh} />}
+        run={<><RunPanel runtime={handle} bridge={bridge} breakpoint={breakpoint} refresh={refresh} /><BatchPanel definition={definition} /></>}
         viz={<VisualizationPanel definition={definition} snap={bridge.snap} lockTime={lockTime} onLock={setLockTime} view={view} setView={setView} resolved={resolved} breakpoint={breakpoint} toast={toast} onToggleSelect={toggleSelect} onClear={() => setView(viewClearSelect(view))} />}
         inspector={<InspectorSheet snap={bridge.snap} definition={definition} lockTime={lockTime} onUnlock={() => setLockTime(null)} variant={breakpoint === 'compact' ? 'sheet' : 'panel'} selected={view.selected} onToggleSelect={toggleSelect} />}
         values={

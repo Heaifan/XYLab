@@ -4,6 +4,7 @@ import { App } from './App';
 import './styles.css';
 import './visualization/visualization.css';
 import './history/history.css';
+import './batch/batch.css';
 
 // 启动兜底：初始化异常必显可读信息，绝不留白屏（file:// WebView 等环境排查用）。
 try {
