@@ -1,4 +1,4 @@
-// R3 Monitoring 测试（Watch/Series 黄金案例与模式）：G1~G4。
+// R3/STAT-1 Monitoring 测试（Watch/Series 黄金案例与模式）：G1~G4。
 import { describe, expect, it } from 'vitest';
 import { createMonitorSession, createMonitoredRuntime } from '../../src/monitor/session';
 import { makeTickDef } from '../runtime/fixtures';
@@ -14,7 +14,7 @@ function goldenDef(extraWatch?: { target: string; mode: 'value' | 'change' | 'th
 }
 
 describe('R3 Monitoring · Watch 与 Series', () => {
-  it('G1 黄金案例：Series (0,10)(1,10.4)(2,10.8)(3,11.2) + change 日志 + 完整统计', () => {
+  it('G1 黄金案例：Series 保留初始点，Statistics 只统计 3 个成功 Tick', () => {
     const { controller, session } = createMonitoredRuntime(goldenDef());
     controller.step();
     controller.step();
@@ -38,11 +38,12 @@ describe('R3 Monitoring · Watch 与 Series', () => {
     if (st.kind !== 'numeric') throw new Error('expected numeric');
     expect(st.initial).toBe(10);
     expect(st.current).toBeCloseTo(11.2, 10);
-    expect(st.min).toBe(10);
+    expect(st.min).toBeCloseTo(10.4, 10);
     expect(st.max).toBeCloseTo(11.2, 10);
     expect(st.delta).toBeCloseTo(1.2, 10);
-    expect(st.average).toBeCloseTo(10.6, 10);
-    expect(st.sampleCount).toBe(4);
+    expect(st.average).toBeCloseTo(10.8, 10);
+    expect(st.sampleCount).toBe(3);
+    expect(st.sampleStdDev).toBeCloseTo(0.4, 10);
   });
 
   it('G2 value 模式：常量变量每 Tick 记录（无 change 日志）', () => {
@@ -61,10 +62,10 @@ describe('R3 Monitoring · Watch 与 Series', () => {
       formulas: [{ id: 'f', target: 'a', expression: 'a + 1' }],
       watch: [{ target: 'a', mode: 'value' }],
     });
-    def.watch.push({ target: 'ghost', mode: 'value', operator: '>=' }); // 绕过 Loader 注入非法 watch
+    def.watch.push({ target: 'ghost', mode: 'value', operator: '>=' });
     const session = createMonitorSession(def);
     const snap = session.snapshot();
-    expect(snap.watches).toHaveLength(1); // 仅保留合法 a
+    expect(snap.watches).toHaveLength(1);
     expect(snap.series.ghost).toBeUndefined();
     const warns = snap.logs.filter((l) => l.kind === 'runtime' && l.level === 'warning');
     expect(warns).toHaveLength(1);
@@ -81,7 +82,7 @@ describe('R3 Monitoring · Watch 与 Series', () => {
         watch: [{ target: 'a', mode: 'threshold', threshold: 30 }],
       }),
     );
-    for (let i = 0; i < 5; i++) controller.step(); // 20,40,10,30,0
+    for (let i = 0; i < 5; i++) controller.step();
     const crossings = session.snapshot().logs.filter((l) => l.kind === 'event');
     expect(crossings).toHaveLength(2);
     expect(crossings.map((l) => l.tickIndex)).toEqual([2, 4]);

@@ -1,5 +1,4 @@
-// FE-A-R1 focused test：Monitored Runtime Handle 生命周期（UI 实际消费路径）。
-// 语义对应 R1-T01/T02/T04/T09/T10/T11/T12/T13/T14/T15。
+// FE-A-R1/STAT-1 focused test：Monitored Runtime Handle 生命周期（UI 实际消费路径）。
 import { describe, expect, it } from 'vitest';
 import { createMonitoredRuntime } from '../../src/monitor/session';
 import { withInitialValues } from '../../src/ui/experiment/draft';
@@ -19,7 +18,7 @@ describe('FE-A-R1 · Monitored Runtime Handle 生命周期', () => {
     expect(h.controller.status).toBe('ready');
     const snap = h.session.snapshot();
     expect(snap.watches.map((w) => w.target)).toEqual(['a']);
-    expect(snap.series.a).toHaveLength(1); expect(snap.session.tickCount).toBe(0); // time=0 初始点
+    expect(snap.series.a).toHaveLength(1); expect(snap.session.tickCount).toBe(0);
   });
   it('T04 Series 随成功 Tick 增长', () => {
     const h = createMonitoredRuntime(watchDef());
@@ -27,24 +26,24 @@ describe('FE-A-R1 · Monitored Runtime Handle 生命周期', () => {
     const snap = h.session.snapshot();
     expect(snap.series.a).toHaveLength(4); expect(snap.series.a[3].value).toBe(3); expect(snap.session.tickCount).toBe(3);
   });
-  it('T02/T13 Apply 参数 = 新 Definition 全新 Handle：不继承旧 Series/Log/Statistics', () => {
+  it('T02/T13 Apply 参数 = 新 Definition 全新 Handle：初始化 Series 不冒充统计样本', () => {
     const def = watchDef();
     const old = createMonitoredRuntime(def);
     old.controller.step(); old.controller.step();
     const snap = createMonitoredRuntime(withInitialValues(def, { a: 50 })).session.snapshot();
-    expect(snap.series.a[0].value).toBe(50); // 新 Initial
+    expect(snap.series.a[0].value).toBe(50);
     expect(snap.series.a).toHaveLength(1); expect(snap.logs).toHaveLength(0);
-    expect(snap.statistics.a).toMatchObject({ current: 50, sampleCount: 1 });
-    expect(old.session.snapshot().series.a).toHaveLength(3); // 旧 Session 零影响
+    expect(snap.statistics.a).toMatchObject({ current: 50, sampleCount: 0, sampleStdDev: null });
+    expect(old.session.snapshot().series.a).toHaveLength(3);
   });
   it('T09 Pause 冻结监控历史；T10 Resume 沿原 Session 连续增长', async () => {
     const m = manualScheduler();
     const h = createMonitoredRuntime(watchDef(100), m.scheduler);
-    h.controller.run('x10'); // 首批 10 tick 同步执行后挂起
+    h.controller.run('x10');
     h.controller.pause();
     const frozen = h.session.snapshot().series.a.length;
     expect(frozen).toBe(11);
-    m.release(); // 旧循环苏醒：代际取消 → 零写入
+    m.release();
     await new Promise((r) => setTimeout(r, 0));
     expect(h.session.snapshot().series.a).toHaveLength(frozen);
     h.controller.resume();
@@ -61,7 +60,7 @@ describe('FE-A-R1 · Monitored Runtime Handle 生命周期', () => {
     expect(h.controller.status).toBe('stopped');
     expect(h.session.snapshot().series.a.length).toBeGreaterThan(1);
   });
-  it('T12 handle.reset() = Runtime + Session 联合重置', () => {
+  it('T12 handle.reset() = Runtime + Session 联合重置，统计样本归零', () => {
     const h = createMonitoredRuntime(watchDef());
     h.controller.step(); h.controller.step();
     h.reset();
@@ -70,7 +69,7 @@ describe('FE-A-R1 · Monitored Runtime Handle 生命周期', () => {
     expect(h.controller.state.variables.a).toBe(0);
     const snap = h.session.snapshot();
     expect(snap.series.a).toHaveLength(1); expect(snap.logs).toHaveLength(0);
-    expect(snap.statistics.a).toMatchObject({ kind: 'numeric', current: 0, sampleCount: 1 });
+    expect(snap.statistics.a).toMatchObject({ kind: 'numeric', current: 0, sampleCount: 0, sampleStdDev: null });
   });
   it('T14 Failed 保留失败前证据', async () => {
     const def = makeTickDef({

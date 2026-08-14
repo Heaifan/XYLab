@@ -1,4 +1,4 @@
-// F2 focused test（UA1 语义更新）：ViewState 纯函数（Set 多选/聚焦/隐藏/固定/同单位组）+ MetricRow 模型。
+// F2/STAT-1 focused test：ViewState 纯函数 + MetricRow Tick-only 统计模型。
 import { describe, expect, it } from 'vitest';
 import { createMonitoredRuntime } from '../../../src/monitor/session';
 import { buildRows } from '../../../src/ui/monitor/metricModel';
@@ -13,7 +13,7 @@ describe('F2→UA1 · ViewState 纯函数', () => {
     let v = selectToggle(VIEW_INIT, null, 'a').view;
     v = selectToggle(v, null, 'b').view;
     expect(selectedTargets(v, resolved)).toEqual(['a', 'b']);
-    v = selectToggle(v, null, 'a').view; // 再次点击 = 移出
+    v = selectToggle(v, null, 'a').view;
     expect(selectedTargets(v, resolved)).toEqual(['b']);
     expect(selectedTargets(viewClearSelect(v), resolved)).toEqual([]);
   });
@@ -28,20 +28,18 @@ describe('F2→UA1 · ViewState 纯函数', () => {
       variables: { x: { type: 'number', value: 0 }, y: { type: 'number', value: 0 }, z: { type: 'number', value: 0 } },
       tick: 1, duration: 1,
     });
-    def.variables.x.unit = '人';
-    def.variables.y.unit = '人';
-    def.variables.z.unit = '%';
+    def.variables.x.unit = '人'; def.variables.y.unit = '人'; def.variables.z.unit = '%';
     expect(sameUnitGroup(def, ['x', 'y', 'z'])).toEqual({ shown: ['x', 'y'], excluded: ['z'] });
     expect(sameUnitGroup(def, ['x'])).toEqual({ shown: ['x'], excluded: [] });
   });
   it('Pin 自动取解析目标前六；显式增删受 PIN_CAP 与 resolved 过滤', () => {
     const many = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
     expect(effectivePinned(VIEW_INIT, many)).toEqual(['a', 'b', 'c', 'd', 'e', 'f']);
-    let v = viewTogglePin(VIEW_INIT, 'g', many); // a..f+g = 7 → 截断前 6
+    let v = viewTogglePin(VIEW_INIT, 'g', many);
     expect(effectivePinned(v, many)).toEqual(['a', 'b', 'c', 'd', 'e', 'f']);
-    v = viewTogglePin(v, 'a', many); // 取消固定 a → g 进入前六
+    v = viewTogglePin(v, 'a', many);
     expect(effectivePinned(v, many)).toEqual(['b', 'c', 'd', 'e', 'f', 'g']);
-    const ghost = viewTogglePin(VIEW_INIT, 'ghost', ['a', 'b']); // resolved 之外 → 展示时过滤
+    const ghost = viewTogglePin(VIEW_INIT, 'ghost', ['a', 'b']);
     expect(effectivePinned(ghost, ['a', 'b'])).toEqual(['a', 'b']);
   });
 });
@@ -57,35 +55,24 @@ describe('F2 · MetricRow 模型', () => {
       timeline: { mode: 'fixed_tick', tick: 1, duration: 10 },
     });
   }
-  it('第一/二层：label 优先、单位、实时值模式、Δ 方向与统计块', () => {
-    const d = labDef();
-    const rt = createMonitoredRuntime(d);
-    rt.controller.step();
-    rt.controller.step(); // fatigue = 4
+  it('第一/二层：label/单位/实时值/Δ 与 Tick-only mean·σ·n', () => {
+    const d = labDef(), rt = createMonitoredRuntime(d);
+    rt.controller.step(); rt.controller.step();
     const r = buildRows(d, rt.session.snapshot(), null).find((x) => x.target === 'fatigue')!;
-    expect(r.label).toBe('疲劳度');
-    expect(r.unit).toBe('%');
-    expect(r.modeText).toBe('实时值');
-    expect(r.value).toBe('4.00');
-    expect(r.deltaDir).toBe('up');
-    expect(r.stats).toMatchObject({ min: '0', samples: 3 });
+    expect(r.label).toBe('疲劳度'); expect(r.unit).toBe('%'); expect(r.modeText).toBe('实时值');
+    expect(r.value).toBe('4.00'); expect(r.deltaDir).toBe('up');
+    expect(r.stats).toMatchObject({ min: '2', max: '4', average: '3', samples: 2 });
+    expect(r.stats?.stddev).not.toBe('—');
   });
   it('boolean 行给变化次数文本；无统计目标绝不伪造统计', () => {
-    const d = labDef();
-    const rt = createMonitoredRuntime(d);
-    rt.controller.step();
-    rt.controller.step();
-    rt.controller.step(); // fatigue=6 → flag 翻转
+    const d = labDef(), rt = createMonitoredRuntime(d);
+    rt.controller.step(); rt.controller.step(); rt.controller.step();
     const f = buildRows(d, rt.session.snapshot(), null).find((x) => x.target === 'flag')!;
-    expect(f.detail).toContain('次变化');
-    expect(f.stats).toBeNull();
+    expect(f.detail).toContain('次变化'); expect(f.stats).toBeNull();
   });
   it('锁定模式读目标时刻 series（不是最新值）', () => {
-    const d = labDef();
-    const rt = createMonitoredRuntime(d);
-    rt.controller.step();
-    rt.controller.step();
-    rt.controller.step(); // fatigue=6 @ t=3
+    const d = labDef(), rt = createMonitoredRuntime(d);
+    rt.controller.step(); rt.controller.step(); rt.controller.step();
     const locked = buildRows(d, rt.session.snapshot(), 1).find((x) => x.target === 'fatigue')!;
     expect(locked.value).toBe('2.00');
   });

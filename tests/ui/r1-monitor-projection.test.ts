@@ -1,10 +1,9 @@
-// FE-A-R1 · 投影测试：MonitorSnapshot 是 UI 唯一数据契约（T03/T05/T06/T07/T08）。
+// FE-A-R1/STAT-1 · 投影测试：MonitorSnapshot 是 UI 唯一数据契约。
 import { describe, expect, it } from 'vitest';
 import { createMonitoredRuntime } from '../../src/monitor/session';
 import { readBridge } from '../../src/ui/monitor/useMonitor';
 import { makeTickDef } from '../runtime/fixtures';
 
-// 混合形态定义：number/boolean/string 三类 watch + protocol event（边缘触发）
 function mixedRuntime() {
   const def = makeTickDef({
     variables: { b: { type: 'number', value: 0 }, a: { type: 'boolean', value: false }, note: { type: 'string', value: 'x' } },
@@ -33,11 +32,14 @@ describe('FE-A-R1 · MonitorSnapshot 投影', () => {
     expect(Object.keys(snap.series)).toEqual(['b', 'a', 'note']);
   });
 
-  it('T05：Numeric Statistics 正确投影（initial/current/min/max/average/delta/sampleCount）', () => {
+  it('T05：Numeric Statistics 仅统计成功 Tick，并投影样本标准差', () => {
     const rt = mixedRuntime();
-    rt.controller.step(); rt.controller.step(); rt.controller.step(); // b: 0→2→4→6
+    rt.controller.step(); rt.controller.step(); rt.controller.step();
     const snap = rt.session.snapshot();
-    expect(snap.statistics.b).toEqual({ kind: 'numeric', initial: 0, current: 6, min: 0, max: 6, average: 3, delta: 6, sampleCount: 4 });
+    expect(snap.statistics.b).toEqual({
+      kind: 'numeric', initial: 0, current: 6, min: 2, max: 6,
+      average: 4, delta: 6, sampleCount: 3, sampleStdDev: 2,
+    });
   });
 
   it('T06：Boolean Statistics 正确投影（initial/current/changeCount）', () => {
@@ -49,7 +51,7 @@ describe('FE-A-R1 · MonitorSnapshot 投影', () => {
     expect(st).toEqual({ kind: 'boolean', initial: false, current: true, changeCount: 1 });
   });
 
-  it('T07/T08：日志域收敛——kind/source 仅来自核心，change 带结构化前后值，UI diff 日志不复存在', () => {
+  it('T07/T08：日志域收敛——kind/source 仅来自核心，change 带结构化前后值', () => {
     const rt = mixedRuntime();
     rt.controller.step(); rt.controller.step(); rt.controller.step();
     const snap = rt.session.snapshot();
@@ -62,9 +64,7 @@ describe('FE-A-R1 · MonitorSnapshot 投影', () => {
         expect(l.currentValue).toBeDefined();
       }
     }
-    // 边缘触发：b>=4 在 tick2 变真后持续为真，'hot' 只落账一次
     expect(snap.logs.filter((l) => l.source === 'hot')).toHaveLength(1);
-    // Second Truth 已废除：不存在任何 UI 自造来源的日志
     expect(snap.logs.some((l) => l.source === 'ui' || l.source === 'diff')).toBe(false);
   });
 
