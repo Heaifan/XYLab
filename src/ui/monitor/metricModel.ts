@@ -1,6 +1,5 @@
-// F2 · Metric 模型层：MonitorSnapshot → MetricRow（Pinned 卡与 WatchInspector 共用唯一模型）。
-// valueAtTime/nearestTime 时间域纯函数（R2 冻结语义迁入）；metricStatus 只认结构化 threshold watch，
-// 绝不解析事件表达式。锁定模式读目标时刻 series；数据唯一来源 MonitorSnapshot（Second Truth 禁令）。
+// F2/STAT-1 · MonitorSnapshot → MetricRow；统计来自 MonitorSnapshot 单一真值。
+// numeric 的 min/max/average/sampleStdDev/sampleCount 均只统计成功 Tick，初始化点仅作为 initial。
 import type { ComparisonOperator, ExperimentDefinition } from '../../protocol/types';
 import type { MonitorSnapshot, SeriesPoint } from '../../monitor/types';
 import { formatMetric, formatNumber, formatValue } from '../format';
@@ -9,7 +8,7 @@ export function valueAtTime(pts: SeriesPoint[], t: number): SeriesPoint | null {
   if (pts.length === 0) return null;
   let best = pts[0];
   for (const p of pts) {
-    if (p.time > t) break; // series 按 time 升序追加
+    if (p.time > t) break;
     best = p;
   }
   return best;
@@ -47,36 +46,36 @@ export interface MetricRow {
   unit: string;
   modeText: string;
   value: string;
-  deltaText: string; // '+14.50' / '-10.43' / boolean 变化次数
+  deltaText: string;
   deltaDir: 'up' | 'down' | 'none';
-  detail: string; // 卡片 sub 行（Δ… / N 次变化 / 仅 Series）
-  stats: { initial: string; min: string; max: string; average: string; samples: number } | null;
+  detail: string;
+  stats: { initial: string; min: string; max: string; average: string; stddev: string; samples: number } | null;
   status: 'normal' | 'warning';
 }
 
 export function buildRows(def: ExperimentDefinition | null, snap: MonitorSnapshot | null, lockTime: number | null): MetricRow[] {
   if (!snap) return [];
-  const seen = new Set<string>();
-  const out: MetricRow[] = [];
+  const seen = new Set<string>(), out: MetricRow[] = [];
   for (const w of snap.watches) {
     if (seen.has(w.target)) continue;
     seen.add(w.target);
-    const stats = snap.statistics[w.target];
-    const pts = snap.series[w.target] ?? [];
+    const stats = snap.statistics[w.target], pts = snap.series[w.target] ?? [];
     const locked = lockTime !== null ? valueAtTime(pts, lockTime) : null;
     let value = '—';
     if (locked) value = typeof locked.value === 'number' ? formatMetric(locked.value) : String(locked.value);
     else if (stats) value = typeof stats.current === 'number' ? formatMetric(stats.current) : String(stats.current);
     else if (pts.length > 0) value = formatValue(pts[pts.length - 1].value);
-    let deltaText = '';
-    let deltaDir: MetricRow['deltaDir'] = 'none';
-    let detail = '仅 Series';
+    let deltaText = '', deltaDir: MetricRow['deltaDir'] = 'none', detail = '仅 Series';
     let statsBlock: MetricRow['stats'] = null;
     if (stats?.kind === 'numeric') {
       deltaText = `${stats.delta >= 0 ? '+' : ''}${formatMetric(stats.delta)}`;
       deltaDir = stats.delta > 0 ? 'up' : stats.delta < 0 ? 'down' : 'none';
       detail = `Δ ${deltaText}`;
-      statsBlock = { initial: formatNumber(stats.initial), min: formatNumber(stats.min), max: formatNumber(stats.max), average: formatNumber(stats.average), samples: stats.sampleCount };
+      statsBlock = {
+        initial: formatNumber(stats.initial), min: formatNumber(stats.min), max: formatNumber(stats.max),
+        average: formatNumber(stats.average), stddev: stats.sampleStdDev === null ? '—' : formatNumber(stats.sampleStdDev),
+        samples: stats.sampleCount,
+      };
     } else if (stats?.kind === 'boolean') {
       deltaText = `${stats.changeCount}`;
       detail = `${stats.changeCount} 次变化`;
@@ -91,8 +90,6 @@ export function buildRows(def: ExperimentDefinition | null, snap: MonitorSnapsho
 }
 
 export interface MetricModel { target: string; label: string; unit: string; value: string; detail: string; status: 'normal' | 'warning'; }
-
-// R2 兼容形状（SaveRunSheet 摘要等消费）
 export function resolveMetrics(def: ExperimentDefinition | null, snap: MonitorSnapshot | null, lockTime: number | null): MetricModel[] {
   return buildRows(def, snap, lockTime).map((r) => ({ target: r.target, label: r.label, unit: r.unit, value: r.value, detail: r.detail, status: r.status }));
 }

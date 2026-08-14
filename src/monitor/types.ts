@@ -1,4 +1,4 @@
-// R3 · Monitoring 公共类型：Watch / Series / Log / Statistics / Session / Snapshot。
+// R3/STAT-1 · Monitoring 公共类型：Watch / Series / Log / Statistics / Session / Snapshot。
 // R4-F2 UI 只消费 MonitorSnapshot 一种结构，禁止翻 Runtime 历史。
 
 import type { ComparisonOperator, EventLevel, VariableType, WatchMode } from '../protocol/types';
@@ -18,7 +18,7 @@ export interface MonitorLogEntry {
   tickIndex: number;
   level: EventLevel;
   kind: LogKind;
-  source: string; // 'tick' | 'watch:<target>' | eventId | 'session' | 'runtime'
+  source: string;
   target?: string;
   message: string;
   previousValue?: RuntimeValue;
@@ -29,8 +29,8 @@ export interface WatchRecord {
   target: string;
   mode: WatchMode;
   threshold?: number;
-  operator: ComparisonOperator; // Loader 已归一化（threshold 模式缺省 '>='）
-  type: VariableType; // 决定统计形态：number/integer → numeric；boolean → boolean；其余仅 series
+  operator: ComparisonOperator;
+  type: VariableType;
 }
 
 export interface NumericStatistics {
@@ -40,8 +40,9 @@ export interface NumericStatistics {
   min: number;
   max: number;
   average: number;
-  delta: number; // current - initial
-  sampleCount: number;
+  delta: number;
+  sampleCount: number; // 成功 Tick 样本数；不含 time=0 初始化点
+  sampleStdDev: number | null; // 样本标准差，N-1；N<2 时为 null
 }
 
 export interface BooleanStatistics {
@@ -55,10 +56,10 @@ export type WatchStatistics = NumericStatistics | BooleanStatistics;
 
 export interface SessionInfo {
   experimentId: string;
-  tickCount: number; // 成功 Tick 数
+  tickCount: number;
   lastTime: number;
   lastTickIndex: number;
-  failure: { code: string; message: string } | null; // 最近 Runtime Failure
+  failure: { code: string; message: string } | null;
 }
 
 export interface MonitorSnapshot {

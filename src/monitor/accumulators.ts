@@ -1,5 +1,5 @@
-// R3 · 有界累积器：BoundedSeries（10000 点封顶，保最新）+ 数值/布尔统计。
-// 冻结：历史禁止无限增长（R3 只做封顶，Downsampling 留待未来）。
+// R3/STAT-1 · 有界历史 + 在线统计。Numeric 使用 Welford，稳定计算样本标准差。
+// 冻结：Series 保留 time=0 初始点；统计 sampleCount 只数成功 Tick，不把初始化点当模拟样本。
 
 import type { BooleanStatistics, NumericStatistics, SeriesPoint } from './types';
 import type { RuntimeValue } from '../runtime/types';
@@ -14,65 +14,63 @@ export class BoundedSeries {
 
   append(point: SeriesPoint): void {
     this.points.push(point);
-    if (this.points.length > this.cap) {
-      this.points = this.points.slice(this.points.length - this.cap); // 保留最新
-    }
+    if (this.points.length > this.cap) this.points = this.points.slice(this.points.length - this.cap);
   }
 
-  clear(): void {
-    this.points = [];
-  }
+  clear(): void { this.points = []; }
 
-  all(): SeriesPoint[] {
-    return this.points;
-  }
+  all(): SeriesPoint[] { return this.points; }
 }
 
 export class NumericAccumulator {
-  private first: number | null = null;
-  private last = 0;
+  private last: number;
   private minV = Infinity;
   private maxV = -Infinity;
-  private sum = 0;
+  private mean = 0;
+  private m2 = 0;
   private count = 0;
 
+  constructor(private readonly initial: number = 0) { this.last = initial; }
+
   record(value: number): void {
-    if (this.first === null) this.first = value;
     this.last = value;
     if (value < this.minV) this.minV = value;
     if (value > this.maxV) this.maxV = value;
-    this.sum += value;
     this.count += 1;
+    const delta = value - this.mean;
+    this.mean += delta / this.count;
+    const delta2 = value - this.mean;
+    this.m2 += delta * delta2;
   }
 
   snapshot(): NumericStatistics {
-    const first = this.first ?? 0;
     return {
       kind: 'numeric',
-      initial: first,
+      initial: this.initial,
       current: this.last,
-      min: this.count > 0 ? this.minV : first,
-      max: this.count > 0 ? this.maxV : first,
-      average: this.count > 0 ? this.sum / this.count : first,
-      delta: this.last - first,
+      min: this.count > 0 ? this.minV : this.initial,
+      max: this.count > 0 ? this.maxV : this.initial,
+      average: this.count > 0 ? this.mean : this.initial,
+      delta: this.last - this.initial,
       sampleCount: this.count,
+      sampleStdDev: this.count > 1 ? Math.sqrt(this.m2 / (this.count - 1)) : null,
     };
   }
 }
 
 export class BooleanAccumulator {
-  private first: boolean | null = null;
-  private last = false;
+  private last: boolean;
   private changes = 0;
 
+  constructor(private readonly initial: boolean = false) { this.last = initial; }
+
   record(value: boolean): void {
-    if (this.first === null) this.first = value;
-    else if (value !== this.last) this.changes += 1;
+    if (value !== this.last) this.changes += 1;
     this.last = value;
   }
 
   snapshot(): BooleanStatistics {
-    return { kind: 'boolean', initial: this.first ?? false, current: this.last, changeCount: this.changes };
+    return { kind: 'boolean', initial: this.initial, current: this.last, changeCount: this.changes };
   }
 }
 

@@ -1,8 +1,8 @@
-// UA1 focused test：barRows + Scatter 配对/径向 σ/统计验证/密度策略。
+// UA1/STAT-1 focused test：barRows + Scatter 配对/径向统计/密度策略。
 import { describe, expect, it } from 'vitest';
 import type { SeriesPoint } from '../../../src/monitor/types';
 import { barRows } from '../../../src/ui/charts/bars';
-import { scatterDistributionStats, scatterDotVisual, scatterExtent, scatterOutsideReference, scatterPairs } from '../../../src/ui/charts/scatter';
+import { scatterDotVisual, scatterExtent, scatterOutsideReference, scatterPairs, scatterRadiusStats } from '../../../src/ui/charts/scatter';
 import { relBase, relSkipped } from '../../../src/ui/viz/shared';
 
 const pt = (time: number, value: number | string, tickIndex = time): SeriesPoint => ({ time, tickIndex, value });
@@ -23,7 +23,7 @@ describe('UA1 · barRows 时间点语义', () => {
   it('相对单位为 %', () => expect(barRows(series,['a'],'relative',null,1,'bar')[0].unit).toBe('%'));
 });
 
-describe('UA1 · Scatter 模型', () => {
+describe('UA1/STAT-1 · Scatter 模型', () => {
   it('相对模式基线辅助不回退', () => {
     expect(relSkipped('relative',['a','z','s'],series)).toEqual(['z','s']);
     expect(relSkipped('absolute',['a','z'],series)).toEqual([]);
@@ -43,12 +43,9 @@ describe('UA1 · Scatter 模型', () => {
     expect(scatterDotVisual(1000)).toEqual({r:1.7,opacity:.62});
     expect(scatterDotVisual(100)).toEqual({r:2.5,opacity:.9});
   });
-  it('二维正态统计按径向理论概率判定', () => {
-    const pts=[{x:0,y:0},{x:.1,y:0},{x:0,y:.1},{x:.15,y:.15},{x:.4,y:0},{x:.7,y:0}];
-    const s=scatterDistributionStats(pts,.2);
-    expect(s.bands[0].theory).toBeCloseTo(1-Math.exp(-.5));
-    expect(s.bands[1].theory).toBeCloseTo(1-Math.exp(-2));
-    expect(s.bands[2].theory).toBeCloseTo(1-Math.exp(-4.5));
-    expect(s.bands[2].count).toBe(5);
+  it('径向统计只基于配对后的模拟点', () => {
+    const s=scatterRadiusStats([{x:3,y:4},{x:0,y:2}]);
+    expect(s.meanRadius).toBe(3.5);
+    expect(s.maxRadius).toBe(5);
   });
 });
