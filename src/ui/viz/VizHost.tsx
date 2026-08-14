@@ -1,4 +1,4 @@
-// UA1 · Canvas 调度层：view.viz → 图表实现；Legend 统一渲染（点击 = Selection Toggle，Inspector/Legend/Chart 同源）。
+// UA1 · Canvas 调度层：view.viz → 图表实现；非 Scatter 使用多系列 Legend；Scatter 使用二维语义专用图例。
 // Temporal Cursor：lockTime 由全部可视化统一消费；Scatter X/Y = 选中前两项自动指派，可下拉改派 + ⇄ 交换。
 import type { ExperimentDefinition } from '../../protocol/types';
 import type { MonitorSnapshot } from '../../monitor/types';
@@ -40,13 +40,14 @@ export function VizHost(p: Props) {
       {p.lockTime !== null ? <button onClick={() => p.onLock(null)}>跟随实时</button> : <span className="muted">Tap 图表锁定检查点</span>}
     </div>
   );
+  const showSeriesLegend = p.targets.length > 0 && viz !== 'scatter';
   if (p.targets.length === 0 && viz !== 'timeline' && viz !== 'etrack') {
     return <p className="muted">未选择指标——在「监控值」点击行加入图表。</p>;
   }
   if (!chk.ok) {
     return (
       <>
-        {p.targets.length > 0 && legend}
+        {showSeriesLegend && legend}
         <p className="muted viz-reason">当前不可用：{chk.reason}</p>
       </>
     );
@@ -73,7 +74,7 @@ export function VizHost(p: Props) {
   }
   return (
     <div className="chart-wrap">
-      {p.targets.length > 0 && legend}
+      {showSeriesLegend && legend}
       {chart}
       {p.targets.length > 4 && (viz === 'line' || viz === 'area' || viz === 'step') && (
         <p className="muted chart-note">XYUI-8 8-06：同屏建议 2~4 条曲线，当前 {p.targets.length} 条，可收窄选择。</p>

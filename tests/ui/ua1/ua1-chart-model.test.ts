@@ -1,15 +1,15 @@
-// UA1 focused test：图表数据纯函数——barRows 时间点读取/相对/Delta + Zero Baseline 防护；scatterPairs 同 Tick 配对；relSkipped。
+// UA1 focused test：图表数据纯函数——barRows 时间点读取/相对/Delta + Scatter 配对/启动样本/参考范围。
 import { describe, expect, it } from 'vitest';
 import type { SeriesPoint } from '../../../src/monitor/types';
 import { barRows } from '../../../src/ui/charts/bars';
-import { scatterPairs } from '../../../src/ui/charts/scatter';
+import { scatterExtent, scatterOutsideReference, scatterPairs } from '../../../src/ui/charts/scatter';
 import { relBase, relSkipped } from '../../../src/ui/viz/shared';
 
-const pt = (time: number, value: number | string): SeriesPoint => ({ time, tickIndex: time, value });
+const pt = (time: number, value: number | string, tickIndex = time): SeriesPoint => ({ time, tickIndex, value });
 const series = {
-  a: [pt(0, 10), pt(1, 20), pt(2, 30), pt(3, 40)],
-  z: [pt(0, 0), pt(1, 5)],
-  s: [pt(0, 'init'), pt(1, 'x')],
+  a: [pt(0, 10, 0), pt(1, 20), pt(2, 30), pt(3, 40)],
+  z: [pt(0, 0, 0), pt(1, 5)],
+  s: [pt(0, 'init', 0), pt(1, 'x')],
 };
 
 describe('UA1 · barRows 时间点语义（场景 E：锁定后柱状读锁定 Tick 值）', () => {
@@ -24,7 +24,7 @@ describe('UA1 · barRows 时间点语义（场景 E：锁定后柱状读锁定 T
   it('Zero Baseline：基线 0 / 非数值 → 跳过该行，绝不产生 NaN/Infinity/假 100%', () => {
     expect(barRows(series, ['z'], 'relative', null, 1, 'bar')).toEqual([]);
     expect(barRows(series, ['s'], 'relative', null, 1, 'bar')).toEqual([]);
-    expect(barRows(series, ['z'], 'absolute', null, 1, 'delta')).toEqual([]); // 基线 0 → Delta 同样跳过（统一 Zero Baseline 防护）
+    expect(barRows(series, ['z'], 'absolute', null, 1, 'delta')).toEqual([]);
   });
   it('相对模式单位统一为 %', () => {
     expect(barRows(series, ['a'], 'relative', null, 1, 'bar')[0].unit).toBe('%');
@@ -37,8 +37,14 @@ describe('UA1 · relSkipped & scatterPairs', () => {
     expect(relSkipped('absolute', ['a', 'z'], series)).toEqual([]);
     expect(relBase(series.a)).toBe(10);
   });
-  it('Scatter 仅同 Tick 配对：时间错位不构成点（场景 D）', () => {
-    const mixed = { x: series.a, y: [pt(0, 1), pt(1, 2), pt(3, 4)] };
-    expect(scatterPairs(mixed, 'x', 'y')).toEqual([{ x: 10, y: 1 }, { x: 20, y: 2 }, { x: 40, y: 4 }]);
+  it('Scatter 仅同 Tick 配对，并排除 tickIndex=0 初始化样本', () => {
+    const mixed = { x: series.a, y: [pt(0, 1, 0), pt(1, 2), pt(3, 4)] };
+    expect(scatterPairs(mixed, 'x', 'y')).toEqual([{ x: 20, y: 2 }, { x: 40, y: 4 }]);
+  });
+  it('参考范围固定为 ±3σ；全部数据才被离群点扩张', () => {
+    const pts = [{ x: 0.1, y: -0.2 }, { x: 0.95, y: 0.1 }];
+    expect(scatterExtent(pts, 0.2, 'reference')).toBeCloseTo(0.648);
+    expect(scatterExtent(pts, 0.2, 'all')).toBeCloseTo(1.026);
+    expect(scatterOutsideReference(pts, 0.2)).toBe(1);
   });
 });
