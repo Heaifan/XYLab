@@ -18,8 +18,7 @@ export interface VizDef {
 }
 
 export const CATS: { id: VizCat; label: string }[] = [
-  { id: 'trend', label: '趋势' }, { id: 'compare', label: '比较' }, { id: 'relation', label: '关系' }, { id: 'state', label: '状态' },
-  { id: 'composition', label: '组成' }, { id: 'distribution', label: '分布' }, { id: 'process', label: '过程' }, { id: 'advanced', label: '高级' },
+  { id: 'trend', label: '趋势' }, { id: 'compare', label: '比较' }, { id: 'relation', label: '关系' }, { id: 'state', label: '状态' }, { id: 'composition', label: '组成' }, { id: 'distribution', label: '分布' }, { id: 'process', label: '过程' }, { id: 'advanced', label: '高级' },
 ];
 
 export const CATALOG: VizDef[] = [
@@ -29,7 +28,7 @@ export const CATALOG: VizDef[] = [
   { id: 'bar', cat: 'compare', label: '柱状图', spec: '8-08', min: 1, max: 8, abs: true, rel: true, sameUnitAbs: true, thresholdOnly: false, data: 'series', reason: '' },
   { id: 'hbar', cat: 'compare', label: '横向条形图', spec: '8-08', min: 1, max: 8, abs: true, rel: true, sameUnitAbs: true, thresholdOnly: false, data: 'series', reason: '' },
   { id: 'delta', cat: 'compare', label: 'Delta 偏差', spec: '8-08', min: 1, max: 8, abs: true, rel: true, sameUnitAbs: false, thresholdOnly: false, data: 'series', reason: '' },
-  { id: 'scatter', cat: 'relation', label: '散点图', spec: '8-10', min: 2, max: 2, abs: true, rel: false, sameUnitAbs: false, thresholdOnly: false, data: 'series', reason: '' },
+  { id: 'scatter', cat: 'relation', label: '散点图', spec: '8-10', min: 2, max: 12, abs: true, rel: false, sameUnitAbs: false, thresholdOnly: false, data: 'series', reason: '' },
   { id: 'gauge', cat: 'state', label: 'Gauge 阈值仪表', spec: '8-13', min: 1, max: 4, abs: true, rel: false, sameUnitAbs: false, thresholdOnly: false, data: 'series', reason: '' },
   { id: 'range', cat: 'state', label: 'Range 区间', spec: '8-04', min: 1, max: 4, abs: true, rel: false, sameUnitAbs: false, thresholdOnly: false, data: 'series', reason: '' },
   { id: 'tband', cat: 'state', label: 'Threshold Band', spec: '8-04', min: 1, max: 8, abs: true, rel: false, sameUnitAbs: false, thresholdOnly: true, data: 'series', reason: '' },
