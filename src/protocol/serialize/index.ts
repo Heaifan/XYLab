@@ -24,7 +24,7 @@ export function experimentDocument(definition: ExperimentDefinition): Record<str
   const { totalTicks: _totalTicks, ...timeline } = definition.timeline;
   const out: Record<string, unknown> = {
     schema: definition.schemaVersion, experiment: externalInfo(definition), variables: externalVariables(definition),
-    entities: definition.entities.map((entity) => ({ ...entity, state: { ...entity.state })), timeline,
+    entities: definition.entities.map((entity) => ({ ...entity, state: { ...entity.state } })), timeline,
     watch: definition.watch.map((watch) => ({ ...watch })), events: definition.events.map((event) => ({ ...event })),
   };
   if (definition.formulas.length) out.formulas = definition.formulas.map((formula) => ({ ...formula }));
