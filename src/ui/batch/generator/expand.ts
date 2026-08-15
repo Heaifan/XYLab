@@ -1,19 +1,22 @@
-// BATCH-2 · 已校验 BatchDefinition → 确定性笛卡尔积方案；不修改 Definition。
-import type { BatchDimensionDefinition, BatchValue } from '../../../protocol/batch/types';
+// BATCH-2/MSV-1 · dimensions × seeds → 确定性笛卡尔积方案；不执行模拟。
+import type { BatchDimensionDefinition, BatchRangeDefinition, BatchValue } from '../../../protocol/batch/types';
 import type { ExperimentDefinition } from '../../../protocol/types';
 import type { BatchScenario } from '../types';
-function dimensionValues(dimension: BatchDimensionDefinition): BatchValue[] {
-  if (dimension.values) return [...dimension.values];
-  const range = dimension.range!; const out: number[] = [];
-  const count = Math.floor((range.end - range.start) / range.step + 1e-9) + 1;
+function rangeValues(range: BatchRangeDefinition): number[] {
+  const out: number[] = [], count = Math.floor((range.end - range.start) / range.step + 1e-9) + 1;
   for (let i = 0; i < count; i += 1) out.push(range.start + range.step * i);
   return out;
 }
-function scenarioName(definition: ExperimentDefinition, overrides: Record<string, BatchValue>): string {
-  return Object.entries(overrides).map(([key, value]) => {
+function dimensionValues(dimension: BatchDimensionDefinition): BatchValue[] {
+  return dimension.values ? [...dimension.values] : rangeValues(dimension.range!);
+}
+function scenarioName(definition: ExperimentDefinition, overrides: Record<string, BatchValue>, seed?: number): string {
+  const parts = Object.entries(overrides).map(([key, value]) => {
     const variable = definition.variables[key];
     return `${variable?.label ?? key}=${String(value)}${variable?.unit ?? ''}`;
-  }).join(' · ');
+  });
+  if (seed !== undefined) parts.push(`Seed=${seed}`);
+  return parts.join(' · ');
 }
 export function expandBatchScenarios(definition: ExperimentDefinition): BatchScenario[] {
   if (!definition.batch) return [];
@@ -23,7 +26,10 @@ export function expandBatchScenarios(definition: ExperimentDefinition): BatchSce
     for (const row of rows) for (const value of values) next.push({ ...row, [dimension.variable]: value });
     rows = next;
   }
-  return rows.map((overrides, index) => ({
-    id: `json-${index + 1}`, name: scenarioName(definition, overrides), overrides,
-  }));
+  const seeds = definition.batch.seeds ? rangeValues(definition.batch.seeds) : [undefined];
+  const scenarios: BatchScenario[] = [];
+  for (const row of rows) for (const seed of seeds) scenarios.push({
+    id: `json-${scenarios.length + 1}`, name: scenarioName(definition, row, seed), overrides: row, seed,
+  });
+  return scenarios;
 }

@@ -12,7 +12,10 @@ export interface RawBatchDimension {
   variable?: unknown; values?: unknown[];
   range?: { start?: unknown; end?: unknown; step?: unknown };
 }
-export interface RawBatch { dimensions?: RawBatchDimension[]; tick_limit?: unknown; }
+export interface RawBatch {
+  dimensions?: RawBatchDimension[]; tick_limit?: unknown;
+  seeds?: { start?: unknown; end?: unknown; step?: unknown };
+}
 export interface RawExperiment {
   schema?: unknown; experiment?: Record<string, unknown>; variables?: Record<string, RawVariable>;
   entities?: RawEntity[]; formulas?: RawFormula[]; timeline?: RawTimeline; watch?: RawWatch[];
