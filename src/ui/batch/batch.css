@@ -1,4 +1,4 @@
-/* Batch Experiment V1-F2 · XYUI Consumer：移动端结果入口直达；结构层继续消费现有 Light token。 */
+/* Batch Experiment BATCH-3 · XYUI Consumer：Sweep Group / Matrix；结构层继续消费现有 Light token。 */
 .batch-panel { display: flex; flex-direction: column; gap: var(--xylab-sp-2); }
 .batch-title, .batch-result-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--xylab-sp-2); }
 .batch-title h2 { margin: 0; }
@@ -24,6 +24,17 @@
 .batch-result-head .row { justify-content: flex-end; }
 .batch-result-link { min-height: 26px; padding: 2px var(--xylab-sp-1); border: 0; background: transparent; color: var(--xylab-accent); font: inherit; font-weight: 600; text-align: left; cursor: pointer; }
 .batch-result-link:hover, .batch-result-link:focus-visible { text-decoration: underline; }
+.batch-preview-groups, .batch-groups { display: flex; flex-direction: column; gap: var(--xylab-sp-2); }
+.batch-preview-group { display: grid; grid-template-columns: minmax(120px, 180px) 1fr; gap: var(--xylab-sp-2); align-items: start; }
+.batch-preview-group > b span { color: var(--xylab-muted); font-weight: 500; }
+.batch-preview-group > div { display: flex; flex-wrap: wrap; gap: var(--xylab-sp-1); }
+.batch-preview-group > div span { border: 1px solid var(--xylab-border); border-radius: var(--xylab-radius-control); padding: 2px var(--xylab-sp-1); background: var(--xylab-surface); }
+.batch-group { display: flex; flex-direction: column; gap: var(--xylab-sp-2); border-top: 1px solid var(--xylab-border); padding-top: var(--xylab-sp-2); }
+.batch-group:first-child { border-top: 0; padding-top: 0; }
+.batch-group-head { display: flex; justify-content: space-between; gap: var(--xylab-sp-2); }
+.batch-group-table { min-width: 620px; }
+.batch-sweep-chart { border: 1px solid var(--xylab-border); border-radius: var(--xylab-radius-panel); padding: var(--xylab-sp-2); background: var(--xylab-surface); }
+.batch-sweep-chart svg { display: block; width: 100%; max-height: 170px; margin-top: var(--xylab-sp-1); }
 @media (max-width: 639px) {
   .batch-title, .batch-result-head { align-items: flex-start; flex-direction: column; }
   .batch-card-head { grid-template-columns: minmax(0, 1fr) auto; }
@@ -31,4 +42,5 @@
   .batch-override { grid-template-columns: minmax(0, 1fr) 92px auto; }
   .batch-result-head .row { justify-content: flex-start; width: 100%; }
   .batch-table { min-width: 520px; }
+  .batch-preview-group { grid-template-columns: 1fr; gap: var(--xylab-sp-1); }
 }

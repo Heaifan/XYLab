@@ -31,7 +31,7 @@ XYLab/
 │     └─ file-tree-pre-batch-stat.md     ← 旧 file-tree 原 blob 冻结归档
 │
 ├─ schema/
-│  └─ experiment.schema.json            ← xylab-experiment@0.1；BATCH-2 向后兼容增加可选 batch
+│  └─ experiment.schema.json            ← xylab-experiment@0.1；batch 支持 matrix/sweep
 │
 ├─ examples/
 │  ├─ fatigue-basic.json
@@ -54,6 +54,7 @@ XYLab/
 │  │  ├─ ua1-visualization-picker.md
 │  │  ├─ batch-experiment-v1.md         ← Batch Runner V1 决策
 │  │  ├─ batch-json-generator-v2.md     ← BATCH-2 JSON 方案生成/序列化决策
+│  │  ├─ batch-sweep-group-v1.md        ← BATCH-3 Sweep/Matrix + Group Compare 决策
 │  │  └─ runtime-statistics-v1.md       ← STAT-1 Tick-only/Welford/N-1 决策
 │  ├─ patterns/test-dir-layering.md
 │  └─ pitfalls/
@@ -79,16 +80,16 @@ XYLab/
 │  │  ├─ loader.ts                     ← Parse → Schema → Semantic → Normalize
 │  │  ├─ validator.ts
 │  │  ├─ loader-types.ts
-│  │  ├─ raw-types.ts
+│  │  ├─ raw-types.ts                  ← raw batch 含 mode
 │  │  ├─ types.ts                      ← ExperimentDefinition 可信合同
 │  │  ├─ normalize/
 │  │  ├─ semantic/
-│  │  ├─ batch/                        ← BATCH-2 协议扩展
-│  │  │  ├─ types.ts                  ← BatchDefinition/Dimension/Value
-│  │  │  ├─ normalize.ts              ← raw batch → trusted batch
-│  │  │  └─ semantic.ts               ← 变量/类型/range/重复/<=1000 语义校验
+│  │  ├─ batch/                        ← BATCH-3 协议扩展
+│  │  │  ├─ types.ts                  ← BatchDefinition/Mode/Dimension/Value
+│  │  │  ├─ normalize.ts              ← raw batch → trusted batch；旧 JSON 默认 matrix
+│  │  │  └─ semantic.ts               ← 变量/类型/range/重复/模式场景数/<=1000 校验
 │  │  └─ serialize/
-│  │     └─ index.ts                  ← trusted Definition → Loader-valid 外部 JSON
+│  │     └─ index.ts                  ← trusted Definition → Loader-valid 外部 JSON；保留 batch.mode
 │  │
 │  ├─ expression/                      ← Tokenizer → Parser → Semantic → Evaluator
 │  │  ├─ token.ts
@@ -137,14 +138,17 @@ XYLab/
 │     │  ├─ ConfirmDialog.tsx         ← XYUI-7 destructive Compact Confirm
 │     │  └─ feedback.css
 │     ├─ batch/
-│     │  ├─ BatchPanel.tsx            ← 手工/JSON 两模式、一键 Run All、copy/download feedback
+│     │  ├─ BatchPanel.tsx            ← Batch mode 路由；实验组/矩阵结果入口
 │     │  ├─ ScenarioEditor.tsx
 │     │  ├─ runner.ts                 ← 每场景隔离复用同一 Runtime
-│     │  ├─ types.ts                  ← scenario/batch result export
+│     │  ├─ types.ts                  ← scenario/batch result export；导出 mode
 │     │  ├─ batch.css
-│     │  └─ generator/
-│     │     ├─ expand.ts              ← dimensions → deterministic Cartesian scenarios
-│     │     └─ BatchPreview.tsx       ← JSON 方案预览
+│     │  ├─ generator/
+│     │  │  ├─ expand.ts              ← matrix 笛卡尔积 / sweep 单因素去重展开
+│     │  │  └─ BatchPreview.tsx       ← Sweep 实验组 / Matrix 方案预览
+│     │  └─ compare/
+│     │     ├─ model.ts               ← Scenario/Result → Sweep Group 投影与均值
+│     │     └─ BatchGroupCompare.tsx  ← 组内指标表 + XYUI-8 Line + 单场景入口
 │     ├─ monitor/
 │     │  ├─ useMonitor.ts
 │     │  ├─ RunPanel.tsx
@@ -169,7 +173,7 @@ XYLab/
 └─ tests/
    ├─ governance/governance-guard.test.ts
    ├─ loader/
-   │  ├─ batch-json.test.ts           ← BATCH-2 Loader/range/limit
+   │  ├─ batch-json.test.ts           ← BATCH-3 mode + MSV seed/range/limit
    │  └─ r2-01-*.test.ts
    ├─ runtime/
    ├─ expression/
@@ -182,7 +186,7 @@ XYLab/
    └─ ui/
       ├─ batch/
       │  ├─ batch-runner.test.ts      ← Batch 隔离 + STAT-1 export
-      │  └─ batch-generator.test.ts   ← JSON dimensions deterministic expand
+      │  └─ batch-generator.test.ts   ← Matrix 45 / Sweep 9 去重回归
       ├─ r2/r2-json-roundtrip.test.ts ← external serializer round-trip
       ├─ f2/
       ├─ ua1/
@@ -195,8 +199,10 @@ XYLab/
 | 问题 | 唯一责任位置 |
 | --- | --- |
 | JSON 进哪里？ | `src/protocol/loader.ts` |
-| JSON Batch 谁校验？ | `src/protocol/batch/`；Loader 前语义校验，场景总数上限 1000 |
-| JSON Batch 谁生成方案？ | `src/ui/batch/generator/expand.ts`，只做确定性展开，不执行模拟 |
+| JSON Batch 谁校验？ | `src/protocol/batch/`；Loader 前语义校验，按 mode 计算场景总数，上限 1000 |
+| Sweep 和 Matrix 怎么区分？ | `batch.mode`；未声明=matrix，`sweep`=单因素固定其他基准，`matrix`=笛卡尔积 |
+| JSON Batch 谁生成方案？ | `src/ui/batch/generator/expand.ts`，只做确定性展开/去重，不执行模拟 |
+| Sweep Group 谁组织结果？ | `src/ui/batch/compare/`；只投影正式 Scenario/Result，不建立第二真值 |
 | Batch 谁执行？ | `src/ui/batch/runner.ts`，每场景隔离复用正式 Runtime/Monitor |
 | 复制“可再次运行”的 JSON 谁负责？ | `src/protocol/serialize/index.ts`；`clipboard.ts` 只负责复制传输 |
 | 运行时状态在哪？ | `src/runtime/` |

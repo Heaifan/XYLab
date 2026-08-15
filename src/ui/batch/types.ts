@@ -1,4 +1,4 @@
-// Batch Experiment · 方案覆盖、Seed、结果快照与可分享 JSON 合同。
+// BATCH-3 · 方案覆盖、Seed、结果快照与可分享 JSON 合同。
 import type { MonitorSnapshot } from '../../monitor/types';
 import type { ExperimentDefinition } from '../../protocol/types';
 import type { RuntimeStatus, RuntimeValue } from '../../runtime/types';
@@ -38,7 +38,7 @@ export function batchResultExport(
   return {
     schemaVersion: 'xylab-batch-result@0.1', generatedAt: new Date().toISOString(),
     experiment: definition.experiment, random: definition.random ?? null,
-    batch: { baselineScenarioId, tickLimit, comparisonTarget }, metrics: metricMeta(definition, targets),
+    batch: { mode: definition.batch?.mode ?? null, baselineScenarioId, tickLimit, comparisonTarget }, metrics: metricMeta(definition, targets),
     scenarios: results.map((result) => {
       const scenario = scenarios.find((item) => item.id === result.scenarioId);
       return {

@@ -13,7 +13,7 @@ export interface RawBatchDimension {
   range?: { start?: unknown; end?: unknown; step?: unknown };
 }
 export interface RawBatch {
-  dimensions?: RawBatchDimension[]; tick_limit?: unknown;
+  mode?: unknown; dimensions?: RawBatchDimension[]; tick_limit?: unknown;
   seeds?: { start?: unknown; end?: unknown; step?: unknown };
 }
 export interface RawExperiment {

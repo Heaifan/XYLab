@@ -10,6 +10,17 @@
 
 ---
 
+## BATCH-3 · Sweep Group / Compare View —— IMPLEMENTED · CI PENDING
+
+- **阶段**：BATCH-3（单因素实验组 + 指标比较视图）
+- **目标**：修复多维 Batch 把单因素问题过早展开成全组合、并将全部 Scenario 平铺的问题；正式区分 Sweep Group 与 Matrix。
+- **协议**：`batch.mode` 新增 `sweep | matrix`。旧 JSON 未声明 mode 时继续按 `matrix` 解释，保持向后兼容。
+- **Sweep 语义**：每次仅改变一个 dimension，其余 dimension 固定为变量定义中的基准 `value`；完整输入相同的共享基准只执行一次。`5×3×3` 的示例从 Matrix 45 场景收缩为 Sweep 9 个唯一场景，同时 UI 保留 5+3+3 个组内实验水平。
+- **结果 UI**：Sweep 默认改为「实验组 → 指标比较 → 单场景详情」。每组先显示全部 summary 指标表，再对当前趋势指标绘制 XYUI-8 Line 语义折线；方案详情继续复用既有 `VisualizationPanel`。
+- **Matrix**：原有笛卡尔积、平铺对比与 Seed Sweep 保持可用；不删除 45 组合能力，只将其放回多因素交互研究用途。
+- **Knowledge**：`knowledge/decisions/batch-sweep-group-v1.md`。
+- **验证**：本提交进入 GitHub Actions `npm run verify` + build；CI 未通过前不得标记 CLOSED。
+
 ## BATCH-2 · JSON-Driven Scenario Generation —— CLOSED
 
 - **阶段**：BATCH-2（JSON 自动方案生成 + CRUD/复制反馈）
