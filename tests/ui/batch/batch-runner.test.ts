@@ -4,7 +4,7 @@ import { runBatchScenario } from '../../../src/ui/batch/runner';
 import { batchResultExport } from '../../../src/ui/batch/types';
 const def:ExperimentDefinition={
   schemaVersion:'xylab-experiment@0.1',experiment:{id:'seed-test',name:'Seed Test'},
-  variables:{x:{name:'x',type:'number',value:0}},entities:[],formulas:[{id:'r',target:'x',expression:'random()'}],
+  variables:{x:{name:'x',type:'number',value:0,label:'随机值'}},entities:[],formulas:[{id:'r',target:'x',expression:'random()'}],
   timeline:{mode:'fixed_tick',tick:1,duration:10,totalTicks:10},watch:[{target:'x',mode:'value'}],events:[],
   output:{summary:['x'],charts:[{x:'time',y:'x'}]},random:{seed:1},
 };
